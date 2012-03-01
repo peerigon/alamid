@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "underscore": "1.1.x",
-    "async": "0.1.x"
+    "async": "0.1.x",
+    "connect": "1.x"
   },
   "devDependencies": {
     "nodeunit": "0.7.4"
