@@ -1,0 +1,1 @@
+var circular2 = require('./circular2');

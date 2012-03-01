@@ -1,0 +1,5 @@
+<% /* this error gets thrown if the class is abstract and the constructor is not called by a child class */ %>
+if(!exposeProtected && !exposeNothing) {
+    throw new Error("Class error in " + __filename + ": You cant instantiate an abstract class.\n"
+        + "These methods are declared as abstract: <%= abstractMethodNames %>.");
+}

@@ -1,0 +1,1 @@
+exports.compile = require('./compile');

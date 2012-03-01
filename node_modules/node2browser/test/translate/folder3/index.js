@@ -1,0 +1,1 @@
+exports.someModule = require('./someModule1.js');

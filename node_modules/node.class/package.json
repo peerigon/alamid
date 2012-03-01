@@ -1,0 +1,17 @@
+{
+  "name": "node.class",
+  "description": "Enables you to write JavaScript-classes in an oop way on nodeJS-servers.",
+  "version": "0.1.0",
+  "homepage": "http://github.com/jhnns/node.class",
+  "repository": "git://github.com/jhnns/node.class.git",
+  "author": "Johannes Ewald <johannes.ewald@gmx.de>",
+  "main": "./lib/index.js",
+  "keywords": ["class", "oop", "object-oriented", "inheritance", "private", "protected", "public", "abstract"],
+  "dependencies": {
+      "toSrc": "0.1.x",
+      "underscore": "1.1.x"
+  },
+  "engines": {
+    "node": "0.4.x"
+  }
+}

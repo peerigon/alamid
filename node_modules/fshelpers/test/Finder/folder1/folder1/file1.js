@@ -1,0 +1,1 @@
+/folder1/folder1/file1.js

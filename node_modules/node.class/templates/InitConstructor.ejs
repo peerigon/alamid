@@ -1,0 +1,13 @@
+<% /* Adds the super class as a prototype of this class. This is necessary to make the instanceof-operator work.*/ %>
+<% /* To avoid the pollution by unused properties, the exposeNothing-flag of the super constructor is set true.*/ %>
+
+Constructor.$init=function(){
+    if(Extends.$init){
+        Extends.$init(); <% /* recursive call of the super class's $init-function. */ %>
+    }
+    Extends.$={
+        "exposeNothing": true
+    };
+    Constructor.prototype=new Extends();
+    delete Constructor.$init; <% /* after execution, this function deletes itself since it is not used anymore */ %>
+};

@@ -1,0 +1,9 @@
+<% /* this function can be accessed within the init-function via this.Super(); */ %>
+Properties.Super = function() {
+    Extends.$ = {
+        "exposeProtected": true,
+        "implChildAbstracts": implAbstracts,
+        "Instance": Instance
+    };
+    Properties.Super = Extends.$construct(arguments);
+};

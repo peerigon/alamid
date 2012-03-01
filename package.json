@@ -1,0 +1,21 @@
+{
+  "name": "alamid",
+  "description": "Framework for RESTful JavaScript web applications that run both on the server- and clientside.",
+  "version": "0.1.0",
+  "repository": "git://github.com/pandaa/alamid.git",
+  "author": "pandaa",
+  "main": "./lib/core/index.js",
+  "keywords": ["client", "server", "framework", "rest", "web application"],
+  "engines": {
+    "node": "0.6.x"
+  },
+  "dependencies": {
+    "fshelpers": "git://github.com/pandaa/fshelpers.git",
+    "node.class": "git://github.com/pandaa/node.class.git",
+    "node2browser": "git://github.com/pandaa/node2browser.git",
+    "toSrc": "0.1.1"
+  },
+  "devDependencies": {
+    "nodeunit": "0.7.4"
+  }
+}
