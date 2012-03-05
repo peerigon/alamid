@@ -15,7 +15,7 @@
     "connect": "1.x",
     "fshelpers": "git://github.com/pandaa/fshelpers.git",
     "node2browser": "git://github.com/pandaa/node2browser.git",
-    "toSrc": "0.1.1"
+    "toSrc": "0.1.x"
   },
   "devDependencies": {
     "nodeunit": "0.7.4"
