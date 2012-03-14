@@ -4,10 +4,10 @@ var testCase = require('nodeunit').testCase,
     compile = require('node.class').compile;
 
 var src,
-    alamidFolder = pathUtil.resolve('../lib/shared'),
+    alamidFolder = pathUtil.resolve('../../lib/shared'),
     srcFolder = __dirname + '/src',
     compiledFolder = __dirname + '/compiled',
-    User, User2, user
+    User, User2, user;
 
 // Copying all necessary files into the test src folder to get the latest versions
 src = fs.readFileSync(alamidFolder + '/EventEmitter.class.js', 'utf8');
