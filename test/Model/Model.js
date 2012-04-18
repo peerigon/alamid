@@ -1,7 +1,7 @@
 var testCase = require('nodeunit').testCase,
     fs = require('fs'),
     pathUtil = require('path'),
-    compile = require('node.class').compile;
+    compile = require('nodeclass').compile;
 
 var src,
     alamidFolder = pathUtil.resolve('../../lib/shared'),
