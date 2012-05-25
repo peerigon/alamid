@@ -1,4 +1,4 @@
-var cssURL = require("../../../lib/tools/regexp/cssURL"),
+var cssURL = require("../.././regexp/cssURL"),
     expect = require("expect.js");
 
 describe("cssURL", function () {
