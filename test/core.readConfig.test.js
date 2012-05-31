@@ -4,6 +4,16 @@ var expect = require("expect.js"),
     readConfig = require("../lib/core/config/readConfig.js"),
     defaultConfig = require("../lib/core/config/defaultConfig.json");
 
+/**
+ * This function is used to simulate different calls of the process via CLI.
+ * Don't forget to update readConfigWrapper.js if something changes on readConfig.js.
+ *
+ * All console.logs of readConfig.js will only be visible in stdout.
+ *
+ * @param {!String} argv
+ * @param {!Object} env
+ * @param {!Function} done
+ */
 function checkConfigViaSubprocess(argv, env, done){
 
     exec("node " + __dirname + "/core.readConfig/readConfigWrapper.js "+ argv,
