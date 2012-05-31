@@ -1,14 +1,14 @@
 var expect = require("expect.js"),
     path = require("path"),
     exec = require('child_process').exec,
-    readConfig = require("../lib/core/readConfig.js"),
-    defaultConfig = require("../lib/core/config.json");
+    readConfig = require("../lib/core/config/readConfig.js"),
+    defaultConfig = require("../lib/core/config/defaultConfig.json");
 
 function checkConfigViaSubprocess(argv, env, done){
 
-    var child = exec("node " + __dirname + "/core.readConfig/readConfigWrapper.js "+ argv,
+    exec("node " + __dirname + "/core.readConfig/readConfigWrapper.js "+ argv,
         { "env" : env },
-        function (error, stdout, stderr) {
+        function (error, stdout) {
 
             var configJson = stdout.match(/\{(.*)\}/gi)[0];
             var parsedConf = JSON.parse(configJson);
@@ -49,9 +49,6 @@ describe("readConfig", function() {
 
 
     it("should set attributes if passed via argv", function (done) {
-
-        var relativePathToTestConf = path.relative(process.cwd(), __dirname + "/core.readConfig/customConfig.json");
-
         checkConfigViaSubprocess("--port 9099", {} , function(parsedConf) {
             expect(parsedConf.port).to.equal(9099);
             done();
