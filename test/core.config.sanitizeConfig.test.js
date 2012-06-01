@@ -1,13 +1,19 @@
 "use strict";
 
 var expect = require("expect.js"),
+    path = require("path"),
     sanitizeConfig = require("../lib/core/config/sanitizeConfig.js");
 
 describe("sanitizeConfig", function () {
     var instance,
-        config;
+        config,
+        sanitizedConfig;
 
-    beforeEach(function(){
+    before(function () {
+        sanitizeConfig.log = function () { /* do nothing. we don't want to spill the console when testing */ };
+    });
+
+    beforeEach(function () {
         config = {
             "port" : 1223,
             "appDir" : "/myDir",
@@ -19,8 +25,8 @@ describe("sanitizeConfig", function () {
 
         it("should cast strings to numbers", function () {
             config.port = "1234";
-            var configRes = sanitizeConfig(config);
-            expect(configRes.port).to.be(1234);
+            sanitizedConfig = sanitizeConfig(config);
+            expect(sanitizedConfig.port).to.be(1234);
         });
 
         it("should throw an error when port has uncastable type", function () {
@@ -39,31 +45,32 @@ describe("sanitizeConfig", function () {
         });
     });
 
-    describe("#appDir", function() {
+    describe("#appDir", function () {
 
-        it("should take the folder if passed", function(){
-            var confRes = sanitizeConfig(config);
-            expect(confRes.appDir).to.contain('myDir');
+        it("should take the folder if passed", function () {
+            sanitizedConfig = sanitizeConfig(config);
+
+            expect(sanitizedConfig.appDir).to.contain('myDir');
         });
 
-        it("should take the CWD if dir is not set", function(){
+        it("should take the CWD if dir is not set", function () {
             delete config.appDir;
-            var confRes = sanitizeConfig(config);
-            expect(confRes.appDir).to.contain("test");
+            sanitizedConfig = sanitizeConfig(config);
+            expect(sanitizedConfig.appDir).to.contain(path.resolve(__dirname, "../"));
         });
     });
 
-    describe("#logDir", function() {
+    describe("#logDir", function () {
 
-        it("should take the folder if passed", function(){
-            var confRes = sanitizeConfig(config);
-            expect(confRes.logDir).to.contain('logDir');
+        it("should take the folder if passed", function () {
+            sanitizedConfig = sanitizeConfig(config);
+            expect(sanitizedConfig.logDir).to.contain('logDir');
         });
 
-        it("should take the APPDir/log if dir is not set", function(){
+        it("should take the APPDir/log if dir is not set", function () {
             delete config.appDir;
-            var confRes = sanitizeConfig(config);
-            expect(confRes.logDir).to.contain("log");
+            sanitizedConfig = sanitizeConfig(config);
+            expect(sanitizedConfig.logDir).to.contain("log");
         });
     });
 });
