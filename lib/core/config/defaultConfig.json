@@ -1,4 +1,6 @@
 {
     "port": 9000,
-    "mode": "development"
+    "mode": "development",
+    "appDir": null,
+    "logDir": null
 }

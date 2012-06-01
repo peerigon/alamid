@@ -1,3 +1,5 @@
+"use strict";
+
 var expect = require("expect.js"),
     path = require("path"),
     exec = require('child_process').exec,
@@ -14,7 +16,7 @@ var expect = require("expect.js"),
  * @param {!Object} env
  * @param {!Function} done
  */
-function checkConfigViaSubprocess(argv, env, done){
+function checkConfigViaSubprocess(argv, env, done) {
 
     exec("node " + __dirname + "/core.readConfig/readConfigWrapper.js "+ argv,
         { "env" : env },
@@ -27,7 +29,7 @@ function checkConfigViaSubprocess(argv, env, done){
     );
 }
 
-describe("readConfig", function() {
+describe("readConfig", function () {
 
     var result;
 
