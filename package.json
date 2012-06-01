@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "repository": "git://github.com/pandaa/alamid.git",
   "author": "pandaa",
-  "main": "./lib/core/index.js",
+  "main": "./lib/core/compileAlamid.js",
   "keywords": ["client", "server", "framework", "rest", "web application"],
   "engines": {
     "node": "0.6.x"
@@ -17,7 +17,7 @@
     "fshelpers": "git://github.com/pandaa/fshelpers.git",
     "node2browser": "git://github.com/pandaa/node2browser.git",
     "toSrc": "0.1.x",
-    "nodeclass": "https://github.com/pandaa/nodeclass/tarball/v0.1.0",
+    "nodeclass": "https://github.com/pandaa/nodeclass/tarball/v0.1.1",
     "nconf" : "0.5.x"
   },
   "devDependencies": {
