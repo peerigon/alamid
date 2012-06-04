@@ -18,20 +18,21 @@ describe("collectServices", function () {
 
         function onCollectServicesEnd(err, services) {
             expect(err).to.be(null);
-            expect(services).to.eql(expectedServices);
-            expect(Object.keys(services.server)).to.have.length(3);
-            expect(Object.keys(services.client)).to.have.length(3);
+            expect(services.server).to.only.have.keys(Object.keys(expectedServices.server));
+            expect(services.client).to.only.have.keys(Object.keys(expectedServices.client));
             done();
         }
 
-        expectedServices.server[servicesFolder + "/A/ServiceA.class.server.js"] = true;
-        expectedServices.server[servicesFolder + "/B/ServiceB.class.server.js"] = true;
-        expectedServices.server[servicesFolder + "/ServiceC.class.server.js"] = true;
-        expectedServices.client[servicesFolder + "/A/ServiceA.class.client.js"] = true;
-        expectedServices.client[servicesFolder + "/B/ServiceB.class.client.js"] = true;
-        expectedServices.client[servicesFolder + "/ServiceC.class.client.js"] = true;
+        expectedServices.server[servicesFolder + "/ServiceC.server.class.js"] = true;
+        expectedServices.server[servicesFolder + "/A/ServiceA.server.class.js"] = true;
+        expectedServices.server[servicesFolder + "/B/ServiceB.server.class.js"] = true;
 
-        collectServices = rewire("../lib/core/collectServices");
+        expectedServices.client[servicesFolder + "/ServiceC.client.class.js"] = true;
+        expectedServices.client[servicesFolder + "/A/ServiceA.client.class.js"] = true;
+        expectedServices.client[servicesFolder + "/B/ServiceB.client.class.js"] = true;
+
+
+        collectServices = require("../lib/core/collectServices");
         collectServices(testFolder, onCollectServicesEnd);
     });
     it("should abort on error", function () {
@@ -46,6 +47,6 @@ describe("collectServices", function () {
         console.log(collectServices);
         //collectServices.__.finder.emit("error", new Error());
         */
-        //TODO: Include test when rewire()-leaks work properly
+        //TODO: Include test when rewire()-leaks works properly
     });
 });
