@@ -34,7 +34,7 @@ describe("collectServices", function () {
         collectServices = rewire("../lib/core/collectServices");
         collectServices(testFolder, onCollectServicesEnd);
     });
-    it("should abort on error", function (done) {
+    it("should abort on error", function () {
         /*
         function onCollectServicesError(err) {
             expect(err instanceof Error).to.be(true);
