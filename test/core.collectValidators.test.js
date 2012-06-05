@@ -7,11 +7,10 @@ var expect = require("expect.js"),
     validatorsFolder = testFolder + "/compiled/validators";
 
 describe("collectValidators", function () {
-    /*
     beforeEach(function () {
-        //rewire.reset();
+        rewire.reset();
     });
-    */
+
     it("should collect appropriately", function (done) {
         var expectedValidators = {
                 server: {},
@@ -29,6 +28,7 @@ describe("collectValidators", function () {
         expectedValidators.server[validatorsFolder + "/A/ValidatorA.server.js"] = true;
         expectedValidators.server[validatorsFolder + "/B/ValidatorB.server.js"] = true;
         expectedValidators.server[validatorsFolder + "/ValidatorC.server.js"] = true;
+
         expectedValidators.client[validatorsFolder + "/A/ValidatorA.client.js"] = true;
         expectedValidators.client[validatorsFolder + "/B/ValidatorB.client.js"] = true;
         expectedValidators.client[validatorsFolder + "/ValidatorC.client.js"] = true;
@@ -37,18 +37,17 @@ describe("collectValidators", function () {
         collectValidators(testFolder, onCollectValidatorsEnd);
     });
 
-    it("should abort on error", function () {
-        /*
-        function onCollectServicesError(err) {
+    it("should abort on error", function (done) {
+        var finder;
+
+        function onCollectValidatorsError(err) {
             expect(err instanceof Error).to.be(true);
             done();
         }
 
-        collectServices = rewire("../lib/core/collectServices", null, null, ["finder"]);
-        collectServices(testFolder, onCollectServicesError);
-        console.log(collectServices);
-        //collectServices.__.finder.emit("error", new Error());
-        */
-        //TODO: Include test when rewire()-leaks work properly
+        collectValidators = rewire("../lib/core/collectValidators.js", null, null, ["unitTestLeaks"]);
+        collectValidators(testFolder, onCollectValidatorsError);
+        finder = collectValidators.__.unitTestLeaks.finder;
+        finder.emit("error", new Error());
     });
 });
