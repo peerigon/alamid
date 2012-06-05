@@ -35,18 +35,19 @@ describe("collectServices", function () {
         collectServices = require("../lib/core/collectServices");
         collectServices(testFolder, onCollectServicesEnd);
     });
-    it("should abort on error", function () {
-        /*
+    it("should abort on error", function (done) {
+        var finder;
+
         function onCollectServicesError(err) {
             expect(err instanceof Error).to.be(true);
             done();
         }
 
-        collectServices = rewire("../lib/core/collectServices", null, null, ["finder"]);
+        collectServices = rewire("../lib/core/collectServices.js", null, null, ["unitTestLeaks"]);
         collectServices(testFolder, onCollectServicesError);
-        console.log(collectServices);
-        //collectServices.__.finder.emit("error", new Error());
-        */
-        //TODO: Include test when rewire()-leaks works properly
+        finder = collectServices.__.unitTestLeaks.finder;
+        finder.emit("error", new Error());
     });
+
+    // TODO finish remaining tests
 });
