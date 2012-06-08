@@ -19,7 +19,8 @@
     "toSrc": "0.1.x",
     "nodeclass": "https://github.com/pandaa/nodeclass/tarball/v0.1.1",
     "nconf" : "0.5.x",
-    "rewire": "0.1.x"
+    "rewire": "0.1.x",
+    "socket.io" : "0.9.x"
   },
   "devDependencies": {
     "expect.js": "0.1.x",
