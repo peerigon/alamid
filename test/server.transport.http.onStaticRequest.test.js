@@ -1,7 +1,7 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
-    iterateMiddleware = require("../lib/server/iterateMiddlewares.js"),
+    iterateMiddleware = require("../lib/server/applyMiddleware.js"),
     onStaticRequest = require("../lib/server/transport/http/onStaticRequest.js");
 
 
@@ -21,7 +21,7 @@ describe("onStaticRequest", function(){
 
     it("should end the request if nothing was found", function (done) {
 
-        var fileNotFound = onStaticRequest[2]; //thats shitty
+        var fileNotFound = onStaticRequest[2];
 
         res.end = function(bla) {
             done();
