@@ -59,7 +59,9 @@ describe("sanitizeConfig", function () {
             expect(sanitizedConfig.appDir).to.contain(path.resolve(__dirname, "../"));
         });
 
-        //TODO check for app paths
+        it("should add paths as object for app-dir", function(){
+            expect(sanitizedConfig.paths).to.be.an("object");
+        })
     });
 
     describe("#logDir", function () {
