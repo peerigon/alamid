@@ -13,7 +13,7 @@ var mocks = {
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
-    onRequest = rewire("../lib/server/request/onRequest.js", mocks);
+    onRequest = rewire("../lib/server/transport/http/onRequest.js", mocks);
 
 
 describe("##onRequest", function(){

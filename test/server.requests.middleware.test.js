@@ -3,7 +3,7 @@
 // Mocks
 ////////////////////////////////
 var serverInitPageShortcutMocks = {
-    "../../pages/serveInitPage": function(req, res, next) {
+    "../../../pages/serveInitPage.js": function(req, res, next) {
         //so we can test for it
         req.servingPage = true;
         next();
@@ -12,9 +12,9 @@ var serverInitPageShortcutMocks = {
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
-    parseUrl = require("../lib/server/request/middleware/parseUrl.js"),
-    setAjaxFlag = require("../lib/server/request/middleware/setAjaxFlag.js"),
-    serveInitPageShortcut = rewire("../lib/server/request/middleware/serveInitPageShortcut.js", serverInitPageShortcutMocks);
+    parseUrl = require("../lib/server/transport/http/middleware/parseUrl.js"),
+    setAjaxFlag = require("../lib/server/transport/http/middleware/setAjaxFlag.js"),
+    serveInitPageShortcut = rewire("../lib/server/transport/http/middleware/serveInitPageShortcut.js", serverInitPageShortcutMocks);
 
 
 describe("parseUrl", function(){
