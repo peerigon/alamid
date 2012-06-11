@@ -30,5 +30,7 @@ describe("onStaticRequest", function(){
             expect(returnedRes).to.equal(res);
             done();
         });
+
+        //res.end mock!
     });
 });

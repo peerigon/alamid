@@ -58,6 +58,8 @@ describe("sanitizeConfig", function () {
             sanitizedConfig = sanitizeConfig(config);
             expect(sanitizedConfig.appDir).to.contain(path.resolve(__dirname, "../"));
         });
+
+        //TODO check for app paths
     });
 
     describe("#logDir", function () {
