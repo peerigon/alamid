@@ -4,7 +4,7 @@
 ////////////////////////////////
 var mockedConnect = {};
 mockedConnect.bodyParser = function () {
-   return function(req, res, next) { next(); };
+    return function(req, res, next) { next(); };
 };
 
 var mocks = {
@@ -13,6 +13,7 @@ var mocks = {
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
+    iterateMiddleware = require("../lib/server/iterateMiddlewares.js"),
     onRequest = rewire("../lib/server/transport/http/onRequest.js", mocks);
 
 
@@ -24,10 +25,10 @@ describe("##onRequest", function(){
         req.headers["x-requested-with"] = "XMLHttpRequest";
         var res = { headers : [] };
 
-        onRequest(req, res, function() {
-             expect(req.parsedURL).to.be.an("object");
-             expect(req.ajax).to.be(true);
-             done();
+        iterateMiddleware(onRequest, req, res, function(){
+            expect(req.parsedURL).to.be.an("object");
+            expect(req.ajax).to.be(true);
+            done();
         });
     });
 });
