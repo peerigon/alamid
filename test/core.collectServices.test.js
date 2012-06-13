@@ -43,9 +43,9 @@ describe("collectServices", function () {
             done();
         }
 
-        collectServices = rewire("../lib/core/collectServices.js", null, null, ["unitTestLeaks"]);
+        collectServices = rewire("../lib/core/collectServices.js");
         collectServices(testFolder, onCollectServicesError);
-        finder = collectServices.__.unitTestLeaks.finder;
+        finder = collectServices.__get__("unitTestLeaks").finder;
         finder.emit("error", new Error());
     });
 

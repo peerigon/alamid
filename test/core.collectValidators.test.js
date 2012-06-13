@@ -45,9 +45,9 @@ describe("collectValidators", function () {
             done();
         }
 
-        collectValidators = rewire("../lib/core/collectValidators.js", null, null, ["unitTestLeaks"]);
+        collectValidators = rewire("../lib/core/collectValidators.js");
         collectValidators(testFolder, onCollectValidatorsError);
-        finder = collectValidators.__.unitTestLeaks.finder;
+        finder = collectValidators.__get__("unitTestLeaks").finder;
         finder.emit("error", new Error());
     });
 });

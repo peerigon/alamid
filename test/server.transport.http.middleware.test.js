@@ -152,7 +152,7 @@ describe("alamidRequestAdapter", function(){
 
 
         alamidRequestAdapter(req, res, function(err) {
-            expect(err).to.be.an(object);
+            expect(err).to.be.an("object");
             done();
         });
     });
