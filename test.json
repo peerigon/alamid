@@ -1,0 +1,13 @@
+{
+  "name": "node2browser",
+  "description": "Translates node.js-modules so they can be used in a browser.",
+  "version": "0.1.0",
+  "homepage": "http://github.com/pandaa/node2browser",
+  "repository": "git://github.com/pandaa/node2browser.git",
+  "author": "Johannes Ewald",
+  "main": "./lib/index.js",
+  "keywords": ["browser", "module", "node", "client", "server", "translation", "commonJS"],
+  "engines": {
+    "node": "0.6.x"
+  }
+}
