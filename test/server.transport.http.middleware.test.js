@@ -6,7 +6,7 @@ require("./testHelpers/compileTestAlamid.js");
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
-    parseUrl = require("../compiled/server/transport/http/middleware/parseUrl.js"),
+    parseUrl = require("../compiled/server/transport/http/middleware/parseURL.js"),
     setAjaxFlag = require("../compiled/server/transport/http/middleware/setAjaxFlag.js"),
     serveInitPageShortcut = rewire("../compiled/server/transport/http/middleware/serveInitPageShortcut.js"),
     alamidRequestAdapter = rewire("../compiled/server/transport/http/middleware/alamidRequestAdapter.js");
