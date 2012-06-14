@@ -33,13 +33,12 @@ describe("runService", function(){
 
     it("should find the mocked POST service, run it and next afterwards", function (done) {
 
-        var request,
-            method = "POST",
+        var method = "POST",
             path = "/services/test",
             data = { "da" : "ta" };
 
-            request = new Request(method, path, data);
-        var response = new Response();
+        var request = new Request(method, path, data),
+            response = new Response();
 
         runService(request, response, function(err) {
 
@@ -54,13 +53,12 @@ describe("runService", function(){
 
     it("should find the mocked GET service, run it and next afterwards with data attached to response", function (done) {
 
-        var request,
-            method = "POST",
+        var method = "POST",
             path = "/services/test",
             data = { "da" : "ta" };
 
-        var request = new Request(method, path, data);
-        var response = new Response();
+        var request = new Request(method, path, data),
+            response = new Response();
 
         runService(request, response, function(err) {
 

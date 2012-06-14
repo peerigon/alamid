@@ -11,10 +11,11 @@ describe("collectServices", function () {
         rewire.reset();
     });
     it("should collect appropriately", function (done) {
+
         var expectedServices = {
-                server: {},
-                client: {}
-            };
+            server: {},
+            client: {}
+        };
 
         function onCollectServicesEnd(err, services) {
             expect(err).to.be(null);
@@ -23,18 +24,19 @@ describe("collectServices", function () {
             done();
         }
 
-        expectedServices.server[servicesFolder + "/ServiceC.server.class.js"] = true;
-        expectedServices.server[servicesFolder + "/A/ServiceA.server.class.js"] = true;
-        expectedServices.server[servicesFolder + "/B/ServiceB.server.class.js"] = true;
+        expectedServices.server["ServiceC.server.class.js"] = true;
+        expectedServices.server["A/ServiceA.server.class.js"] = true;
+        expectedServices.server["B/ServiceB.server.class.js"] = true;
 
-        expectedServices.client[servicesFolder + "/ServiceC.client.class.js"] = true;
-        expectedServices.client[servicesFolder + "/A/ServiceA.client.class.js"] = true;
-        expectedServices.client[servicesFolder + "/B/ServiceB.client.class.js"] = true;
+        expectedServices.client["ServiceC.client.class.js"] = true;
+        expectedServices.client["A/ServiceA.client.class.js"] = true;
+        expectedServices.client["B/ServiceB.client.class.js"] = true;
 
 
-        collectServices = require("../lib/core/collectServices");
-        collectServices(testFolder, onCollectServicesEnd);
+        collectServices = require("../lib/core/collectServices.js");
+        collectServices(servicesFolder, onCollectServicesEnd);
     });
+
     it("should abort on error", function (done) {
         var finder;
 
@@ -49,5 +51,15 @@ describe("collectServices", function () {
         finder.emit("error", new Error());
     });
 
-    // TODO finish remaining tests
+    it("should fail on non existing folders", function (done) {
+        var finder;
+
+        function onCollectServicesError(err) {
+            expect(err instanceof Error).to.be(true);
+            done();
+        }
+
+        collectServices = rewire("../lib/core/collectServices.js");
+        collectServices(__dirname+"/non/existing/folder/" , onCollectServicesError);
+    });
 });
