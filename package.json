@@ -17,7 +17,7 @@
     "fshelpers": "git://github.com/pandaa/fshelpers.git",
     "node2browser": "git://github.com/pandaa/node2browser.git",
     "toSrc": "0.1.x",
-    "nodeclass": "https://github.com/pandaa/nodeclass/tarball/v0.1.1",
+    "nodeclass": "https://github.com/pandaa/nodeclass/tarball/v0.1.4",
     "nconf" : "0.5.x",
     "rewire": "0.2.x",
     "socket.io" : "0.9.x"

@@ -10,15 +10,12 @@ var Request = require("../compiled/server/request/Request.class.js"),
     runService = rewire("../compiled/server/request/middleware/runService.js");
 
 
-
-
-
 describe("runService", function(){
 
     var servicesMock = {
         getService : function(path) {
 
-            if(path === __dirname + "/exampleApp/app/services/test.server.js"){
+            if(path === __dirname + "/exampleApp/app/services/test/test.server.js"){
                 return {
                     "POST" : function(data, callback){ callback(200); },
                     "PUT" : function(data, callback){ callback(200); },
@@ -41,12 +38,12 @@ describe("runService", function(){
             path = "/services/test",
             data = { "da" : "ta" };
 
-        var request = new Request(method, path, data);
+            request = new Request(method, path, data);
         var response = new Response();
 
         runService(request, response, function(err) {
 
-            console.log("ERR",err);
+            console.log("ERR", err);
             console.log("REQUEST:",request, "RESPONSE", response);
             console.log("statusCode:", response.getStatusCode());
             expect(response.getStatusCode()).to.be(200);
@@ -54,7 +51,7 @@ describe("runService", function(){
         });
     });
 
-    /*
+
     it("should find the mocked GET service, run it and next afterwards with data attached to response", function (done) {
 
         var request,
@@ -65,13 +62,12 @@ describe("runService", function(){
         var request = new Request(method, path, data);
         var response = new Response();
 
-        runService(request, response, function() {
+        runService(request, response, function(err) {
 
             console.log(request, response);
             expect(response.getStatusCode()).to.be(200);
-            expect(response.getResult()).to.be({ "da" : "ta"});
+            expect(response.getData()).to.be({ "da" : "ta"});
             done();
         });
     });
-    */
 });

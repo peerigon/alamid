@@ -40,5 +40,16 @@ describe("Response", function() {
         });
     });
 
+    describe("#setStatusCode", function() {
+
+        it("should set the statusCode", function() {
+
+           myResponse = new Response();
+           expect(myResponse.getStatusCode()).to.be(null);
+           myResponse.setStatusCode(200);
+           expect(myResponse.getStatusCode()).to.be(200);
+        });
+    });
+
 
 });
