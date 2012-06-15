@@ -25,16 +25,16 @@ describe("collectValidators", function () {
             done();
         }
 
-        expectedValidators.server[validatorsFolder + "/A/ValidatorA.server.js"] = true;
-        expectedValidators.server[validatorsFolder + "/B/ValidatorB.server.js"] = true;
-        expectedValidators.server[validatorsFolder + "/ValidatorC.server.js"] = true;
+        expectedValidators.server["A/ValidatorA.server.js"] = {};
+        expectedValidators.server["B/ValidatorB.server.js"] = {};
+        expectedValidators.server["ValidatorC.server.js"] = {};
 
-        expectedValidators.client[validatorsFolder + "/A/ValidatorA.client.js"] = true;
-        expectedValidators.client[validatorsFolder + "/B/ValidatorB.client.js"] = true;
-        expectedValidators.client[validatorsFolder + "/ValidatorC.client.js"] = true;
+        expectedValidators.client["A/ValidatorA.client.js"] = true;
+        expectedValidators.client["B/ValidatorB.client.js"] = true;
+        expectedValidators.client["ValidatorC.client.js"] = true;
 
         collectValidators = require("../lib/core/collectValidators");
-        collectValidators(testFolder, onCollectValidatorsEnd);
+        collectValidators(validatorsFolder, onCollectValidatorsEnd);
     });
 
     it("should abort on error", function (done) {

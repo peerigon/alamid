@@ -29,7 +29,6 @@ describe("Logger", function() {
     });
 
     describe("#onServer", function() {
-
         logger.__set__("mode", { "isServer" : true });
 
         it("should return the different log-types", function() {
@@ -49,5 +48,4 @@ describe("Logger", function() {
             expect(log.bullshit).to.be(undefined);
         });
     });
-
 });
