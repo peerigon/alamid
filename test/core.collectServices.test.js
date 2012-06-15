@@ -10,7 +10,7 @@ describe("collectServices", function () {
     beforeEach(function () {
         rewire.reset();
     });
-    it("should collect appropriately", function (done) {
+    it("should collect appropriately and return required modules for server-services", function (done) {
 
         var expectedServices = {
             server: {},
@@ -21,6 +21,10 @@ describe("collectServices", function () {
             expect(err).to.be(null);
             expect(services.server).to.only.have.keys(Object.keys(expectedServices.server));
             expect(services.client).to.only.have.keys(Object.keys(expectedServices.client));
+            expect(services.server["ServiceC.server.class.js"].POST).to.be.a("function");
+            expect(services.server["A/ServiceA.server.class.js"].POST).to.be.a("function");
+            expect(services.server["B/ServiceB.server.class.js"].POST).to.be.a("function");
+
             done();
         }
 
