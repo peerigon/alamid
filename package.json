@@ -1,28 +1,29 @@
 {
-  "name": "alamid",
-  "description": "Framework for RESTful JavaScript web applications that run both on the server- and clientside.",
-  "version": "0.1.0",
-  "repository": "git://github.com/pandaa/alamid.git",
-  "author": "pandaa",
-  "main": "./lib/core/compileAlamid.js",
-  "keywords": ["client", "server", "framework", "rest", "web application"],
-  "engines": {
-    "node": "0.6.x"
-  },
-  "dependencies": {
-    "underscore": "1.3.x",
-    "async": "0.1.x",
-    "connect": "2.0.x",
-    "winston": "0.5.x",
-    "fshelpers": "git://github.com/pandaa/fshelpers.git",
-    "toSrc": "0.1.x",
-    "nodeclass": "https://github.com/pandaa/nodeclass/tarball/v0.1.5",
-    "nconf" : "0.5.x",
-    "rewire": "0.2.x",
-    "socket.io" : "0.9.x"
-  },
-  "devDependencies": {
-    "expect.js": "0.1.x",
-    "mocha": "1.1.x"
-  }
+    "name": "alamid",
+    "description": "Framework for RESTful JavaScript web applications that run both on the server- and clientside.",
+    "version": "0.1.0",
+    "repository": "git://github.com/pandaa/alamid.git",
+    "author": "pandaa",
+    "main": "./lib/core/compileAlamid.js",
+    "keywords": ["client", "server", "framework", "rest", "web application"],
+    "engines": {
+        "node": "0.6.x"
+    },
+    "dependencies": {
+        "underscore": "1.3.x",
+        "async": "0.1.x",
+        "connect": "2.0.x",
+        "winston": "0.5.x",
+        "fshelpers": "git://github.com/pandaa/fshelpers.git",
+        "toSrc": "0.1.x",
+        "nodeclass": "https://github.com/pandaa/nodeclass/tarball/v0.1.5",
+        "nconf" : "0.5.x",
+        "rewire": "0.2.x",
+        "socket.io" : "0.9.x",
+        "browserify" : "1.x"
+    },
+    "devDependencies": {
+        "expect.js": "0.1.x",
+        "mocha": "1.1.x"
+    }
 }
