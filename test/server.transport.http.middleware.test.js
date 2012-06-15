@@ -1,7 +1,5 @@
 "use strict"; // run code in ES5 strict mode
 
-
-
 require("./testHelpers/compileTestAlamid.js");
 
 var expect = require("expect.js"),
