@@ -2,13 +2,14 @@
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
-    logger = rewire("../lib/shared/logger.js");
+    serverLogger = rewire("../lib/shared/logger.js"),
+    clientLogger = require("../lib/client/logger.js");
 
 describe("Logger", function() {
 
     describe("#onClient", function() {
 
-        logger.__set__("mode", { "isServer" : false });
+        var logger = clientLogger;
 
         it("should return the different log-types", function() {
             expect(logger.get("server")).not.to.be(undefined);
@@ -29,7 +30,8 @@ describe("Logger", function() {
     });
 
     describe("#onServer", function() {
-        logger.__set__("mode", { "isServer" : true });
+
+        var logger = serverLogger;
 
         it("should return the different log-types", function() {
             expect(logger.get("server")).not.to.be(undefined);
