@@ -11,11 +11,10 @@ var expect = require("expect.js"),
 describe("bundleSharedModules", function() {
 
     it("should return the bundled modules as a string", function(done) {
-
-        /*
+/*
         bundleSharedModules(require("path").resolve(__dirname, "../compiled/shared"), function(bundleString) {
-           //console.log(bundleString);
-            console.log("313:",bundleString.split("\n")[313]);
+
+            console.log(bundleString);
 
             var sandbox = {};
 
@@ -25,9 +24,7 @@ describe("bundleSharedModules", function() {
            done();
 
         });
-        */
-        done();
-
+*/
     });
 
 
