@@ -9,7 +9,7 @@ var expect = require("expect.js"),
 describe("Request", function() {
 
     var myRequest;
-    var method = "POST",
+    var method = "create",
         path = "services/blogpost",
         data = { "da" : "ta" };
 
@@ -57,22 +57,22 @@ describe("Request", function() {
         });
 
         it("should only set allowed methods", function() {
-            myRequest3.setMethod("POST");
-            myRequest3.setMethod("PUT");
-            myRequest3.setMethod("GET");
-            myRequest3.setMethod("DELETE");
-
-        });
-
-        it("should also set allowed methods written in lowercase", function() {
-            myRequest3.setMethod("post");
-            myRequest3.setMethod("put");
-            myRequest3.setMethod("get");
+            myRequest3.setMethod("create");
+            myRequest3.setMethod("update");
+            myRequest3.setMethod("read");
             myRequest3.setMethod("delete");
+
         });
 
-        it("should not allow you to set wrong methods and preserve old state", function() {
-            myRequest3.setMethod("post");
+        it("should also set allowed methods written in highercase", function() {
+            myRequest3.setMethod("CREATE");
+            myRequest3.setMethod("READ");
+            myRequest3.setMethod("UPDATE");
+            myRequest3.setMethod("DELETE");
+        });
+
+        it("should not allow you to set wrong methods and throw error", function() {
+            myRequest3.setMethod("create");
             expect(function(){ myRequest3.setMethod("easy"); }).to.throwError();
         });
     });

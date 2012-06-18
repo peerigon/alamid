@@ -2,6 +2,9 @@
 
 require("./testHelpers/compileTestAlamid.js");
 
+var compile = require("nodeclass").compile,
+    path = require("path");
+
 var expect = require("expect.js"),
     rewire = require("rewire");
 
@@ -10,16 +13,16 @@ var Request = require("../compiled/server/request/Request.class.js"),
     runService = rewire("../compiled/server/request/middleware/runService.js");
 
 
-describe("runService", function(){
+describe("runService (mocked)", function(){
 
     var servicesMock = {
         getService : function(path) {
 
             if(path === "services/test/test.server.js"){
                 return {
-                    "POST" : function(data, callback){ callback(200); },
-                    "PUT" : function(data, callback){ callback(200); },
-                    "GET" : function(data, callback){ callback(200, { "da" : "ta" }); }
+                    "create" : function(model, callback){ callback(200); },
+                    "read" : function(model, callback){ callback(200, model.getData()); },
+                    "update" : function(model, callback){ callback(200, model.getData()); }
                 }
             }
 
@@ -36,7 +39,7 @@ describe("runService", function(){
 
     it("should find the mocked POST service, run it and next afterwards", function (done) {
 
-        var method = "POST",
+        var method = "create",
             path = "/services/test/",
             data = { "da" : "ta" };
 
@@ -52,7 +55,7 @@ describe("runService", function(){
 
     it("should find the mocked GET service, run it and next afterwards with data attached to response", function (done) {
 
-        var method = "GET",
+        var method = "read",
             path = "/services/test",
             data = { "da" : "ta" };
 
@@ -68,7 +71,7 @@ describe("runService", function(){
 
     it("should next with an error code if the service for the given method is not allowed", function (done) {
 
-        var method = "DELETE",
+        var method = "delete",
             path = "/services/test",
             data = { "da" : "ta" };
 
@@ -83,7 +86,7 @@ describe("runService", function(){
 
     it("should next with an error code if no service is registered for given path", function (done) {
 
-        var method = "DELETE",
+        var method = "delete",
             path = "/services/test2",
             data = { "da" : "ta" };
 
