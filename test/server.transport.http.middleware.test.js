@@ -143,11 +143,9 @@ describe("alamidRequestAdapter", function(){
             headers : []
         };
 
-
         alamidRequestAdapter.__set__("Request", function(method, path, data){
             throw new Error("Wrong params");
         });
-
 
         alamidRequestAdapter(req, res, function(err) {
             expect(err).to.be.an("object");
