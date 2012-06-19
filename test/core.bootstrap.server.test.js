@@ -41,7 +41,7 @@ describe("bootstrap.server", function() {
             expect(e).to.be(undefined);
         }
 
-        expect(clientBootstrap).to.contain('clientConfig = {"mode": "development", "basePath": "", "baseUrl": "", "isDev": true};');
+        expect(clientBootstrap).to.contain('config.mode = "development";');
     });
 });
 
