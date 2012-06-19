@@ -35,7 +35,7 @@ describe("bootstrap.server", function() {
         bootstrap.renderBootstrapClientTemplate();
 
         try{
-            var clientBootstrap = fs.readFileSync("./core.bootstrap/bundle/bootstrap.js", "utf-8");
+            var clientBootstrap = fs.readFileSync(path.resolve(__dirname, "./core.bootstrap/bundle/bootstrap.js"), "utf-8");
         }
         catch(e) {
             expect(e).to.be(undefined);
