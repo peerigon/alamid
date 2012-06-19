@@ -16,10 +16,15 @@ describe("bundleSharedModules", function () {
 
             vm.runInNewContext(bundleString, sandbox);
 
-            //TODO Write unit tests
+            var logger = sandbox.require("/compiled/shared/logger.js"),
+                config = sandbox.require("/compiled/shared/config.js"),
+                log = logger.get("core");
 
+            expect(logger).not.to.be(undefined);
+            expect(config).to.be.an("object");
+            expect(log.info).to.be.a("function");
+            //console.log(bundleString);
             done();
-
         });
     });
 
