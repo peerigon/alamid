@@ -3,14 +3,14 @@
 require("./testHelpers/compileTestAlamid.js");
 
 var expect = require("expect.js"),
-    bundleSharedModules = require("../compiled/core/bundleSharedModules.js"),
+    browserifyModules = require("../compiled/core/browserifyModules.js"),
     config = require("../compiled/shared/config"),
     vm = require("vm");
 
-describe("bundleSharedModules", function () {
+describe("browserifyModules", function () {
 
     it("should return the bundled modules as a string", function (done) {
-        bundleSharedModules(require("path").resolve(__dirname, "../compiled/shared"), function (bundleString) {
+        browserifyModules(require("path").resolve(__dirname, "../compiled/shared"), function (bundleString) {
 
             var sandbox = {};
 
