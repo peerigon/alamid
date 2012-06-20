@@ -2,7 +2,7 @@
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
-    serverLogger = rewire("../lib/shared/logger.js"),
+    serverLogger = rewire("../../lib/shared/logger.js"),
     clientLogger = require("../../lib/client/logger.client.js");
 
 describe("Logger", function() {

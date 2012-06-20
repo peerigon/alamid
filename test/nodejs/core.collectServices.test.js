@@ -62,7 +62,7 @@ describe("collectServices", function () {
             done();
         }
 
-        collectServices = rewire("../lib/core/collectServices.js");
+        collectServices = rewire("../../lib/core/collectServices.js");
         collectServices(testFolder, onCollectServicesError);
         finder = collectServices.__get__("unitTestLeaks").finder;
         finder.emit("error", new Error());
@@ -76,7 +76,7 @@ describe("collectServices", function () {
             done();
         }
 
-        collectServices = rewire("../lib/core/collectServices.js");
+        collectServices = rewire("../../lib/core/collectServices.js");
         collectServices(__dirname+"/non/existing/folder/" , onCollectServicesError);
     });
 });

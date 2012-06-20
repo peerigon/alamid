@@ -14,7 +14,7 @@ var mocks = {
 var expect = require("expect.js"),
     rewire = require("rewire"),
     iterateMiddleware = require("../../lib/server/applyMiddleware.js"),
-    onRequest = rewire("../lib/server/transport/http/onRequest.js", mocks);
+    onRequest = rewire("../../lib/server/transport/http/onRequest.js", mocks);
 
 
 describe("##onRequest", function(){

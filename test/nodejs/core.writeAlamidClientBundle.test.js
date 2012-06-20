@@ -2,7 +2,7 @@
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
-    writeAlamidClientBundle = rewire("../lib/core/writeAlamidClientBundle.js");
+    writeAlamidClientBundle = rewire("../../lib/core/writeAlamidClientBundle.js");
 
 describe("writeAlamidClientBundle", function() {
 

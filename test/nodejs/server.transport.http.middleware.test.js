@@ -6,8 +6,8 @@ var expect = require("expect.js"),
     rewire = require("rewire"),
     parseUrl = require("../../compiled/server/transport/http/middleware/parseURL.js"),
     setAjaxFlag = require("../../compiled/server/transport/http/middleware/setAjaxFlag.js"),
-    serveInitPageShortcut = rewire("../compiled/server/transport/http/middleware/serveInitPageShortcut.js"),
-    alamidRequestAdapter = rewire("../compiled/server/transport/http/middleware/alamidRequestAdapter.js");
+    serveInitPageShortcut = rewire("../../compiled/server/transport/http/middleware/serveInitPageShortcut.js"),
+    alamidRequestAdapter = rewire("../../compiled/server/transport/http/middleware/alamidRequestAdapter.js");
 
 serveInitPageShortcut.__set__("serveInitPage", function(req, res, next) {
     //so we can test for it

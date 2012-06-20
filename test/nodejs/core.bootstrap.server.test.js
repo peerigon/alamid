@@ -4,7 +4,7 @@ var expect = require("expect.js"),
     rewire = require("rewire"),
     fs = require("fs"),
     path = require("path"),
-    bootstrap = rewire("../lib/core/bootstrap.server.js"),
+    bootstrap = rewire("../../lib/core/bootstrap.server.js"),
     generateClientConfig = bootstrap.generateClientConfig,
     renderBootstrapClientTemplate = bootstrap.renderBootstrapClientTemplate;
 

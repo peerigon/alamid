@@ -10,7 +10,7 @@ var expect = require("expect.js"),
 describe("browserifyModules", function () {
 
     it("should return the bundled modules as a string", function (done) {
-        browserifyModules(require("path").resolve(__dirname, "../compiled/shared"), function (bundleString) {
+        browserifyModules(require("path").resolve(__dirname, "../../compiled/shared"), function (bundleString) {
 
             var sandbox = {};
 

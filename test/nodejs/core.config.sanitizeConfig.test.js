@@ -56,7 +56,7 @@ describe("sanitizeConfig", function () {
         it("should take the CWD if dir is not set", function () {
             delete config.appDir;
             sanitizedConfig = sanitizeConfig(config);
-            expect(sanitizedConfig.appDir).to.contain(path.resolve(__dirname, "../"));
+            expect(sanitizedConfig.appDir).to.contain(path.resolve(__dirname, "../../"));
         });
 
         it("should add paths as object for app-dir", function(){

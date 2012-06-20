@@ -10,7 +10,7 @@ var expect = require("expect.js"),
 
 var Request = require("../../compiled/server/request/Request.class.js"),
     Response = require("../../compiled/server/request/Response.class.js"),
-    runService = rewire("../compiled/server/request/middleware/runService.js");
+    runService = rewire("../../compiled/server/request/middleware/runService.js");
 
 nodeclass.stdout = function() {
   //No output in test mode

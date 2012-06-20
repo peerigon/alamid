@@ -3,7 +3,7 @@
 var expect = require("expect.js"),
     iterateMiddleware = require("../../lib/server/applyMiddleware.js"),
     onStaticRequest = require("../../lib/server/transport/http/onStaticRequest.js"),
-    config = require("../.");
+    config = require("../../lib/shared/config");
 
 
 describe("onStaticRequest", function(){
