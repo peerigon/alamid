@@ -12,7 +12,7 @@ var Request = require("../compiled/server/request/Request.class.js"),
     Response = require("../compiled/server/request/Response.class.js"),
     runService = rewire("../compiled/server/request/middleware/runService.js");
 
-nodeclass.stdout = function(msg) {
+nodeclass.stdout = function() {
   //No output in test mode
 };
 
@@ -54,6 +54,7 @@ describe("runService", function(){
                 response = new Response();
 
             runService(request, response, function(err) {
+                expect(err).to.be(undefined);
                 expect(response.getStatusCode()).to.be(200);
                 done();
             });
@@ -70,6 +71,7 @@ describe("runService", function(){
                 response = new Response();
 
             runService(request, response, function(err) {
+                expect(err).to.be(undefined);
                 expect(response.getStatusCode()).to.be(200);
                 expect(response.getData()).to.eql('{"da":"ta"}');
                 done();
@@ -86,6 +88,7 @@ describe("runService", function(){
                 response = new Response();
 
             runService(request, response, function(err) {
+                expect(err).not.to.be(undefined);
                 expect(response.getStatusCode()).to.be(405);
                 done();
             });
@@ -101,6 +104,7 @@ describe("runService", function(){
                 response = new Response();
 
             runService(request, response, function(err) {
+                expect(err).not.to.be(undefined);
                 expect(response.getStatusCode()).to.be(403);
                 done();
             });
@@ -122,8 +126,6 @@ describe("runService", function(){
             };
 
             runService.__set__("services", servicesMock);
-
-            console.log(compile);
             compile(path.resolve(__dirname, "./core.request.middleware.runService/src/"), path.resolve(__dirname, "./core.request.middleware.runService/compiled"));
 
         });
@@ -138,6 +140,7 @@ describe("runService", function(){
                 response = new Response();
 
             runService(request, response, function(err) {
+                expect(err).to.be(undefined);
                 expect(response.getStatusCode()).to.be(200);
                 expect(response.getData()).to.eql('{"da":"ta"}');
                 done();
