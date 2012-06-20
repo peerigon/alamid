@@ -26,5 +26,9 @@
         "expect.js": "0.1.x",
         "mocha": "1.2.x",
         "rewire": "0.2.x"
+    },
+    "scripts" : {
+        "test" : "mocha ./test/nodejs/ --mode testing",
+        "test-nodejs" : "mocha ./test/nodejs/ --mode testing"
     }
 }
