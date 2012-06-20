@@ -1,8 +1,8 @@
-"use strict";
+"use strict"; // run code in ES5 strict mode
 
 var Class = require("nodeclass").Class;
 
-var ServiceA = new Class({
+var ServiceB = new Class({
 
     "init" : function () {
         //nothing to do here
@@ -21,5 +21,4 @@ var ServiceA = new Class({
     }
 });
 
-module.exports = ServiceA;
-
+module.exports = ServiceB;

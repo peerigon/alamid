@@ -1,4 +1,4 @@
-"use strict";
+"use strict"; // run code in ES5 strict mode
 
 var Class = require("nodeclass").Class;
 
