@@ -8,7 +8,7 @@ describe("EventEmitter", function () {
     var e,
         event = "snacktime";
 
-    before(function () {
+    beforeEach(function () {
         e = new EventEmitter();
     });
 
@@ -56,9 +56,38 @@ describe("EventEmitter", function () {
 
     });
 
+    describe("emit() passed params", function () {
+
+        it("should pass all params to '" + event + "'-handler", function (done) {
+            var arg0 = "a",
+                arg1 = 1,
+                arg2 = [],
+                arg3 = {},
+                arg4 = new Error(),
+                arg5 = function f() { };
+
+            e.on(event, function () {
+
+                expect(arguments[0]).to.be.equal(arg0);
+                expect(arguments[1]).to.be.equal(arg1);
+                expect(arguments[2]).to.be.equal(arg2);
+                expect(arguments[3]).to.be.equal(arg3);
+                expect(arguments[4]).to.be.equal(arg4);
+                expect(arguments[5]).to.be.equal(arg5);
+
+                done();
+            });
+
+            e.emit(event, arg0, arg1, arg2, arg3, arg4, arg5);
+        });
+
+    });
+
+
+
     describe("once()", function () {
 
-        it("should trigger 'snacktime'-handler only once", function () {
+        it("should trigger '" + event + "'-handler only once", function () {
             var onSnacktimeCalls = 0,
                 desiredOnSnacktimeCalls = 1,
                 emitCount = 2;
