@@ -2,7 +2,7 @@
 
 var expect = require("expect.js"),
     path = require("path"),
-    sanitizeConfig = require("../lib/core/config/sanitizeConfig.js");
+    sanitizeConfig = require("../../lib/core/config/sanitizeConfig.js");
 
 describe("sanitizeConfig", function () {
     var instance,

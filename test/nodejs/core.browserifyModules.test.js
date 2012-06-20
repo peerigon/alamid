@@ -3,8 +3,8 @@
 require("./testHelpers/compileTestAlamid.js");
 
 var expect = require("expect.js"),
-    browserifyModules = require("../compiled/core/browserifyModules.js"),
-    config = require("../compiled/shared/config"),
+    browserifyModules = require("../../compiled/core/browserifyModules.js"),
+    config = require("../../compiled/shared/config"),
     vm = require("vm");
 
 describe("browserifyModules", function () {

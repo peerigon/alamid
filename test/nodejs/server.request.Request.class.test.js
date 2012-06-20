@@ -3,7 +3,7 @@
 require("./testHelpers/compileTestAlamid.js");
 
 var expect = require("expect.js"),
-    Request = require("../compiled/server/request/Request.class.js");
+    Request = require("../../compiled/server/request/Request.class.js");
 
 
 describe("Request", function() {

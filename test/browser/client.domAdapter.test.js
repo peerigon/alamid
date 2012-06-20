@@ -1,5 +1,5 @@
 var expect = require("expect.js"),
-    domAdapter = require("../lib/client/domAdapter.js");
+    domAdapter = require("../../lib/client/domAdapter.js");
 
 describe("domAdapter", function () {
 

@@ -1,7 +1,7 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
-    paths = require("../lib/helpers/paths.js"),
+    paths = require("../../lib/helpers/paths.js"),
     checkError = require("./testHelpers/checkError.js"),
     filters = paths.filters,
     checkForError = checkError(Error),

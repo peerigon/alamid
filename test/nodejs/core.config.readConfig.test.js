@@ -3,8 +3,8 @@
 var expect = require("expect.js"),
     path = require("path"),
     exec = require('child_process').exec,
-    readConfig = require("../lib/core/config/readConfig.js"),
-    defaultConfig = require("../lib/core/config/defaultConfig.json");
+    readConfig = require("../../lib/core/config/readConfig.js"),
+    defaultConfig = require("../../lib/core/config/defaultConfig.json");
 
 /**
  * This function is used to simulate different calls of the process via CLI.

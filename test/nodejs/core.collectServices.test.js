@@ -50,7 +50,7 @@ describe("collectServices", function () {
         expectedServices.client["B/ServiceB.client.class.js"] = true;
 
 
-        collectServices = require("../lib/core/collectServices.js");
+        collectServices = require("../../lib/core/collectServices.js");
         collectServices(servicesFolder, onCollectServicesEnd);
     });
 

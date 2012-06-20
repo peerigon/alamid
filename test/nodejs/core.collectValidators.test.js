@@ -33,7 +33,7 @@ describe("collectValidators", function () {
         expectedValidators.client["B/ValidatorB.client.js"] = true;
         expectedValidators.client["ValidatorC.client.js"] = true;
 
-        collectValidators = require("../lib/core/collectValidators");
+        collectValidators = require("../../lib/core/collectValidators");
         collectValidators(validatorsFolder, onCollectValidatorsEnd);
     });
 

@@ -2,7 +2,7 @@
 
 var connect = require("connect"),
     expect = require("expect.js"),
-    handleHttp = require("../lib/server/transport/http/handleHttp.js");
+    handleHttp = require("../../lib/server/transport/http/handleHttp.js");
 
 var server = connect();
 

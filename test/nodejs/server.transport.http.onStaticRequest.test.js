@@ -1,9 +1,9 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
-    iterateMiddleware = require("../lib/server/applyMiddleware.js"),
-    onStaticRequest = require("../lib/server/transport/http/onStaticRequest.js"),
-    config = require("../lib/core/config");
+    iterateMiddleware = require("../../lib/server/applyMiddleware.js"),
+    onStaticRequest = require("../../lib/server/transport/http/onStaticRequest.js"),
+    config = require("../.");
 
 
 describe("onStaticRequest", function(){

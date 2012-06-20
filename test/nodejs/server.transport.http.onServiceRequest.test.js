@@ -1,8 +1,8 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
-    applyMiddleware = require("../lib/server/applyMiddleware.js"),
-    onServiceRequest = require("../lib/server/transport/http/onServiceRequest.js");
+    applyMiddleware = require("../../lib/server/applyMiddleware.js"),
+    onServiceRequest = require("../../lib/server/transport/http/onServiceRequest.js");
 
 /*
 describe("onServiceRequest", function(){

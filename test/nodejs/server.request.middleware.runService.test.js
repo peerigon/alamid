@@ -8,8 +8,8 @@ var expect = require("expect.js"),
     compile = nodeclass.compile,
     path = require("path");
 
-var Request = require("../compiled/server/request/Request.class.js"),
-    Response = require("../compiled/server/request/Response.class.js"),
+var Request = require("../../compiled/server/request/Request.class.js"),
+    Response = require("../../compiled/server/request/Response.class.js"),
     runService = rewire("../compiled/server/request/middleware/runService.js");
 
 nodeclass.stdout = function() {
