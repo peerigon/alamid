@@ -1,7 +1,13 @@
 "use strict";
 
-var myFirstMiddleware = require("./myFirstMiddleware.js"),
-    mySecondMiddleware = require("./mySecondMiddleware.js");
+
+function myFirstMiddleware(req, res, next) {
+    next();
+}
+
+function mySecondMiddleware(req, res, next) {
+    next();
+}
 
 function auth(req, res, next) {
     next();
@@ -21,11 +27,13 @@ var middleware = {
         "* *" : auth,
         "* /blogPost" : myFirstMiddleware,
         "* /blogPost/comments" : myFirstMiddleware,
-        "create|put|delete /blogPost": adminOnly,
+        "create put delete /blogPost": adminOnly,
         "get /blogPost": adminOnly,
         "create put /users": [adminOnly, makeEverythingSneaky]
     },
     "validators" : {}
 };
+
+module.exports = middleware;
 
 
