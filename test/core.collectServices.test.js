@@ -2,14 +2,27 @@
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
+    nodeclass = require("nodeclass"),
+    compile = nodeclass.compile,
+    path = require("path"),
     collectServices,
     testFolder = __dirname + "/core.collectServices",
     servicesFolder = testFolder + "/compiled/services";
 
+nodeclass.stdout = function(msg) {
+  //No output in test mode
+};
+
 describe("collectServices", function () {
+
+    before(function() {
+        compile(path.resolve(__dirname, "./core.collectServices/lib"), path.resolve(__dirname, "./core.collectServices/compiled"))
+    });
+
     beforeEach(function () {
         rewire.reset();
     });
+
     it("should collect appropriately and return required modules for server-services", function (done) {
 
         var expectedServices = {
@@ -21,9 +34,9 @@ describe("collectServices", function () {
             expect(err).to.be(null);
             expect(services.server).to.only.have.keys(Object.keys(expectedServices.server));
             expect(services.client).to.only.have.keys(Object.keys(expectedServices.client));
-            expect(services.server["ServiceC.server.class.js"].POST).to.be.a("function");
-            expect(services.server["A/ServiceA.server.class.js"].POST).to.be.a("function");
-            expect(services.server["B/ServiceB.server.class.js"].POST).to.be.a("function");
+            expect(services.server["ServiceC.server.class.js"].create).to.be.a("function");
+            expect(services.server["A/ServiceA.server.class.js"].create).to.be.a("function");
+            expect(services.server["B/ServiceB.server.class.js"].create).to.be.a("function");
 
             done();
         }
