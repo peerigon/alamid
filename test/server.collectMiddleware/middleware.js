@@ -28,8 +28,9 @@ var middleware = {
         "* /blogPost" : myFirstMiddleware,
         "* /blogPost/comments" : myFirstMiddleware,
         "create put delete /blogPost": adminOnly,
-        "get /blogPost": adminOnly,
-        "create put /users": [adminOnly, makeEverythingSneaky]
+        "create put /users": [adminOnly, makeEverythingSneaky],
+        "get /users/whatever": adminOnly
+
     },
     "validators" : {}
 };

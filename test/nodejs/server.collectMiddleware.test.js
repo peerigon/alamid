@@ -10,18 +10,36 @@ describe("collectMiddleware", function () {
 
         it("should convert a given object", function () {
 
-            var mwDef =  {
-                "get /blogPost/comments": function blogPostCommentsG(){ },
-                "create put delete /blogPost": function blogPostCPD(){},
-                "delete /users" : function usersD() {},
-                "create put /users/friends": [function usersCP1() {}, function usersCP2() {}]
-            };
+                var expectedResult = {
+                    "services" : {
+                        "blogPost" : {
+                            "create" : [],
+                            "delete" : []
+                        },
+                        "blogPost/comment/" : {
+                            "create" : [],
+                            "delete" : []
+                        }
+                    }
+                };
 
-            var mwObj = collectMiddleware.middlewareDefintionToObject(mwDef);
 
-            //console.log(mwObj);
-        });
-    });
+
+
+    var mwDef =  {
+        "read /blogPost/comments": function blogPostCommentsG(){ },
+        "create update delete /blogPost": function blogPostCPD(){},
+        "delete /users" : function usersD() {},
+        "create /users" : function usersC() {},
+        "create /users/friends/comments" : function usersfriendsCommentsC() {},
+        "create update /users/friends": [function usersCP1() {}, function usersCP2() {}]
+    };
+
+    collectMiddleware.middlewareDefintionToObject(mwDef);
+
+    //console.log(mwObj);
+});
+});
 
 
 });
