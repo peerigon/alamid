@@ -20,7 +20,7 @@ describe("collectMiddleware", function () {
     it("should return the middlewares for validators as an usable object", function() {
         collectMiddleware(path.resolve(__dirname, "./server.collectMiddleware/validatorsMiddleware.js"), function(err, parsedMw) {
             expect(parsedMw).to.be.an("object");
-            expect(parsedMw["blogPost"]).to.be.an("object");
+            expect(parsedMw.blogPost).to.be.an("object");
         });
     });
 
