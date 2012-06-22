@@ -13,7 +13,7 @@ var Request = require("../../compiled/server/request/Request.class.js"),
     runService = rewire("../../compiled/server/request/middleware/runService.js");
 
 nodeclass.stdout = function() {
-  //No output in test mode
+    //No output in test mode
 };
 
 
@@ -29,7 +29,7 @@ describe("runService", function(){
                         "create" : function(model, callback){ callback(200); },
                         "read" : function(model, callback){ callback(200, model.getData()); },
                         "update" : function(model, callback){ callback(200, model.getData()); }
-                    }
+                    };
                 }
 
                 if(path === "services/test2/test2.server.js"){
@@ -54,7 +54,7 @@ describe("runService", function(){
                 response = new Response();
 
             runService(request, response, function(err) {
-                expect(err).to.be(undefined);
+                expect(err).to.be(null);
                 expect(response.getStatusCode()).to.be(200);
                 done();
             });
@@ -71,7 +71,7 @@ describe("runService", function(){
                 response = new Response();
 
             runService(request, response, function(err) {
-                expect(err).to.be(undefined);
+                expect(err).to.be(null);
                 expect(response.getStatusCode()).to.be(200);
                 expect(response.getData()).to.eql('{"da":"ta"}');
                 done();
@@ -88,7 +88,7 @@ describe("runService", function(){
                 response = new Response();
 
             runService(request, response, function(err) {
-                expect(err).not.to.be(undefined);
+                expect(err).not.to.be(null);
                 expect(response.getStatusCode()).to.be(405);
                 done();
             });
@@ -104,8 +104,24 @@ describe("runService", function(){
                 response = new Response();
 
             runService(request, response, function(err) {
-                expect(err).not.to.be(undefined);
+                expect(err).not.to.be(null);
                 expect(response.getStatusCode()).to.be(403);
+                done();
+            });
+        });
+
+        it("should next with an err if path is not defined", function (done) {
+
+            var method = "delete",
+                path = "/services/nonExistingPath",
+                data = { "da" : "ta" };
+
+            var request = new Request(method, path, data),
+                response = new Response();
+
+            runService(request, response, function(err) {
+                expect(err).not.to.be(null);
+                expect(response.getStatusCode()).to.be(404);
                 done();
             });
         });
@@ -119,7 +135,7 @@ describe("runService", function(){
                 getService : function(path) {
                     if(path === "services/servicea/servicea.server.js"){
                         var ServiceA = require("./core.request.middleware.runService/compiled/ServiceA.server.class.js");
-                        return new ServiceA;
+                        return new ServiceA();
                     }
                     return null;
                 }
@@ -140,7 +156,7 @@ describe("runService", function(){
                 response = new Response();
 
             runService(request, response, function(err) {
-                expect(err).to.be(undefined);
+                expect(err).to.be(null);
                 expect(response.getStatusCode()).to.be(200);
                 expect(response.getData()).to.eql('{"da":"ta"}');
                 done();
