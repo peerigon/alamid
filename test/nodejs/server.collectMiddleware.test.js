@@ -24,9 +24,10 @@ describe("collectMiddleware", function () {
         });
     });
 
-    it("should return an empty objects for a path which doesn't exist", function() {
+    it("should return an error and and empty object for a path which doesn't exist", function() {
         collectMiddleware(path.resolve(__dirname, "./server.collectMiddleware/wrongValidatorsPath.js"), function(err, parsedMw) {
             expect(parsedMw).to.be.an("object");
+            expect(err).not.to.be(null);
         });
     });
 });
