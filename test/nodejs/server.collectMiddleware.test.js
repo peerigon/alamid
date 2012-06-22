@@ -11,21 +11,23 @@ describe("collectMiddleware", function () {
         var usersD = function usersD(){},
             usersC = function usersC(){},
             blogPostCPD = function blogPostCPD(){},
+            blogPostAll = function blogPostAll(){},
             usersCommentsCU1 = function usersCommentsCU1() {},
             usersCommentsCU2 = function usersCommentsCU2() {},
             usersFriendsCommentsC = function usersFriendsCommentsC(){},
             blogPostCommentsG = function blogPostCommentsG(){};
 
-        var mwDef =  {
-            "read /blogPost/comments": blogPostCommentsG,
-            "create update delete /blogPost": blogPostCPD,
-            "delete /users" : usersD,
-            "create /users" : usersC,
-            "create update /users/friends": [usersCommentsCU1, usersCommentsCU2],
-            "create /users/friends/comments" : usersFriendsCommentsC
-        };
 
-        it("should convert a given object", function () {
+        it("should convert a given object without wildcards", function () {
+
+            var mwDef =  {
+                "read /blogPost/comments": blogPostCommentsG,
+                "create update delete /blogPost": blogPostCPD,
+                "delete /users" : usersD,
+                "create /users" : usersC,
+                "create update /users/friends": [usersCommentsCU1, usersCommentsCU2],
+                "create /users/friends/comments" : usersFriendsCommentsC
+            };
 
             var mwObj = collectMiddleware.middlewareDefintionToObject(mwDef);
 
@@ -66,7 +68,39 @@ describe("collectMiddleware", function () {
             expect(mwObj["users/friends/comments"].update[1]).to.be(usersCommentsCU2);
 
             expect(mwObj["users/friends/comments"].create[3]).to.be(usersFriendsCommentsC);
+        });
 
+        it("should convert a given object and recognize wildcard-methods", function () {
+
+            var mwDef =  {
+                "read /blogPost/comments": blogPostCommentsG,
+                "create update delete /blogPost": blogPostCPD,
+                "* /blogPost" : blogPostAll
+            };
+
+            var mwObj = collectMiddleware.middlewareDefintionToObject(mwDef);
+
+            //BlogPost
+            expect(mwObj.blogPost.create[0]).to.eql(blogPostAll);
+            expect(mwObj.blogPost.read[0]).to.eql(blogPostAll);
+            expect(mwObj.blogPost.update[0]).to.eql(blogPostAll);
+            expect(mwObj.blogPost.delete[0]).to.eql(blogPostAll);
+
+            expect(mwObj.blogPost.create[1]).to.eql(blogPostCPD);
+            expect(mwObj.blogPost.update[1]).to.eql(blogPostCPD);
+            expect(mwObj.blogPost.delete[1]).to.eql(blogPostCPD);
+
+            //BlogPost-comments
+            expect(mwObj["blogPost/comments"].create[0]).to.eql(blogPostAll);
+            expect(mwObj["blogPost/comments"].read[0]).to.eql(blogPostAll);
+            expect(mwObj["blogPost/comments"].update[0]).to.eql(blogPostAll);
+            expect(mwObj["blogPost/comments"].delete[0]).to.eql(blogPostAll);
+
+            expect(mwObj["blogPost/comments"].create[1]).to.eql(blogPostCPD);
+            expect(mwObj["blogPost/comments"].update[1]).to.eql(blogPostCPD);
+            expect(mwObj["blogPost/comments"].delete[1]).to.eql(blogPostCPD);
+
+            expect(mwObj["blogPost/comments"].read[1]).to.be(blogPostCommentsG);
         });
     });
 
