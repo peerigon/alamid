@@ -28,10 +28,6 @@ describe("handleRequest", function() {
                 ];
             }
 
-            function runServiceMock(req, res, next) {
-                next();
-            }
-
             handleRequest.__set__("getMiddleware", getMiddlewareMock);
             handleRequest.__set__("runService", runServiceMock);
         });

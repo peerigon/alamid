@@ -5,8 +5,8 @@ var expect = require("expect.js"),
     middleware = require("../../lib/server/request/middleware.js");
 
 describe("middleware", function () {
-    /*
 
+/*
     describe("#services", function() {
 
         function serviceFunction1 () {}
@@ -74,4 +74,5 @@ describe("middleware", function () {
      });
      });
      */
+
 });

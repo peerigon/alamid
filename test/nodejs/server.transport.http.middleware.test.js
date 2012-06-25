@@ -7,7 +7,7 @@ var expect = require("expect.js"),
     parseUrl = require("../../compiled/server/transport/http/middleware/parseURL.js"),
     setAjaxFlag = require("../../compiled/server/transport/http/middleware/setAjaxFlag.js"),
     serveInitPageShortcut = rewire("../../compiled/server/transport/http/middleware/serveInitPageShortcut.js"),
-    alamidRequestAdapter = rewire("../../compiled/server/transport/http/middleware/alamidRequestAdapter.js");
+    httpAdapter = rewire("../../compiled/server/transport/http/middleware/httpAdapter.js");
 
 serveInitPageShortcut.__set__("serveInitPage", function(req, res, next) {
     //so we can test for it
@@ -90,7 +90,7 @@ describe("serverInitPageShortcut", function(){
     });
 });
 
-describe("alamidRequestAdapter", function(){
+describe("httpAdapter", function(){
 
     it("should hand the request on to alamidRequest Adapter if everything is alright", function (done) {
 
@@ -109,7 +109,7 @@ describe("alamidRequestAdapter", function(){
             headers : []
         };
 
-        alamidRequestAdapter.__set__("Request", function(method, path, data){
+        httpAdapter.__set__("Request", function(method, path, data){
             expect(method).to.be("PUT");
             expect(path).to.be("/services/blogpost");
             expect(data).to.be(dummyData);
@@ -117,7 +117,7 @@ describe("alamidRequestAdapter", function(){
             return;
         });
 
-        alamidRequestAdapter(req, res, function(err) {
+        httpAdapter(req, res, function(err) {
             if(err !== null){
                done(err);
            }
@@ -143,11 +143,11 @@ describe("alamidRequestAdapter", function(){
             headers : []
         };
 
-        alamidRequestAdapter.__set__("Request", function(method, path, data){
+        httpAdapter.__set__("Request", function(method, path, data){
             throw new Error("Wrong params");
         });
 
-        alamidRequestAdapter(req, res, function(err) {
+        httpAdapter(req, res, function(err) {
             expect(err).to.be.an("object");
             done();
         });
