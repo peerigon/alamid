@@ -109,7 +109,8 @@ describe("httpAdapter", function(){
         var res = {
             headers : [],
             write : function(data, encoding) {
-
+                expect(data).to.eql(JSON.stringify(dummyData));
+                expect(encoding).to.be("utf-8");
             },
             end : function() {
                 done();
@@ -128,11 +129,11 @@ describe("httpAdapter", function(){
             expect(method).to.be("PUT");
             expect(path).to.be("/services/blogpost");
             expect(data).to.be(dummyData);
-            // done();
         });
 
         httpAdapter(req, res, function(err) {
             if(err !== null){
+                //this case should not happen
                 done(err);
             }
         });
@@ -153,11 +154,10 @@ describe("httpAdapter", function(){
 
         var res = {
             headers : [],
-            write : function(data, encoding) {
-
+            write : function() {
             },
             end : function() {
-                done();
+                done(new Error("This path should not be reached"));
             }
         };
 
