@@ -64,8 +64,22 @@ describe("handleRequest", function() {
         handleRequest(req, function(err, resReq, resRes) {
             expect(err.message).to.contain("middleware a failed");
             expect(resReq).to.eql(req);
-            expect(resRes).not.to.be("undefined");
             done();
+        });
+    });
+
+    describe("#Invalid Requests", function() {
+
+        it("should end the request if the type is not allowed", function(done) {
+            var req = new Request("create", "/services/blogPost", {});
+                req.getType = function() {
+                    return "unsupportedType";
+                };
+
+            handleRequest(req, function(err, resReq, resRes) {
+                expect(err).not.to.be(null);
+                done();
+            });
         });
     });
 });
