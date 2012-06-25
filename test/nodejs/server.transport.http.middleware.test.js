@@ -37,7 +37,7 @@ describe("parseUrl", function(){
             expect(req.parsedURL).to.be.an("object");
             expect(req.parsedURL.pathname).to.be(parsedUrl.pathname);
             done();
-        })
+        });
     });
 });
 
@@ -52,7 +52,7 @@ describe("setAjaxFlag", function(){
         setAjaxFlag(req, res, function() {
             expect(req.ajax).to.be(true);
             done();
-        })
+        });
     });
 
     it("should set the ajax flag to false if x-requested-with header is missing", function (done) {
@@ -62,7 +62,7 @@ describe("setAjaxFlag", function(){
         setAjaxFlag(req, res, function() {
             expect(req.ajax).to.be(false);
             done();
-        })
+        });
     });
 
 });
@@ -76,7 +76,7 @@ describe("serverInitPageShortcut", function(){
         serveInitPageShortcut(req, res, function() {
             expect(req.servingPage).to.be(true);
             done();
-        })
+        });
     });
 
     it("should not serve the Init page if path != / ", function (done) {
@@ -86,7 +86,7 @@ describe("serverInitPageShortcut", function(){
         serveInitPageShortcut(req, res, function() {
             expect(req.servingPage).to.be(undefined);
             done();
-        })
+        });
     });
 });
 
@@ -114,7 +114,6 @@ describe("httpAdapter", function(){
             expect(path).to.be("/services/blogpost");
             expect(data).to.be(dummyData);
             done();
-            return;
         });
 
         httpAdapter(req, res, function(err) {
@@ -126,8 +125,6 @@ describe("httpAdapter", function(){
 
 
     it("should next with an error if the request could not be converted", function (done) {
-
-        var dummyData = { "da" : "ta" };
 
         var req = {
             "url" : "http://mydomain.com/services/blogpost",
@@ -143,7 +140,7 @@ describe("httpAdapter", function(){
             headers : []
         };
 
-        httpAdapter.__set__("Request", function(method, path, data){
+        httpAdapter.__set__("Request", function(){
             throw new Error("Wrong params");
         });
 
