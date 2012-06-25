@@ -1,26 +1,28 @@
 "use strict";
 
 var expect = require("expect.js"),
-    rewire = require("rewire");
-var middleware = rewire("../../lib/server/request/middleware.js");
+    rewire = require("rewire"),
+    middleware = require("../../lib/server/request/middleware.js");
 
 describe("middleware", function () {
-
     /*
+
     describe("#services", function() {
 
         function serviceFunction1 () {}
         function serviceFunction2 () {}
 
+        it("should return middleware if the services-object was filled before", function () {
 
-        it("should return middlewares if the services-object was filled before", function () {
-
-            middleware.middleware.services = {
-                "myPath" : {
-                    "create" : [serviceFunction1],
-                    "delete" : [serviceFunction1, serviceFunction2]
+            middleware.middleware = {
+                "services" : {
+                    "myPath" : {
+                        "create" : [serviceFunction1],
+                        "delete" : [serviceFunction1, serviceFunction2]
+                    }
                 }
             };
+
             //console.log(middleware.middleware.services);
 
             var myPathCreate,
@@ -28,7 +30,6 @@ describe("middleware", function () {
 
             myPathCreate = middleware.getMiddleware("services", "read", "myPath");
             myPathDelete = middleware.getMiddleware("services", "delete", "myPath");
-
 
             expect(myPathCreate[0]).to.be(serviceFunction1);
 
@@ -38,39 +39,39 @@ describe("middleware", function () {
         });
     });
 
-    describe("#validators", function() {
+     describe("#validators", function() {
 
-        function validatorsFunction1 () {}
-        function validatorsFunction2 () {}
+     function validatorsFunction1 () {}
+     function validatorsFunction2 () {}
 
-        middleware.middleware.validators = {
-            "myPath" : {
-                "create" : [validatorsFunction1],
-                "delete" : [validatorsFunction1, validatorsFunction2]
-            }
-        };
-        console.log(middleware.middleware.validators);
+     middleware.middleware.validators = {
+     "myPath" : {
+     "create" : [validatorsFunction1],
+     "delete" : [validatorsFunction1, validatorsFunction2]
+     }
+     };
+     console.log(middleware.middleware.validators);
 
-        it("should return middlewares if the validators-object was filled before", function () {
+     it("should return middleware if the validators-object was filled before", function () {
 
-            middleware.middleware.validators = {
-                "myPath" : {
-                    "create" : [validatorsFunction1],
-                    "delete" : [validatorsFunction1, validatorsFunction2]
-                }
-            };
+     middleware.middleware.validators = {
+     "myPath" : {
+     "create" : [validatorsFunction1],
+     "delete" : [validatorsFunction1, validatorsFunction2]
+     }
+     };
 
-            var myPathCreate,
-                myPathDelete;
+     var myPathCreate,
+     myPathDelete;
 
-            myPathCreate = middleware.getMiddleware("validators", "read", "myPath");
-            myPathDelete = middleware.getMiddleware("validators", "delete", "myPath");
+     myPathCreate = middleware.getMiddleware("validators", "read", "myPath");
+     myPathDelete = middleware.getMiddleware("validators", "delete", "myPath");
 
-            expect(myPathCreate[0]).to.be(validatorsFunction1);
+     expect(myPathCreate[0]).to.be(validatorsFunction1);
 
-            expect(myPathDelete[0]).to.be(validatorsFunction1);
-            expect(myPathDelete[1]).to.be(validatorsFunction2);
-        });
-    });
-    //*/
+     expect(myPathDelete[0]).to.be(validatorsFunction1);
+     expect(myPathDelete[1]).to.be(validatorsFunction2);
+     });
+     });
+     */
 });
