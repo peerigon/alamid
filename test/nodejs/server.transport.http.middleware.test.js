@@ -109,7 +109,7 @@ describe("httpAdapter", function(){
         var res = {
             headers : [],
             write : function(data, encoding) {
-                expect(data).to.eql(JSON.stringify(dummyData));
+                expect(data).to.eql(dummyData);
                 expect(encoding).to.be("utf-8");
             },
             end : function() {

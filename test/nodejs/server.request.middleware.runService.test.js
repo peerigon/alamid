@@ -73,7 +73,7 @@ describe("runService", function(){
             runService(request, response, function(err) {
                 expect(err).to.be(null);
                 expect(response.getStatusCode()).to.be(200);
-                expect(response.getData()).to.eql('{"da":"ta"}');
+                expect(response.getData()).to.eql(data);
                 done();
             });
         });
@@ -158,7 +158,7 @@ describe("runService", function(){
             runService(request, response, function(err) {
                 expect(err).to.be(null);
                 expect(response.getStatusCode()).to.be(200);
-                expect(response.getData()).to.eql('{"da":"ta"}');
+                expect(response.getData()).to.eql(data);
                 done();
             });
         });
