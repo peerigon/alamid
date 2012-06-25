@@ -7,7 +7,8 @@ var expect = require("expect.js"),
     parseUrl = require("../../compiled/server/transport/http/middleware/parseURL.js"),
     setAjaxFlag = require("../../compiled/server/transport/http/middleware/setAjaxFlag.js"),
     serveInitPageShortcut = rewire("../../compiled/server/transport/http/middleware/serveInitPageShortcut.js"),
-    httpAdapter = rewire("../../compiled/server/transport/http/middleware/httpAdapter.js");
+    httpAdapter = rewire("../../compiled/server/transport/http/middleware/httpAdapter.js"),
+    Response = require("../../compiled/server/request/Response.class.js");
 
 serveInitPageShortcut.__set__("serveInitPage", function(req, res, next) {
     //so we can test for it
@@ -106,20 +107,34 @@ describe("httpAdapter", function(){
             body : dummyData };
 
         var res = {
-            headers : []
+            headers : [],
+            write : function(data, encoding) {
+
+            },
+            end : function() {
+                done();
+            }
         };
+
+        httpAdapter.__set__("handleRequest", function(aReq, callback) {
+
+            var aRes = new Response();
+            aRes.setData({ "da" : "ta"});
+
+            callback(null, aReq, aRes);
+        });
 
         httpAdapter.__set__("Request", function(method, path, data){
             expect(method).to.be("PUT");
             expect(path).to.be("/services/blogpost");
             expect(data).to.be(dummyData);
-            done();
+            // done();
         });
 
         httpAdapter(req, res, function(err) {
             if(err !== null){
-               done(err);
-           }
+                done(err);
+            }
         });
     });
 
@@ -134,10 +149,16 @@ describe("httpAdapter", function(){
             },
             method : "BLA",
             body : { "bla" : "bla" }
-           };
+        };
 
         var res = {
-            headers : []
+            headers : [],
+            write : function(data, encoding) {
+
+            },
+            end : function() {
+                done();
+            }
         };
 
         httpAdapter.__set__("Request", function(){
