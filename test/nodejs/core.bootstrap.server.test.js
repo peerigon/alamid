@@ -3,12 +3,14 @@
 var expect = require("expect.js"),
     rewire = require("rewire"),
     fs = require("fs"),
-    path = require("path"),
-    bootstrap = rewire("../../lib/core/bootstrap.server.js"),
-    generateClientConfig = bootstrap.generateClientConfig,
-    renderBootstrapClientTemplate = bootstrap.renderBootstrapClientTemplate;
+    path = require("path");
 
 describe("bootstrap.server", function() {
+
+    var bootstrap = rewire("../../lib/core/bootstrap.server.js", false),
+        generateClientConfig = bootstrap.generateClientConfig,
+        renderBootstrapClientTemplate = bootstrap.renderBootstrapClientTemplate;
+
 
     var configMock = {
         "mode" : "development",
@@ -18,6 +20,7 @@ describe("bootstrap.server", function() {
             "bundle" : path.resolve(__dirname, "./core.bootstrap/bundle")
         }
     };
+
     bootstrap.__set__("config", configMock);
 
     describe("writeClientConfig", function() {
@@ -36,12 +39,13 @@ describe("bootstrap.server", function() {
 
         try{
             var clientBootstrap = fs.readFileSync(path.resolve(__dirname, "./core.bootstrap/bundle/bootstrap.js"), "utf-8");
+            expect(clientBootstrap).to.contain('config.mode = "development";');
         }
         catch(e) {
             expect(e).to.be(undefined);
         }
 
-        expect(clientBootstrap).to.contain('config.mode = "development";');
+
     });
 });
 

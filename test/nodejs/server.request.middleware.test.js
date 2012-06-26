@@ -1,12 +1,9 @@
 "use strict";
 
 var expect = require("expect.js"),
-    rewire = require("rewire"),
     middleware = require("../../lib/server/request/middleware.js");
 
 describe("middleware", function () {
-
-
     describe("#services", function() {
 
         function serviceFunction1 () {}
@@ -35,7 +32,6 @@ describe("middleware", function () {
         });
     });
 
-
     describe("#validators", function() {
 
         function validatorsFunction1 () {}
@@ -49,7 +45,6 @@ describe("middleware", function () {
         };
 
         it("should return middleware if the validators-object was filled before", function () {
-
             middleware.setMiddleware("validators", {
                 "myPath" : {
                     "create" : [validatorsFunction1],

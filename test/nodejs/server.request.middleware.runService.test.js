@@ -9,8 +9,7 @@ var expect = require("expect.js"),
     path = require("path");
 
 var Request = require("../../compiled/server/request/Request.class.js"),
-    Response = require("../../compiled/server/request/Response.class.js"),
-    runService = rewire("../../compiled/server/request/middleware/runService.js");
+    Response = require("../../compiled/server/request/Response.class.js");
 
 nodeclass.stdout = function() {
     //No output in test mode
@@ -18,6 +17,8 @@ nodeclass.stdout = function() {
 
 
 describe("runService", function(){
+
+    var runService = rewire("../../compiled/server/request/middleware/runService.js", false);
 
     describe("#serviceMiddleware", function() {
 

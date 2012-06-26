@@ -2,7 +2,6 @@
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
-    serverLogger = rewire("../../lib/shared/logger.js"),
     clientLogger = require("../../lib/client/logger.client.js");
 
 describe("Logger", function() {
@@ -31,7 +30,7 @@ describe("Logger", function() {
 
     describe("#onServer", function() {
 
-        var logger = serverLogger;
+        var logger = rewire("../../lib/shared/logger.js", false);
 
         it("should return the different log-types", function() {
             expect(logger.get("server")).not.to.be(undefined);

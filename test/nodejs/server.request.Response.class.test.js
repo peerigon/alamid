@@ -5,7 +5,6 @@ require("./testHelpers/compileTestAlamid.js");
 var expect = require("expect.js"),
     Response = require("../../compiled/server/request/Response.class.js");
 
-
 describe("Response", function() {
 
     var myResponse;

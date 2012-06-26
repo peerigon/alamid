@@ -6,16 +6,7 @@ var expect = require("expect.js"),
     rewire = require("rewire"),
     parseUrl = require("../../compiled/server/transport/http/middleware/parseURL.js"),
     setAjaxFlag = require("../../compiled/server/transport/http/middleware/setAjaxFlag.js"),
-    serveInitPageShortcut = rewire("../../compiled/server/transport/http/middleware/serveInitPageShortcut.js"),
-    httpAdapter = rewire("../../compiled/server/transport/http/middleware/httpAdapter.js"),
     Response = require("../../compiled/server/request/Response.class.js");
-
-serveInitPageShortcut.__set__("serveInitPage", function(req, res, next) {
-    //so we can test for it
-    req.servingPage = true;
-    next();
-});
-
 
 describe("parseUrl", function(){
     it("should set parsedURL on req-object", function (done) {
@@ -70,7 +61,16 @@ describe("setAjaxFlag", function(){
 
 describe("serverInitPageShortcut", function(){
 
+    var serveInitPageShortcut = rewire("../../compiled/server/transport/http/middleware/serveInitPageShortcut.js", false);
+    serveInitPageShortcut.__set__("serveInitPage", function(req, res, next) {
+        //so we can test for it
+        req.servingPage = true;
+        next();
+    });
+
+
     it("should serve the Init page if path = / ", function (done) {
+
         var req = { "url" : "http://mydomain.com/myPath", headers : [], parsedURL : { pathname : "/" } };
         var res = { headers : [] };
 
@@ -93,7 +93,13 @@ describe("serverInitPageShortcut", function(){
 
 describe("httpAdapter", function(){
 
-    it("should hand the request on to alamidRequest Adapter if everything is alright", function (done) {
+    afterEach(function() {
+        rewire.reset();
+    });
+
+    var httpAdapter = rewire("../../compiled/server/transport/http/middleware/httpAdapter.js", false);
+
+    it("should hand the request on to the httpAdapter if everything is alright", function (done) {
 
         var dummyData = { "da" : "ta" };
 
@@ -126,7 +132,7 @@ describe("httpAdapter", function(){
         });
 
         httpAdapter.__set__("Request", function(method, path, data){
-            expect(method).to.be("PUT");
+            expect(method).to.be("update");
             expect(path).to.be("/services/blogpost");
             expect(data).to.be(dummyData);
         });

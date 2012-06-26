@@ -7,7 +7,8 @@ var expect = require("expect.js"),
     validatorsFolder = testFolder + "/compiled/validators";
 
 describe("collectValidators", function () {
-    beforeEach(function () {
+
+    afterEach(function () {
         rewire.reset();
     });
 
