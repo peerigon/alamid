@@ -83,14 +83,6 @@ describe("domAdapter", function () {
 
     });
 
-    describe("dispose", function () {
-
-        it("should export a function called dispose", function () {
-            expect(domAdapter.dispose).to.be.a(Function);
-        });
-
-    });
-
     describe("stringifyJSON", function () {
 
         it("should export a function called stringifyJSON", function () {
@@ -103,14 +95,6 @@ describe("domAdapter", function () {
 
         it("should export a function called parseJSON", function () {
             expect(domAdapter.parseJSON).to.be.a(Function);
-        });
-
-    });
-
-    describe("stringifyQuery", function () {
-
-        it("should export a function called stringifyQuery", function () {
-            expect(domAdapter.stringifyQuery).to.be.a(Function);
         });
 
     });
