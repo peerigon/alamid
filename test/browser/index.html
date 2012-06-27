@@ -4,18 +4,24 @@
 
     <title>alamid - client-lib tests</title>
 
-    <link rel="stylesheet" href="asserts/mocha-1.2.1.css" />
+    <link rel="stylesheet" href="assets/mocha-1.2.1.css" />
 
-    <script type="text/javascript" src="asserts/jquery-1.7.2.js"></script>
+    <script type="text/javascript" src="assets/jquery-1.7.2.js"></script>
 
-    <script type="text/javascript" src="asserts/mocha-1.2.1.js"></script>
+    <script type="text/javascript" src="assets/mocha-1.2.1.js"></script>
+
+    <script type="text/javascript" src="assets/DOMNodeMocks.js"></script>
+
     <script type="text/javascript" src="tests.js"></script>
 
     <script>
 
         jQuery(function () {
 
-            mocha.setup("bdd");
+            mocha.setup({
+                ui:"bdd",
+                globals: ["io"]
+            });
 
             enableTests();
 
