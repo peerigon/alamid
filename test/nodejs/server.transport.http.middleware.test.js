@@ -115,8 +115,11 @@ describe("httpAdapter", function(){
         var res = {
             headers : [],
             write : function(data, encoding) {
-                expect(data).to.eql(JSON.stringify(dummyData));
+                expect(data).to.contain(JSON.stringify(dummyData));
                 expect(encoding).to.be("utf-8");
+            },
+            writeHead : function() {
+
             },
             end : function() {
                 done();
@@ -127,6 +130,7 @@ describe("httpAdapter", function(){
 
             var aRes = new Response();
             aRes.setData({ "da" : "ta"});
+            aRes.setStatus("success");
 
             callback(null, aReq, aRes);
         });

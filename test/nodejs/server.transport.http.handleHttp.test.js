@@ -4,7 +4,7 @@ require("./testHelpers/compileTestAlamid.js");
 
 var connect = require("connect"),
     expect = require("expect.js"),
-    handleHttp = require("../../compiled/server/transport/http/handleHttp.js"),
+    rewire = require("rewire"),
     http = require("http"),
     path = require("path");
 
@@ -24,6 +24,8 @@ function httpRequest(reqPath, callback) {
 }
 
 describe("handleHttp", function() {
+
+    var handleHttp = rewire("../../compiled/server/transport/http/handleHttp.js");
 
     var server = connect();
     //give connect some middlewares for the routes
@@ -56,9 +58,19 @@ describe("handleHttp", function() {
         it("should return error-message if service was not found", function (done) {
             this.timeout(100000);
             httpRequest("/services/myNonExistentService/", function(data) {
+                expect(data).to.contain("Internal Server Error");
+                done();
+            });
+        });
+
+        /*
+        it("should return detailed error-message if service was not found in dev-mode", function (done) {
+            this.timeout(100000);
+            httpRequest("/services/myNonExistentService/", function(data) {
                 expect(data).to.contain("No service found for: services/myNonExistentService");
                 done();
             });
         });
+        */
     });
 });

@@ -7,16 +7,16 @@ var expect = require("expect.js"),
 
 describe("Response", function() {
 
-    var myResponse;
-
     describe("#Setters & #Getters", function() {
+
+        var myResponse;
 
         beforeEach(function() {
             myResponse = new Response();
         });
 
-        it("should be set to null on init", function() {
-            expect(myResponse.getStatusCode()).to.be(null);
+        it("should return statsCode 200 and headers should be an object on init", function() {
+            expect(myResponse.getStatusCode()).to.be(200);
             expect(myResponse.getHeaders()).to.be.an("object");
         });
 
@@ -32,17 +32,17 @@ describe("Response", function() {
         });
 
         it("#setStatusCode", function() {
-            expect(myResponse.getStatusCode()).to.be(null);
-            myResponse.setStatusCode(200);
             expect(myResponse.getStatusCode()).to.be(200);
+            myResponse.setStatusCode(400);
+            expect(myResponse.getStatusCode()).to.be(400);
         });
 
         it("#getStatusCode", function() {
-            expect(myResponse.getStatusCode()).to.be(null);
-            myResponse.setStatus("success");
             expect(myResponse.getStatusCode()).to.be(200);
             myResponse.setStatus("error");
             expect(myResponse.getStatusCode()).to.be(500);
+            myResponse.setStatus("success");
+            expect(myResponse.getStatusCode()).to.be(200);
             myResponse.setStatus("fail");
             expect(myResponse.getStatusCode()).to.be(500);
         });
@@ -72,6 +72,55 @@ describe("Response", function() {
             myResponse.setData(data);
             expect(myResponse.getData()).to.be(data);
             expect(myResponse.getJSONData()).to.be('{"da":"ta"}');
+        });
+    });
+
+    describe("getResBody", function() {
+
+        var myResponse;
+
+        beforeEach(function() {
+            myResponse = new Response();
+        });
+
+        it("should return data and status if status = success", function() {
+
+            var testData = { "baaanschi" : "the dog"};
+
+            myResponse.setStatus("success");
+            myResponse.setData(testData);
+
+            var resBody = myResponse.getResBody();
+            expect(resBody.status).to.be("success");
+            expect(resBody.data).to.eql(testData);
+            expect(resBody.message).to.be(undefined);
+        });
+
+        it("should return data and status if status = fail", function() {
+
+            var testData = { "baaanschi" : "the dog"};
+
+            myResponse.setStatus("fail");
+            myResponse.setData(testData);
+
+            var resBody = myResponse.getResBody();
+            expect(resBody.status).to.be("fail");
+            expect(resBody.data).to.eql(testData);
+            expect(resBody.message).to.be(undefined);
+        });
+
+        it("should return message and status if status = error", function() {
+
+            var testData = { "baaanschi" : "the dog"};
+
+            myResponse.setStatus("error");
+            myResponse.setData(testData);
+            myResponse.setErrorMessage("Something might be wrong");
+
+            var resBody = myResponse.getResBody();
+            expect(resBody.status).to.be("error");
+            expect(resBody.data).to.be(undefined);
+            expect(resBody.message).to.be("Something might be wrong");
         });
     });
 });
