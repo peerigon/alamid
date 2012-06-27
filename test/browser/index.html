@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>alamid - client-lib tests</title>
+
+    <link rel="stylesheet" href="asserts/mocha-1.2.1.css" />
+
+    <script type="text/javascript" src="asserts/jquery-1.7.2.js"></script>
+
+    <script type="text/javascript" src="asserts/mocha-1.2.1.js"></script>
+    <script type="text/javascript" src="tests.js"></script>
+
+    <script>
+
+        jQuery(function () {
+
+            mocha.setup("bdd");
+
+            enableTests();
+
+            mocha.run();
+
+        });
+
+    </script>
+
+</head>
+
+<body>
+
+    <div id="mocha">
+        <!-- Tests will be inserted here -->
+    </div>
+
+</body>
+
+</html>
