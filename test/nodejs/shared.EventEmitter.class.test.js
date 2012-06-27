@@ -1,6 +1,7 @@
 "use strict";
 
 var expect = require("expect.js"),
+    rewire = require("rewire"),
     EventEmitter = require("../../compiled/shared/EventEmitter.class.js");
 
 describe("EventEmitter", function () {
@@ -196,8 +197,31 @@ describe("EventEmitter", function () {
 
     describe("setMaxListeners()", function () {
 
-        it("should be possible to attach only one listener for '" + event + "'", function () {
-            //@TODO with rewire
+        it("console.error() and console.trace() shuold be executed if max listeners limit was exceeded", function (done) {
+            var RewiredEventEmitter = rewire("../../compiled/shared/EventEmitter.class.js", false),
+                isErrorExecuted = false;
+
+            RewiredEventEmitter.__set__({
+                console: {
+                    error: function () {
+                        isErrorExecuted = true;
+                        console.log("error");
+                    },
+                    trace: function () {
+                        console.log("trace");
+                        if (isErrorExecuted) {
+                            done();
+                        }
+                    }
+                }
+            });
+
+            e = new RewiredEventEmitter();
+
+            e.setMaxListeners(1);
+
+            e.on(event, function () { /*do nothing*/ });
+            e.on(event, function () { /*do nothing*/ });
         });
 
     });
