@@ -2,6 +2,8 @@
 
 require("./testHelpers/compileTestAlamid.js");
 
+var config = require("../../lib/shared/config");
+
 var connect = require("connect"),
     expect = require("expect.js"),
     rewire = require("rewire"),
@@ -25,12 +27,17 @@ function httpRequest(reqPath, callback) {
 
 describe("handleHttp", function() {
 
-    var handleHttp = rewire("../../compiled/server/transport/http/handleHttp.js");
+    var handleHttp,
+        server;
 
-    var server = connect();
-    //give connect some middlewares for the routes
-    handleHttp.init(server);
-    server.listen(9090);
+    before(function(){
+        handleHttp = require("../../compiled/server/transport/http/handleHttp.js");
+
+        server = connect();
+        //give connect some middlewares for the routes
+        handleHttp.init(server);
+        server.listen(9090);
+    });
 
     describe("onRequest", function(){
 
@@ -58,19 +65,30 @@ describe("handleHttp", function() {
         it("should return error-message if service was not found", function (done) {
             this.timeout(100000);
             httpRequest("/services/myNonExistentService/", function(data) {
-                expect(data).to.contain("Internal Server Error");
+                if(config.isDev) {
+                    expect(data).to.contain("No service found for: services/myNonExistentService");
+                }
+                else{
+                    expect(data).to.contain("Internal Server Error");
+                }
+
                 done();
             });
         });
 
-        /*
-        it("should return detailed error-message if service was not found in dev-mode", function (done) {
+        it("should return error-message if service was not found", function (done) {
             this.timeout(100000);
             httpRequest("/services/myNonExistentService/", function(data) {
-                expect(data).to.contain("No service found for: services/myNonExistentService");
+                if(config.isDev) {
+                    expect(data).to.contain("No service found for: services/myNonExistentService");
+                }
+                else{
+                    expect(data).to.contain("Internal Server Error");
+                }
+
                 done();
             });
         });
-        */
     });
+
 });
