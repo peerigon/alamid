@@ -9,8 +9,7 @@ var expect = require("expect.js"),
     path = require("path");
 
 var Request = require("../../compiled/server/request/Request.class.js"),
-    Response = require("../../compiled/server/request/Response.class.js"),
-    runService = rewire("../../compiled/server/request/middleware/runService.js");
+    Response = require("../../compiled/server/request/Response.class.js");
 
 nodeclass.stdout = function() {
     //No output in test mode
@@ -18,6 +17,8 @@ nodeclass.stdout = function() {
 
 
 describe("runService", function(){
+
+    var runService = rewire("../../compiled/server/request/middleware/runService.js", false);
 
     describe("#serviceMiddleware", function() {
 
@@ -73,7 +74,7 @@ describe("runService", function(){
             runService(request, response, function(err) {
                 expect(err).to.be(null);
                 expect(response.getStatusCode()).to.be(200);
-                expect(response.getData()).to.eql('{"da":"ta"}');
+                expect(response.getData()).to.eql(data);
                 done();
             });
         });
@@ -158,7 +159,7 @@ describe("runService", function(){
             runService(request, response, function(err) {
                 expect(err).to.be(null);
                 expect(response.getStatusCode()).to.be(200);
-                expect(response.getData()).to.eql('{"da":"ta"}');
+                expect(response.getData()).to.eql(data);
                 done();
             });
         });

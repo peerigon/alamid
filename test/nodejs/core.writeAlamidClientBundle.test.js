@@ -1,12 +1,13 @@
 "use strict";
 
 var expect = require("expect.js"),
-    rewire = require("rewire"),
-    writeAlamidClientBundle = rewire("../../lib/core/writeAlamidClientBundle.js");
+    rewire = require("rewire");
 
 describe("writeAlamidClientBundle", function() {
 
     it("should collect all alamid-client files and browserify them", function() {
+
+        var writeAlamidClientBundle = rewire("../../lib/core/writeAlamidClientBundle.js");
 
         //TODO this test will work as soon as all client-files are refactored and working
 

@@ -36,5 +36,4 @@ describe("onStaticRequest", function(){
             done(new Error("Not handled"));
         });
     });
-
 });

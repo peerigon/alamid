@@ -10,16 +10,16 @@ var expect = require("expect.js"),
     servicesFolder = testFolder + "/compiled/services";
 
 nodeclass.stdout = function(msg) {
-  //No output in test mode
+    //No output in test mode
 };
 
 describe("collectServices", function () {
 
     before(function() {
-        compile(path.resolve(__dirname, "./core.collectServices/lib"), path.resolve(__dirname, "./core.collectServices/compiled"))
+        compile(path.resolve(__dirname, "./core.collectServices/lib"), path.resolve(__dirname, "./core.collectServices/compiled"));
     });
 
-    beforeEach(function () {
+    afterEach(function () {
         rewire.reset();
     });
 
@@ -62,21 +62,21 @@ describe("collectServices", function () {
             done();
         }
 
-        collectServices = rewire("../../lib/core/collectServices.js");
+        collectServices = rewire("../../lib/core/collectServices.js", false);
         collectServices(testFolder, onCollectServicesError);
+
         finder = collectServices.__get__("unitTestLeaks").finder;
         finder.emit("error", new Error());
     });
 
     it("should fail on non existing folders", function (done) {
-        var finder;
 
         function onCollectServicesError(err) {
             expect(err instanceof Error).to.be(true);
             done();
         }
 
-        collectServices = rewire("../../lib/core/collectServices.js");
+        collectServices = rewire("../../lib/core/collectServices.js", false);
         collectServices(__dirname+"/non/existing/folder/" , onCollectServicesError);
     });
 });

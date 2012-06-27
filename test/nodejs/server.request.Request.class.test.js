@@ -5,7 +5,6 @@ require("./testHelpers/compileTestAlamid.js");
 var expect = require("expect.js"),
     Request = require("../../compiled/server/request/Request.class.js");
 
-
 describe("Request", function() {
 
     var myRequest;
@@ -118,5 +117,4 @@ describe("Request", function() {
             expect(myRequest.getType()).to.be("validator");
         });
     });
-
 });

@@ -6,15 +6,7 @@ var expect = require("expect.js"),
     rewire = require("rewire"),
     parseUrl = require("../../compiled/server/transport/http/middleware/parseURL.js"),
     setAjaxFlag = require("../../compiled/server/transport/http/middleware/setAjaxFlag.js"),
-    serveInitPageShortcut = rewire("../../compiled/server/transport/http/middleware/serveInitPageShortcut.js"),
-    alamidRequestAdapter = rewire("../../compiled/server/transport/http/middleware/alamidRequestAdapter.js");
-
-serveInitPageShortcut.__set__("serveInitPage", function(req, res, next) {
-    //so we can test for it
-    req.servingPage = true;
-    next();
-});
-
+    Response = require("../../compiled/server/request/Response.class.js");
 
 describe("parseUrl", function(){
     it("should set parsedURL on req-object", function (done) {
@@ -37,7 +29,7 @@ describe("parseUrl", function(){
             expect(req.parsedURL).to.be.an("object");
             expect(req.parsedURL.pathname).to.be(parsedUrl.pathname);
             done();
-        })
+        });
     });
 });
 
@@ -52,7 +44,7 @@ describe("setAjaxFlag", function(){
         setAjaxFlag(req, res, function() {
             expect(req.ajax).to.be(true);
             done();
-        })
+        });
     });
 
     it("should set the ajax flag to false if x-requested-with header is missing", function (done) {
@@ -62,21 +54,30 @@ describe("setAjaxFlag", function(){
         setAjaxFlag(req, res, function() {
             expect(req.ajax).to.be(false);
             done();
-        })
+        });
     });
 
 });
 
 describe("serverInitPageShortcut", function(){
 
+    var serveInitPageShortcut = rewire("../../compiled/server/transport/http/middleware/serveInitPageShortcut.js", false);
+    serveInitPageShortcut.__set__("serveInitPage", function(req, res, next) {
+        //so we can test for it
+        req.servingPage = true;
+        next();
+    });
+
+
     it("should serve the Init page if path = / ", function (done) {
+
         var req = { "url" : "http://mydomain.com/myPath", headers : [], parsedURL : { pathname : "/" } };
         var res = { headers : [] };
 
         serveInitPageShortcut(req, res, function() {
             expect(req.servingPage).to.be(true);
             done();
-        })
+        });
     });
 
     it("should not serve the Init page if path != / ", function (done) {
@@ -86,13 +87,19 @@ describe("serverInitPageShortcut", function(){
         serveInitPageShortcut(req, res, function() {
             expect(req.servingPage).to.be(undefined);
             done();
-        })
+        });
     });
 });
 
-describe("alamidRequestAdapter", function(){
+describe("httpAdapter", function(){
 
-    it("should hand the request on to alamidRequest Adapter if everything is alright", function (done) {
+    afterEach(function() {
+        rewire.reset();
+    });
+
+    var httpAdapter = rewire("../../compiled/server/transport/http/middleware/httpAdapter.js", false);
+
+    it("should hand the request on to the httpAdapter if everything is alright", function (done) {
 
         var dummyData = { "da" : "ta" };
 
@@ -106,28 +113,40 @@ describe("alamidRequestAdapter", function(){
             body : dummyData };
 
         var res = {
-            headers : []
+            headers : [],
+            write : function(data, encoding) {
+                expect(data).to.eql(JSON.stringify(dummyData));
+                expect(encoding).to.be("utf-8");
+            },
+            end : function() {
+                done();
+            }
         };
 
-        alamidRequestAdapter.__set__("Request", function(method, path, data){
-            expect(method).to.be("PUT");
-            expect(path).to.be("/services/blogpost");
-            expect(data).to.be(dummyData);
-            done();
-            return;
+        httpAdapter.__set__("handleRequest", function(aReq, callback) {
+
+            var aRes = new Response();
+            aRes.setData({ "da" : "ta"});
+
+            callback(null, aReq, aRes);
         });
 
-        alamidRequestAdapter(req, res, function(err) {
+        httpAdapter.__set__("Request", function(method, path, data){
+            expect(method).to.be("update");
+            expect(path).to.be("/services/blogpost");
+            expect(data).to.be(dummyData);
+        });
+
+        httpAdapter(req, res, function(err) {
             if(err !== null){
-               done(err);
-           }
+                //this case should not happen
+                done(err);
+            }
         });
     });
 
 
     it("should next with an error if the request could not be converted", function (done) {
-
-        var dummyData = { "da" : "ta" };
 
         var req = {
             "url" : "http://mydomain.com/services/blogpost",
@@ -137,17 +156,22 @@ describe("alamidRequestAdapter", function(){
             },
             method : "BLA",
             body : { "bla" : "bla" }
-           };
-
-        var res = {
-            headers : []
         };
 
-        alamidRequestAdapter.__set__("Request", function(method, path, data){
+        var res = {
+            headers : [],
+            write : function() {
+            },
+            end : function() {
+                done(new Error("This path should not be reached"));
+            }
+        };
+
+        httpAdapter.__set__("Request", function(){
             throw new Error("Wrong params");
         });
 
-        alamidRequestAdapter(req, res, function(err) {
+        httpAdapter(req, res, function(err) {
             expect(err).to.be.an("object");
             done();
         });
