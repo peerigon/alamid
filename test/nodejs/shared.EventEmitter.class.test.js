@@ -205,10 +205,8 @@ describe("EventEmitter", function () {
                 console: {
                     error: function () {
                         isErrorExecuted = true;
-                        console.log("error");
                     },
                     trace: function () {
-                        console.log("trace");
                         if (isErrorExecuted) {
                             done();
                         }
