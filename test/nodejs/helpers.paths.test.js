@@ -2,7 +2,7 @@
 
 var expect = require("expect.js"),
     paths = require("../../lib/shared/helpers/paths.js"),
-    checkError = require("./testHelpers/checkError.js"),
+    checkError = require("../testHelpers/checkError.js"),
     filters = paths.filters,
     checkForError = checkError(Error),
     checkForTypeError = checkError(TypeError);
