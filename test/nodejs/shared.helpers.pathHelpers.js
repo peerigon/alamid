@@ -1,7 +1,7 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
-    paths = require("../../lib/shared/helpers/pathHelpers.js"),
+    paths = require("../../lib/shared/helpers/paths.js"),
     checkError = require("./testHelpers/checkError.js"),
     filters = paths.filters,
     checkForError = checkError(Error),
@@ -176,4 +176,4 @@ describe("paths", function () {
             // TODO finish remaining tests
         });
     });
-}); */
+});
