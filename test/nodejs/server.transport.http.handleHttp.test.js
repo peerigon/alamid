@@ -3,6 +3,7 @@
 require("./testHelpers/compileTestAlamid.js");
 
 var config = require("../../lib/shared/config");
+//TODO use subprocesses here!
 
 var connect = require("connect"),
     expect = require("expect.js"),
@@ -40,7 +41,6 @@ describe("handleHttp", function() {
     });
 
     describe("onRequest", function(){
-
         it("should return an error message if the page was not found", function (done) {
             this.timeout(100000);
             httpRequest("/", function(data) {
