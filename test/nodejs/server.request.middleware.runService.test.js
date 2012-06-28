@@ -164,4 +164,34 @@ describe("runService", function(){
             });
         });
     });
+
+    describe("#service with deeper hierarchy - embedded documents", function() {
+        //https://github.com/pandaa/alamid/issues/6
+
+        //DELETE services/blogPost/1234/comments/1245
+        //TODO implement this crazy test!
+
+        it("should accept services with nested models", function(done) {
+
+            var method = "delete",
+                path = "/services/blogpost/123/comments/1245",
+                data = {};
+
+            var request = new Request(method, path, data),
+                response = new Response();
+
+            runService(request, response, function(err) {
+                //console.log(err);
+
+                //console.log(request.getIds());
+
+                //expect(response.getResBody());
+                //expect(err).to.be(null);
+                //expect(response.getStatusCode()).to.be(200);
+                //expect(response.getData()).to.eql(data);
+                done();
+            });
+        });
+
+    });
 });
