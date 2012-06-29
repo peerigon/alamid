@@ -8,17 +8,13 @@ var DOMNodeMocks = DOMNodeMocks || {};
     DOMNodeMocks.getForm = function () {
 
         incubator.innerHTML =
-
-            "<div data-node='parent'>" +
-                "<form data-node='child-form' action='?' method='post'>" +
-                    "<input data-node='child-input-a' type='text' value='a'/>" +
-                    "<input data-node='child-input-b' type='text' value='b'/>" +
-                    "<input data-node='child-input-c' type='button' value='c'/>" +
-                "</form>" +
-            "</div>";
+            "<form data-node='child-form' action='?' method='post'>" +
+                "<input data-node='child-input-a' type='text' value='a'/>" +
+                "<input data-node='child-input-b' type='text' value='b'/>" +
+                "<input data-node='child-input-c' type='button' value='c'/>" +
+            "</form>";
 
         return incubator.firstChild;
-
     };
 
 })(window);
