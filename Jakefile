@@ -99,7 +99,7 @@ task('test-browser-all', function () {
      */
 });
 
-task('test-jenkins', ["compileTestAlamid"], function() {
+task('test-jenkins', function() {
 
     var list = new jake.FileList();
     list.include('test/server/**/*.test.js');
