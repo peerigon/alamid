@@ -18,6 +18,7 @@ describe("domAdapter", function () {
             it("should return a jqXHR-Object", function () {
                 var jqXHR = domAdapter.request("post", "", {}, function () {});
                 expect(jqXHR.abort).to.be.a(Function); //Detect jqXHR-Object by duck-typing
+                jqXHR.abort();
             });
 
             it("should throw an Error with 'lkafskglfshg' as url", function (done) {
@@ -267,7 +268,7 @@ describe("domAdapter", function () {
 
         describe("# parseJSON()", function () {
 
-            it("should be a cross browser compatible JSON parser", function () {
+            it("should be a cross client compatible JSON parser", function () {
                 var string = jQuery.parseJSON(json);
                 expect(domAdapter.parseJSON(json)).to.be.equal(string);
             });

@@ -48,20 +48,20 @@
     };
 
 
-    require.register("browser/debug.js", function(module, exports, require){
+    require.register("client/debug.js", function(module, exports, require){
 
         module.exports = function(type){
             return function(){
 
             }
         };
-    }); // module: browser/debug.js
+    }); // module: client/debug.js
 
-    require.register("browser/diff.js", function(module, exports, require){
+    require.register("client/diff.js", function(module, exports, require){
 
-    }); // module: browser/diff.js
+    }); // module: client/diff.js
 
-    require.register("browser/events.js", function(module, exports, require){
+    require.register("client/events.js", function(module, exports, require){
 
         /**
          * Module exports.
@@ -240,17 +240,17 @@
 
             return true;
         };
-    }); // module: browser/events.js
+    }); // module: client/events.js
 
-    require.register("browser/fs.js", function(module, exports, require){
+    require.register("client/fs.js", function(module, exports, require){
 
-    }); // module: browser/fs.js
+    }); // module: client/fs.js
 
-    require.register("browser/path.js", function(module, exports, require){
+    require.register("client/path.js", function(module, exports, require){
 
-    }); // module: browser/path.js
+    }); // module: client/path.js
 
-    require.register("browser/progress.js", function(module, exports, require){
+    require.register("client/progress.js", function(module, exports, require){
 
         /**
          * Expose `Progress`.
@@ -377,9 +377,9 @@
             return this;
         };
 
-    }); // module: browser/progress.js
+    }); // module: client/progress.js
 
-    require.register("browser/tty.js", function(module, exports, require){
+    require.register("client/tty.js", function(module, exports, require){
 
         exports.isatty = function(){
             return true;
@@ -388,7 +388,7 @@
         exports.getWindowSize = function(){
             return [window.innerHeight, window.innerWidth];
         };
-    }); // module: browser/tty.js
+    }); // module: client/tty.js
 
     require.register("context.js", function(module, exports, require){
 
@@ -877,7 +877,7 @@
          * Module dependencies.
          */
 
-        var path = require('browser/path');
+        var path = require('client/path');
 
         /**
          * Expose `Mocha`.
@@ -1069,8 +1069,8 @@
          * Module dependencies.
          */
 
-        var tty = require('browser/tty')
-            , diff = require('browser/diff');
+        var tty = require('client/tty')
+            , diff = require('client/diff');
 
         /**
          * Save timer references to avoid Sinon interfering (see GH-237).
@@ -1556,7 +1556,7 @@
          */
 
         var JSONCov = require('./json-cov')
-            , fs = require('browser/fs');
+            , fs = require('client/fs');
 
         /**
          * Expose `HTMLCov`.
@@ -1611,7 +1611,7 @@
 
         var Base = require('./base')
             , utils = require('../utils')
-            , Progress = require('../browser/progress')
+            , Progress = require('../client/progress')
             , escape = utils.escape;
 
         /**
@@ -3139,8 +3139,8 @@
          * Module dependencies.
          */
 
-        var EventEmitter = require('browser/events').EventEmitter
-            , debug = require('browser/debug')('runnable');
+        var EventEmitter = require('client/events').EventEmitter
+            , debug = require('client/debug')('runnable');
 
         /**
          * Save timer references to avoid Sinon interfering (see GH-237).
@@ -3335,8 +3335,8 @@
          * Module dependencies.
          */
 
-        var EventEmitter = require('browser/events').EventEmitter
-            , debug = require('browser/debug')('runner')
+        var EventEmitter = require('client/events').EventEmitter
+            , debug = require('client/debug')('runner')
             , Test = require('./test')
             , utils = require('./utils')
             , filter = utils.filter
@@ -3822,8 +3822,8 @@
          * Module dependencies.
          */
 
-        var EventEmitter = require('browser/events').EventEmitter
-            , debug = require('browser/debug')('suite')
+        var EventEmitter = require('client/events').EventEmitter
+            , debug = require('client/debug')('suite')
             , utils = require('./utils')
             , Hook = require('./hook');
 
@@ -4131,10 +4131,10 @@
          * Module dependencies.
          */
 
-        var fs = require('browser/fs')
-            , path = require('browser/path')
+        var fs = require('client/fs')
+            , path = require('client/path')
             , join = path.join
-            , debug = require('browser/debug')('watch');
+            , debug = require('client/debug')('watch');
 
         /**
          * Ignored directories.
@@ -4353,7 +4353,7 @@
      * These are meant only to allow
      * mocha.js to run untouched, not
      * to allow running node code in
-     * the browser.
+     * the client.
      */
 
     process = {};

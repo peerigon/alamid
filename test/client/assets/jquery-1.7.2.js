@@ -71,10 +71,10 @@
                 return ( letter + "" ).toUpperCase();
             },
 
-        // Keep a UserAgent string for use with jQuery.browser
+        // Keep a UserAgent string for use with jQuery.client
             userAgent = navigator.userAgent,
 
-        // For matching the engine and version of the browser
+        // For matching the engine and version of the client
             browserMatch,
 
         // The deferred used on DOM ready
@@ -449,7 +449,7 @@
                 readyList = jQuery.Callbacks( "once memory" );
 
                 // Catch cases where $(document).ready() is called after the
-                // browser event has already occurred.
+                // client event has already occurred.
                 if ( document.readyState === "complete" ) {
                     // Handle it asynchronously to allow scripts the opportunity to delay ready
                     return setTimeout( jQuery.ready, 1 );
@@ -576,7 +576,7 @@
                 jQuery.error( "Invalid JSON: " + data );
             },
 
-            // Cross-browser xml parsing
+            // Cross-client xml parsing
             parseXML: function( data ) {
                 if ( typeof data !== "string" || !data ) {
                     return null;
@@ -879,8 +879,8 @@
                 return ( new Date() ).getTime();
             },
 
-            // Use of jQuery.browser is frowned upon.
-            // More details: http://docs.jquery.com/Utilities/jQuery.browser
+            // Use of jQuery.client is frowned upon.
+            // More details: http://docs.jquery.com/Utilities/jQuery.client
             uaMatch: function( ua ) {
                 ua = ua.toLowerCase();
 
@@ -928,7 +928,7 @@
             jQuery.browser.version = browserMatch.version;
         }
 
-// Deprecated, use jQuery.browser.webkit instead
+// Deprecated, use jQuery.client.webkit instead
         if ( jQuery.browser.webkit ) {
             jQuery.browser.safari = true;
         }
@@ -1507,7 +1507,7 @@
         fragment.appendChild( div );
 
         // Technique from Juriy Zaytsev
-        // http://perfectionkills.com/detecting-event-support-without-browser-sniffing/
+        // http://perfectionkills.com/detecting-event-support-without-client-sniffing/
         // We only care about the case where non-standard event systems
         // are used, namely in IE. Short-circuiting here helps us to
         // avoid an eval call (in setAttribute) which can cause CSP
@@ -3610,7 +3610,7 @@
                     ret;
 
                 // For mousenter/leave call the handler if related is outside the target.
-                // NB: No relatedTarget if the mouse left/entered the browser window
+                // NB: No relatedTarget if the mouse left/entered the client window
                 if ( !related || (related !== target && !jQuery.contains( target, related )) ) {
                     event.type = handleObj.origType;
                     ret = handleObj.handler.apply( this, arguments );
@@ -4861,10 +4861,10 @@
             return array;
         };
 
-// Perform a simple check to determine if the browser is capable of
+// Perform a simple check to determine if the client is capable of
 // converting a NodeList to an array using builtin methods.
 // Also verifies that the returned array holds DOM nodes
-// (which is not the case in the Blackberry browser)
+// (which is not the case in the Blackberry client)
         try {
             Array.prototype.slice.call( document.documentElement.childNodes, 0 )[0].nodeType;
 
@@ -4990,7 +4990,7 @@
             };
         }
 
-// Check to see if the browser returns elements by name when
+// Check to see if the client returns elements by name when
 // querying by getElementById (and provide a workaround)
         (function(){
             // We're going to inject a fake input element with a specified name
@@ -5032,7 +5032,7 @@
         })();
 
         (function(){
-            // Check to see if the browser returns only elements
+            // Check to see if the client returns only elements
             // when doing getElementsByTagName("*")
 
             // Create a fake element
@@ -8181,7 +8181,7 @@
         });
     })( jQuery.ajaxSettings.xhr() );
 
-// Create transport if the browser can provide an xhr
+// Create transport if the client can provide an xhr
     if ( jQuery.support.ajax ) {
 
         jQuery.ajaxTransport(function( s ) {
@@ -8395,7 +8395,7 @@
                         }
 
                         // Set elements which have been overridden with display: none
-                        // in a stylesheet to whatever the default browser style is
+                        // in a stylesheet to whatever the default client style is
                         // for such an element
                         if ( (display === "" && jQuery.css(elem, "display") === "none") ||
                             !jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
