@@ -76,9 +76,9 @@ desc('Test all server, core and shared files');
 task('test-server-all',["compileTestAlamid"], function () {
 
     var list = new jake.FileList();
-    list.include('test/server**/*.test.js');
-    list.include('test/core**/*.test.js');
-    list.include('test/shared**/*.test.js');
+    list.include('test/server/**/*.test.js');
+    list.include('test/core/**/*.test.js');
+    list.include('test/shared/**/*.test.js');
 
     var cmd = "mocha -c -R spec " + list.join(" ") + " --mode testing";
 
@@ -91,8 +91,8 @@ desc('Test all client and shared files');
 task('test-browser-all', function () {
 
     var list = new jake.FileList();
-    list.include('test/client**/*.test.js');
-    list.exclude('test/shared**/*.test.js');
+    list.include('test/client/**/*.test.js');
+    list.exclude('test/shared/**/*.test.js');
 
     /*
     to be implemented using nof5

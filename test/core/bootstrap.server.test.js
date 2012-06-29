@@ -7,7 +7,7 @@ var expect = require("expect.js"),
 
 describe("bootstrap.server", function() {
 
-    var bootstrap = rewire("../../lib/core/bootstrap.server.js", false),
+    var bootstrap = rewire(path.resolve(__dirname, "../../lib/core/bootstrap.server.js"), false),
         generateClientConfig = bootstrap.generateClientConfig,
         renderBootstrapClientTemplate = bootstrap.renderBootstrapClientTemplate;
 

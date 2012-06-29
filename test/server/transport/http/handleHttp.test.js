@@ -1,8 +1,8 @@
 "use strict";
 
-require("../testHelpers/compileTestAlamid.js");
+require("../../../testHelpers/compileTestAlamid.js");
 
-var config = require("../../lib/shared/config");
+var config = require("../../../../lib/shared/config");
 //TODO use subprocesses here!
 
 var connect = require("connect"),
@@ -32,7 +32,7 @@ describe("handleHttp", function() {
         server;
 
     before(function(){
-        handleHttp = require("../../compiled/server/transport/http/handleHttp.js");
+        handleHttp = require("../../../../compiled/server/transport/http/handleHttp.js");
 
         server = connect();
         //give connect some middlewares for the routes

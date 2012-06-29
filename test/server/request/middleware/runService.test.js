@@ -1,6 +1,6 @@
 "use strict"; // run code in ES5 strict mode
 
-require("../testHelpers/compileTestAlamid.js");
+require("../../../testHelpers/compileTestAlamid.js");
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
@@ -8,8 +8,8 @@ var expect = require("expect.js"),
     compile = nodeclass.compile,
     path = require("path");
 
-var Request = require("../../compiled/server/request/Request.class.js"),
-    Response = require("../../compiled/server/request/Response.class.js");
+var Request = require("../../../../compiled/server/request/Request.class.js"),
+    Response = require("../../../../compiled/server/request/Response.class.js");
 
 nodeclass.stdout = function() {
     //No output in test mode
@@ -18,7 +18,7 @@ nodeclass.stdout = function() {
 
 describe("runService", function(){
 
-    var runService = rewire("../../compiled/server/request/middleware/runService.js", false);
+    var runService = rewire("../../../../compiled/server/request/middleware/runService.js", false);
 
     describe("#serviceMiddleware", function() {
 
@@ -135,7 +135,7 @@ describe("runService", function(){
             var servicesMock = {
                 getService : function(path) {
                     if(path === "services/servicea/servicea.server.js"){
-                        var ServiceA = require("./request.middleware.runService/compiled/ServiceA.server.class.js");
+                        var ServiceA = require("./runService/compiled/ServiceA.server.class.js");
                         return new ServiceA();
                     }
                     return null;
@@ -143,7 +143,7 @@ describe("runService", function(){
             };
 
             runService.__set__("services", servicesMock);
-            compile(path.resolve(__dirname, "./request.middleware.runService/src/"), path.resolve(__dirname, "./request.middleware.runService/compiled"));
+            compile(path.resolve(__dirname, "./runService/src/"), path.resolve(__dirname, "./runService/compiled"));
 
         });
 
