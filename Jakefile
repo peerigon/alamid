@@ -99,6 +99,10 @@ task('test-browser-all', function () {
      */
 });
 
-task('test-jenkins', ["test-server-all"], function() {
+task('test-jenkins', ["compileTestAlamid"], function() {
 
+    var cmd = "mocha -R xunit ./test/core ./test/server ./test/shared --mode testing > xunit.xml";
+    jake.exec(cmd, function () {
+            complete();
+        }, {printStdout: true});
 });
