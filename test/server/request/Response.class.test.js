@@ -1,9 +1,9 @@
 "use strict";
 
-require("../testHelpers/compileTestAlamid.js");
+require("../../testHelpers/compileTestAlamid.js");
 
 var expect = require("expect.js"),
-    Response = require("../../compiled/server/request/Response.class.js");
+    Response = require("../../../compiled/server/request/Response.class.js");
 
 describe("Response", function() {
 

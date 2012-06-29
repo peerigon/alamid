@@ -76,9 +76,9 @@ desc('Test all server, core and shared files');
 task('test-server-all',["compileTestAlamid"], function () {
 
     var list = new jake.FileList();
-    list.include('test/server**/*.test.js');
-    list.include('test/core**/*.test.js');
-    list.include('test/shared**/*.test.js');
+    list.include('test/server/**/*.test.js');
+    list.include('test/core/**/*.test.js');
+    list.include('test/shared/**/*.test.js');
 
     var cmd = "mocha -c -R spec " + list.join(" ") + " --mode testing";
 
@@ -91,18 +91,24 @@ desc('Test all client and shared files');
 task('test-browser-all', function () {
 
     var list = new jake.FileList();
-    list.include('test/client**/*.test.js');
-    list.exclude('test/shared**/*.test.js');
+    list.include('test/client/**/*.test.js');
+    list.exclude('test/shared/**/*.test.js');
 
     /*
-    to be implemented using nof5
+     to be implemented using nof5
      */
 });
 
-task('test-jenkins', ["compileTestAlamid"], function() {
+task('test-jenkins', function() {
 
-    var cmd = "mocha -R xunit ./test/core ./test/server ./test/shared --mode testing > xunit.xml";
+    var list = new jake.FileList();
+    list.include('test/server/**/*.test.js');
+    list.include('test/core/**/*.test.js');
+    list.include('test/shared/**/*.test.js');
+
+    var cmd = "mocha -R xunit " + list.join(" ") + " --mode testing > xunit.xml";
+
     jake.exec(cmd, function () {
-            complete();
-        }, {printStdout: true});
+        complete();
+    }, {printStdout: true});
 });

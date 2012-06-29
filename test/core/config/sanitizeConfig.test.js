@@ -2,11 +2,10 @@
 
 var expect = require("expect.js"),
     path = require("path"),
-    sanitizeConfig = require("../../lib/core/config/sanitizeConfig.js");
+    sanitizeConfig = require("../../../lib/core/config/sanitizeConfig.js");
 
 describe("sanitizeConfig", function () {
-    var instance,
-        config,
+    var config,
         sanitizedConfig;
 
     before(function () {
@@ -18,7 +17,7 @@ describe("sanitizeConfig", function () {
             "port" : 1223,
             "appDir" : "/myDir",
             "logDir" : "/logDir"
-        }
+        };
     });
 
     describe("#port", function () {
@@ -56,12 +55,12 @@ describe("sanitizeConfig", function () {
         it("should take the CWD if dir is not set", function () {
             delete config.appDir;
             sanitizedConfig = sanitizeConfig(config);
-            expect(sanitizedConfig.appDir).to.contain(path.resolve(__dirname, "../../"));
+            expect(sanitizedConfig.appDir).to.contain(path.resolve(__dirname, "../../../"));
         });
 
         it("should add paths as object for app-dir", function(){
             expect(sanitizedConfig.paths).to.be.an("object");
-        })
+        });
     });
 
     describe("#logDir", function () {
