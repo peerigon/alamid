@@ -5,10 +5,12 @@ var expect = require("expect.js"),
 
 describe("domAdapter", function () {
 
-    var form;
+    var form,
+        $form;
 
     beforeEach(function () {
         form = DOMNodeMocks.getForm();
+        $form = jQuery(form);
     });
 
     describe("HTTP", function () {
@@ -42,6 +44,10 @@ describe("domAdapter", function () {
 
                 //expect.js seems to be not able to equal references of DOMElements.
                 //This Error will be thrown: TypeError: Accessing selectionDirection on an input element that cannot have a selection.
+                expect(formInputs[0].toString()).to.be.equal("[object HTMLInputElement]");
+                expect(formInputs[1].toString()).to.be.equal("[object HTMLInputElement]");
+                expect(formInputs[2].toString()).to.be.equal("[object HTMLInputElement]");
+
                 expect(jQuery(formInputs[0]).val()).to.be.equal(jQuery(foundInputs[0]).val());
                 expect(jQuery(formInputs[1]).val()).to.be.equal(jQuery(foundInputs[1]).val());
                 expect(jQuery(formInputs[2]).val()).to.be.equal(jQuery(foundInputs[2]).val());
@@ -52,15 +58,24 @@ describe("domAdapter", function () {
         describe("# findNodes()", function () {
 
             it("should find all elements with attribute 'data-node'", function () {
-                var dataNodeNodes = jQuery(form).find("[data-node]"),
+                var dataNodeNodes = $form.find("[data-node]"),
                     foundDataNodeNodes = domAdapter.findNodes(null, form);
 
+                //Add parent element as well. jQuery'S find() excludes parent element
+                dataNodeNodes.push($form[0]);
+
                 //@see above described problem
+
+                expect(foundDataNodeNodes[0].toString()).to.be.equal("[object HTMLInputElement]");
+                expect(foundDataNodeNodes[1].toString()).to.be.equal("[object HTMLInputElement]");
+                expect(foundDataNodeNodes[2].toString()).to.be.equal("[object HTMLInputElement]");
+                expect(foundDataNodeNodes[3].toString()).to.be.equal("[object HTMLFormElement]");
+
                 expect(jQuery(dataNodeNodes[0]).attr("data-node")).to.be.equal(jQuery(foundDataNodeNodes[0]).attr("data-node"));
                 expect(jQuery(dataNodeNodes[1]).attr("data-node")).to.be.equal(jQuery(foundDataNodeNodes[1]).attr("data-node"));
                 expect(jQuery(dataNodeNodes[2]).attr("data-node")).to.be.equal(jQuery(foundDataNodeNodes[2]).attr("data-node"));
                 expect(jQuery(dataNodeNodes[3]).attr("data-node")).to.be.equal(jQuery(foundDataNodeNodes[3]).attr("data-node"));
-                expect(jQuery(dataNodeNodes[4]).attr("data-node")).to.be.equal(jQuery(foundDataNodeNodes[4]).attr("data-node"));
+
             });
 
         });
