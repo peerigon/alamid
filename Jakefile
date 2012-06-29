@@ -95,14 +95,20 @@ task('test-browser-all', function () {
     list.exclude('test/shared/**/*.test.js');
 
     /*
-    to be implemented using nof5
+     to be implemented using nof5
      */
 });
 
 task('test-jenkins', ["compileTestAlamid"], function() {
 
-    var cmd = "mocha -R xunit ./test/core ./test/server ./test/shared --mode testing > xunit.xml";
+    var list = new jake.FileList();
+    list.include('test/server/**/*.test.js');
+    list.include('test/core/**/*.test.js');
+    list.include('test/shared/**/*.test.js');
+
+    var cmd = "mocha -R xunit " + list.join(" ") + " --mode testing > xunit.xml";
+
     jake.exec(cmd, function () {
-            complete();
-        }, {printStdout: true});
+        complete();
+    }, {printStdout: true});
 });
