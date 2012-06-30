@@ -13,6 +13,7 @@ describe("domAdapter", function () {
         $form = jQuery(form);
     });
 
+    /*
     describe("HTTP", function () {
 
         describe("# request()", function () {
@@ -33,25 +34,33 @@ describe("domAdapter", function () {
         });
 
     });
+    */
 
 
     describe("Selectors", function () {
 
         describe("# find()", function () {
 
-            it("should find all input fields of the form", function () {
-                var formInputs = form.getElementsByTagName("input"),
-                    foundInputs = domAdapter(form).find("input");
+            it("should find all nodes with an data-node-attribute", function () {
+                var nodeReference,
+                    foundNodes;
+
+                nodeReference = $form.find("[data-node]");
+                nodeReference = nodeReference.add(form);
+
+                foundNodes = domAdapter(form).find("[data-node]");
 
                 //expect.js seems to be not able to equal references of DOMElements.
                 //This Error will be thrown: TypeError: Accessing selectionDirection on an input element that cannot have a selection.
-                expect(formInputs[0].toString()).to.be.equal("[object HTMLInputElement]");
-                expect(formInputs[1].toString()).to.be.equal("[object HTMLInputElement]");
-                expect(formInputs[2].toString()).to.be.equal("[object HTMLInputElement]");
+                expect(foundNodes[0].toString()).to.be.equal(nodeReference[0].toString());
+                expect(foundNodes[1].toString()).to.be.equal(nodeReference[1].toString());
+                expect(foundNodes[2].toString()).to.be.equal(nodeReference[2].toString());
+                expect(foundNodes[3].toString()).to.be.equal(nodeReference[3].toString());
 
-                expect(jQuery(formInputs[0]).val()).to.be.equal(jQuery(foundInputs[0]).val());
-                expect(jQuery(formInputs[1]).val()).to.be.equal(jQuery(foundInputs[1]).val());
-                expect(jQuery(formInputs[2]).val()).to.be.equal(jQuery(foundInputs[2]).val());
+                expect(jQuery(foundNodes[0]).attr("method")).to.be.equal(jQuery(nodeReference[0]).attr("method"));
+                expect(jQuery(foundNodes[1]).val()).to.be.equal(jQuery(nodeReference[1]).val());
+                expect(jQuery(foundNodes[2]).val()).to.be.equal(jQuery(nodeReference[2]).val());
+                expect(jQuery(foundNodes[3]).val()).to.be.equal(jQuery(nodeReference[3]).val());
             });
 
         });
