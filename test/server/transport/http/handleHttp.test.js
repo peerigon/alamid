@@ -55,7 +55,7 @@ describe("handleHttp", function() {
 
         before(function(done) {
             runTestServer({
-                "appDir" : path.resolve(__dirname, "../../handleHttp/app")
+                "appDir" : path.resolve(__dirname, "../../handleHttp/exampleProject1")
             }, function(srvInstance) {
                 serverInstance = srvInstance;
                 console.log("before done");
@@ -128,17 +128,18 @@ describe("handleHttp", function() {
                     done();
                 });
             });
-
-            it("should return an error-message if service was not found", function (done) {
-                this.timeout(100000);
-                httpRequest("/services/myNonExistentService/", function(data) {
-                    done();
-                });
-            });
         });
 
         describe("#onValidatorRequest", function(){
-            //TBD!
+            it("should hand the request on to the validatir-route", function (done) {
+                this.timeout(100000);
+                httpRequest("/validators/myNonExistentValidator/", function(data) {
+                    console.log(data);
+                    expect(data).to.contain("Error: No validator found for");
+                    expect(data).to.contain('{"status":"error"');
+                    done();
+                });
+            });
         });
 
         after(function() {
