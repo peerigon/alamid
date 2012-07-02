@@ -26,7 +26,7 @@
     "devDependencies": {
         "expect.js": "0.1.x",
         "mocha": "1.2.x",
-        "rewire": "0.2.x",
+        "rewire": "0.3.x",
         "nof5": "git://github.com/pandaa/nof5.git"
     },
     "scripts" : {
