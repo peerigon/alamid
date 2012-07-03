@@ -25,7 +25,7 @@ describe("runService", function(){
         var servicesMock = {
             getService : function(path) {
 
-                if(path === "test/test.server.js"){
+                if(path === "test/testService.server.class.js"){
                     return {
                         "create" : function(model, callback){ callback(200); },
                         "read" : function(model, callback){ callback(200, model.getData()); },
@@ -33,7 +33,7 @@ describe("runService", function(){
                     };
                 }
 
-                if(path === "test2/test2.server.js"){
+                if(path === "test2/test2Service.server.class.js"){
                     return {};
                 }
                 return null;
@@ -134,7 +134,7 @@ describe("runService", function(){
         before(function() {
             var servicesMock = {
                 getService : function(path) {
-                    if(path === "servicea/servicea.server.js"){
+                    if(path === "servicea/serviceaService.server.class.js"){
                         var ServiceA = require("./runService/compiled/ServiceA.server.class.js");
                         return new ServiceA();
                     }
@@ -168,10 +168,24 @@ describe("runService", function(){
     describe("#service with deeper hierarchy - embedded documents", function() {
         //https://github.com/pandaa/alamid/issues/6
 
-        //DELETE services/blogPost/1234/comments/1245
-        //TODO implement this crazy test!
+        before(function() {
+            var servicesMock = {
+                getService : function(path) {
+                    if(path === "blogpost/comments/commentsService.server.class.js"){
+                        var ServiceA = require("./runService/compiled/ServiceA.server.class.js");
+                        return new ServiceA();
+                    }
+                    return null;
+                }
+            };
 
-        it("should accept services with nested models", function(done) {
+            runService.__set__("services", servicesMock);
+            compile(path.resolve(__dirname, "./runService/src/"), path.resolve(__dirname, "./runService/compiled"));
+
+        });
+
+
+        it("should accept services with deeper paths", function(done) {
 
             var method = "delete",
                 path = "/services/blogpost/123/comments/1245",
@@ -181,14 +195,9 @@ describe("runService", function(){
                 response = new Response();
 
             runService(request, response, function(err) {
-                //console.log(err);
-
-                //console.log(request.getIds());
-
-                //expect(response.getResBody());
-                //expect(err).to.be(null);
-                //expect(response.getStatusCode()).to.be(200);
-                //expect(response.getData()).to.eql(data);
+                expect(request.getIds()).to.eql({ blogpost: '123', comments: '1245' });
+                expect(err).to.be(null);
+                expect(response.getStatusCode()).to.be(200);
                 done();
             });
         });
