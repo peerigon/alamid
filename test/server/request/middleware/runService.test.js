@@ -25,7 +25,7 @@ describe("runService", function(){
         var servicesMock = {
             getService : function(path) {
 
-                if(path === "services/test/test.server.js"){
+                if(path === "test/test.server.js"){
                     return {
                         "create" : function(model, callback){ callback(200); },
                         "read" : function(model, callback){ callback(200, model.getData()); },
@@ -33,7 +33,7 @@ describe("runService", function(){
                     };
                 }
 
-                if(path === "services/test2/test2.server.js"){
+                if(path === "test2/test2.server.js"){
                     return {};
                 }
                 return null;
@@ -134,7 +134,7 @@ describe("runService", function(){
         before(function() {
             var servicesMock = {
                 getService : function(path) {
-                    if(path === "services/servicea/servicea.server.js"){
+                    if(path === "servicea/servicea.server.js"){
                         var ServiceA = require("./runService/compiled/ServiceA.server.class.js");
                         return new ServiceA();
                     }

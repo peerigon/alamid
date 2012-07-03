@@ -12,15 +12,17 @@ describe("Request", function() {
         path = "services/blogpost",
         data = { "da" : "ta" };
 
+
     describe("#Construct", function(){
 
         it("Should set the given values as attributes", function() {
             myRequest = new Request(method, path, data);
             expect(myRequest.getMethod()).to.be(method);
-            expect(myRequest.getPath()).to.be(path);
+            expect(myRequest.getPath()).to.be("blogpost");
             expect(myRequest.getData()).to.be(data);
         });
     });
+
 
     describe("#setPath", function() {
 
@@ -31,19 +33,34 @@ describe("Request", function() {
         });
 
         it("Should normalize the path removing ../ and ./", function() {
-            expect(myRequest2.getPath()).to.be("services/blogpost");
+            expect(myRequest2.getPath()).to.be("blogpost");
             myRequest2.setPath("services/blogpost/comment/..");
-            expect(myRequest2.getPath()).to.be("services/blogpost");
+            expect(myRequest2.getPath()).to.be("blogpost");
         });
 
         it("should remove trailing slashes", function() {
             myRequest2.setPath("services/users/");
-            expect(myRequest2.getPath()).to.be("services/users");
+            expect(myRequest2.getPath()).to.be("users");
         });
 
         it("should remove slashes at the beginning", function() {
             myRequest2.setPath("/services/users/");
-            expect(myRequest2.getPath()).to.be("services/users");
+            expect(myRequest2.getPath()).to.be("users");
+        });
+
+
+        it("should remove ids from urls", function() {
+            myRequest2.setPath("/services/users/123/comments");
+            expect(myRequest2.getPath()).to.eql("users/comments");
+            expect(myRequest2.getIds()).to.eql({ "users" : 123 });
+
+            myRequest2.setPath("/services/users/123");
+            expect(myRequest2.getPath()).to.eql("users");
+            expect(myRequest2.getIds()).to.eql({ "users" : 123 });
+
+            myRequest2.setPath("/services/users/123/comments/234");
+            expect(myRequest2.getPath()).to.eql("users/comments");
+            expect(myRequest2.getIds()).to.eql({ "users" : 123, "comments" : 234 });
         });
     });
 
@@ -117,4 +134,5 @@ describe("Request", function() {
             expect(myRequest.getType()).to.be("validator");
         });
     });
+
 });
