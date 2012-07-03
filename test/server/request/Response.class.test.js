@@ -35,6 +35,10 @@ describe("Response", function() {
             expect(myResponse.getStatusCode()).to.be(200);
             myResponse.setStatusCode(400);
             expect(myResponse.getStatusCode()).to.be(400);
+            myResponse.setStatusCode(418);
+            expect(myResponse.getStatusCode()).to.be(418);
+            myResponse.setStatus("error");
+            expect(myResponse.getStatusCode()).to.be(418);
         });
 
         it("#getStatusCode", function() {
@@ -45,6 +49,8 @@ describe("Response", function() {
             expect(myResponse.getStatusCode()).to.be(200);
             myResponse.setStatus("fail");
             expect(myResponse.getStatusCode()).to.be(500);
+            myResponse.setStatusCode(418);
+            expect(myResponse.getStatusCode()).to.be(418);
         });
 
         it("#setHeader", function() {
