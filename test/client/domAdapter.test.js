@@ -1,5 +1,3 @@
-"use strict";
-
 var expect = require("expect.js"),
     domAdapter = require("../../lib/client/domAdapter.js");
 
@@ -13,7 +11,6 @@ describe("domAdapter", function () {
         $form = jQuery(form);
     });
 
-    /*
     describe("HTTP", function () {
 
         describe("# request()", function () {
@@ -34,8 +31,6 @@ describe("domAdapter", function () {
         });
 
     });
-    */
-
 
     describe("Selectors", function () {
 
@@ -52,15 +47,15 @@ describe("domAdapter", function () {
 
                 //expect.js seems to be not able to equal references of DOMElements.
                 //This Error will be thrown: TypeError: Accessing selectionDirection on an input element that cannot have a selection.
-                expect(foundNodes[0].toString()).to.be.equal(nodeReference[0].toString());
-                expect(foundNodes[1].toString()).to.be.equal(nodeReference[1].toString());
-                expect(foundNodes[2].toString()).to.be.equal(nodeReference[2].toString());
-                expect(foundNodes[3].toString()).to.be.equal(nodeReference[3].toString());
+                expect(foundNodes[0].toString() === nodeReference[0].toString()).to.be.ok();
+                expect(foundNodes[1].toString() === nodeReference[1].toString()).to.be.ok();
+                expect(foundNodes[2].toString() === nodeReference[2].toString()).to.be.ok();
+                expect(foundNodes[3].toString() === nodeReference[3].toString()).to.be.ok();
 
-                expect(jQuery(foundNodes[0]).attr("method")).to.be.equal(jQuery(nodeReference[0]).attr("method"));
-                expect(jQuery(foundNodes[1]).val()).to.be.equal(jQuery(nodeReference[1]).val());
-                expect(jQuery(foundNodes[2]).val()).to.be.equal(jQuery(nodeReference[2]).val());
-                expect(jQuery(foundNodes[3]).val()).to.be.equal(jQuery(nodeReference[3]).val());
+                expect(jQuery(foundNodes[0]).attr("method") === jQuery(nodeReference[0]).attr("method")).to.be.ok();
+                expect(jQuery(foundNodes[1]).val() === jQuery(nodeReference[1]).val()).to.be.ok();
+                expect(jQuery(foundNodes[2]).val() === jQuery(nodeReference[2]).val()).to.be.ok();
+                expect(jQuery(foundNodes[3]).val() === jQuery(nodeReference[3]).val()).to.be.ok();
             });
 
         });
@@ -68,12 +63,13 @@ describe("domAdapter", function () {
     });
 
     describe("Events", function () {
+
         var button,
-            jQButton;
+            $button;
 
         beforeEach(function () {
-            button = jQuery(form).find("input[type='button']")[0];
-            jQButton = jQuery(button);
+            button = $form.find("input[type='button']")[0];
+            $button = jQuery(button);
         });
 
         describe("# on()", function () {
@@ -83,7 +79,7 @@ describe("domAdapter", function () {
                     done();
                 });
 
-                jQButton.trigger("click");
+                $button.trigger("click");
             });
 
         });
@@ -104,7 +100,7 @@ describe("domAdapter", function () {
 
                 domAdapter(button).off("click", listenerA);
 
-                jQButton.trigger("click");
+                $button.trigger("click");
             });
 
             it("should not execute any click-listener", function (done) {
@@ -120,20 +116,22 @@ describe("domAdapter", function () {
 
                 domAdapter(button).off("click");
 
-                jQButton.trigger("click");
+                $button.trigger("click");
 
                 done();
             });
 
             it("should not execute any listener", function (done) {
                 var listenerA = function () {
+                        //a = "e";
                         done();
                     },
                     listenerB = function () {
+                        //b = "f";
                         done();
                     },
                     listenerC = function () {
-                      done();
+                        done();
                     };
 
                 domAdapter(button).on("click", listenerA);
@@ -142,9 +140,9 @@ describe("domAdapter", function () {
 
                 domAdapter(button).off();
 
-                jQButton.trigger("click");
-                jQButton.trigger("blur");
-                jQButton.trigger("focus");
+                $button.trigger("click");
+                $button.trigger("blur");
+                $button.trigger("focus");
 
                 done();
 
@@ -192,16 +190,16 @@ describe("domAdapter", function () {
         describe("# destroy()", function () {
 
             it("should remove the element from DOMElement", function () {
-                var inputA = jQuery(form).find("[data-node='child-input-a']")[0];
+                var inputA = $form.find("[data-node='child-input-a']")[0];
 
                 domAdapter(inputA).destroy();
-                expect(jQuery(form).find("[data-node='child-input-a']")[0]).to.be.equal(undefined);
+                expect($form.find("[data-node='child-input-a']")[0] === undefined).to.be.ok();
             });
 
             //If you destroy an element from a DOMNode and you keep the reference to it, it should be still able to
             //append it somewhere else with all its events.
             it("should still listen to events if you trigger them explicitly on the removed element", function (done) {
-                var inputA = jQuery(form).find("[data-node='child-input-a']")[0];
+                var inputA = $form.find("[data-node='child-input-a']")[0];
 
                 domAdapter(inputA).on("click", function () {
                     done();
@@ -216,28 +214,25 @@ describe("domAdapter", function () {
 
         describe("# dispose()", function () {
 
-            it("should remove the element form DOMElemet like #destroy", function () {
-                var inputA = jQuery(form).find("[data-node='child-input-a']")[0];
+            it("should remove the element form DOMElemet like # destroy()", function () {
+                var $inputA = $form.find("[data-node='child-input-a']"),
+                    inputA = $inputA[0];
 
                 domAdapter(inputA).dispose();
-                expect(jQuery(form).find("[data-node='child-input-a']")[0]).to.be.equal(undefined);
+                expect($form.find("[data-node='child-input-a']").length === 0).to.be.ok();
             });
 
             it("should not listen to any event anymore even if it is triggered explicitly", function (done) {
-                var inputA = jQuery(form).find("[data-node='child-input-a']")[0];
+                var $inputA = $form.find("[data-node='child-input-a']"),
+                    inputA = $inputA[0];
 
-                domAdapter(inputA).on("click", function () {
-                    done();
-                });
+                $inputA.on("click", function () { done(); });
+                $inputA.on("blur", function () { done(); });
 
-                domAdapter(inputA).on("blur", function () {
-                    done();
-                });
+                domAdapter(inputA).dispose();
 
-                domAdapter(inputA).destroy();
-
-                jQuery(inputA).trigger("click");
-                jQuery(inputA).trigger("blur");
+                $inputA.trigger("click");
+                $inputA.trigger("blur");
 
                 done();
             });
