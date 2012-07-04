@@ -3,25 +3,59 @@
 require("../../../testHelpers/compileTestAlamid");
 
 var expect = require("expect.js"),
+    rewire = require("rewire"),
     Request = require("../../../../compiled/server/request/Request.class.js"),
-    Response = require("../../../../compiled/server/request/Response.class.js"),
-    loadModel = require("../../../../compiled/server/request/middleware/loadModel.js");
+    Response = require("../../../../compiled/server/request/Response.class.js");
 
-function loadModelTestHelper(method, path, callback) {
+var DummyModel = function(id, data) {
 
-    var myRequest = new Request(method, path);
-    var myResponse = new Response();
+    this.data = {};
+    this.id = null;
+    this.isInstance = false;
 
-    loadModel(myRequest, myResponse, function(err) {
-        //tiny hack to be compliant with middleware handling
-        if(err === undefined) {
-            err = null;
-        }
-        callback(err, myRequest, myResponse);
-    });
-}
+    this.init = function(ids, data) {
+        this.data = data;
+        this.id = id;
+        this.isInstance = true;
+    };
+
+    this.getId = function() {
+        return this.id;
+    };
+
+    this.getData = function() {
+        return this.data;
+    };
+
+    this.init(id, data);
+};
 
 describe("loadModel", function () {
+
+    var loadModel;
+    function loadModelTestHelper(method, path, callback) {
+
+        var myRequest = new Request(method, path);
+        var myResponse = new Response();
+
+        loadModel(myRequest, myResponse, function(err) {
+            //tiny hack to be compliant with middleware handling
+            if(err === undefined) {
+                err = null;
+            }
+            callback(err, myRequest, myResponse);
+        });
+    }
+
+    before(function() {
+        var modelsMock = {
+            loadModel : function(modelName) {
+                return DummyModel;
+            }
+        };
+        loadModel = rewire("../../../../compiled/server/request/middleware/loadModel.js", false);
+        loadModel.__set__("models", modelsMock);
+    });
 
     describe("#CREATE", function() {
 
@@ -30,9 +64,9 @@ describe("loadModel", function () {
             function next(err, req) {
                 expect(err).to.be(null);
                 expect(req.getIds()).to.eql({});
+                expect(req.getModel().isInstance).to.be(true);
                 done();
             }
-
             loadModelTestHelper("create", "/services/blogpost", next);
         });
 
@@ -40,10 +74,10 @@ describe("loadModel", function () {
 
             function next(err, req) {
                 expect(err.message).to.contain("'create' does not accept IDs");
+                expect(req.getModel()).to.be(undefined);
                 expect(req.getIds()).to.eql({ "blogpost" : '1234' } );
                 done();
             }
-
             loadModelTestHelper("create", "/services/blogpost/1234", next);
         });
     });
@@ -54,6 +88,8 @@ describe("loadModel", function () {
 
             function next(err, req) {
                 expect(req.getIds()).to.eql({ "blogpost" : 1234 });
+                expect(req.getModel().isInstance).to.be(true);
+                expect(req.getModel().getId()).to.eql(1234);
                 expect(err).to.be(null);
                 done();
             }
@@ -61,16 +97,17 @@ describe("loadModel", function () {
         });
 
 
-        it("should return a new instance without passed ID", function (done) {
+        it("should return the model-class without passed ID", function (done) {
 
             function next(err, req) {
+                var modelClass = req.getModel();
                 expect(err).to.be(null);
+                expect(modelClass).to.be.a("function");
                 expect(req.getIds()).to.eql({});
                 done();
             }
             loadModelTestHelper("read", "/services/blogpost", next);
         });
-
     });
 
 
@@ -80,10 +117,11 @@ describe("loadModel", function () {
 
             function next(err, req) {
                 expect(err).to.be(null);
+                expect(req.getModel().isInstance).to.be(true);
+                expect(req.getModel().getId()).to.eql(1234);
                 expect(req.getIds()).to.eql({ "blogpost" : 1234 });
                 done();
             }
-
             loadModelTestHelper("update", "/services/blogpost/1234", next);
         });
 
@@ -91,10 +129,10 @@ describe("loadModel", function () {
 
             function next(err, req) {
                 expect(req.getIds()).to.eql({});
+                expect(req.getModel()).to.be(undefined);
                 expect(err.message).to.contain("'update' : Missing IDs");
                 done();
             }
-
             loadModelTestHelper("update", "/services/blogpost", next);
         });
     });
@@ -104,10 +142,11 @@ describe("loadModel", function () {
 
             function next(err, req) {
                 expect(err).to.be(null);
+                expect(req.getModel().isInstance).to.be(true);
+                expect(req.getModel().getId()).to.eql(1234);
                 expect(req.getIds()).to.eql({ 'blogpost' : 1234 });
                 done();
             }
-
             loadModelTestHelper("delete", "/services/blogpost/1234", next);
         });
 
@@ -115,10 +154,10 @@ describe("loadModel", function () {
 
             function next(err, req) {
                 expect(err.message).to.contain("'delete' : Missing IDs");
+                expect(req.getModel()).to.be(undefined);
                 expect(req.getIds()).to.eql({});
                 done();
             }
-
             loadModelTestHelper("delete", "/services/blogpost", next);
         });
     });
