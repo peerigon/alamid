@@ -23,6 +23,31 @@ function loadModelTestHelper(method, path, callback) {
 
 describe("loadModel", function () {
 
+    describe("#CREATE", function() {
+
+        it("should return a new instance without passed ID", function (done) {
+
+            function next(err, req) {
+                expect(err).to.be(null);
+                expect(req.getIds()).to.eql({});
+                done();
+            }
+
+            loadModelTestHelper("create", "/services/blogpost", next);
+        });
+
+        it("should return an Error with passed ID via url", function (done) {
+
+            function next(err, req) {
+                expect(err.message).to.contain("'create' does not accept IDs");
+                expect(req.getIds()).to.eql({ "blogpost" : '1234' } );
+                done();
+            }
+
+            loadModelTestHelper("create", "/services/blogpost/1234", next);
+        });
+    });
+
     describe("#READ", function() {
 
         it("should return a new instance with passed ID", function (done) {
@@ -66,7 +91,7 @@ describe("loadModel", function () {
 
             function next(err, req) {
                 expect(req.getIds()).to.eql({});
-                expect(err).not.to.be(null);
+                expect(err.message).to.contain("'update' : Missing IDs");
                 done();
             }
 
@@ -89,7 +114,7 @@ describe("loadModel", function () {
         it("should return an Error without passed ID", function (done) {
 
             function next(err, req) {
-                expect(err).not.to.be(null);
+                expect(err.message).to.contain("'delete' : Missing IDs");
                 expect(req.getIds()).to.eql({});
                 done();
             }
@@ -97,30 +122,4 @@ describe("loadModel", function () {
             loadModelTestHelper("delete", "/services/blogpost", next);
         });
     });
-
-    describe("#CREATE", function() {
-
-        it("should return a new instance without passed ID", function (done) {
-
-            function next(err, req) {
-                expect(err).to.be(null);
-                expect(req.getIds()).to.eql({});
-                done();
-            }
-
-            loadModelTestHelper("create", "/services/blogpost", next);
-        });
-
-        it("should return an Error with passed ID via url", function (done) {
-
-            function next(err, req) {
-                expect(err).not.to.be(null);
-                expect(req.getIds()).to.eql({ "blogpost" : '1234' } );
-                done();
-            }
-
-            loadModelTestHelper("create", "/services/blogpost/1234", next);
-        });
-    });
-
 });
