@@ -34,23 +34,23 @@ describe("collectServices", function () {
             expect(err).to.be(null);
             expect(services.server).to.only.have.keys(Object.keys(expectedServices.server));
             expect(services.client).to.only.have.keys(Object.keys(expectedServices.client));
-            expect(services.server["ServiceC.server.class.js"].create).to.be.a("function");
-            expect(services.server["A/ServiceA.server.class.js"].create).to.be.a("function");
-            expect(services.server["B/ServiceB.server.class.js"].create).to.be.a("function");
+            expect(services.server["CService.server.class.js"].create).to.be.a("function");
+            expect(services.server["A/AService.server.class.js"].create).to.be.a("function");
+            expect(services.server["B/BService.server.class.js"].create).to.be.a("function");
 
             done();
         }
 
-        expectedServices.server["ServiceC.server.class.js"] = true;
-        expectedServices.server["A/ServiceA.server.class.js"] = true;
-        expectedServices.server["B/ServiceB.server.class.js"] = true;
+        expectedServices.server["CService.server.class.js"] = true;
+        expectedServices.server["A/AService.server.class.js"] = true;
+        expectedServices.server["B/BService.server.class.js"] = true;
 
-        expectedServices.client["ServiceC.client.class.js"] = true;
-        expectedServices.client["A/ServiceA.client.class.js"] = true;
-        expectedServices.client["B/ServiceB.client.class.js"] = true;
+        expectedServices.client["CService.client.class.js"] = true;
+        expectedServices.client["A/AService.client.class.js"] = true;
+        expectedServices.client["B/BService.client.class.js"] = true;
 
 
-        collectServices = require("../../lib/core/collectServices.js");
+        collectServices = rewire("../../lib/core/collectServices.js", false);
         collectServices(servicesFolder, onCollectServicesEnd);
     });
 
