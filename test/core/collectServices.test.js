@@ -16,7 +16,7 @@ nodeclass.stdout = function(msg) {
 describe("collectServices", function () {
 
     before(function() {
-        compile(path.resolve(__dirname, "./collectServices/lib"), path.resolve(__dirname, "./collectServices/compiled"));
+        compile(path.resolve(__dirname, "./collectServices/app"), path.resolve(__dirname, "./collectServices/compiled"));
     });
 
     afterEach(function () {

@@ -2,11 +2,11 @@
 
 var Class = require("nodeclass").Class;
 
-var BlogPost = new Class({
+var Comment = new Class({
 
     "init" : function () {
         //nothing to do here
     }
 });
 
-module.exports = BlogPost;
+module.exports = Comment;
