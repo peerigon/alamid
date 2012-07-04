@@ -28,4 +28,15 @@ var DOMNodeMocks = DOMNodeMocks || {};
         return incubator.firstChild;
     };
 
+    DOMNodeMocks.getSubmitButtonString = function () {
+        return "<input data-node='submit-button' type='submit' value='submit'/>";
+    };
+
+    DOMNodeMocks.getSubmitButton = function () {
+
+        incubator.innerHTML = this.getSubmitButtonString();
+
+        return incubator.firstChild;
+    };
+
 })(window);
