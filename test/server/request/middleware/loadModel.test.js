@@ -49,7 +49,7 @@ describe("loadModel", function () {
 
     before(function() {
         var modelsMock = {
-            loadModel : function(modelName) {
+            getModel : function(modelName) {
                 return DummyModel;
             }
         };
