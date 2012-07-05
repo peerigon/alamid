@@ -1,8 +1,11 @@
 "use strict";
 
 var expect = require("expect.js"),
-    STATICS = require("../../compiled/client/ALAMID_CLIENT_STATICS.js"),
-    DisplayObject = require("../../compiled/client/DisplayObject.class.js");
+    STATICS = require("../../compiled/client/ALAMID_CLIENT_CONST.js"),
+    path = require("path"),
+    compile = require("nodeclass").compile,
+    DisplayObject = require("../../compiled/client/DisplayObject.class.js"),
+    ExtendedByDisplayObject = require("../../compiled/client/tmp/ExtendedByDisplayObject.class.js");
 
 describe("DisplayObject", function () {
 
@@ -20,14 +23,16 @@ describe("DisplayObject", function () {
 
     describe("Methods", function () {
 
-        var formReference,
-            displayObject,
-            template;
+        var $form,
+            form,
+            formTemplate,
+            displayObject;
 
         beforeEach(function () {
-            formReference = DOMNodeMocks.getForm();
-            template = DOMNodeMocks.getFormString();
-            displayObject = new DisplayObject(template);
+            form = DOMNodeMocks.getForm();
+            $form = jQuery(form);
+            formTemplate = DOMNodeMocks.getFormString();
+            displayObject = new DisplayObject(formTemplate);
         });
 
         describe("# getNode()", function () {
@@ -51,6 +56,58 @@ describe("DisplayObject", function () {
                 expect(nodeMap["child-input-a"].toString() === "[object HTMLInputElement]").to.be(true);
                 expect(nodeMap["child-input-c"].toString() === "[object HTMLInputElement]").to.be(true);
                 expect(nodeMap["child-input-c"].toString() === "[object HTMLInputElement]").to.be(true);
+            });
+
+        });
+
+        describe("# _append()", function () {
+
+            var extendedByDisplayObject,
+                submitButtonDisplayObject,
+                submitButtonTemplate,
+                submitButton,
+                $submitButton;
+
+            beforeEach(function () {
+
+                submitButtonTemplate = DOMNodeMocks.getSubmitButtonString();
+                submitButton = DOMNodeMocks.getSubmitButton();
+                $submitButton = jQuery(submitButton);
+                submitButtonDisplayObject = new ExtendedByDisplayObject(submitButtonTemplate);
+                extendedByDisplayObject = new ExtendedByDisplayObject(formTemplate);
+            });
+
+            describe("Appending", function () {
+
+                /*
+                it("should accept any kind of DisplayObject", function () {
+                    expect(function () {
+                        extendedByDisplayObject.append(submitButtonDisplayObject);
+                    }).not.to.throwError();
+                });
+                */
+
+                it("should return an object providing a function at()", function () {
+                    expect(extendedByDisplayObject.append(submitButtonDisplayObject).at).to.be.a(Function);
+                });
+
+
+            });
+
+            describe("Errors", function () {
+
+                /*
+                it("should throw an Error if an object not kind of DisplayObject is given", function () {
+                    expect(function () {
+                        extendedByDisplayObject.append({});
+                    }).to.throwException();
+                });
+                */
+
+                it("should throw an Error if a not existent node name was passed to at()", function () {
+
+                });
+
             });
 
         });
@@ -168,11 +225,6 @@ describe("DisplayObject", function () {
             });
 
         });
-
-
-    });
-
-    describe("# _append()", function () {
 
 
     });
