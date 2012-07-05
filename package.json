@@ -16,7 +16,7 @@
         "winston": "0.5.x",
         "fshelpers": "git://github.com/pandaa/fshelpers.git",
         "toSrc": "0.1.x",
-        "nodeclass": "https://github.com/pandaa/nodeclass/tarball/v0.1.7",
+        "nodeclass": "https://github.com/pandaa/nodeclass/tarball/v0.1.10",
         "nconf" : "0.5.x",
         "socket.io" : "0.9.x",
         "browserify" : "1.x",
