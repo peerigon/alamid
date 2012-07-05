@@ -15,11 +15,12 @@ describe("Request", function() {
 
     describe("#Construct", function(){
 
-        it("Should set the given values as attributes", function() {
+        it("should set the given values as attributes", function() {
             myRequest = new Request(method, path, data);
             expect(myRequest.getMethod()).to.be(method);
             expect(myRequest.getPath()).to.be("blogpost");
             expect(myRequest.getData()).to.be(data);
+            expect(myRequest.getModel()).to.be(undefined);
         });
     });
 
@@ -53,11 +54,9 @@ describe("Request", function() {
             myRequest2.setPath("/services/users/123/comments");
             expect(myRequest2.getPath()).to.eql("users/comments");
             expect(myRequest2.getIds()).to.eql({ "users" : 123 });
-
             myRequest2.setPath("/services/users/123");
             expect(myRequest2.getPath()).to.eql("users");
             expect(myRequest2.getIds()).to.eql({ "users" : 123 });
-
             myRequest2.setPath("/services/users/123/comments/234");
             expect(myRequest2.getPath()).to.eql("users/comments");
             expect(myRequest2.getIds()).to.eql({ "users" : 123, "comments" : 234 });
@@ -77,7 +76,6 @@ describe("Request", function() {
             myRequest3.setMethod("update");
             myRequest3.setMethod("read");
             myRequest3.setMethod("delete");
-
         });
 
         it("should also set allowed methods written in highercase", function() {
@@ -101,17 +99,39 @@ describe("Request", function() {
             myRequest = new Request(method, path, data);
         });
 
-        it("Should determine the ids contained in the request", function() {
+        it("should determine the ids contained in the request", function() {
             myRequest.setPath("services/blogpost/123/comment/1234");
             expect(myRequest.getIds()).to.eql({ "blogpost" : '123', "comment" : '1234' });
         });
 
-        it("Should not add ids without values", function() {
+        it("should not add ids without values", function() {
             myRequest.setPath("services/blogpost/123");
             expect(myRequest.getIds()).to.eql({ "blogpost" : '123'});
 
             myRequest.setPath("services/blogpost/123/comments");
             expect(myRequest.getIds()).to.eql({ "blogpost" : '123'});
+        });
+
+    });
+
+    describe("#setModel", function() {
+
+        var myRequest;
+
+        before(function(){
+            myRequest = new Request(method, path, data);
+        });
+
+        it("should set the model if type = object", function() {
+            myRequest.setModel({ "my" : "modelObject"});
+            expect(myRequest.getModel()).to.eql({ "my" : "modelObject"});
+        });
+
+        it("should throw an error if type != object", function() {
+            expect(function() { myRequest.setModel(null); }).to.throwError();
+            //expect(function() { myRequest.setModel(""); }).to.throwError();
+            //expect(function() { myRequest.setModel(12334); }).to.throwError();
+            //TODO which test is influencing this test
         });
 
     });
@@ -124,12 +144,12 @@ describe("Request", function() {
             myRequest = new Request(method, path, data);
         });
 
-        it("Should determine services path", function() {
+        it("should determine services path", function() {
             myRequest.setPath("services/blogpost/123/comment/1234");
             expect(myRequest.getType()).to.be("service");
         });
 
-        it("Should determine services path", function() {
+        it("should determine services path", function() {
             myRequest.setPath("validators/blogpost");
             expect(myRequest.getType()).to.be("validator");
         });

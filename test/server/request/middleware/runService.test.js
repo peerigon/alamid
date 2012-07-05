@@ -28,8 +28,8 @@ describe("runService", function(){
                 if(path === "test/testService.server.class.js"){
                     return {
                         "create" : function(model, callback){ callback(200); },
-                        "read" : function(model, callback){ callback(200, model.getData()); },
-                        "update" : function(model, callback){ callback(200, model.getData()); }
+                        "read" : function(model, callback){ callback(200, model); },
+                        "update" : function(model, callback){ callback(200, model); }
                     };
                 }
 
@@ -62,7 +62,7 @@ describe("runService", function(){
         });
 
 
-        it("should find the mocked GET service, run it and next afterwards with data attached to response", function (done) {
+        it("should find the mocked READ service, run it and next afterwards with data attached to response", function (done) {
 
             var method = "read",
                 path = "/services/test",
@@ -70,6 +70,8 @@ describe("runService", function(){
 
             var request = new Request(method, path, data),
                 response = new Response();
+            //we have no middleware for setting the model in this test!
+            request.setModel(data);
 
             runService(request, response, function(err) {
                 expect(err).to.be(null);
@@ -119,6 +121,8 @@ describe("runService", function(){
 
             var request = new Request(method, path, data),
                 response = new Response();
+            //we have no middleware for setting the model in this test!
+            request.setModel(data);
 
             runService(request, response, function(err) {
                 expect(err).not.to.be(null);
@@ -135,7 +139,7 @@ describe("runService", function(){
             var servicesMock = {
                 getService : function(path) {
                     if(path === "servicea/serviceaService.server.class.js"){
-                        var ServiceA = require("./runService/compiled/ServiceA.server.class.js");
+                        var ServiceA = require("./runService/compiled/AService.server.class.js");
                         return new ServiceA();
                     }
                     return null;
@@ -149,12 +153,14 @@ describe("runService", function(){
 
         it("should accept classes as services", function(done) {
 
-            var method = "read",
+            var method = "update",
                 path = "/services/servicea",
                 data = { "da" : "ta" };
 
             var request = new Request(method, path, data),
                 response = new Response();
+            //we have no middleware for setting the model in this test!
+            request.setModel(data);
 
             runService(request, response, function(err) {
                 expect(err).to.be(null);
@@ -172,7 +178,7 @@ describe("runService", function(){
             var servicesMock = {
                 getService : function(path) {
                     if(path === "blogpost/comments/commentsService.server.class.js"){
-                        var ServiceA = require("./runService/compiled/ServiceA.server.class.js");
+                        var ServiceA = require("./runService/compiled/AService.server.class.js");
                         return new ServiceA();
                     }
                     return null;
@@ -201,6 +207,5 @@ describe("runService", function(){
                 done();
             });
         });
-
     });
 });
