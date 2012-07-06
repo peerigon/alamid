@@ -28,9 +28,9 @@ describe("runService", function(){
 
                 if(path === "test/testService.server.class.js"){
                     return {
-                        "create" : function(model, req, res, callback){ callback(200); },
-                        "read" : function(model, req, res, callback){ callback(200, model); },
-                        "update" : function(model, req, res, callback){ callback(200, model); }
+                        "create" : function(model, req, res, callback){ callback({ "status" : "success" }); },
+                        "read" : function(model, req, res, callback){ callback(); },
+                        "update" : function(model, req, res, callback){ callback(); }
                     };
                 }
 
@@ -196,6 +196,8 @@ describe("runService", function(){
 
             var request = new Request(method, path, data),
                 response = new Response();
+            //we have no middleware for setting the model in this test!
+            request.setModel(data);
 
             runService(request, response, function(err) {
                 expect(request.getIds()).to.eql({ "blogpost": '123', "blogpost/comments": '1245' });
@@ -204,5 +206,75 @@ describe("runService", function(){
                 done();
             });
         });
+    });
+
+    describe("#Callback value assignment", function() {
+
+        before(function() {
+            var servicesMock = {
+                getService : function(path) {
+                    if(path === "blogpost/blogpostService.server.class.js"){
+                        return {
+                            "create" : function(model, req, res, callback){
+                                callback({"status" : "success", "errorMessage" : "my dummy error", "data" : { "da" : "ta" }});
+                            },
+                            "update" : function(model, req, res, callback){
+                                res.setStatusCode(418);
+                                model.newKey = "newValue";
+                                callback();
+                            }
+                        };
+                    }
+                    return null;
+                }
+            };
+
+            runService.__set__("services", servicesMock);
+        });
+
+
+        it("should accept the values that have been set via callback", function(done) {
+
+            var method = "create",
+                path = "/services/blogpost/",
+                data = {};
+
+            var request = new Request(method, path, data),
+                response = new Response();
+
+            runService(request, response, function(err) {
+                expect(request.getIds()).to.eql({});
+                expect(err).to.be(null);
+                expect(response.getStatusCode()).to.be(200);
+                expect(response.getStatus()).to.be("success");
+                expect(response.getErrorMessage()).to.be("my dummy error");
+                expect(response.getData()).to.eql({ "da" : "ta" });
+                done();
+            });
+        });
+
+        it("should derive all data that hasn't been set with an empty callback", function(done) {
+
+            var method = "update",
+                path = "/services/blogpost/",
+                data = { "da" : "ta" };
+
+            var request = new Request(method, path, data),
+                response = new Response();
+
+            //we have no middleware for setting the model in this test!
+            request.setModel(data);
+
+            runService(request, response, function(err) {
+                expect(request.getIds()).to.eql({});
+                expect(err).to.be(null);
+                expect(response.getStatusCode()).to.be(418);
+                expect(response.getStatus()).to.be("success");
+                expect(response.getData()).to.eql({ "da" : "ta", "newKey" : "newValue" });
+                done();
+            });
+        });
+
+
     });
 });
