@@ -5,11 +5,12 @@ require("../../../testHelpers/compileTestAlamid.js");
 var expect = require("expect.js"),
     rewire = require("rewire"),
     nodeclass = require("nodeclass"),
-    compile = nodeclass.compile,
     path = require("path");
 
-var Request = require("../../../../compiled/server/request/Request.class.js"),
-    Response = require("../../../../compiled/server/request/Response.class.js");
+nodeclass.registerExtension();
+
+var Request = require("../../../../lib/server/request/Request.class.js"),
+    Response = require("../../../../lib/server/request/Response.class.js");
 
 nodeclass.stdout = function() {
     //No output in test mode
@@ -18,7 +19,7 @@ nodeclass.stdout = function() {
 
 describe("runService", function(){
 
-    var runService = rewire("../../../../compiled/server/request/middleware/runService.js", false);
+    var runService = rewire("../../../../lib/server/request/middleware/runService.js", false);
 
     describe("#serviceMiddleware", function() {
 
@@ -27,9 +28,9 @@ describe("runService", function(){
 
                 if(path === "test/testService.server.class.js"){
                     return {
-                        "create" : function(model, callback){ callback(200); },
-                        "read" : function(model, callback){ callback(200, model); },
-                        "update" : function(model, callback){ callback(200, model); }
+                        "create" : function(model, req, res, callback){ callback(200); },
+                        "read" : function(model, req, res, callback){ callback(200, model); },
+                        "update" : function(model, req, res, callback){ callback(200, model); }
                     };
                 }
 
@@ -45,7 +46,7 @@ describe("runService", function(){
             compiledPath : __dirname + "/exampleApp/app"
         });
 
-        it("should find the mocked POST service, run it and next afterwards", function (done) {
+        it("should find the mocked CREATE service, run it and next afterwards", function (done) {
 
             var method = "create",
                 path = "/services/test/",
@@ -139,7 +140,7 @@ describe("runService", function(){
             var servicesMock = {
                 getService : function(path) {
                     if(path === "servicea/serviceaService.server.class.js"){
-                        var ServiceA = require("./runService/compiled/AService.server.class.js");
+                        var ServiceA = require("./runService/src/AService.server.class.js");
                         return new ServiceA();
                     }
                     return null;
@@ -147,8 +148,6 @@ describe("runService", function(){
             };
 
             runService.__set__("services", servicesMock);
-            compile(path.resolve(__dirname, "./runService/src/"), path.resolve(__dirname, "./runService/compiled"));
-
         });
 
         it("should accept classes as services", function(done) {
@@ -178,7 +177,7 @@ describe("runService", function(){
             var servicesMock = {
                 getService : function(path) {
                     if(path === "blogpost/comments/commentsService.server.class.js"){
-                        var ServiceA = require("./runService/compiled/AService.server.class.js");
+                        var ServiceA = require("./runService/src/AService.server.class.js");
                         return new ServiceA();
                     }
                     return null;
@@ -186,8 +185,6 @@ describe("runService", function(){
             };
 
             runService.__set__("services", servicesMock);
-            compile(path.resolve(__dirname, "./runService/src/"), path.resolve(__dirname, "./runService/compiled"));
-
         });
 
 
@@ -201,7 +198,7 @@ describe("runService", function(){
                 response = new Response();
 
             runService(request, response, function(err) {
-                expect(request.getIds()).to.eql({ blogpost: '123', comments: '1245' });
+                expect(request.getIds()).to.eql({ "blogpost": '123', "blogpost/comments": '1245' });
                 expect(err).to.be(null);
                 expect(response.getStatusCode()).to.be(200);
                 done();
