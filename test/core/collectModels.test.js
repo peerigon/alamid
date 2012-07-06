@@ -3,21 +3,18 @@
 var expect = require("expect.js"),
     rewire = require("rewire"),
     nodeclass = require("nodeclass"),
-    compile = nodeclass.compile,
     path = require("path"),
     collectModels,
     testFolder = __dirname + "/collectModels",
-    servicesFolder = testFolder + "/compiled/models";
+    servicesFolder = testFolder + "/app/models";
+
+nodeclass.registerExtension();
 
 nodeclass.stdout = function(msg) {
     //No output in test mode
 };
 
 describe("collectModels", function () {
-
-    before(function() {
-        compile(path.resolve(__dirname, "./collectModels/app"), path.resolve(__dirname, "./collectModels/compiled"));
-    });
 
     afterEach(function () {
         rewire.reset();
