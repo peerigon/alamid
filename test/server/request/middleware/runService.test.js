@@ -16,7 +16,6 @@ nodeclass.stdout = function() {
     //No output in test mode
 };
 
-
 describe("runService", function(){
 
     var runService = rewire("../../../../lib/server/request/middleware/runService.js", false);
@@ -63,8 +62,6 @@ describe("runService", function(){
             });
         });
 
-
-
         it("should find the READ service, run it and next afterwards with data attached to response", function (done) {
 
             var method = "read",
@@ -83,7 +80,6 @@ describe("runService", function(){
                 done();
             });
         });
-
 
         it("should call the READ-collection method without IDs set", function (done) {
 
@@ -211,7 +207,6 @@ describe("runService", function(){
             runService.__set__("services", servicesMock);
         });
 
-
         it("should accept services with deeper paths", function(done) {
 
             var method = "delete",
@@ -256,7 +251,6 @@ describe("runService", function(){
             runService.__set__("services", servicesMock);
         });
 
-
         it("should accept the values that have been set via callback", function(done) {
 
             var method = "create",
@@ -298,7 +292,6 @@ describe("runService", function(){
                 done();
             });
         });
-
 
     });
 });
