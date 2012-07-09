@@ -80,7 +80,7 @@ describe("loadModel", function () {
 
             function next(err, req) {
                 expect(err.message).to.contain("'create' does not accept IDs");
-                expect(req.getModel()).to.be(undefined);
+                expect(req.getModel()).to.be(null);
                 expect(req.getIds()).to.eql({ "blogpost" : '1234' } );
                 done();
             }
@@ -135,7 +135,7 @@ describe("loadModel", function () {
 
             function next(err, req) {
                 expect(req.getIds()).to.eql({});
-                expect(req.getModel()).to.be(undefined);
+                expect(req.getModel()).to.be(null);
                 expect(err.message).to.contain("'update' : Missing IDs");
                 done();
             }
@@ -160,7 +160,7 @@ describe("loadModel", function () {
 
             function next(err, req) {
                 expect(err.message).to.contain("'delete' : Missing IDs");
-                expect(req.getModel()).to.be(undefined);
+                expect(req.getModel()).to.be(null);
                 expect(req.getIds()).to.eql({ "blogpost" : 123 });
                 done();
             }
@@ -171,7 +171,7 @@ describe("loadModel", function () {
 
             function next(err, req) {
                 expect(err.message).to.contain("'delete' : Missing IDs");
-                expect(req.getModel()).to.be(undefined);
+                expect(req.getModel()).to.be(null);
                 expect(req.getIds()).to.eql({});
                 done();
             }

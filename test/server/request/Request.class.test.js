@@ -20,7 +20,7 @@ describe("Request", function() {
             expect(myRequest.getMethod()).to.be(method);
             expect(myRequest.getPath()).to.be("blogpost");
             expect(myRequest.getData()).to.be(data);
-            expect(myRequest.getModel()).to.be(undefined);
+            expect(myRequest.getModel()).to.be(null);
         });
     });
 
