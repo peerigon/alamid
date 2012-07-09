@@ -29,7 +29,8 @@ describe("runService", function(){
                 if(path === "test/testService.server.class.js"){
                     return {
                         "create" : function(model, req, res, callback){ callback({ "status" : "success" }); },
-                        "read" : function(model, req, res, callback){ callback(); },
+                        "read" : function(model, req, res, callback){ callback( { "status" : "success", "data" : model }); },
+                        "readCollection" : function(model, req, res, callback){ callback( { "status" : "success", "data" : { "readCollection" : true }}); },
                         "update" : function(model, req, res, callback){ callback(); }
                     };
                 }
@@ -63,10 +64,11 @@ describe("runService", function(){
         });
 
 
-        it("should find the mocked READ service, run it and next afterwards with data attached to response", function (done) {
+
+        it("should find the READ service, run it and next afterwards with data attached to response", function (done) {
 
             var method = "read",
-                path = "/services/test",
+                path = "/services/test/123",
                 data = { "da" : "ta" };
 
             var request = new Request(method, path, data),
@@ -81,6 +83,28 @@ describe("runService", function(){
                 done();
             });
         });
+
+
+        it("should call the READ-collection method without IDs set", function (done) {
+
+            var method = "read",
+                path = "/services/test",
+                data = { "da" : "ta" };
+
+            var request = new Request(method, path, data),
+                response = new Response();
+
+            //we have no middleware for setting the model in this test!
+            request.setModel(data);
+
+            runService(request, response, function(err) {
+                expect(err).to.be(null);
+                expect(response.getStatusCode()).to.be(200);
+                expect(response.getData()).to.eql({ "readCollection" : true });
+                done();
+            });
+        });
+
 
         it("should next with an error code if the service for the given method is not allowed", function (done) {
 
