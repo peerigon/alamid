@@ -1,15 +1,15 @@
 "use strict";
 
-require("../../testHelpers/compileTestAlamid");
+require("nodeclass").registerExtension();
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
-    Request = require("../../../compiled/server/request/Request.class.js");
+    Request = require("../../../lib/server/request/Request.class.js");
 
 
 describe("handleRequest", function() {
 
-    var handleRequest = rewire("../../../compiled/server/request/handleRequest.js", false);
+    var handleRequest = rewire("../../../lib/server/request/handleRequest.js", false);
 
     describe("#Services Request", function() {
 

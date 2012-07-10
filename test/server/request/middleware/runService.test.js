@@ -1,7 +1,5 @@
 "use strict"; // run code in ES5 strict mode
 
-require("../../../testHelpers/compileTestAlamid.js");
-
 var expect = require("expect.js"),
     rewire = require("rewire"),
     nodeclass = require("nodeclass"),
@@ -191,7 +189,6 @@ describe("runService", function(){
     });
 
     describe("#service with deeper hierarchy - embedded documents", function() {
-        //https://github.com/pandaa/alamid/issues/6
 
         before(function() {
             var servicesMock = {

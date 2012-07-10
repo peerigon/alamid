@@ -1,9 +1,9 @@
 "use strict";
 
-require("../../testHelpers/compileTestAlamid.js");
+require("nodeclass").registerExtension();
 
 var expect = require("expect.js"),
-    Request = require("../../../compiled/server/request/Request.class.js");
+    Request = require("../../../lib/server/request/Request.class.js");
 
 describe("Request", function() {
 

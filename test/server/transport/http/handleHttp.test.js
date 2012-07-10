@@ -9,7 +9,7 @@ var util = require('util'),
     rewire = require("rewire"),
     http = require("http");
 
-require("../../../testHelpers/compileTestAlamid.js");
+require("nodeclass").registerExtension();
 
 function runTestServer(configEnv, callback) {
 
@@ -134,7 +134,7 @@ describe("handleHttp", function() {
             it("should hand the request on to the validatir-route", function (done) {
                 this.timeout(100000);
                 httpRequest("/validators/myNonExistentValidator/", function(data) {
-                    expect(data).to.contain("Error: No validator found for");
+                    expect(data).to.contain("No validator found for");
                     expect(data).to.contain('{"status":"error"');
                     done();
                 });

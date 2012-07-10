@@ -1,12 +1,12 @@
 "use strict"; // run code in ES5 strict mode
 
-require("../../../testHelpers/compileTestAlamid.js");
+require("nodeclass").registerExtension();
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
-    parseUrl = require("../../../../compiled/server/transport/http/middleware/parseURL.js"),
-    setAjaxFlag = require("../../../../compiled/server/transport/http/middleware/setAjaxFlag.js"),
-    Response = require("../../../../compiled/server/request/Response.class.js");
+    parseUrl = require("../../../../lib/server/transport/http/middleware/parseURL.js"),
+    setAjaxFlag = require("../../../../lib/server/transport/http/middleware/setAjaxFlag.js"),
+    Response = require("../../../../lib/server/request/Response.class.js");
 
 describe("parseUrl", function(){
     it("should set parsedURL on req-object", function (done) {
@@ -61,7 +61,7 @@ describe("setAjaxFlag", function(){
 
 describe("serverInitPageShortcut", function(){
 
-    var serveInitPageShortcut = rewire("../../../../compiled/server/transport/http/middleware/serveInitPageShortcut.js", false);
+    var serveInitPageShortcut = rewire("../../../../lib/server/transport/http/middleware/serveInitPageShortcut.js", false);
     serveInitPageShortcut.__set__("serveInitPage", function(req, res, next) {
         //so we can test for it
         req.servingPage = true;
@@ -97,7 +97,7 @@ describe("httpAdapter", function(){
         rewire.reset();
     });
 
-    var httpAdapter = rewire("../../../../compiled/server/transport/http/middleware/httpAdapter.js", false);
+    var httpAdapter = rewire("../../../../lib/server/transport/http/middleware/httpAdapter.js", false);
 
     it("should hand the request on to the httpAdapter if everything is alright", function (done) {
 

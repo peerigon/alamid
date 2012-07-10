@@ -1,7 +1,5 @@
 "use strict";
 
-require("../../../testHelpers/compileTestAlamid");
-
 var expect = require("expect.js"),
     rewire = require("rewire"),
     nodeclass = require("nodeclass");

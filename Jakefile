@@ -1,4 +1,7 @@
-var path = require("path");
+var path = require("path"),
+    nodeclass = require("nodeclass");
+
+
 
 desc('This is the default task.');
 task('default', function () {
@@ -7,7 +10,8 @@ task('default', function () {
 
 task('compileTestAlamid', function () {
     //self-executing module
-    require(path.resolve(__dirname, "./test/testHelpers/compileTestAlamid"));
+    nodeclass.registerExtension();
+
 });
 
 

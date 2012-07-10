@@ -2,7 +2,11 @@
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
-    EventEmitter = require("../../compiled/shared/EventEmitter.class.js");
+    nodeclass = require("nodeclass");
+
+nodeclass.registerExtension();
+
+var EventEmitter = require("../../lib/shared/EventEmitter.class.js");
 
 describe("EventEmitter", function () {
 
