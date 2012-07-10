@@ -20,7 +20,7 @@ describe("Request", function() {
             expect(myRequest.getMethod()).to.be(method);
             expect(myRequest.getPath()).to.be("blogpost");
             expect(myRequest.getData()).to.be(data);
-            expect(myRequest.getModel()).to.be(undefined);
+            expect(myRequest.getModel()).to.be(null);
         });
     });
 
@@ -59,7 +59,7 @@ describe("Request", function() {
             expect(myRequest2.getIds()).to.eql({ "users" : 123 });
             myRequest2.setPath("/services/users/123/comments/234");
             expect(myRequest2.getPath()).to.eql("users/comments");
-            expect(myRequest2.getIds()).to.eql({ "users" : 123, "comments" : 234 });
+            expect(myRequest2.getIds()).to.eql({ "users" : 123, "users/comments" : 234 });
         });
     });
 
@@ -101,7 +101,7 @@ describe("Request", function() {
 
         it("should determine the ids contained in the request", function() {
             myRequest.setPath("services/blogpost/123/comment/1234");
-            expect(myRequest.getIds()).to.eql({ "blogpost" : '123', "comment" : '1234' });
+            expect(myRequest.getIds()).to.eql({ "blogpost" : '123', "blogpost/comment" : '1234' });
         });
 
         it("should not add ids without values", function() {
