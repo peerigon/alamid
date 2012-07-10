@@ -1,11 +1,11 @@
 "use strict";
 
 var expect = require("expect.js"),
-    STATICS = require("../../compiled/client/ALAMID_CLIENT_CONST.js"),
+    STATICS = require("../../lib/client/ALAMID_CLIENT_CONST.js"),
     path = require("path"),
     compile = require("nodeclass").compile,
-    DisplayObject = require("../../compiled/client/DisplayObject.class.js"),
-    ExtendedByDisplayObject = require("../../compiled/client/tmp/ExtendedByDisplayObject.class.js");
+    DisplayObject = require("../../lib/client/DisplayObject.class.js"),
+    ExtendedByDisplayObject = require("../../lib/client/tmp/ExtendedByDisplayObject.class.js");
 
 describe("DisplayObject", function () {
 
@@ -79,33 +79,29 @@ describe("DisplayObject", function () {
 
             describe("Appending", function () {
 
-                /*
-                it("should accept any kind of DisplayObject", function () {
-                    expect(function () {
-                        extendedByDisplayObject.append(submitButtonDisplayObject);
-                    }).not.to.throwError();
-                });
-                */
-
                 it("should return an object providing a function at()", function () {
                     expect(extendedByDisplayObject.append(submitButtonDisplayObject).at).to.be.a(Function);
                 });
 
+                it("should return a reference to itself", function () {
+                    console.log(extendedByDisplayObject.append(submitButtonDisplayObject).at("form"));
+                    //expect(extendedByDisplayObject.append(submitButtonDisplayObject).at("form")).to.be.equal(extendedByDisplayObject);
+                });
 
             });
 
             describe("Errors", function () {
 
-                /*
                 it("should throw an Error if an object not kind of DisplayObject is given", function () {
                     expect(function () {
                         extendedByDisplayObject.append({});
-                    }).to.throwException();
+                    }).to.throwError();
                 });
-                */
 
                 it("should throw an Error if a not existent node name was passed to at()", function () {
-
+                    expect(function () {
+                        extendedByDisplayObject.append(submitButtonDisplayObject).at("not_existing_node");
+                    }).to.throwError();
                 });
 
             });
