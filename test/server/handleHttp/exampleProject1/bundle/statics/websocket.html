@@ -1,10 +1,18 @@
 <script src="/statics/socket.io.js"></script>
 <script>
-  var socket = io.connect('http://localhost:9090');
-  /*
-  socket.on('news', function (data) {
-    console.log(data);
-    socket.emit('my other event', { my: 'data' });
-  });
-  */
+    var socket = io.connect('http://localhost:9090');
+    /*
+     socket.on('news', function (data) {
+     console.log(data);
+     socket.emit('my other event', { my: 'data' });
+     });
+     */
+
+    function getSessionData() {
+        socket.emit('SESSION', function(sessionData) {
+            console.log("server returned", sessionData);
+        });
+    }
+
+
 </script>
