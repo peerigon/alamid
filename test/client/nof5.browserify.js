@@ -5,8 +5,6 @@ var nodeclass = require("nodeclass"),
 
 exports.use = function useHook() {
 
-    console.log("using 'nodeclass.browser.browserify' for browserify");
-
     return [
         browserifyBypass,
         nodeclass.browser.browserify
