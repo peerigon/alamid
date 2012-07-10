@@ -9,7 +9,5 @@ var connect = require("connect"),
 var server = connect();
 handleHttp.init(server);
 
-console.log(connect);
-
 console.log("TEST-SERVER listening on 9090");
 server.listen(9090);
