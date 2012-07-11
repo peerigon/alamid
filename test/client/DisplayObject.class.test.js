@@ -5,7 +5,7 @@ var expect = require("expect.js"),
     path = require("path"),
     compile = require("nodeclass").compile,
     DisplayObject = require("../../lib/client/DisplayObject.class.js"),
-    ExtendedByDisplayObject = require("../../lib/client/tmp/ExtendedByDisplayObject.class.js");
+    ExtendedByDisplayObject = require("./mocks/ExtendedByDisplayObject.class.js");
 
 describe("DisplayObject", function () {
 
@@ -20,17 +20,28 @@ describe("DisplayObject", function () {
     var $form,
         form,
         formTemplate,
+
+        $submitButton,
         submitButton,
         submitButtonTemplate,
-        displayObject;
+
+        displayObject,
+        formDisplayObject,
+        submitButtonDisplayObject;
 
     beforeEach(function () {
         form = DOMNodeMocks.getForm();
         $form = jQuery(form);
         formTemplate = DOMNodeMocks.getFormString();
-        submitButtonTemplate = DOMNodeMocks.getSubmitButtonString();
+
         submitButton = DOMNodeMocks.getSubmitButton();
+        $submitButton = jQuery(submitButton);
+        submitButtonTemplate = DOMNodeMocks.getSubmitButtonString();
+
+
         displayObject = new DisplayObject(formTemplate);
+        submitButtonDisplayObject = new ExtendedByDisplayObject(submitButtonTemplate);
+        formDisplayObject = new ExtendedByDisplayObject(formTemplate);
     });
 
     describe("# getNode()", function () {
@@ -47,62 +58,66 @@ describe("DisplayObject", function () {
             //expect(displayObject.getNodeMap()).to.be.an(Object);
         });
 
-        it("should return a map of nodes with a 'form'-, 'child-input-a'-, 'child-input-b'-, 'child-input-c'- node ", function () {
+        it("should return a map of nodes with a 'form'-, 'input-a'-, 'input-b'-, 'input-c'- node ", function () {
             var nodeMap = displayObject.getNodeMap();
 
             expect(nodeMap.form.toString()).to.be.equal("[object HTMLFormElement]");
-            expect(nodeMap["child-input-a"].toString() === "[object HTMLInputElement]").to.be(true);
-            expect(nodeMap["child-input-c"].toString() === "[object HTMLInputElement]").to.be(true);
-            expect(nodeMap["child-input-c"].toString() === "[object HTMLInputElement]").to.be(true);
+            expect(nodeMap["input-a"].toString() === "[object HTMLInputElement]").to.be(true);
+            expect(nodeMap["input-c"].toString() === "[object HTMLInputElement]").to.be(true);
+            expect(nodeMap["input-c"].toString() === "[object HTMLInputElement]").to.be(true);
         });
 
     });
 
     describe("# _append()", function () {
 
-        var formDisplayObject,
-            submitButtonDisplayObject,
-            $submitButton;
-
-        beforeEach(function () {
-
-
-            $submitButton = jQuery(submitButton);
-            submitButtonDisplayObject = new ExtendedByDisplayObject(submitButtonTemplate);
-            formDisplayObject = new ExtendedByDisplayObject(formTemplate);
-        });
-
-        describe("# at()", function () {
-
-            it("should return an object providing a function at()", function () {
-                expect(formDisplayObject.append(submitButtonDisplayObject).at).to.be.a(Function);
-            });
-
-            it("should return a reference to itself", function () {
-                expect(formDisplayObject.append(submitButtonDisplayObject).at("form")).to.be.equal(formDisplayObject);
-            });
-
-            it("should append a submit-button to given form", function () {
-                formDisplayObject.append(submitButtonDisplayObject).at("form");
-
-                var $lastChild = jQuery(formDisplayObject.getNode()).find(":last-child"),
-                    lastChild = $lastChild[0];
-
-                expect(lastChild.toString()).to.be.equal(submitButtonDisplayObject.getNode().toString());
-                expect($lastChild.val()).to.be.equal(submitButtonDisplayObject.getNode().value);
-            });
-
-        });
-
         it("should throw an Error if an object not kind of DisplayObject is given", function () {
             expect(function () {
-                extendedByDisplayObject.append({});
+                formDisplayObject.append({});
             }).to.throwError();
         });
 
         it("should throw an Error if a not existent node name was passed to at()", function () {
             expect(function () {
-                extendedByDisplayObject.append(submitButtonDisplayObject).at("not_existing_node");
+                formDisplayObject.append(submitButtonDisplayObject).at("not_existing_node");
+            }).to.throwError();
+        });
+
+        it("should return an object providing a function at()", function () {
+            expect(formDisplayObject.append(submitButtonDisplayObject).at).to.be.a(Function);
+        });
+
+    });
+
+    describe("# at()", function () {
+
+        it("should return a reference to itself", function () {
+            expect(formDisplayObject.append(submitButtonDisplayObject).at("form")).to.be.equal(formDisplayObject);
+        });
+
+        it("should append submit-button to form", function () {
+            formDisplayObject.append(submitButtonDisplayObject).at("form");
+
+            var $lastChild = jQuery(formDisplayObject.getNode()).find(":last-child"),
+                lastChild = $lastChild[0];
+
+            expect(lastChild.toString()).to.be.equal(submitButtonDisplayObject.getNode().toString());
+            expect($lastChild.val()).to.be.equal(submitButtonDisplayObject.getNode().value);
+        });
+
+    });
+
+    describe("# addNodeEvents()", function () {
+        it("should throw an Error if you try to attach events to a not existing node", function () {
+
+            expect(function () {
+                displayObject.addNodeEvents({
+                    "not_existing_node": {
+                        "click": function () {
+                            //do nothing
+                        }
+                    }
+                });
             }).to.throwError();
         });
 
@@ -111,7 +126,39 @@ describe("DisplayObject", function () {
     describe("# destroy()", function () {
 
         it("should return a reference to itself", function () {
-            expect(displayObject.destroy() === displayObject).to.be(true);
+            expect(submitButtonDisplayObject.destroy()).to.be.equal(submitButtonDisplayObject);
+        });
+
+        it("should remove itself from parent node", function () {
+            formDisplayObject.append(submitButtonDisplayObject).at("form");
+            submitButtonDisplayObject.destroy();
+            expect(jQuery(formDisplayObject.getNode()).find("[type='submit']").length).to.be.equal(0);
+        });
+
+        it("should be still possible to trigger attached events after # destroy()", function (done) {
+            submitButtonDisplayObject.addNodeEvents({
+                "submit-button": {
+                    "click": function () {
+                        done();
+                    }
+                }
+            });
+
+            formDisplayObject.append(submitButtonDisplayObject).at("form");
+
+            submitButtonDisplayObject.destroy();
+
+            jQuery(submitButtonDisplayObject.getNode()).click();
+        });
+
+        it("should be possible to re-append a destroyed DisplayObject", function () {
+            formDisplayObject.append(submitButtonDisplayObject).at("form");
+            submitButtonDisplayObject.destroy();
+            formDisplayObject.append(submitButtonDisplayObject).at("form");
+
+            expect(
+                jQuery(formDisplayObject.getNode()).find("[type='submit']")[0].toString()
+            ).to.be.equal(submitButtonDisplayObject.getNode().toString());
         });
 
     });
@@ -119,9 +166,42 @@ describe("DisplayObject", function () {
     describe("# dispose()", function () {
 
         it("should return a reference to itself", function () {
-            expect(displayObject.dispose() === displayObject).to.be(true);
+            expect(submitButtonDisplayObject.dispose()).to.be(submitButtonDisplayObject);
         });
 
+        it("should remove itself from parent node", function () {
+            formDisplayObject.append(submitButtonDisplayObject).at("form");
+            submitButtonDisplayObject.dispose();
+            expect(jQuery(formDisplayObject.getNode()).find("[type='submit']").length).to.be.equal(0);
+        });
+
+        it("should NOT be possible to trigger before attached events after # dispose()", function (done) {
+            submitButtonDisplayObject.addNodeEvents({
+                "submit-button": {
+                    "click": function () {
+                        done();
+                    }
+                }
+            });
+
+            formDisplayObject.append(submitButtonDisplayObject).at("form");
+
+            submitButtonDisplayObject.dispose();
+
+            jQuery(submitButtonDisplayObject.getNode()).click();
+
+            done();
+        });
+
+        it("should be possible to re-append a disposed DisplayObject", function () {
+            formDisplayObject.append(submitButtonDisplayObject).at("form");
+            submitButtonDisplayObject.dispose();
+            formDisplayObject.append(submitButtonDisplayObject).at("form");
+
+            expect(
+                jQuery(formDisplayObject.getNode()).find("[type='submit']")[0].toString()
+            ).to.be.equal(submitButtonDisplayObject.getNode().toString());
+        });
     });
 
     describe("# hide()", function () {
@@ -190,38 +270,4 @@ describe("DisplayObject", function () {
             expect(submitButtonDisplayObject.isAppended()).to.be(false);
         });
     });
-
-    describe("# attachEvents()", function () {
-
-        it("should throw an Error if you try to attach events to a not existing node", function () {
-
-            expect(function () {
-                displayObject.attachEvents({
-                    "not_existing_node": {
-                        "click": function () {
-                            //do nothing
-                        }
-                    }
-                });
-            }).to.throwError();
-        });
-
-        it("should attach the 'focus'-Event to 'child-input-a'-Node", function (done) {
-
-            var nodeMap = displayObject.getNodeMap();
-
-            displayObject.attachEvents({
-                "child-input-a": {
-                    "focus": function () {
-                        done();
-                    }
-                }
-            });
-
-            jQuery(nodeMap["child-input-a"]).trigger("focus");
-
-        });
-
-    });
-
 });
