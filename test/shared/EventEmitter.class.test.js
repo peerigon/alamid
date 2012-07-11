@@ -200,8 +200,8 @@ describe("EventEmitter", function () {
     });
 
     describe("setMaxListeners()", function () {
-        //removed until rewire can handle .class.js files
-    /*
+        //NOT WORKING WITH REWIRE ATM
+        /*
         it("console.error() and console.trace() shuold be executed if max listeners limit was exceeded", function (done) {
             var RewiredEventEmitter = rewire("../../lib/shared/EventEmitter.class.js", false),
                 isErrorExecuted = false;
@@ -230,8 +230,7 @@ describe("EventEmitter", function () {
             //do nothing
             });
         });
-    */
-
+        */
     });
 
     describe("listeners", function () {
