@@ -14,5 +14,11 @@
         });
     }
 
+    function emitServiceRequest(method, url, data) {
+        socket.emit(method, url, data, function(response) {
+            console.log("server returned", response);
+        });
+    }
+
 
 </script>
