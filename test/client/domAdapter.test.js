@@ -190,16 +190,16 @@ describe("domAdapter", function () {
         describe("# destroy()", function () {
 
             it("should remove the element from DOMElement", function () {
-                var inputA = $form.find("[data-node='child-input-a']")[0];
+                var inputA = $form.find("[data-node='input-a']")[0];
 
                 domAdapter(inputA).destroy();
-                expect($form.find("[data-node='child-input-a']")[0] === undefined).to.be.ok();
+                expect($form.find("[data-node='input-a']")[0] === undefined).to.be.ok();
             });
 
             //If you destroy an element from a DOMNode and you keep the reference to it, it should be still able to
             //append it somewhere else with all its events.
             it("should still listen to events if you trigger them explicitly on the removed element", function (done) {
-                var inputA = $form.find("[data-node='child-input-a']")[0];
+                var inputA = $form.find("[data-node='input-a']")[0];
 
                 domAdapter(inputA).on("click", function () {
                     done();
@@ -215,15 +215,15 @@ describe("domAdapter", function () {
         describe("# dispose()", function () {
 
             it("should remove the element form DOMElemet like # destroy()", function () {
-                var $inputA = $form.find("[data-node='child-input-a']"),
+                var $inputA = $form.find("[data-node='input-a']"),
                     inputA = $inputA[0];
 
                 domAdapter(inputA).dispose();
-                expect($form.find("[data-node='child-input-a']").length === 0).to.be.ok();
+                expect($form.find("[data-node='input-a']").length === 0).to.be.ok();
             });
 
             it("should not listen to any event anymore even if it is triggered explicitly", function (done) {
-                var $inputA = $form.find("[data-node='child-input-a']"),
+                var $inputA = $form.find("[data-node='input-a']"),
                     inputA = $inputA[0];
 
                 $inputA.on("click", function () { done(); });
