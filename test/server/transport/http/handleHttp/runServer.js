@@ -10,6 +10,5 @@ var server = connect();
 handleHttp.initDynamicRoutes(server);
 handleHttp.initStaticRoutes(server);
 
-
 console.log("TEST-SERVER listening on 9090");
 server.listen(9090);
