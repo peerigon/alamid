@@ -108,8 +108,8 @@ describe("DisplayObject", function () {
     });
 
     describe("# addNodeEvents()", function () {
-        it("should throw an Error if you try to attach events to a not existing node", function () {
 
+        it("should throw an Error if you try to attach events to a not existing node", function () {
             expect(function () {
                 displayObject.addNodeEvents({
                     "not_existing_node": {
@@ -119,6 +119,32 @@ describe("DisplayObject", function () {
                     }
                 });
             }).to.throwError();
+        });
+
+        it("should attach Events to nodes", function () {
+            var focusEvent = "untriggred",
+                blurEvent = "untriggered",
+                $inputA = jQuery(formDisplayObject.getNode()).find("[data-node='input-a']"),
+                $inputB = jQuery(formDisplayObject.getNode()).find("[data-node='input-b']");
+
+            formDisplayObject.addNodeEvents({
+                "input-a": {
+                    "focus": function () {
+                        focusEvent = "triggered";
+                    }
+                },
+                "input-b": {
+                    "blur": function () {
+                        blurEvent = "triggered";
+                    }
+                }
+            });
+
+            $inputA.focus();
+            $inputB.blur();
+
+            expect(focusEvent).to.be.equal("triggered");
+            expect(blurEvent).to.be.equal("triggered");
         });
 
     });
