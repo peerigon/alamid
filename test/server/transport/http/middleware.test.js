@@ -59,9 +59,11 @@ describe("setAjaxFlag", function(){
 
 });
 
-describe("serverInitPageShortcut", function(){
+describe("serveInitPageShortcut", function(){
+
 
     var serveInitPageShortcut = rewire("../../../../lib/server/transport/http/middleware/serveInitPageShortcut.js", false);
+
     serveInitPageShortcut.__set__("serveInitPage", function(req, res, next) {
         //so we can test for it
         req.servingPage = true;
@@ -89,6 +91,7 @@ describe("serverInitPageShortcut", function(){
             done();
         });
     });
+
 });
 
 describe("httpAdapter", function(){
