@@ -11,18 +11,6 @@ var ExtendedByDisplayObject = new Class({
     Extends: DisplayObject,
 
     /**
-     * @type {string}
-     * @private
-     */
-    __focus: "untriggered",
-
-    /**
-     * @type {string}
-     * @private
-     */
-    __blur: "untriggered",
-
-    /**
      *
      * How to use: displayObjectInstance.append(new displayObjectInstance()).at("nodeName").
      *
@@ -41,14 +29,6 @@ var ExtendedByDisplayObject = new Class({
      */
     addNodeEvents: function (nodeEvents) {
         this.Super._addNodeEvents(nodeEvents);
-    },
-
-    _onFocus: function () {
-        this.__focus = "triggered";
-    },
-
-    _onBlur: function () {
-        this.__blur = "triggered";
     }
 
 });
