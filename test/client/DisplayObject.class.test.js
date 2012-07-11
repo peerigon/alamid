@@ -77,10 +77,6 @@ describe("DisplayObject", function () {
             }).to.throwError();
         });
 
-        it("should return an object providing a function at()", function () {
-            expect(formDisplayObject.append(submitButtonDisplayObject).at).to.be.a(Function);
-        });
-
     });
 
     describe("# at()", function () {
@@ -187,21 +183,38 @@ describe("DisplayObject", function () {
             ).to.be.equal(submitButtonDisplayObject.getNode().toString());
         });
 
+        it("should be the same === element", function () {
+
+        });
+
     });
 
     describe("# dispose()", function () {
 
-        it("should return a reference to itself", function () {
-            expect(submitButtonDisplayObject.dispose()).to.be(submitButtonDisplayObject);
+        beforeEach(function () {
+            formDisplayObject.append(submitButtonDisplayObject).at("form");
+        });
+
+        it("should NOT return a reference to itself", function () {
+            expect(submitButtonDisplayObject.dispose()).to.be(undefined);
         });
 
         it("should remove itself from parent node", function () {
-            formDisplayObject.append(submitButtonDisplayObject).at("form");
             submitButtonDisplayObject.dispose();
             expect(jQuery(formDisplayObject.getNode()).find("[type='submit']").length).to.be.equal(0);
         });
 
-        it("should NOT be possible to trigger before attached events after # dispose()", function (done) {
+        it("should be NOT possible to get a node", function () {
+            submitButtonDisplayObject.dispose();
+            expect(submitButtonDisplayObject.getNode()).to.not.be.ok();
+        });
+
+        it("should be NOT possible to get a map of nodes", function () {
+            submitButtonDisplayObject.dispose();
+            expect(submitButtonDisplayObject.getNodeMap()).to.not.be.ok();
+        });
+
+        it("should be NOT possible to trigger before attached events after # dispose()", function (done) {
             submitButtonDisplayObject.addNodeEvents({
                 "submit-button": {
                     "click": function () {
@@ -210,8 +223,6 @@ describe("DisplayObject", function () {
                 }
             });
 
-            formDisplayObject.append(submitButtonDisplayObject).at("form");
-
             submitButtonDisplayObject.dispose();
 
             jQuery(submitButtonDisplayObject.getNode()).click();
@@ -219,14 +230,12 @@ describe("DisplayObject", function () {
             done();
         });
 
-        it("should be possible to re-append a disposed DisplayObject", function () {
-            formDisplayObject.append(submitButtonDisplayObject).at("form");
+        it("should be NOT possible to re-append a disposed DisplayObject", function () {
             submitButtonDisplayObject.dispose();
-            formDisplayObject.append(submitButtonDisplayObject).at("form");
 
-            expect(
-                jQuery(formDisplayObject.getNode()).find("[type='submit']")[0].toString()
-            ).to.be.equal(submitButtonDisplayObject.getNode().toString());
+            expect(function () {
+                formDisplayObject.append(submitButtonDisplayObject).at("form");
+            }).to.be.throwError();
         });
     });
 
