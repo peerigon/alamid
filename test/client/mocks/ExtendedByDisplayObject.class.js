@@ -1,7 +1,7 @@
 "use strict";
 
 var Class = require("nodeclass").Class,
-    DisplayObject = require("../DisplayObject.class.js");
+    DisplayObject = require("../../../lib/client/DisplayObject.class.js");
 
 /**
  * This is a mock for testing DisplayObject's append() by making it a public method.
@@ -9,6 +9,18 @@ var Class = require("nodeclass").Class,
 var ExtendedByDisplayObject = new Class({
 
     Extends: DisplayObject,
+
+    /**
+     * @type {string}
+     * @private
+     */
+    __focus: "untriggered",
+
+    /**
+     * @type {string}
+     * @private
+     */
+    __blur: "untriggered",
 
     /**
      *
@@ -20,6 +32,23 @@ var ExtendedByDisplayObject = new Class({
      */
     append: function (displayObject) {
         return this.Super._append(displayObject);
+    },
+
+    /**
+     * Exposing protected _addNodeEvents for testing.
+     *
+     * @param nodeEvents
+     */
+    addNodeEvents: function (nodeEvents) {
+        this.Super._addNodeEvents(nodeEvents);
+    },
+
+    _onFocus: function () {
+        this.__focus = "triggered";
+    },
+
+    _onBlur: function () {
+        this.__blur = "triggered";
     }
 
 });
