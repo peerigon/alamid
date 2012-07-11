@@ -170,5 +170,4 @@ describe("Request", function() {
             expect(myRequest.getType()).to.be("validator");
         });
     });
-
 });
