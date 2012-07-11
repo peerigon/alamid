@@ -11,11 +11,11 @@
         });
     }
 
-    function wsRequest(method, url, data) {
+    function wsRequest(method, url, data, callback) {
         socket.emit(method, url, data, function(response) {
             console.log("wsResponse: ", response);
+            callback(response);
         });
     }
-
 
 </script>
