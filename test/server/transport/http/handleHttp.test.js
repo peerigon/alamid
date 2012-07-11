@@ -13,7 +13,7 @@ require("nodeclass").registerExtension();
 
 function runTestServer(configEnv, callback) {
 
-    var cmd = "node " + path.resolve(__dirname, "../../handleHttp/runServer.js"),
+    var cmd = "node " + path.resolve(__dirname, "./handleHttp/runServer.js"),
         testSrv;
 
     testSrv = exec(cmd, { "env" : configEnv },
@@ -55,7 +55,7 @@ describe("handleHttp", function() {
 
         before(function(done) {
             runTestServer({
-                "appDir" : path.resolve(__dirname, "../../handleHttp/exampleProject1")
+                "appDir" : path.resolve(__dirname, "./handleHttp/exampleProject1")
             }, function(srvInstance) {
                 serverInstance = srvInstance;
                 console.log("before done");
