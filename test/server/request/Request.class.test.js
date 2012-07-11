@@ -136,6 +136,22 @@ describe("Request", function() {
 
     });
 
+    describe("#setSession", function() {
+
+           var myRequest;
+
+           before(function(){
+               myRequest = new Request(method, path, data);
+           });
+
+           it("should set the session", function() {
+               myRequest.setSession({ "sessionData" : "sessionValue" });
+               expect(myRequest.getSession()).to.eql({ "sessionData" : "sessionValue" });
+           });
+       });
+
+
+
     describe("#getType", function() {
 
         var myRequest;
