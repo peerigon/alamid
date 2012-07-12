@@ -38,7 +38,7 @@ describe("WebsocketTransport", function() {
 
     describe("#Websocket Requesting", function() {
         before(function(done) {
-            this.browser = new Browser({ "debug" : true });
+            this.browser = new Browser();
             this.browser
                 .visit("http://localhost:9090/statics/websockettest.html")
                 .then(done, done);
