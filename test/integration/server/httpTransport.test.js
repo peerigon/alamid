@@ -1,37 +1,13 @@
 "use strict";
 
-var util = require('util'),
-    path = require("path"),
+var path = require("path"),
     exec = require('child_process').exec,
-    spawn = require('child_process').spawn,
-    connect = require("connect"),
     expect = require("expect.js"),
-    rewire = require("rewire"),
     http = require("http");
 
+var runTestServer = require("../setup/runTestServer.js");
+
 require("nodeclass").registerExtension();
-
-function runTestServer(configEnv, callback) {
-
-    var cmd = "node " + path.resolve(__dirname, "./handleHttp/runServer.js"),
-        testSrv;
-
-    testSrv = exec(cmd, { "env" : configEnv },
-        function (error) {
-            if (error !== null) {
-                console.log('exec error: ' + error);
-            }
-        });
-
-    testSrv.stdout.on("data", function(data) {
-
-        console.log(data);
-
-        if(data.indexOf("TEST-SERVER listening on 9090") !== -1){
-            callback(testSrv);
-        }
-    });
-}
 
 function httpRequest(reqPath, callback) {
     http.get({host:'localhost', port:9090, path: reqPath, agent:false}, function (res) {
@@ -55,7 +31,7 @@ describe("handleHttp", function() {
 
         before(function(done) {
             runTestServer({
-                "appDir" : path.resolve(__dirname, "./handleHttp/exampleProject1")
+                "appDir" : path.resolve(__dirname, "../setup/testApp")
             }, function(srvInstance) {
                 serverInstance = srvInstance;
                 console.log("before done");
@@ -131,7 +107,7 @@ describe("handleHttp", function() {
         });
 
         describe("#onValidatorRequest", function(){
-            it("should hand the request on to the validatir-route", function (done) {
+            it("should hand the request on to the validator-route", function (done) {
                 this.timeout(100000);
                 httpRequest("/validators/myNonExistentValidator/", function(data) {
                     expect(data).to.contain("No validator found for");

@@ -21,13 +21,15 @@
         "socket.io" : "0.9.x",
         "browserify" : "1.x",
         "browserify-bypass": "0.1.x",
-        "jake" : "0.3.x"
+        "jake" : "0.3.x",
+        "cookie" : "0.x"
     },
     "devDependencies": {
         "expect.js": "0.1.x",
         "mocha": "1.2.x",
         "rewire": "0.3.x",
-        "nof5": "git://github.com/pandaa/nof5.git"
+        "nof5": "git://github.com/pandaa/nof5.git",
+        "zombie" : "1.x"
     },
     "scripts" : {
         "test" : "mocha ./test/nodejs/ --mode testing",
