@@ -22,8 +22,11 @@ var config = require("../../../lib/core/config"),
 
 function populateServices(callback) {
     collectServices(config.paths.services, function onCollectServicesCallback(err, collectedServices) {
-        services.setServices(collectedServices);
-        callback(err, collectedServices);
+
+        console.log("FOUND SERVICES", collectedServices.server);
+
+        services.setServices(collectedServices.server);
+        callback(err, collectedServices.server);
     });
 }
 
