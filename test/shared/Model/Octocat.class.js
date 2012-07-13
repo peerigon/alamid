@@ -1,20 +1,9 @@
 
 var Class = require("nodeclass").Class;
-var Model = require('../../../lib/shared/Model.class.js');
+var Model = require('../../../lib/shared/Model.class.js'),
+    schema = require("./schemas/OctocatSchema.js");
 
-var schema = {
-    name: {
-        type : String,
-        default : "John Wayne"
-    },
-    age: {
-        type : Number,
-        default : 45
-    },
-    kills: Number
-};
-
-var User1 = new Class({
+var Octocat = new Class({
     Extends : Model,
     "init": function() {
         this.Super(__filename, schema);
@@ -31,4 +20,4 @@ var User1 = new Class({
     }
 });
 
-module.exports = User1;
+module.exports = Octocat;
