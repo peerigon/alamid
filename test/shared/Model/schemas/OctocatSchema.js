@@ -4,8 +4,9 @@ var OctocatSchema = {
     name: {
         type: String,
         required: true,
-        validate: function (name) {
-            return true;
+        validate: function (name, callback) {
+            //async test
+            callback(true);
         }
     },
     age : {

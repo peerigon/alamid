@@ -9,12 +9,6 @@ var Octocat = new Class({
         this.Super(__filename, schema);
         this.Super._setSchema(schema);
     },
-    "getService": function() {
-        return null;
-    },
-    "getValidator": function() {
-        return null;
-    },
     "accept": function() {
         this.Super.acceptCurrentState();
     }

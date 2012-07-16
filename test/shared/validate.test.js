@@ -9,7 +9,7 @@ describe("validate", function () {
 
     var testModel;
 
-    before(function() {
+    beforeEach(function() {
         testModel = {
             name : "SuperCat",
             age : 12,
@@ -35,6 +35,20 @@ describe("validate", function () {
             expect(result.server.result).to.be(false);
             expect(result.server.fields.name).to.be(true);
             expect(result.server.fields.age).to.be(false);
+        });
+    });
+
+    it("should use required-validators if defined", function () {
+
+        //testModel.age = 0;
+        testModel.name = undefined;
+
+        validator(testSchema, testModel, { client : true, server : true }, function(result) {
+            console.log(result);
+            expect(result.result).to.be(false);
+            expect(result.server.result).to.be(false);
+            expect(result.server.fields.name).to.be("required");
+            //expect(result.server.fields.age).to.be("required"); //????
         });
     });
 

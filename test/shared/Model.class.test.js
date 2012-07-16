@@ -350,6 +350,28 @@ describe("Model", function() {
             });
         });
     });
+
+    describe("Validation", function(){
+
+        var octocat;
+
+        beforeEach(function() {
+            octocat = new Octocat();
+        });
+
+        it("should call the expected validators", function() {
+            octocat.set('name', 'Octocat');
+            octocat.set('age', 8);
+
+            /*
+            octocat.validate({ client : true, server : true }, function(result) {
+                console.log("RESULT:", result);
+                done();
+            });
+            */
+        });
+    });
+
     //*/
 });
 
