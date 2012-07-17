@@ -14,9 +14,9 @@
         "async": "0.1.x",
         "connect": "2.3.6",
         "winston": "0.5.x",
-        "fshelpers": "https://github.com/pandaa/fshelpers/tarball/v0.2.0",
+        "fshelpers": "https://github.com/peerigon/fshelpers/tarball/v0.2.0",
         "toSrc": "0.1.x",
-        "nodeclass": "https://github.com/pandaa/nodeclass/tarball/v0.1.11",
+        "nodeclass": "https://github.com/peerigon/nodeclass/tarball/v0.1.11",
         "nconf" : "0.5.x",
         "socket.io" : "0.9.x",
         "browserify" : "1.x",
@@ -28,7 +28,7 @@
         "expect.js": "0.1.x",
         "mocha": "1.2.x",
         "rewire": "0.3.x",
-        "nof5": "git://github.com/pandaa/nof5.git",
+        "nof5": "git://github.com/peerigon/nof5.git",
         "zombie" : "1.x"
     },
     "scripts" : {
