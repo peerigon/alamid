@@ -1,22 +1,15 @@
 var path = require("path"),
     nodeclass = require("nodeclass");
 
-
+nodeclass.registerExtension();
 
 desc('This is the default task.');
 task('default', function () {
     console.log("what can i do, for you? ");
 });
 
-task('compileTestAlamid', function () {
-    //self-executing module
-    nodeclass.registerExtension();
-
-});
-
-
 //to be deleted! just to be compatible during change of test-structure
-task('test-nodejs',["compileTestAlamid"], function () {
+task('test-nodejs', function () {
 
     var list = new jake.FileList();
     list.include('test/nodejs/**/*.test.js');
@@ -77,7 +70,7 @@ task('test-client', function () {
 
 
 desc('Test all server, core and shared files');
-task('test-server-all',["compileTestAlamid"], function () {
+task('test-server-all', function () {
 
     var list = new jake.FileList();
     list.include('test/server/**/*.test.js');
