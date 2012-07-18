@@ -1,11 +1,11 @@
 {
     "name": "alamid",
-    "description": "Framework for RESTful JavaScript web applications that run both on the server- and clientside.",
+    "description": "Framework for realtime JavaScript web applications that run both on the server- and clientside.",
     "version": "0.1.0",
     "repository": "git://github.com/peerigon/alamid.git",
-    "author": "pandaa",
+    "author": "peerigon",
     "main": "./lib/core/compileAlamid.js",
-    "keywords": ["client", "server", "framework", "rest", "web application"],
+    "keywords": ["client", "server", "framework", "rest", "web application", "websockets", "realtime"],
     "engines": {
         "node": "0.6.x"
     },

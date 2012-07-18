@@ -22,7 +22,7 @@ task('test-nodejs', function () {
 });
 
 desc('Test all server files');
-task('test-server',["compileTestAlamid"], function () {
+task('test-server', function () {
 
     var list = new jake.FileList();
     list.include('test/server/**/*.test.js');
@@ -35,7 +35,7 @@ task('test-server',["compileTestAlamid"], function () {
 });
 
 desc('Test all core files');
-task('test-core',["compileTestAlamid"], function () {
+task('test-core', function () {
 
     var list = new jake.FileList();
     list.include('test/core/**/*.test.js');
@@ -48,7 +48,7 @@ task('test-core',["compileTestAlamid"], function () {
 });
 
 desc('Test all shared files');
-task('test-shared', ["compileTestAlamid"], function () {
+task('test-shared', function () {
 
     var list = new jake.FileList();
     list.include('test/shared/**/*.test.js');
