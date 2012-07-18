@@ -99,7 +99,7 @@ describe("handleHttp", function() {
             it("should hand the request on to the service-route", function (done) {
                 this.timeout(100000);
                 httpRequest("/services/myNonExistentService/", function(data) {
-                    expect(data).to.contain("(alamid) No service found for");
+                    expect(data).to.contain("No service found for");
                     expect(data).to.contain('{"status":"error"');
                     done();
                 });
