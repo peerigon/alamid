@@ -25,10 +25,10 @@ describe("runService", function(){
 
                 if(path === "test"){
                     return {
-                        "create" : function(model, req, res, callback){ callback({ "status" : "success" }); },
-                        "read" : function(model, req, res, callback){ callback( { "status" : "success", "data" : model }); },
-                        "readCollection" : function(model, req, res, callback){ callback( { "status" : "success", "data" : { "readCollection" : true }}); },
-                        "update" : function(model, req, res, callback){ callback(); }
+                        "create" : function(model, callback){ callback({ "status" : "success" }); },
+                        "read" : function(model, callback){ callback( { "status" : "success", "data" : model }); },
+                        "readCollection" : function(model, callback){ callback( { "status" : "success", "data" : { "readCollection" : true }}); },
+                        "update" : function(model, callback){ callback(); }
                     };
                 }
 
@@ -231,12 +231,10 @@ describe("runService", function(){
                 getService : function(path) {
                     if(path === "blogpost"){
                         return {
-                            "create" : function(model, req, res, callback){
+                            "create" : function(model, callback){
                                 callback({"status" : "success", "errorMessage" : "my dummy error", "data" : { "da" : "ta" }});
                             },
-                            "update" : function(model, req, res, callback){
-                                res.setStatusCode(418);
-                                model.newKey = "newValue";
+                            "update" : function(model, callback){
                                 callback();
                             }
                         };
@@ -268,7 +266,7 @@ describe("runService", function(){
             });
         });
 
-        it("should derive all data that hasn't been set with an empty callback", function(done) {
+        it("should throw an error with an empty callback", function(done) {
 
             var method = "update",
                 path = "/services/blogpost/",
@@ -281,11 +279,7 @@ describe("runService", function(){
             request.setModel(data);
 
             runService(request, response, function(err) {
-                expect(request.getIds()).to.eql({});
-                expect(err).to.be(null);
-                expect(response.getStatusCode()).to.be(418);
-                expect(response.getStatus()).to.be("success");
-                expect(response.getData()).to.eql({ "da" : "ta", "newKey" : "newValue" });
+                expect(err).not.to.be(null);
                 done();
             });
         });
