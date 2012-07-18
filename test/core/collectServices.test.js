@@ -31,20 +31,20 @@ describe("collectServices", function () {
             expect(err).to.be(null);
             expect(services.server).to.only.have.keys(Object.keys(expectedServices.server));
             expect(services.client).to.only.have.keys(Object.keys(expectedServices.client));
-            expect(services.server["CService.server.class.js"].create).to.be.a("function");
-            expect(services.server["A/AService.server.class.js"].create).to.be.a("function");
-            expect(services.server["B/BService.server.class.js"].create).to.be.a("function");
+            expect(services.server.A.create).to.be.a("function");
+            expect(services.server.B.create).to.be.a("function");
+            expect(services.server["B/C"].create).to.be.a("function");
 
             done();
         }
 
-        expectedServices.server["CService.server.class.js"] = true;
-        expectedServices.server["A/AService.server.class.js"] = true;
-        expectedServices.server["B/BService.server.class.js"] = true;
+        expectedServices.server["B/C"] = true;
+        expectedServices.server.A = true;
+        expectedServices.server.B = true;
 
-        expectedServices.client["CService.client.class.js"] = true;
-        expectedServices.client["A/AService.client.class.js"] = true;
-        expectedServices.client["B/BService.client.class.js"] = true;
+        expectedServices.client["B/C"] = true;
+        expectedServices.client.A = true;
+        expectedServices.client.B = true;
 
 
         collectServices = rewire("../../lib/core/collectServices.js", false);
