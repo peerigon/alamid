@@ -51,20 +51,6 @@ describe("collectServices", function () {
         collectServices(servicesFolder, onCollectServicesEnd);
     });
 
-    it("should abort on error", function (done) {
-        var finder;
-
-        function onCollectServicesError(err) {
-            expect(err instanceof Error).to.be(true);
-            done();
-        }
-
-        collectServices = rewire("../../lib/core/collectServices.js", false);
-        collectServices(testFolder, onCollectServicesError);
-
-        finder = collectServices.__get__("unitTestLeaks").finder;
-        finder.emit("error", new Error());
-    });
 
     it("should fail on non existing folders", function (done) {
 
