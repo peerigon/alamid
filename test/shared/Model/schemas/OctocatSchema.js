@@ -10,10 +10,10 @@ var OctocatSchema = {
         }
     },
     age : {
-        type : Number,
-        required : false,
-        default : 5,
-        validate : function(age) {
+        "type" : Number,
+        "required" : false,
+        "default" : 5,
+        "validate" : function(age) {
             if(age >= 100) {
                 return false;
             }

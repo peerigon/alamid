@@ -232,45 +232,11 @@ describe("Model", function() {
                     kills: null
                 });
 
-                //OLD
-
-//                 expect(user.toJSON()).to.eql({
-//                 name: 'John Wayne',
-//                 age: 45,
-//                 kills: 1
-//                 });
-
-
-                expect(user.toJSON()).to.eql({
+                expect(JSON.parse(user.toJSON())).to.eql({
                     name: 'Octocat',
                     age: 5,
                     kills: 1
                 });
-            });
-
-            it("should work even after serialization", function() {
-
-                var json1,
-                    json2,
-                    json3;
-
-                json1 = user.toJSON();
-                json2 = JSON.parse(JSON.stringify(user));    // fake serializing
-                user.set(json2);
-                json3 = user.toJSON();
-
-                expect(json1).to.eql(json2);
-                expect(json2).to.eql(json3);
-
-                user.removeAll();   // should also work for default / null values
-                json1 = user.toJSON();
-                json2 = JSON.parse(JSON.stringify(user));    // fake serializing
-                user.set(json2);
-                json3 = user.toJSON();
-
-                expect(json1).to.eql(json2);
-                expect(json2).to.eql(json3);
-
             });
         });
 
@@ -284,7 +250,7 @@ describe("Model", function() {
             });
         });
 
-        describe("#Events", function() {
+        describe("Events", function() {
 
             it("should call all events", function() {
                 var changeTimes = 0;
@@ -359,16 +325,15 @@ describe("Model", function() {
             octocat = new Octocat();
         });
 
-        it("should call the expected validators", function() {
+        it("should call the expected validators", function(done) {
             octocat.set('name', 'Octocat');
             octocat.set('age', 8);
 
-            /*
             octocat.validate({ client : true, server : true }, function(result) {
                 console.log("RESULT:", result);
                 done();
             });
-            */
+
         });
     });
 
