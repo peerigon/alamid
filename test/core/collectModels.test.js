@@ -31,15 +31,14 @@ describe("collectModels", function () {
             expect(err).to.be(null);
             expect(models.server).to.only.have.keys(Object.keys(expectedModels.server));
             expect(models.client).to.only.have.keys(Object.keys(expectedModels.client));
-            expect(models.server["BlogPost/BlogPost.server.class.js"]).to.be.an("object");
-            expect(models.server["BlogPost/BlogPost.class.js"]).to.be(undefined);
-            expect(models.server["BlogPost/Comment/Comment.server.class.js"]).to.be.an("object");
+            expect(models.server.BlogPost).to.be.an("object");
+            expect(models.server["BlogPost/Comment"]).to.be.an("object");
             done();
         }
 
-        expectedModels.server["BlogPost/BlogPost.server.class.js"] = true;
-        expectedModels.server["BlogPost/Comment/Comment.server.class.js"] = true;
-        expectedModels.client["BlogPost/BlogPost.client.class.js"] = true;
+        expectedModels.server.BlogPost = true;
+        expectedModels.server["BlogPost/Comment"] = true;
+        expectedModels.client.BlogPost = true;
 
         collectModels = rewire("../../lib/core/collectModels.js", false);
         collectModels (servicesFolder, onCollectModelsEnd);
