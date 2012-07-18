@@ -23,7 +23,7 @@ describe("runService", function(){
         var servicesMock = {
             getService : function(path) {
 
-                if(path === "test/testService.server.class.js"){
+                if(path === "test"){
                     return {
                         "create" : function(model, req, res, callback){ callback({ "status" : "success" }); },
                         "read" : function(model, req, res, callback){ callback( { "status" : "success", "data" : model }); },
@@ -32,7 +32,7 @@ describe("runService", function(){
                     };
                 }
 
-                if(path === "test2/test2Service.server.class.js"){
+                if(path === "test2"){
                     return {};
                 }
                 return null;
@@ -157,7 +157,7 @@ describe("runService", function(){
         before(function() {
             var servicesMock = {
                 getService : function(path) {
-                    if(path === "servicea/serviceaService.server.class.js"){
+                    if(path === "servicea"){
                         var ServiceA = require("./runService/src/AService.server.class.js");
                         return new ServiceA();
                     }
@@ -193,7 +193,7 @@ describe("runService", function(){
         before(function() {
             var servicesMock = {
                 getService : function(path) {
-                    if(path === "blogpost/comments/commentsService.server.class.js"){
+                    if(path === "blogpost/comments"){
                         var ServiceA = require("./runService/src/AService.server.class.js");
                         return new ServiceA();
                     }
@@ -229,7 +229,7 @@ describe("runService", function(){
         before(function() {
             var servicesMock = {
                 getService : function(path) {
-                    if(path === "blogpost/blogpostService.server.class.js"){
+                    if(path === "blogpost"){
                         return {
                             "create" : function(model, req, res, callback){
                                 callback({"status" : "success", "errorMessage" : "my dummy error", "data" : { "da" : "ta" }});
