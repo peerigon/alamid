@@ -1,3 +1,4 @@
+"use strict";
 
 var Class = require("nodeclass").Class;
 var Model = require('../../../lib/shared/Model.class.js');
@@ -16,11 +17,12 @@ var schema = {
 
 var User1 = new Class({
     Extends : Model,
-    "init": function() {
-        this.Super(__filename, schema);
-        this.Super._setSchema(schema);
+    $url : "User1",
+    init: function() {
+        this.Super();
+        this.Super.setSchema(schema);
     },
-    "getService": function() {
+    getService: function() {
         return null;
     },
     "getValidator": function() {
