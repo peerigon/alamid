@@ -9,14 +9,6 @@ var expect = require("expect.js"),
 
 describe("DisplayObject", function () {
 
-    describe("# construct()", function () {
-
-        it("should throw an error if no template is given", function () {
-            expect(function () { var dO = new DisplayObject(); }).to.throwError();
-        });
-
-    });
-
     var $form,
         form,
         formTemplate,
@@ -44,7 +36,15 @@ describe("DisplayObject", function () {
         formDisplayObject = new ExtendedByDisplayObject(formTemplate);
     });
 
-    describe("# getNode()", function () {
+    describe(".construct()", function () {
+
+        it("should throw an error if no template is given", function () {
+            expect(function () { var dO = new DisplayObject(); }).to.throwError();
+        });
+
+    });
+
+    describe(".getNode()", function () {
 
         it("should return an node according to given template", function () {
             expect(displayObject.getNode().toString()).to.be.equal("[object HTMLFormElement]");
@@ -52,7 +52,7 @@ describe("DisplayObject", function () {
 
     });
 
-    describe("# getNodeMap()", function () {
+    describe(".getNodeMap()", function () {
 
         it("should return an object", function () {
             expect(typeof displayObject.getNodeMap()).to.be.equal("object");
@@ -69,7 +69,7 @@ describe("DisplayObject", function () {
 
     });
 
-    describe("# _append()", function () {
+    describe("._append()", function () {
 
         it("should throw an Error if an object not kind of DisplayObject is given", function () {
             expect(function () {
@@ -79,7 +79,7 @@ describe("DisplayObject", function () {
 
     });
 
-    describe("# at()", function () {
+    describe(".append().at()", function () {
 
         it("should throw an Error if a not existent node name was passed to # at()", function () {
             expect(function () {
@@ -103,7 +103,7 @@ describe("DisplayObject", function () {
 
     });
 
-    describe("# _addNodeEvents()", function () {
+    describe("._addNodeEvents()", function () {
 
         it("should throw an Error if you try to attach events to a not existing node", function () {
             expect(function () {
@@ -145,7 +145,7 @@ describe("DisplayObject", function () {
 
     });
 
-    describe("# destroy()", function () {
+    describe(".destroy()", function () {
 
         it("should return a reference to itself", function () {
             expect(submitButtonDisplayObject.destroy()).to.be.equal(submitButtonDisplayObject);
@@ -189,7 +189,7 @@ describe("DisplayObject", function () {
 
     });
 
-    describe("# dispose()", function () {
+    describe(".dispose()", function () {
 
         beforeEach(function () {
             formDisplayObject.append(submitButtonDisplayObject).at("form");
@@ -239,7 +239,7 @@ describe("DisplayObject", function () {
         });
     });
 
-    describe("# hide()", function () {
+    describe(".hide()", function () {
 
         it("node should have the attribute class with at least " + STATICS.HIDE_CLASS + " as value", function () {
             displayObject.hide();
@@ -247,7 +247,7 @@ describe("DisplayObject", function () {
         });
     });
 
-    describe("# display()", function () {
+    describe(".display()", function () {
 
         it("node should NOT have the attribute class with " + STATICS.HIDE_CLASS + " as value", function () {
             displayObject.display();
@@ -275,7 +275,7 @@ describe("DisplayObject", function () {
 
     });
 
-    describe("# isAppended()", function () {
+    describe(".isAppended()", function () {
 
         var formDisplayObject,
             submitButtonDisplayObject;
