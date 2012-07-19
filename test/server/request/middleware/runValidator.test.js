@@ -94,7 +94,7 @@ describe("runValidator", function(){
 
         it("should end the request and set the response-fields if no validator was found", function (done) {
             var method = "create",
-                path = "/validators/nonExistentValidatorPath/",
+                path = "/validators/nonexistentvalidatorpath/",
                 data = {
                     "title" : "my test title",
                     "creator" : "octo"
@@ -104,7 +104,7 @@ describe("runValidator", function(){
                 response = new Response();
 
             runValidator(request, response, function(err) {
-                expect(err.message).to.contain("No validator found for Model 'nonExistentValidatorPath'");
+                expect(err.message).to.contain("No validator found for Model 'nonexistentvalidatorpath'");
                 done();
 
             });

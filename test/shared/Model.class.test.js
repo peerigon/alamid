@@ -330,7 +330,7 @@ describe("Model", function() {
             octocat.set('age', 8);
 
             octocat.validate({ client : true, server : true }, function(result) {
-                console.log("RESULT:", result);
+                //console.log("RESULT:", result);
                 done();
             });
 

@@ -49,6 +49,11 @@ describe("Request", function() {
             expect(myRequest2.getPath()).to.be("users");
         });
 
+        it("should make the path lowecase", function() {
+            myRequest2.setPath("/services/Users/");
+            expect(myRequest2.getPath()).to.be("users");
+        });
+
 
         it("should remove ids from urls", function() {
             myRequest2.setPath("/services/users/123/comments");
@@ -138,17 +143,17 @@ describe("Request", function() {
 
     describe("#setSession", function() {
 
-           var myRequest;
+        var myRequest;
 
-           before(function(){
-               myRequest = new Request(method, path, data);
-           });
+        before(function(){
+            myRequest = new Request(method, path, data);
+        });
 
-           it("should set the session", function() {
-               myRequest.setSession({ "sessionData" : "sessionValue" });
-               expect(myRequest.getSession()).to.eql({ "sessionData" : "sessionValue" });
-           });
-       });
+        it("should set the session", function() {
+            myRequest.setSession({ "sessionData" : "sessionValue" });
+            expect(myRequest.getSession()).to.eql({ "sessionData" : "sessionValue" });
+        });
+    });
 
 
 

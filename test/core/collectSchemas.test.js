@@ -32,23 +32,23 @@ describe("collectSchemas", function () {
             expect(schemas.server).to.only.have.keys(Object.keys(expectedSchemas.server));
             expect(schemas.client).to.only.have.keys(Object.keys(expectedSchemas.client));
             expect(schemas.shared).to.only.have.keys(Object.keys(expectedSchemas.shared));
-            expect(schemas.server.BlogPost).to.be.an("object");
-            expect(schemas.server["BlogPost/Comment"]).to.be.an("object");
-            expect(schemas.shared["BlogPost/Comment"]).to.be.an("object");
+            expect(schemas.server.blogpost).to.be.an("object");
+            expect(schemas.server["blogpost/comment"]).to.be.an("object");
+            expect(schemas.shared["blogpost/comment"]).to.be.an("object");
             done();
         }
 
-        expectedSchemas.server.BlogPost = true;
-        expectedSchemas.server.User= true;
-        expectedSchemas.server["BlogPost/Comment"] = true;
+        expectedSchemas.server.blogpost = true;
+        expectedSchemas.server.user= true;
+        expectedSchemas.server["blogpost/comment"] = true;
 
-        expectedSchemas.client.BlogPost = true;
-        expectedSchemas.client.User= true;
-        expectedSchemas.client["BlogPost/Comment"] = true;
+        expectedSchemas.client.blogpost = true;
+        expectedSchemas.client.user= true;
+        expectedSchemas.client["blogpost/comment"] = true;
 
-        expectedSchemas.shared.BlogPost = true;
-        expectedSchemas.shared.User= true;
-        expectedSchemas.shared["BlogPost/Comment"] = true;
+        expectedSchemas.shared.blogpost = true;
+        expectedSchemas.shared.user= true;
+        expectedSchemas.shared["blogpost/comment"] = true;
 
         collectSchemas = rewire("../../lib/core/collectSchemas.js", false);
         collectSchemas (modelsFolder, onCollectSchemasEnd);
