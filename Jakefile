@@ -96,6 +96,20 @@ task('test-integration', function () {
     }, {printStdout: true});
 });
 
+task('test-all', function() {
+
+    var list = new jake.FileList();
+    list.include('test/server/**/*.test.js');
+    list.include('test/core/**/*.test.js');
+    list.include('test/shared/**/*.test.js');
+
+    var cmd = "mocha -c -R spec " + list.join(" ") + " --mode testing";
+
+    jake.exec(cmd, function () {
+        complete();
+    }, {printStdout: true});
+});
+
 task('test-jenkins', function() {
 
     var list = new jake.FileList();
