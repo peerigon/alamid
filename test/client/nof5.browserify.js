@@ -7,6 +7,7 @@ exports.use = function useHook() {
 
     return [
         browserifyBypass,
-        nodeclass.browser.browserify
+        nodeclass.bundlers.browserify
     ];
+
 };
