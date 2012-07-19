@@ -44,7 +44,6 @@ describe("validate", function () {
         testModel.name = undefined;
 
         validator(testSchema, testModel, { client : true, server : true }, function(result) {
-            console.log(result);
             expect(result.result).to.be(false);
             expect(result.server.result).to.be(false);
             expect(result.server.fields.name).to.be("required");
