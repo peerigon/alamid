@@ -1,26 +1,14 @@
 "use strict";
 
+//the session data is processed by the middleware!
+
 var sessionService = {
-
-    read : function(model, req, res, callback) {
-
-        var sess = req.getSession();
-        var data = { "sessionCount" : sess.counter };
-
-        callback({"status" : "success", data : data });
+    read : function(model, callback) {
+        callback({"status" : "success", data : model });
 
     },
-    readCollection : function(model, req, res, callback) {
-
-        var sess = req.getSession();
-
-        if(sess.counter === undefined) {
-            sess.counter = 0;
-        }
-
-        sess.counter++;
-
-        callback({ "status": "success", data : { "sessionCount" : sess.counter }});
+    readCollection : function(model, callback) {
+        callback({ "status": "success", data : model });
     }
 };
 

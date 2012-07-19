@@ -4,16 +4,24 @@ require("nodeclass").registerExtension();
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
-    Request = require("../../../lib/server/request/Request.class.js");
+    path = require("path"),
+    Request = require("../../../lib/server/request/Request.class.js"),
+    config = require("../../../lib/shared/config"),
+    collectMiddleware = require("../../../lib/server/collectMiddleware.js"),
+    middleware = require("../../../lib/server/request/middleware.js");
 
 
 describe("handleRequest", function() {
 
-    var handleRequest = rewire("../../../lib/server/request/handleRequest.js", false);
+    var handleRequest;
+
+    beforeEach(function() {
+        handleRequest = rewire("../../../lib/server/request/handleRequest.js", false);
+    });
 
     describe("#Services Request", function() {
 
-        before(function() {
+        beforeEach(function() {
             function runServiceMock(req, res, next) {
                 next();
             }
@@ -46,7 +54,7 @@ describe("handleRequest", function() {
         });
     });
 
-    it("should handle the request and return without an error if all middlewares worked fine", function(done) {
+    it("should handle the request and return without an error if all middleware worked fine", function(done) {
 
         function getMiddlewareMock() {
             return [
@@ -80,6 +88,28 @@ describe("handleRequest", function() {
             handleRequest(req, function(err) {
                 expect(err).not.to.be(null);
                 done();
+            });
+        });
+    });
+
+
+    describe("#Request with Middleware", function() {
+        it("should run the defined middlewares", function(done) {
+            var mwPath = path.resolve(__dirname, "../../exampleApp/app/services/servicesMiddleware.js");
+            collectMiddleware(mwPath, function(err, servicesMiddleware) {
+
+                middleware.setMiddleware("services", servicesMiddleware);
+                handleRequest = rewire("../../../lib/server/request/handleRequest.js", false);
+                handleRequest.__set__("getMiddleware", middleware.getMiddleware);
+
+                var req = new Request("create", "/services/blog", {});
+
+                handleRequest(req, function(err) {
+                    expect(req.getData()).to.eql({ fancy : true });
+                    expect(err).not.to.be(null);
+                    done();
+                });
+
             });
         });
     });
