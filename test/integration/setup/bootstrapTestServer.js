@@ -69,8 +69,6 @@ function bootstrap() {
 
     log.info("Bootstrap: START");
 
-    //TODO sanitize if everything is there: important dirs/files etc.
-
     //check services
     log.info("Loading Services...");
     populateServices(function(err) {
