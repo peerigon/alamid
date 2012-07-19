@@ -44,7 +44,8 @@ function populateMiddleware(callback) {
                 middleware.setMiddleware("services", servicesMiddleware);
 
                 if(err) {
-                    log.debug("No service-middleware found. ");
+                    log.error(err);
+                    log.debug("No services-middleware found. ");
                 }
                 cb();
             });
@@ -55,7 +56,8 @@ function populateMiddleware(callback) {
                 middleware.setMiddleware("validators",validatorsMiddleware);
 
                 if(err) {
-                    log.debug("No validator-middleware found. ");
+                    log.error(err);
+                    log.debug("No validators-middleware found. ");
                 }
                 cb();
             });

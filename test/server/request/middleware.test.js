@@ -3,15 +3,15 @@
 var expect = require("expect.js"),
     middleware = require("../../../lib/server/request/middleware.js");
 
-describe("middleware", function () {
-    describe("#models", function() {
+describe("Middleware", function () {
+    describe("services", function() {
 
         function serviceFunction1 () {}
         function serviceFunction2 () {}
 
         it("should return middleware if the services-object was filled before", function () {
 
-            middleware.setMiddleware("models", {
+            middleware.setMiddleware("services", {
                 "myPath" : {
                     "create" : [serviceFunction1],
                     "delete" : [serviceFunction1, serviceFunction2]
@@ -21,8 +21,8 @@ describe("middleware", function () {
             var myPathCreate,
                 myPathDelete;
 
-            myPathCreate = middleware.getMiddleware("models", "myPath", "create");
-            myPathDelete = middleware.getMiddleware("models", "myPath", "delete");
+            myPathCreate = middleware.getMiddleware("services", "myPath", "create");
+            myPathDelete = middleware.getMiddleware("services", "myPath", "delete");
 
             expect(myPathCreate[0]).to.be(serviceFunction1);
 
