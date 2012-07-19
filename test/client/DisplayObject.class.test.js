@@ -256,7 +256,7 @@ describe("DisplayObject", function () {
 
     });
 
-    describe("# isDisplayed()", function () {
+    describe(".isDisplayed()", function () {
 
         it("should be true by default value", function () {
             expect(displayObject.isDisplayed()).to.be(true);

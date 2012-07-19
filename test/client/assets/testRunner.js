@@ -12,7 +12,12 @@
 
             mocha.setup({
                 ui:"bdd",
-                globals: ["io", "getInterface"] //getInterface seems to a global function from mocha ^^
+                globals: [
+                    "io",
+                    "getInterface", //getInterface seems to a global function from mocha ^^
+                    "stats",
+                    "report"
+                ]
             });
 
             mocha.Runner.prototype.on("suite", function (suite) {
