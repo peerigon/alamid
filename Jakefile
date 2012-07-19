@@ -8,19 +8,6 @@ task('default', function () {
     console.log("what can i do, for you? ");
 });
 
-//to be deleted! just to be compatible during change of test-structure
-task('test-nodejs', function () {
-
-    var list = new jake.FileList();
-    list.include('test/nodejs/**/*.test.js');
-
-    var cmd = "mocha -c -R spec " + list.join(" ") + " --mode testing";
-
-    jake.exec(cmd, function () {
-        complete();
-    }, {printStdout: true});
-});
-
 desc('Test all server files');
 task('test-server', function () {
 
@@ -94,6 +81,19 @@ task('test-browser-all', function () {
     /*
      to be implemented using nof5
      */
+});
+
+desc('Test all server files');
+task('test-integration', function () {
+
+    var list = new jake.FileList();
+    list.include('test/integration/**/*.test.js');
+
+    var cmd = "mocha -c -R spec " + list.join(" ") + " --mode testing";
+
+    jake.exec(cmd, function () {
+        complete();
+    }, {printStdout: true});
 });
 
 task('test-jenkins', function() {
