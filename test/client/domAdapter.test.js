@@ -275,17 +275,24 @@ describe("domAdapter", function () {
     describe("Queries", function () {
 
         var queryObject,
-            queryString;
+            queryStringOthers,
+            queryStringFirefox;
 
         beforeEach(function () {
             queryObject = { "this": "is", "1": "unit", "test": "" };
-            queryString = "1%3Dunit%26this%3Dis%26test%3D";
+            queryStringOthers = "1%3Dunit%26this%3Dis%26test%3D";
+            queryStringFirefox = "this%3Dis%261%3Dunit%26test%3D";
         });
 
         describe("# stringifyQuery()", function () {
 
-            it("should return an equal query-string to '1=unit&this=is&test='", function (){
-                expect(domAdapter.stringifyQuery(queryObject)).to.be.equal(queryString);
+            it("should return an equal query-string to '1=unit&this=is&test='", function () {
+
+                var result =
+                    domAdapter.stringifyQuery(queryObject) === queryStringOthers ||
+                    domAdapter.stringifyQuery(queryObject) === queryStringFirefox;
+
+                expect(result).to.be.ok();
             });
 
         });
@@ -293,7 +300,7 @@ describe("domAdapter", function () {
         describe("# parseQuery()", function () {
 
             it("should parse '1=unit&this=is&test=' to an to the reference eql object", function () {
-                expect(domAdapter.parseQuery(queryString)).to.be.eql(queryObject);
+                expect(domAdapter.parseQuery(queryStringOthers)).to.be.eql(queryObject);
             });
 
         });
