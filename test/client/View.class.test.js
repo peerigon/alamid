@@ -34,12 +34,49 @@ describe("View", function () {
 
     });
 
+    describe(".render()", function () {
+
+        it("should throw an error if no Model was bound or data as argument provided", function () {
+            expect(function () {
+                view.render();
+            }).to.throwError();
+        });
+
+        it("should return a reference to itself", function () {
+            expect(view.render({
+                "input-a": formSchemaABC["input-a"].default,
+            })).to.be.equal(view);
+        });
+
+        it("should render the data which was given as argument", function () {
+            var $form = jQuery(view.getNode()),
+                $inputA = $form.find("[data-node='input-a']"),
+                $inputB = $form.find("[data-node='input-b']"),
+                $inputC = $form.find("[data-node='input-c']");
+
+            view.render({
+                "input-a": formSchemaABC["input-a"].default,
+                "input-b": formSchemaABC["input-b"].default,
+                "input-c": formSchemaABC["input-c"].default
+            });
+
+            expect($inputA.val()).to.be.equal(formSchemaABC["input-a"].default);
+            expect($inputB.val()).to.be.equal(formSchemaABC["input-b"].default);
+            expect($inputC.val()).to.be.equal(formSchemaABC["input-c"].default);
+        });
+
+    });
+
     describe(".bind()", function () {
 
         it("should throw an Error if you try to bind an Object not kind of Model", function () {
             expect(function () {
                 view.bind({});
             }).to.throwError();
+        });
+
+        it("should return a reference to itself", function () {
+           expect(view.bind(formModelABC)).to.be.equal(view);
         });
 
         it("should render the view according to data from given model", function () {
@@ -50,9 +87,9 @@ describe("View", function () {
 
             view.bind(formModelABC);
 
-            expect($inputA.val()).to.be.equal(formSchemaABC.a.default);
-            expect($inputB.val()).to.be.equal(formSchemaABC.b.default);
-            expect($inputC.val()).to.be.equal(formSchemaABC.c.default);
+            expect($inputA.val()).to.be.equal(formSchemaABC["input-a"].default);
+            expect($inputB.val()).to.be.equal(formSchemaABC["input-b"].default);
+            expect($inputC.val()).to.be.equal(formSchemaABC["input-c"].default);
         });
 
         it("should be possible to bind another model", function (done) {
@@ -62,16 +99,79 @@ describe("View", function () {
 
         it("should be re-rendered after a new model was binded", function () {
             var $form = jQuery(view.getNode()),
-                $inputA = $form.find("[data-node='input-a']"),
-                $inputB = $form.find("[data-node='input-b']"),
-                $inputC = $form.find("[data-node='input-c']");
+                $inputD = $form.find("[data-node='input-a']"),
+                $inputE = $form.find("[data-node='input-b']"),
+                $inputF = $form.find("[data-node='input-c']");
 
             view.bind(formModelABC);
             view.bind(formModelDEF);
 
-            expect($inputA.val()).to.be.equal(formSchemaDEF.d.default);
-            expect($inputB.val()).to.be.equal(formSchemaDEF.e.default);
-            expect($inputC.val()).to.be.equal(formSchemaDEF.f.default);
+            expect($inputD.val()).to.be.equal(formSchemaDEF["input-a"].default);
+            expect($inputE.val()).to.be.equal(formSchemaDEF["input-b"].default);
+            expect($inputF.val()).to.be.equal(formSchemaDEF["input-c"].default);
+        });
+
+        it("should be re-rendered after a bound model has emitted 'change'-Event", function () {
+            var $form = jQuery(view.getNode()),
+                $inputA = $form.find("[data-node='input-a']");
+
+            view.bind(formModelABC);
+
+            formModelABC.set("input-a", "d"); //set will emit 'change'-Event
+
+            expect($inputA.val()).to.be.equal("d");
+        });
+
+    });
+
+    describe(".unbind()", function () {
+
+        it("should throw an Error if a Model was unbound and no data was given to .render() as argument", function () {
+            view.bind(formModelABC);
+            view.unbind();
+            expect(function () {
+                view.render();
+            }).to.throwError();
+        });
+
+        it("should return a reference to itself", function () {
+            expect(view.unbind()).to.be.equal(view);
+        });
+
+        it("should NOT be re-rendered after an unbound Model has emitted 'change'-Event", function () {
+            var $form = jQuery(view.getNode()),
+                $inputA = $form.find("[data-node='input-a']");
+
+            view.bind(formModelABC);
+            view.unbind();
+
+            formModelABC.set("input-a", "d");
+
+            expect($inputA.val()).to.be.equal(formSchemaABC["input-a"].default);
+        });
+
+    });
+
+    describe(".dispose()", function () {
+
+        it("should unbind a bound Model", function () {
+            var $form = jQuery(view.getNode()),
+                $inputA = $form.find("[data-node='input-a']");
+
+            view.bind(formModelABC);
+            view.dispose();
+
+            formModelABC.set("input-a", "d");
+
+            expect($inputA.val()).to.be.equal(formSchemaABC["input-a"].default);
+        });
+
+        it("should call Super's dispose()", function (done) {
+            view.on("beforedispose", function () {
+                done();
+            });
+
+            view.dispose();
         });
 
     });
