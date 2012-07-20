@@ -9,8 +9,8 @@ describe("collectMiddleware", function () {
     it("should return the middlewares for services as an usable object", function() {
         collectMiddleware(path.resolve(__dirname, "./collectMiddleware/servicesMiddleware.js"), function(err, parsedMw) {
             expect(parsedMw).to.be.an("object");
-            expect(parsedMw["blogPost/comments"]).to.be.an("object");
-            expect(parsedMw.blogPost).to.be.an("object");
+            expect(parsedMw["blogpost/comments"]).to.be.an("object");
+            expect(parsedMw.blogpost).to.be.an("object");
             expect(parsedMw.users).to.be.an("object");
             expect(parsedMw["users/friends"]).to.be.an("object");
             expect(parsedMw["users/friends/comments"]).to.be.an("object");
@@ -20,7 +20,7 @@ describe("collectMiddleware", function () {
     it("should return the middlewares for validators as an usable object", function() {
         collectMiddleware(path.resolve(__dirname, "./collectMiddleware/validatorsMiddleware.js"), function(err, parsedMw) {
             expect(parsedMw).to.be.an("object");
-            expect(parsedMw.blogPost).to.be.an("object");
+            expect(parsedMw.blogpost).to.be.an("object");
         });
     });
 
