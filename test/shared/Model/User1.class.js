@@ -18,8 +18,8 @@ var schema = {
 var User1 = new Class({
     Extends : Model,
     $url : "User1",
-    init: function() {
-        this.Super();
+    init: function(id) {
+        this.Super(id);
         this.Super.setSchema(schema);
     },
     getService: function() {

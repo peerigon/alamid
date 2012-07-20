@@ -6,8 +6,8 @@ var Model = require('../../../lib/shared/Model.class.js'),
 var Octocat = new Class({
     Extends : Model,
     $url : "Octocat",
-    "init": function() {
-        this.Super(__filename, schema);
+    "init": function(id) {
+        this.Super(id);
         this.Super.setSchema(schema);
     },
     "accept": function() {

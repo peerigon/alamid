@@ -17,7 +17,7 @@ describe("validate", function () {
         };
     });
 
-    it("should apply the validators and succed with the default model data", function () {
+    it("should apply the validators and succeed with the default model data", function () {
         validator(testSchema, testModel, { client : true, server : true }, function(result) {
             expect(result.result).to.be(true);
             expect(result.server.result).to.be(true);
