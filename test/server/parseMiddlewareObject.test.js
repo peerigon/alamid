@@ -5,7 +5,6 @@ var parseMiddlewareObject = require("../../lib/server/parseMiddlewareObject.js")
 
 describe("parseMiddlewareObject", function () {
 
-
     var usersD = function usersD(){},
         usersC = function usersC(){},
         blogPostCPD = function blogPostCPD(){},
@@ -157,5 +156,36 @@ describe("parseMiddlewareObject", function () {
         expect(mwObj.blogPost.read[1]).to.eql(blogPostUpdateAndRead);
         expect(mwObj.blogPost.read[0]).to.eql(blogPostRead);
         expect(mwObj.blogPost.update[0]).to.eql(blogPostUpdateAndRead);
+    });
+
+    it("should accept wildcard-only middleware definitions", function () {
+
+        var mwDef =  {
+            "* /*": blogPostCommentsG
+        };
+
+        var mwObj = parseMiddlewareObject(mwDef);
+        expect(mwObj["/"].create[0]).to.be.eql(blogPostCommentsG);
+        expect(mwObj["/"].read[0]).to.be.eql(blogPostCommentsG);
+        expect(mwObj["/"].update[0]).to.be.eql(blogPostCommentsG);
+        expect(mwObj["/"].delete[0]).to.be.eql(blogPostCommentsG);
+    });
+
+    it("should accept wildcard-only middleware and merge them with other paths", function () {
+
+        var mwDef =  {
+            "* /*": blogPostCommentsG,
+            "create /blogpost" : blogPostCPD
+        };
+
+        var mwObj = parseMiddlewareObject(mwDef);
+
+        expect(mwObj["/"].create[0]).to.be.eql(blogPostCommentsG);
+        expect(mwObj["/"].read[0]).to.be.eql(blogPostCommentsG);
+        expect(mwObj["/"].update[0]).to.be.eql(blogPostCommentsG);
+        expect(mwObj["/"].delete[0]).to.be.eql(blogPostCommentsG);
+
+        expect(mwObj["blogpost"].create[0]).to.be.eql(blogPostCommentsG);
+        expect(mwObj["blogpost"].create[1]).to.be.eql(blogPostCPD);
     });
 });
