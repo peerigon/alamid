@@ -91,6 +91,22 @@ describe("DisplayObject", function () {
             expect(formDisplayObject.append(submitButtonDisplayObject).at("form")).to.be.equal(formDisplayObject);
         });
 
+        it("should emit an 'beforeappend'-Event", function (done) {
+            submitButtonDisplayObject.on("beforeappend", function () {
+               done();
+           });
+
+           formDisplayObject.append(submitButtonDisplayObject).at("form");
+        });
+
+        it("should emit an 'append'-Event", function (done) {
+            submitButtonDisplayObject.on("append", function () {
+                done();
+            });
+
+            formDisplayObject.append(submitButtonDisplayObject).at("form");
+        });
+
         it("should append submit-button to form", function () {
             formDisplayObject.append(submitButtonDisplayObject).at("form");
 
@@ -151,6 +167,22 @@ describe("DisplayObject", function () {
             expect(submitButtonDisplayObject.destroy()).to.be.equal(submitButtonDisplayObject);
         });
 
+        it("should emit a 'beforedestroy'-Event", function (done) {
+            submitButtonDisplayObject.on("beforedestroy", function () {
+                done();
+            });
+
+            submitButtonDisplayObject.destroy();
+        });
+
+        it("should emit a 'destroy'-Event", function (done) {
+            submitButtonDisplayObject.on("destroy", function () {
+                done();
+            });
+
+            submitButtonDisplayObject.destroy();
+        });
+
         it("should remove itself from parent node", function () {
             formDisplayObject.append(submitButtonDisplayObject).at("form");
             submitButtonDisplayObject.destroy();
@@ -183,10 +215,6 @@ describe("DisplayObject", function () {
             ).to.be.equal(submitButtonDisplayObject.getNode().toString());
         });
 
-        it("should be the same === element", function () {
-
-        });
-
     });
 
     describe(".dispose()", function () {
@@ -197,6 +225,22 @@ describe("DisplayObject", function () {
 
         it("should NOT return a reference to itself", function () {
             expect(submitButtonDisplayObject.dispose()).to.be(undefined);
+        });
+
+        it("should emit an 'beforedispose'-Event", function (done) {
+            submitButtonDisplayObject.on("beforedispose", function () {
+                done();
+            });
+
+            submitButtonDisplayObject.dispose();
+        });
+
+        it("should emit an 'dispose'-Event", function (done) {
+            submitButtonDisplayObject.on("dispose", function () {
+                done();
+            });
+
+            submitButtonDisplayObject.dispose();
         });
 
         it("should remove itself from parent node", function () {
