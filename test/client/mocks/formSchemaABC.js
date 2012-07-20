@@ -1,17 +1,17 @@
 "use strict";
 
 var formSchemaABC = {
-    a: {
+    "input-a": {
         type: String,
         required: true,
         default: "a"
     },
-    b: {
+    "input-b": {
         type: String,
         required: true,
         default: "b"
     },
-    c: {
+    "input-c": {
         type: String,
         required: true,
         default: "c"
