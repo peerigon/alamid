@@ -317,6 +317,7 @@ describe("Model", function() {
         });
     });
 
+    /*
     describe("Validation", function(){
 
         var octocat;
@@ -336,6 +337,7 @@ describe("Model", function() {
 
         });
     });
+    */
 
     describe("Services", function(){
 
@@ -437,6 +439,29 @@ describe("Model", function() {
                     expect(err).to.be(null);
                     done();
                 });
+            });
+        });
+
+        describe("Statics", function(){
+
+            var testService;
+
+            beforeEach(function() {
+                testService = {
+                    create : function(model, callback) {
+                        callback({ status : "success", data : { name : model.get("name"), age : 10 }});
+                    },
+                    update : function(model, callback) {
+                        callback({ status : "success", data : { name : model.get("name"), age : 12 }});
+                    },
+                    delete : function(model, callback) {
+                        callback({ status : "success" });
+                    }
+                };
+            });
+
+            it("should call the static method", function() {
+                //console.log(Octocat.find());
             });
         });
     });
