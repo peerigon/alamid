@@ -56,7 +56,7 @@ describe("loadModel", function () {
     });
 
     describe("Autoloading", function() {
-        it("should try to load a model if model wasn't defined before", function (done) {
+        it("should try to load a model if model was not defined before", function (done) {
             function next(err, req) {
                 expect(err).to.be(null);
                 expect(req.getIds()).to.eql({});
@@ -123,12 +123,12 @@ describe("loadModel", function () {
                 loadModelTestHelper("read", "services/blogpost/1234", next);
             });
 
-            it("should return the model-class without passed ID", function (done) {
+            it("should return the request-data without passed ID", function (done) {
 
                 function next(err, req) {
-                    var modelClass = req.getModel();
+                    var modelData = req.getModel();
                     expect(err).to.be(null);
-                    expect(modelClass).to.be.a("function");
+                    expect(modelData).to.be.an("object");
                     expect(req.getIds()).to.eql({});
                     done();
                 }
