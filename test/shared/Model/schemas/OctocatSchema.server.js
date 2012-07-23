@@ -6,10 +6,6 @@ var OctocatSchema = {
         required: true,
         validate: function (name, callback) {
             //async test
-            if(name === null) {
-                callback(false);
-                return;
-            }
             callback(true);
         }
     },
@@ -18,7 +14,7 @@ var OctocatSchema = {
         "required" : false,
         "default" : 5,
         "validate" : function(age) {
-            if(age >= 100) {
+            if(age >= 50) {
                 return false;
             }
             return true;

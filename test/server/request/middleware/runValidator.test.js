@@ -27,12 +27,26 @@ describe("runValidator", function(){
         return "toShort";
     }
 
+    function validateCreator(val) {
+        if(val.length >= 5) {
+            return true;
+        }
+        return "toShort";
+    }
+
     var schemasMock = {
-        getSchema : function(schemaPath) {
-            if(schemaPath === "test") {
+        getSchema : function(schemaPath, type) {
+            if(schemaPath === "test" && type === "shared") {
                 return {
                     "title" : { type : String, validate : validateTitle },
                     "creator" : { type : String, required : true }
+                };
+            }
+            if(schemaPath === "test" && type === "server") {
+                return {
+                    "title" : { type : String, validate : validateTitle },
+                    "creator" : { type : String, required : true, validate: validateCreator },
+                    "location" : { type : String, validate : function(val) { return false; } } //should never be called
                 };
             }
             return null;
@@ -52,7 +66,7 @@ describe("runValidator", function(){
                 path = "/validators/test/",
                 data = {
                     "title" : "my test title",
-                    "creator" : "octo"
+                    "creator" : "octocaaat"
                 };
 
             var request = new Request(method, path, data),
@@ -87,7 +101,32 @@ describe("runValidator", function(){
                 expect(response.getStatusCode()).to.be(500);
                 expect(response.getData()).to.be.an("object");
                 expect(resultObj.result).to.be(false);
-                expect(resultObj.server.fields.title).to.be("toShort");
+                expect(resultObj.shared.fields.title).to.be("toShort");
+                done();
+            });
+        });
+
+        it("should validate shared and server if shared-validation passed", function (done) {
+
+            var method = "create",
+                path = "/validators/test/",
+                data = {
+                    "title" : "my very long title",
+                    "creator" : "oc"
+                };
+
+            var request = new Request(method, path, data),
+                response = new Response();
+
+            runValidator(request, response, function(err) {
+                var resultObj = response.getData();
+                expect(err).to.be(undefined);
+                expect(response.getStatus()).to.be("fail");
+                expect(response.getStatusCode()).to.be(500);
+                expect(response.getData()).to.be.an("object");
+                expect(resultObj.result).to.be(false);
+                expect(resultObj.shared.result).to.be(true);
+                expect(resultObj.local.result).to.be(false);
                 done();
             });
         });
@@ -104,7 +143,7 @@ describe("runValidator", function(){
                 response = new Response();
 
             runValidator(request, response, function(err) {
-                expect(err.message).to.contain("No validator found for Model 'nonexistentvalidatorpath'");
+                expect(err.message).to.contain("for Model 'nonexistentvalidatorpath'");
                 done();
 
             });

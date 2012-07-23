@@ -110,7 +110,7 @@ describe("handleHttp", function() {
             it("should hand the request on to the validator-route", function (done) {
                 this.timeout(100000);
                 httpRequest("/validators/myNonExistentValidator/", function(data) {
-                    expect(data).to.contain("No validator found for");
+                    expect(data).to.contain("found for");
                     expect(data).to.contain('{"status":"error"');
                     done();
                 });

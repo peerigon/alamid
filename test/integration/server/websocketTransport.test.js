@@ -55,7 +55,7 @@ describe("WebsocketTransport", function() {
         it("should return an not defined error for a validator request", function(done) {
             var pommes = this.browser.evaluate("wsRequestTest('read', '/validators/whatever', {});");
             pommes.success = function(res) {
-                expect(JSON.stringify(res)).to.contain('{"status":"error","message":"(alamid) Request failed for path \'whatever\' with Error: \'No validator found for Model ');
+                expect(JSON.stringify(res)).to.contain('{"status":"error","message":"(alamid) Request failed for path \'whatever\' with Error: ');
                 done();
             };
         });
@@ -65,5 +65,3 @@ describe("WebsocketTransport", function() {
         serverInstance.kill("SIGHUP");
     });
 });
-
-
