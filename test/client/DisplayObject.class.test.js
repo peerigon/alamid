@@ -189,7 +189,7 @@ describe("DisplayObject", function () {
             expect(jQuery(formDisplayObject.getNode()).find("[type='submit']").length).to.be.equal(0);
         });
 
-        it("should be still possible to trigger attached events after # destroy()", function (done) {
+        it("should be still possible to trigger attached events after .destroy()", function (done) {
             submitButtonDisplayObject.addNodeEvents({
                 "submit-button": {
                     "click": function () {
@@ -258,7 +258,7 @@ describe("DisplayObject", function () {
             expect(submitButtonDisplayObject.getNodeMap()).to.not.be.ok();
         });
 
-        it("should be NOT possible to trigger before attached events after # dispose()", function (done) {
+        it("should be NOT possible to trigger before attached events after .dispose()", function (done) {
             submitButtonDisplayObject.addNodeEvents({
                 "submit-button": {
                     "click": function () {
@@ -306,12 +306,12 @@ describe("DisplayObject", function () {
             expect(displayObject.isDisplayed()).to.be(true);
         });
 
-        it("should be false after # hide()", function () {
+        it("should be false after .hide()", function () {
             displayObject.hide();
             expect(displayObject.isDisplayed()).to.be(false);
         });
 
-        it("should be true after # hide() and then # display()", function () {
+        it("should be true after .hide() and then .display()", function () {
             displayObject.hide();
             displayObject.display();
             expect(displayObject.isDisplayed()).to.be(true);
@@ -339,12 +339,12 @@ describe("DisplayObject", function () {
             expect(submitButtonDisplayObject.isAppended()).to.be(true);
         });
 
-        it("should be false after # destroy()", function () {
+        it("should be false after .destroy()", function () {
             submitButtonDisplayObject.destroy();
             expect(submitButtonDisplayObject.isAppended()).to.be(false);
         });
 
-        it("should be false after # dispose()", function () {
+        it("should be false after .dispose()", function () {
             submitButtonDisplayObject.dispose();
             expect(submitButtonDisplayObject.isAppended()).to.be(false);
         });
