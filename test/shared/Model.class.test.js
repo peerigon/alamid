@@ -4,7 +4,8 @@ var expect = require("expect.js");
 require("nodeclass").registerExtension();
 
 var User1 = require("./Model/User1.class.js"),
-    Octocat = require("./Model/Octocat.class.js");
+    Octocat = require("./Model/Octocat.class.js"),
+    OctocatSchema = require("./Model/schemas/OctocatSchema.js");
 
 describe("Model", function() {
 
@@ -463,24 +464,27 @@ describe("Model", function() {
 
         describe("Statics", function(){
 
-            var testService;
+            var Model,
+                services;
 
-            beforeEach(function() {
-                testService = {
-                    create : function(model, callback) {
-                        callback({ status : "success", data : { name : model.get("name"), age : 10 }});
-                    },
-                    update : function(model, callback) {
-                        callback({ status : "success", data : { name : model.get("name"), age : 12 }});
-                    },
-                    delete : function(model, callback) {
-                        callback({ status : "success" });
+            before(function() {
+                var testService = {
+                    readCollection : function(model, callback) {
+                        callback({ status : "success", data : model });
                     }
                 };
+                services = require("../../lib/shared/services.js");
+                services.getService =  function() {
+                    return testService;
+                };
+                Model = require("../../lib/shared/Model.class.js");
             });
 
-            it("should call the static method", function() {
-                //console.log(Octocat.find());
+            it("should call the static method and run the mocked readCollection-service", function() {
+                Model.find(Octocat, { da : "ta" }, function(response) {
+                    expect(response.status).to.be("success");
+                    expect(response.data).to.eql({ da : "ta"});
+                });
             });
         });
     });
