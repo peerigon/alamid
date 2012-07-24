@@ -29,8 +29,6 @@ describe("Model", function() {
         });
     });
 
-
-    ///*
     describe("Model-Features", function() {
 
         var user;
@@ -171,7 +169,6 @@ describe("Model", function() {
             });
         });
 
-
         describe("#hasChanged", function() {
 
             it("should return the status of changed attributes", function() {
@@ -218,7 +215,7 @@ describe("Model", function() {
 
         describe("#toJSON", function() {
 
-            it("should convert the attributes to JSON (CHANGED?)", function() {
+            it("should return the attributes as JSON-string", function() {
 
                 user.set('name', 'Octocat');
                 user.set({
@@ -317,27 +314,50 @@ describe("Model", function() {
         });
     });
 
-    /*
-    describe("Validation", function(){
 
+    describe("Validation", function(){
         var octocat;
 
         beforeEach(function() {
             octocat = new Octocat();
         });
 
-        it("should call the expected validators", function(done) {
+        it("should call shared and local validator on default", function(done) {
             octocat.set('name', 'Octocat');
             octocat.set('age', 8);
 
-            octocat.validate({ client : true, server : true }, function(result) {
-                //console.log("RESULT:", result);
+            octocat.validate(function(result) {
+                expect(result.result).to.be(true);
+                expect(result.shared).to.be.an("object");
+                expect(result.local).to.be.an("object");
                 done();
             });
+        });
 
+        it("should only call shared validator if fullValidation is disabled", function(done) {
+            octocat.set('name', 'Octocat');
+            octocat.set('age', 8);
+
+            octocat.validate(false, function(result) {
+                expect(result.result).to.be(true);
+                expect(result.shared).to.be.an("object");
+                expect(result.local).to.be(undefined);
+                done();
+            });
+        });
+
+        it("should only call shared validator if fullValidation is disabled", function(done) {
+            octocat.set('name', 'Octocat');
+            octocat.set('age', 99);
+
+            octocat.validate(function(result) {
+                expect(result.result).to.be(false);
+                expect(result.shared.result).to.be(true);
+                expect(result.local.result).to.be(false);
+                done();
+            });
         });
     });
-    */
 
     describe("Services", function(){
 
@@ -360,7 +380,6 @@ describe("Model", function() {
 
         describe("Error handling and format parsing (__processResponse)", function() {
             it("should fail if response is no valid object", function(done) {
-
                 testService.create = function(model, callback) {
                     callback();
                 };
