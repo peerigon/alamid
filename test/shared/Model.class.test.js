@@ -1,10 +1,13 @@
 "use strict";
 
 var expect = require("expect.js");
-require("nodeclass").registerExtension();
+
+// @browser ./testHelpers/compileAlamidClient.js
+require("./testHelpers/compileAlamid.js");
 
 var User1 = require("./Model/User1.class.js"),
-    Octocat = require("./Model/Octocat.class.js");
+    Octocat = require("./Model/Octocat.class.js"),
+    OctocatSchema = require("./Model/schemas/OctocatSchema.js");
 
 describe("Model", function() {
 
@@ -29,8 +32,6 @@ describe("Model", function() {
         });
     });
 
-
-    ///*
     describe("Model-Features", function() {
 
         var user;
@@ -62,7 +63,7 @@ describe("Model", function() {
                     });
                 }).to.throwError();
 
-                //this is important because it's dependend on the order
+                //this is important because it depends on the order
                 expect(user.get("name")).to.eql("hans");
             });
         });
@@ -149,33 +150,24 @@ describe("Model", function() {
                     age: 50,
                     kills : null //was not returned before?
                 });
-
             });
 
             it("should unset values for multiple keys", function() {
-
-                //not working
-
-//                 user.set('name', 'Octocat');
-//                 user.accept();
-//                 user.set('age', 5);
-//                 user.set('kills', 2);
-//                 user.unsetAll();
-//                 expect(user.get()).to.eql({
-//                 name: 'Johnny Rotten',
-//                 age: 45,
-//                 kills : null
-//                 });
-
-
+                user.set('name', 'Octocat');
+                user.accept();
+                user.set('age', 5);
+                user.set('kills', 2);
+                user.unsetAll();
+                expect(user.get()).to.eql({
+                    name: 'Octocat',
+                    age: 45,
+                    kills : null
+                });
             });
         });
 
-
         describe("#hasChanged", function() {
-
             it("should return the status of changed attributes", function() {
-
                 expect(user.hasChanged()).to.be(false);
                 expect(user.hasChanged(true)).to.be(false);
                 user.set('name', 'Octocat');
@@ -194,9 +186,7 @@ describe("Model", function() {
         });
 
         describe("#isDefault", function() {
-
             it("should check if applied values are the default values", function() {
-
                 expect(user.isDefault()).to.be(true);
                 expect(user.isDefault(true)).to.be(true);
                 user.set('name', 'Octocat');
@@ -208,30 +198,24 @@ describe("Model", function() {
                 expect(user.isDefault("name","age")).to.be(false);
                 user.set('age', 45);    // 45 equals the default value
                 expect(user.isDefault("age")).to.be(true);
-
-                //not working?
-                //expect(user.isDefault("age"), true).to.be(false);
+                expect(user.isDefault("age", true)).to.be(false);
                 user.remove('name', 'age');
                 expect(user.isDefault()).to.be(true);
             });
         });
 
         describe("#toJSON", function() {
-
-            it("should convert the attributes to JSON (CHANGED?)", function() {
-
+            it("should return the attributes as JSON-string", function() {
                 user.set('name', 'Octocat');
                 user.set({
                     age: 5,
                     kills: 1
                 });
-
                 expect(user.getDefaults()).to.eql({
                     name: 'John Wayne',
                     age: 45,
                     kills: null
                 });
-
                 expect(JSON.parse(user.toJSON())).to.eql({
                     name: 'Octocat',
                     age: 5,
@@ -251,7 +235,6 @@ describe("Model", function() {
         });
 
         describe("Events", function() {
-
             it("should call all events", function() {
                 var changeTimes = 0;
 
@@ -260,7 +243,6 @@ describe("Model", function() {
                 });
 
                 user.set('name', 'bla');
-
                 try {
                     user.set('asdasd', 'asd');
                 } catch (err) {
@@ -317,27 +299,50 @@ describe("Model", function() {
         });
     });
 
-    /*
-    describe("Validation", function(){
 
+    describe("Validation", function(){
         var octocat;
 
         beforeEach(function() {
             octocat = new Octocat();
         });
 
-        it("should call the expected validators", function(done) {
+        it("should call shared and local validator on default", function(done) {
             octocat.set('name', 'Octocat');
             octocat.set('age', 8);
 
-            octocat.validate({ client : true, server : true }, function(result) {
-                //console.log("RESULT:", result);
+            octocat.validate(function(result) {
+                expect(result.result).to.be(true);
+                expect(result.shared).to.be.an("object");
+                expect(result.local).to.be.an("object");
                 done();
             });
+        });
 
+        it("should only call shared validator if fullValidation is disabled", function(done) {
+            octocat.set('name', 'Octocat');
+            octocat.set('age', 8);
+
+            octocat.validate(false, function(result) {
+                expect(result.result).to.be(true);
+                expect(result.shared).to.be.an("object");
+                expect(result.local).to.be(undefined);
+                done();
+            });
+        });
+
+        it("should only call shared validator if fullValidation is disabled", function(done) {
+            octocat.set('name', 'Octocat');
+            octocat.set('age', 99);
+
+            octocat.validate(function(result) {
+                expect(result.result).to.be(false);
+                expect(result.shared.result).to.be(true);
+                expect(result.local.result).to.be(false);
+                done();
+            });
         });
     });
-    */
 
     describe("Services", function(){
 
@@ -360,7 +365,6 @@ describe("Model", function() {
 
         describe("Error handling and format parsing (__processResponse)", function() {
             it("should fail if response is no valid object", function(done) {
-
                 testService.create = function(model, callback) {
                     callback();
                 };
@@ -444,24 +448,27 @@ describe("Model", function() {
 
         describe("Statics", function(){
 
-            var testService;
+            var Model,
+                services;
 
-            beforeEach(function() {
-                testService = {
-                    create : function(model, callback) {
-                        callback({ status : "success", data : { name : model.get("name"), age : 10 }});
-                    },
-                    update : function(model, callback) {
-                        callback({ status : "success", data : { name : model.get("name"), age : 12 }});
-                    },
-                    delete : function(model, callback) {
-                        callback({ status : "success" });
+            before(function() {
+                var testService = {
+                    readCollection : function(model, callback) {
+                        callback({ status : "success", data : model });
                     }
                 };
+                services = require("../../lib/shared/services.js");
+                services.getService =  function() {
+                    return testService;
+                };
+                Model = require("../../lib/shared/Model.class.js");
             });
 
-            it("should call the static method", function() {
-                //console.log(Octocat.find());
+            it("should call the static method and run the mocked readCollection-service", function() {
+                Model.find(Octocat, { da : "ta" }, function(response) {
+                    expect(response.status).to.be("success");
+                    expect(response.data).to.eql({ da : "ta"});
+                });
             });
         });
     });

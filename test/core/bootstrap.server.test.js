@@ -11,7 +11,6 @@ describe("bootstrap.server", function() {
         generateClientConfig = bootstrap.generateClientConfig,
         renderBootstrapClientTemplate = bootstrap.renderBootstrapClientTemplate;
 
-
     var configMock = {
         "mode" : "development",
         "secretServerConfig" : "boobs",
@@ -36,7 +35,6 @@ describe("bootstrap.server", function() {
     describe("renderBootstrapClientTemplate", function() {
 
         bootstrap.renderBootstrapClientTemplate();
-
         try{
             var clientBootstrap = fs.readFileSync(path.resolve(__dirname, "./bootstrap/bundle/bootstrap.js"), "utf-8");
             expect(clientBootstrap).to.contain('config.mode = "development";');
@@ -44,8 +42,6 @@ describe("bootstrap.server", function() {
         catch(e) {
             expect(e).to.be(undefined);
         }
-
-
     });
 });
 
