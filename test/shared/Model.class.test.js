@@ -1,7 +1,9 @@
 "use strict";
 
 var expect = require("expect.js");
-require("nodeclass").registerExtension();
+
+// @browser ./testHelpers/compileAlamidClient.js
+require("./testHelpers/compileAlamid.js");
 
 var User1 = require("./Model/User1.class.js"),
     Octocat = require("./Model/Octocat.class.js"),
@@ -61,7 +63,7 @@ describe("Model", function() {
                     });
                 }).to.throwError();
 
-                //this is important because it's dependend on the order
+                //this is important because it depends on the order
                 expect(user.get("name")).to.eql("hans");
             });
         });
@@ -148,32 +150,24 @@ describe("Model", function() {
                     age: 50,
                     kills : null //was not returned before?
                 });
-
             });
 
             it("should unset values for multiple keys", function() {
-
-                //not working
-
-//                 user.set('name', 'Octocat');
-//                 user.accept();
-//                 user.set('age', 5);
-//                 user.set('kills', 2);
-//                 user.unsetAll();
-//                 expect(user.get()).to.eql({
-//                 name: 'Johnny Rotten',
-//                 age: 45,
-//                 kills : null
-//                 });
-
-
+                user.set('name', 'Octocat');
+                user.accept();
+                user.set('age', 5);
+                user.set('kills', 2);
+                user.unsetAll();
+                expect(user.get()).to.eql({
+                    name: 'Octocat',
+                    age: 45,
+                    kills : null
+                });
             });
         });
 
         describe("#hasChanged", function() {
-
             it("should return the status of changed attributes", function() {
-
                 expect(user.hasChanged()).to.be(false);
                 expect(user.hasChanged(true)).to.be(false);
                 user.set('name', 'Octocat');
@@ -192,9 +186,7 @@ describe("Model", function() {
         });
 
         describe("#isDefault", function() {
-
             it("should check if applied values are the default values", function() {
-
                 expect(user.isDefault()).to.be(true);
                 expect(user.isDefault(true)).to.be(true);
                 user.set('name', 'Octocat');
@@ -206,30 +198,24 @@ describe("Model", function() {
                 expect(user.isDefault("name","age")).to.be(false);
                 user.set('age', 45);    // 45 equals the default value
                 expect(user.isDefault("age")).to.be(true);
-
-                //not working?
-                //expect(user.isDefault("age"), true).to.be(false);
+                expect(user.isDefault("age", true)).to.be(false);
                 user.remove('name', 'age');
                 expect(user.isDefault()).to.be(true);
             });
         });
 
         describe("#toJSON", function() {
-
             it("should return the attributes as JSON-string", function() {
-
                 user.set('name', 'Octocat');
                 user.set({
                     age: 5,
                     kills: 1
                 });
-
                 expect(user.getDefaults()).to.eql({
                     name: 'John Wayne',
                     age: 45,
                     kills: null
                 });
-
                 expect(JSON.parse(user.toJSON())).to.eql({
                     name: 'Octocat',
                     age: 5,
@@ -249,7 +235,6 @@ describe("Model", function() {
         });
 
         describe("Events", function() {
-
             it("should call all events", function() {
                 var changeTimes = 0;
 
@@ -258,7 +243,6 @@ describe("Model", function() {
                 });
 
                 user.set('name', 'bla');
-
                 try {
                     user.set('asdasd', 'asd');
                 } catch (err) {
