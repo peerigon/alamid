@@ -10,9 +10,72 @@ var validator = require("../../lib/shared/validator.js"),
     testSchema = require("./Model/schemas/OctocatSchema.js"),
     clientSchema = require("./Model/schemas/OctocatSchema.client.js"),
     serverSchema = require("./Model/schemas/OctocatSchema.server.js"),
+    pandaSchema = require("./Model/schemas/PandaSchema.js"),
     sharedSchema = testSchema;
 
-describe("validate", function () {
+describe("validator", function () {
+
+    describe("Default Validators", function() {
+
+        var testModel;
+
+        beforeEach(function() {
+            testModel = {
+                name : "pandaa",
+                mood : "happy",
+                pooCount : 11
+            };
+        });
+
+        it("should check required fields", function (done) {
+            delete testModel.name;
+
+            localValidation(pandaSchema, testModel, function(result) {
+                expect(result.result).to.be(false);
+                expect(result.fields.name).to.be("required");
+                expect(result.fields.mood).to.be(true);
+                expect(result.fields.pooCount).to.be(true);
+                done();
+            });
+        });
+
+
+        it("should check enum fields", function (done) {
+            testModel.mood = "whatever";
+
+            localValidation(pandaSchema, testModel, function(result) {
+                expect(result.result).to.be(false);
+                expect(result.fields.name).to.be(true);
+                expect(result.fields.mood).to.be("enum");
+                expect(result.fields.pooCount).to.be(true);
+                done();
+            });
+        });
+
+        it("should check min fields", function (done) {
+            testModel.pooCount = 1;
+
+            localValidation(pandaSchema, testModel, function(result) {
+                expect(result.result).to.be(false);
+                expect(result.fields.name).to.be(true);
+                expect(result.fields.mood).to.be(true);
+                expect(result.fields.pooCount).to.be("min");
+                done();
+            });
+        });
+
+        it("should check max fields", function (done) {
+            testModel.pooCount = 101;
+
+            localValidation(pandaSchema, testModel, function(result) {
+                expect(result.result).to.be(false);
+                expect(result.fields.name).to.be(true);
+                expect(result.fields.mood).to.be(true);
+                expect(result.fields.pooCount).to.be("max");
+                done();
+            });
+        });
+    });
 
     describe("localValidation", function() {
 
@@ -64,7 +127,7 @@ describe("validate", function () {
             localValidation(testSchema, testModel, function(result) {
                 expect(result.result).to.be(false);
                 expect(result.fields.name).to.be("required");
-                //expect(result.fields.age).to.be("required");
+                expect(result.fields.age).to.be(true);
                 done();
             });
         });
