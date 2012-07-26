@@ -1,11 +1,15 @@
 "use strict";
 
+require("nodeclass").registerExtension();
+
 var expect = require("expect.js"),
     _ = require("underscore"),
     ModelCollection = require("../../lib/shared/ModelCollection.class.js"),
     EventEmitter  = require("../../lib/shared/EventEmitter.class.js"),
     Model = require("../../lib/shared/Model.class.js"),
     OctocatModel = require("./Model/Octocat.class.js");
+
+
 
 describe("ModelCollection", function () {
 
@@ -22,7 +26,7 @@ describe("ModelCollection", function () {
     describe(".construct()", function () {
 
         it("should be instance of EventEmitter", function () {
-           expect(modelCollection).to.be.an(EventEmitter);
+           expect(modelCollection).to.be.an(ModelCollection);
         });
 
     });
