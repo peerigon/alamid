@@ -68,6 +68,28 @@ describe("Model", function() {
             });
         });
 
+        describe("#Url", function() {
+
+            var user;
+            beforeEach(function() {
+                user = new User1();
+            });
+
+            it("should set and get urls", function() {
+                //expect(user.getUrl()).to.eql("User1");
+                user.setUrl("user/likes");
+                expect(user.getUrl()).to.eql("user/likes");
+            });
+
+            it("should merge parendIds with url for request id", function() {
+                user.setUrl("user/likes");
+                expect(user.getUrl()).to.eql("user/likes");
+                expect(user.getRequestUrl()).to.eql("user/likes");
+                user.setParentIds({ "user" : 1 });
+                expect(user.getRequestUrl()).to.eql("user/1/likes");
+            });
+        });
+
         describe("#Casting", function() {
 
 //             //casting disabled
@@ -224,8 +246,8 @@ describe("Model", function() {
             });
         });
 
-        describe("#Validate", function() {
-            it("should...", function() {
+        describe("#Change", function() {
+            it("should determine if values have changed", function() {
                 user.set('name', 'Octocat');
                 expect(user.hasChanged('name')).to.be(true);
                 user.accept();
