@@ -27,10 +27,8 @@ describe("ModelCollection", function () {
 
     });
 
-    //@TODO
     describe(".getModelClass", function () {
 
-        /*
         it("should return Model as default", function () {
             modelCollection = new ModelCollection();
             expect(modelCollection.getModelClass()).to.be.equal(Model);
@@ -39,7 +37,6 @@ describe("ModelCollection", function () {
         it("should return OctocatClass", function () {
            expect(modelCollection.getModelClass()).to.be.equal(OctocatModel);
         });
-        */
 
     });
 
@@ -210,6 +207,56 @@ describe("ModelCollection", function () {
             });
             octocatModel.emit("change");
             done();
+        });
+
+    });
+
+    describe(".union()", function () {
+
+        var octodogModels,
+            octodogModelCollection,
+            octofrogModels,
+            octofrogModelCollection;
+
+        beforeEach(function () {
+            octodogModels = [new OctocatModel(), new OctocatModel(), new OctocatModel()];
+            octodogModelCollection = new ModelCollection();
+            octodogModelCollection.push(octodogModels);
+
+            octofrogModels = [new OctocatModel(), new OctocatModel(), new OctocatModel()];
+            octofrogModelCollection = new ModelCollection();
+            octofrogModelCollection.push(octofrogModels);
+
+            modelCollection.push(octocatModels);
+        });
+
+        it("should return a reference to itself", function () {
+            expect(modelCollection.union(octodogModelCollection)).to.be.equal(modelCollection);
+        });
+
+        it("should be possible to union one single ModelCollection", function () {
+            var unionReference = _(octocatModels).union(octodogModels);
+
+            modelCollection.union(octodogModelCollection);
+            modelCollection.each(function eachIterator(model, index) {
+                expect(model).to.be.equal(unionReference[index]);
+            });
+        });
+
+        it("should be possible to union an Array of ModelCollections", function () {
+            var unionReference = _(octocatModels).union(octodogModels, octofrogModels);
+
+            modelCollection.union([octodogModelCollection, octofrogModelCollection]);
+            modelCollection.each(function eachIterator(model, index) {
+                expect(model).to.be.equal(unionReference[index]);
+            });
+        });
+
+        it("should emit 'change'-Event", function (done) {
+            modelCollection.on("change", function onChange() {
+                done();
+            });
+            modelCollection.union(octodogModelCollection);
         });
 
     });
