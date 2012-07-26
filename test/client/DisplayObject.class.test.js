@@ -31,7 +31,7 @@ describe("DisplayObject", function () {
         submitButtonTemplate = DOMNodeMocks.getSubmitButtonString();
 
 
-        displayObject = new DisplayObject(formTemplate);
+        displayObject = new ExtendedByDisplayObject(formTemplate);
         submitButtonDisplayObject = new ExtendedByDisplayObject(submitButtonTemplate);
         formDisplayObject = new ExtendedByDisplayObject(formTemplate);
     });
@@ -40,6 +40,11 @@ describe("DisplayObject", function () {
 
         it("should throw an error if no template is given", function () {
             expect(function () { var dO = new DisplayObject(); }).to.throwError();
+        });
+
+        it("should be possible to declare template in a Class which inherits from DisplayObject", function (done) {
+            displayObject = new ExtendedByDisplayObject(); //Declares template via $template
+            done();
         });
 
     });

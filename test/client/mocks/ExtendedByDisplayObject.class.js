@@ -10,6 +10,8 @@ var ExtendedByDisplayObject = new Class({
 
     Extends: DisplayObject,
 
+    $template: "<div></div>",
+
     /**
      *
      * How to use: displayObjectInstance.append(new displayObjectInstance()).at("nodeName").
@@ -29,6 +31,20 @@ var ExtendedByDisplayObject = new Class({
      */
     addNodeEvents: function (nodeEvents) {
         this.Super._addNodeEvents(nodeEvents);
+    },
+
+    /**
+     * @retrun {node}
+     */
+    getNode: function () {
+        return this.Super.getNode();
+    },
+
+    /**
+     * @return {Object.<string, node>}
+     */
+    getNodeMap: function () {
+        return this.Super.getNodeMap();
     }
 
 });
