@@ -11,14 +11,14 @@ var expect = require("expect.js"),
 
 
 
-describe("ModelCollection", function () {
+describe("Collection", function () {
 
-    var modelCollection,
+    var collection,
         octocatModel,
         octocatModels;
 
     beforeEach(function () {
-        modelCollection = new Collection(OctocatModel);
+        collection = new Collection(OctocatModel);
         octocatModel = new OctocatModel();
         octocatModels = [octocatModel, new OctocatModel(), new OctocatModel()];
     });
@@ -26,7 +26,7 @@ describe("ModelCollection", function () {
     describe(".construct()", function () {
 
         it("should be instance of EventEmitter", function () {
-            expect(is(modelCollection).instanceOf(EventEmitter)).to.be.ok();
+            expect(is(collection).instanceOf(EventEmitter)).to.be.ok();
         });
 
     });
@@ -34,12 +34,12 @@ describe("ModelCollection", function () {
     describe(".getClass()", function () {
 
         it("should return Model as null", function () {
-            modelCollection = new Collection();
-            expect(modelCollection.getClass()).to.be.equal(null);
+            collection = new Collection();
+            expect(collection.getClass()).to.be.equal(null);
         });
 
         it("should return OctocatClass", function () {
-            expect(modelCollection.getClass()).to.be.equal(OctocatModel);
+            expect(collection.getClass()).to.be.equal(OctocatModel);
         });
 
     });
@@ -48,19 +48,19 @@ describe("ModelCollection", function () {
 
         it("should throw an Error if no instance of set ModelClass is given", function () {
             expect(function () {
-                modelCollection.set(0, {});
+                collection.set(0, {});
             }).to.throwError();
         });
 
         it("should throw 'change'-Event ", function (done) {
-            modelCollection.on("change", function onChange() {
+            collection.on("change", function onChange() {
                 done();
             });
-            modelCollection.set(1, octocatModel);
+            collection.set(1, octocatModel);
         });
 
         it("should return a reference to itself", function () {
-            expect(modelCollection.set(0, octocatModel)).to.be.equal(modelCollection);
+            expect(collection.set(0, octocatModel)).to.be.equal(collection);
         });
 
     });
@@ -68,8 +68,8 @@ describe("ModelCollection", function () {
     describe(".get()", function () {
 
         it("should return the set Model at given index", function () {
-            modelCollection.set(3, octocatModel);
-            expect(modelCollection.get(3)).to.be.equal(octocatModel);
+            collection.set(3, octocatModel);
+            expect(collection.get(3)).to.be.equal(octocatModel);
         });
 
     });
@@ -78,35 +78,35 @@ describe("ModelCollection", function () {
 
         it("should throw an Error if no instance of Model was given", function () {
             expect(function () {
-                modelCollection.push({});
+                collection.push({});
             }).to.throwError();
         });
 
         it("should throw an Error if an Array containing an element not instance of Model was given", function () {
             expect(function () {
-                modelCollection.push([octocatModel, {}]);
+                collection.push([octocatModel, {}]);
             }).to.throwError();
         });
 
         it("should be possible to push a single Model", function (done) {
-            modelCollection.push(octocatModel);
+            collection.push(octocatModel);
             done();
         });
 
         it("should be possible to push an Array of Models", function (done) {
-            modelCollection.push(octocatModels);
+            collection.push(octocatModels);
             done();
         });
 
         it("should return a reference to itself", function () {
-            expect(modelCollection.push(octocatModel)).to.be.equal(modelCollection);
+            expect(collection.push(octocatModel)).to.be.equal(collection);
         });
 
         it("should emit an 'change'-Event if a Model was pushed", function (done) {
-            modelCollection.on("change", function onChange() {
+            collection.on("change", function onChange() {
                 done();
             });
-            modelCollection.push(octocatModel);
+            collection.push(octocatModel);
         });
 
     });
@@ -115,35 +115,35 @@ describe("ModelCollection", function () {
 
         it("should throw an Error if no instance of Model was given", function () {
             expect(function () {
-                modelCollection.unshift({});
+                collection.unshift({});
             }).to.throwError();
         });
 
         it("should throw an Error if an Array containing an element not instance of Model was given", function () {
             expect(function () {
-                modelCollection.unshift([octocatModel, {}]);
+                collection.unshift([octocatModel, {}]);
             }).to.throwError();
         });
 
         it("should be possible to unshift a single Model", function (done) {
-            modelCollection.unshift(octocatModel);
+            collection.unshift(octocatModel);
             done();
         });
 
         it("should be possible to unshift an Array of Models", function (done) {
-            modelCollection.unshift(octocatModels);
+            collection.unshift(octocatModels);
             done();
         });
 
         it("should return a reference to itself", function () {
-            expect(modelCollection.unshift(octocatModel)).to.be.equal(modelCollection);
+            expect(collection.unshift(octocatModel)).to.be.equal(collection);
         });
 
         it("should emit an 'change'-Event if a Model was pushed", function (done) {
-            modelCollection.on("change", function onChange() {
+            collection.on("change", function onChange() {
                 done();
             });
-            modelCollection.unshift(octocatModel);
+            collection.unshift(octocatModel);
         });
 
     });
@@ -151,22 +151,22 @@ describe("ModelCollection", function () {
     describe(".size()", function () {
 
         it("should have a default length of 0", function () {
-            expect(modelCollection.size()).to.be.equal(0);
+            expect(collection.size()).to.be.equal(0);
         });
 
         it("should have the same as pushed array", function () {
-            modelCollection.push(octocatModels);
-            expect(modelCollection.size()).to.be.equal(octocatModels.length);
+            collection.push(octocatModels);
+            expect(collection.size()).to.be.equal(octocatModels.length);
         });
 
     });
 
     describe(".each()", function () {
 
-        it("should be possible to iterate over ModelCollection", function () {
-            modelCollection.push(octocatModels);
+        it("should be possible to iterate over collection", function () {
+            collection.push(octocatModels);
 
-            modelCollection.each( function modelCollectionIterator(model, index) {
+            collection.each( function modelCollectionIterator(model, index) {
                 expect(model).to.be.equal(octocatModels[index]);
             });
         });
@@ -176,31 +176,31 @@ describe("ModelCollection", function () {
     describe(".pop()", function () {
 
         it("should return the last element", function () {
-            modelCollection.push(octocatModels);
-            expect(modelCollection.pop()).to.be.equal(octocatModels.pop());
+            collection.push(octocatModels);
+            expect(collection.pop()).to.be.equal(octocatModels.pop());
         });
 
         it("should remove the last element", function () {
-            modelCollection.push(octocatModels);
-            modelCollection.pop();
+            collection.push(octocatModels);
+            collection.pop();
             octocatModels.pop();
-            modelCollection.each(function modelCollectionIterator(model, index) {
+            collection.each(function modelCollectionIterator(model, index) {
                 expect(model).to.be.equal(octocatModels[index]);
             });
         });
 
         it("should emit 'change'-Event", function (done) {
-            modelCollection.push(octocatModel);
-            modelCollection.on("change", function onChange() {
+            collection.push(octocatModel);
+            collection.on("change", function onChange() {
                 done();
             });
-            modelCollection.pop();
+            collection.pop();
         });
 
         it("should not emit 'change'-Event if a popped model emits it's 'change'-Event", function (done) {
-            modelCollection.push(octocatModel); //must be pushed first because after 'change' will be emitted
-            modelCollection.pop();
-            modelCollection.on("change", function onChange() {
+            collection.push(octocatModel); //must be pushed first because after 'change' will be emitted
+            collection.pop();
+            collection.on("change", function onChange() {
                 done(); //Should not be executed
             });
             octocatModel.emit("change");
@@ -212,31 +212,31 @@ describe("ModelCollection", function () {
     describe(".shift()", function () {
 
         it("should return the first element", function () {
-            modelCollection.push(octocatModels);
-            expect(modelCollection.shift()).to.be.equal(octocatModels.shift());
+            collection.push(octocatModels);
+            expect(collection.shift()).to.be.equal(octocatModels.shift());
         });
 
         it("should remove the first element", function () {
-            modelCollection.push(octocatModels);
-            modelCollection.shift();
+            collection.push(octocatModels);
+            collection.shift();
             octocatModels.shift();
-            modelCollection.each(function modelCollectionIterator(model, index) {
+            collection.each(function modelCollectionIterator(model, index) {
                 expect(model).to.be.equal(octocatModels[index]);
             });
         });
 
         it("should emit 'change'-Event", function (done) {
-            modelCollection.push(octocatModel);
-            modelCollection.on("change", function onChange() {
+            collection.push(octocatModel);
+            collection.on("change", function onChange() {
                 done();
             });
-            modelCollection.shift();
+            collection.shift();
         });
 
         it("should not emit 'change'-Event if a shifted model emits it's 'change'-Event", function (done) {
-            modelCollection.push(octocatModel); //must be pushed first because after 'change' will be emitted
-            modelCollection.shift();
-            modelCollection.on("change", function onChange() {
+            collection.push(octocatModel); //must be pushed first because after 'change' will be emitted
+            collection.shift();
+            collection.on("change", function onChange() {
                 done(); //Should not be executed
             });
             octocatModel.emit("change");
@@ -248,14 +248,14 @@ describe("ModelCollection", function () {
     describe(".toArray", function () {
 
         it("should return an array", function () {
-            expect(modelCollection.toArray()).to.be.an(Array);
+            expect(collection.toArray()).to.be.an(Array);
         });
 
         it("should return an array with all passed Model", function () {
-            modelCollection.set(0, octocatModels[0]);
-            modelCollection.push([octocatModels[1], octocatModels[2]]);
+            collection.set(0, octocatModels[0]);
+            collection.push([octocatModels[1], octocatModels[2]]);
 
-            expect(modelCollection.toArray()).to.be.eql([octocatModels[0], octocatModels[1], octocatModels[2]]);
+            expect(collection.toArray()).to.be.eql([octocatModels[0], octocatModels[1], octocatModels[2]]);
         });
 
     });
@@ -263,10 +263,10 @@ describe("ModelCollection", function () {
     describe(".reverse()", function () {
 
         it("should reverse te order", function () {
-            modelCollection.push(octocatModels);
-            modelCollection.reverse();
+            collection.push(octocatModels);
+            collection.reverse();
             octocatModels.reverse();
-            modelCollection.each(function modelCollectionIterator(model, index) {
+            collection.each(function modelCollectionIterator(model, index) {
                 expect(model).to.be.equal(octocatModels[index]);
             });
         });
@@ -282,7 +282,7 @@ describe("ModelCollection", function () {
         });
 
         it("should return an Array", function () {
-            expect(modelCollection.filter(function () {})).to.be.an(Array);
+            expect(collection.filter(function () {})).to.be.an(Array);
         });
 
         it("should return an Array filtered by given filter", function () {
@@ -291,9 +291,9 @@ describe("ModelCollection", function () {
                 return model.get("name") !== octocatModels[2].get("name");
             }
 
-            modelCollection.push(octocatModels);
+            collection.push(octocatModels);
 
-            expect(modelCollection.filter(filterIterator)).to.be.eql(_(octocatModels).filter(filterIterator));
+            expect(collection.filter(filterIterator)).to.be.eql(_(octocatModels).filter(filterIterator));
 
         });
 
@@ -302,17 +302,17 @@ describe("ModelCollection", function () {
     describe(".dispose()", function () {
 
         it("should remove all listeners from it's Models", function (done) {
-            modelCollection.set(0, octocatModel);
-            modelCollection.on("change", function onChange() {
+            collection.set(0, octocatModel);
+            collection.on("change", function onChange() {
                 done();
             });
-            modelCollection.dispose();
+            collection.dispose();
             done();
         });
 
         it("should make itself unusable", function () {
-            modelCollection.dispose();
-            expect(modelCollection.toArray()).to.be.equal(null);
+            collection.dispose();
+            expect(collection.toArray()).to.be.equal(null);
         });
 
     });
@@ -321,21 +321,21 @@ describe("ModelCollection", function () {
     describe(".setMuted()", function () {
 
         it("should not emit 'change'-Event after true was passed", function (done) {
-            modelCollection.setMuted(true);
-            modelCollection.on("change", function () {
+            collection.setMuted(true);
+            collection.on("change", function () {
                 done();
             });
-            modelCollection.push(octocatModel);
+            collection.push(octocatModel);
             done();
         });
 
         it("should emit 'change'-Event after false was re-passed", function (done) {
-            modelCollection.setMuted(true);
-            modelCollection.on("change", function onChangeOnce() {
+            collection.setMuted(true);
+            collection.on("change", function onChangeOnce() {
                 done();
             });
-            modelCollection.setMuted(false);
-            modelCollection.push(octocatModel);
+            collection.setMuted(false);
+            collection.push(octocatModel);
         });
 
     });
