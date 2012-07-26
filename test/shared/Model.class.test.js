@@ -76,17 +76,10 @@ describe("Model", function() {
             });
 
             it("should set and get urls", function() {
+                //default does not work! @jhnns
                 //expect(user.getUrl()).to.eql("User1");
                 user.setUrl("user/likes");
                 expect(user.getUrl()).to.eql("user/likes");
-            });
-
-            it("should merge parendIds with url for request id", function() {
-                user.setUrl("user/likes");
-                expect(user.getUrl()).to.eql("user/likes");
-                expect(user.getRequestUrl()).to.eql("user/likes");
-                user.setParentIds({ "user" : 1 });
-                expect(user.getRequestUrl()).to.eql("user/1/likes");
             });
         });
 
@@ -152,7 +145,6 @@ describe("Model", function() {
         describe("#Unset", function() {
 
             it("should set values and accept current state", function() {
-
                 user.set('name', 'Octocat');
                 expect(user.get('name')).to.eql('Octocat');
                 user.unset('name');
