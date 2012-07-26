@@ -8,7 +8,8 @@ var is = require("nodeclass").is,
     FormModelABC = require("./mocks/FormModelABC.class.js"),
     FormModelDEF = require("./mocks/FormModelDEF.class.js"),
     DisplayObject = require("../../lib/client/DisplayObject.class.js"),
-    View = require("../../lib/client/View.class.js");
+    View = require("../../lib/client/View.class.js"),
+    ExtendedByView = require("./mocks/ExtendedByView.class.js");
 
 describe("View", function () {
 
@@ -23,7 +24,7 @@ describe("View", function () {
     beforeEach(function () {
         formModelABC = new FormModelABC();
         formModelDEF = new FormModelDEF();
-        view = new View(formTemplate);
+        view = new ExtendedByView(formTemplate);
     });
 
     describe(".construct()", function () {
