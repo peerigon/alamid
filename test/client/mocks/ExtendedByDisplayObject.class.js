@@ -10,6 +10,8 @@ var ExtendedByDisplayObject = new Class({
 
     Extends: DisplayObject,
 
+    $template: "<div></div>",
+
     /**
      *
      * How to use: displayObjectInstance.append(new displayObjectInstance()).at("nodeName").
