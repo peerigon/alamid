@@ -37,8 +37,8 @@ describe("validator", function () {
                 expect(result.fields.pooCount).to.be(true);
                 done();
             });
-        });
 
+        });
 
         it("should check enum fields", function (done) {
             testModel.mood = "whatever";
@@ -193,14 +193,14 @@ describe("validator", function () {
 
         describe("Client", function() {
 
-            /*
+            ///*
             //not working on client.. rewire + nof5 = 1 x crazy shiat!
             var validator,
                 testModel,
                 modelUrl;
 
             before(function() {
-                validator = rewire(path.resolve(__dirname, "../../lib/shared/validator.js"), false);
+                validator = rewire("../../lib/shared/validator.js", false);
                 validator.__set__("config", { isClient : true });
             });
 
@@ -228,7 +228,7 @@ describe("validator", function () {
                     done();
                 });
             });
-            */
+            //*/
         });
     });
 });
