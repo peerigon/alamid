@@ -40,6 +40,36 @@ describe("ModelCollection", function () {
 
     });
 
+    describe(".set()", function () {
+
+        it("should throw an Error if no instance of set ModelClass is given", function () {
+            expect(function () {
+                modelCollection.set(0, {});
+            }).to.throwError();
+        });
+
+        it("should throw 'change'-Event ", function (done) {
+            modelCollection.on("change", function onChange() {
+                done();
+            });
+            modelCollection.set(1, octocatModel);
+        });
+
+        it("should return a reference to itself", function () {
+           expect(modelCollection.set(0, octocatModel)).to.be.equal(modelCollection);
+        });
+
+    });
+
+    describe(".get()", function () {
+
+        it("should return the set Model at given index", function () {
+            modelCollection.set(3, octocatModel);
+            expect(modelCollection.get(3)).to.be.equal(octocatModel);
+        });
+
+    });
+
     describe(".push()", function () {
 
         it("should throw an Error if no instance of Model was given", function () {
@@ -211,52 +241,17 @@ describe("ModelCollection", function () {
 
     });
 
-    describe(".union()", function () {
+    describe(".toArray", function () {
 
-        var octodogModels,
-            octodogModelCollection,
-            octofrogModels,
-            octofrogModelCollection;
-
-        beforeEach(function () {
-            octodogModels = [new OctocatModel(), new OctocatModel(), new OctocatModel()];
-            octodogModelCollection = new ModelCollection();
-            octodogModelCollection.push(octodogModels);
-
-            octofrogModels = [new OctocatModel(), new OctocatModel(), new OctocatModel()];
-            octofrogModelCollection = new ModelCollection();
-            octofrogModelCollection.push(octofrogModels);
-
-            modelCollection.push(octocatModels);
+        it("should return an array", function () {
+           expect(modelCollection.toArray()).to.be.an(Array);
         });
 
-        it("should return a reference to itself", function () {
-            expect(modelCollection.union(octodogModelCollection)).to.be.equal(modelCollection);
-        });
+        it("should return an array with all passed Model", function () {
+            modelCollection.set(0, octocatModels[0]);
+            modelCollection.push([octocatModels[1], octocatModels[2]]);
 
-        it("should be possible to union one single ModelCollection", function () {
-            var unionReference = _(octocatModels).union(octodogModels);
-
-            modelCollection.union(octodogModelCollection);
-            modelCollection.each(function eachIterator(model, index) {
-                expect(model).to.be.equal(unionReference[index]);
-            });
-        });
-
-        it("should be possible to union an Array of ModelCollections", function () {
-            var unionReference = _(octocatModels).union(octodogModels, octofrogModels);
-
-            modelCollection.union([octodogModelCollection, octofrogModelCollection]);
-            modelCollection.each(function eachIterator(model, index) {
-                expect(model).to.be.equal(unionReference[index]);
-            });
-        });
-
-        it("should emit 'change'-Event", function (done) {
-            modelCollection.on("change", function onChange() {
-                done();
-            });
-            modelCollection.union(octodogModelCollection);
+            expect(modelCollection.toArray()).to.be.eql([octocatModels[0], octocatModels[1], octocatModels[2]]);
         });
 
     });
@@ -379,6 +374,25 @@ describe("ModelCollection", function () {
         });
 
     });
+
+    describe(".dispose()", function () {
+
+        it("should remove all listeners from it's Models", function (done) {
+            modelCollection.set(0, octocatModel);
+            modelCollection.on("change", function onChange() {
+                done();
+            });
+            modelCollection.dispose();
+            done();
+        });
+
+        it("should make itself unusable", function () {
+            modelCollection.dispose();
+            expect(modelCollection.toArray()).to.be.equal(null);
+        });
+
+    });
+
 
     describe(".setMuted()", function () {
 
