@@ -76,8 +76,7 @@ describe("Model", function() {
             });
 
             it("should set and get urls", function() {
-                //default does not work! @jhnns
-                //expect(user.getUrl()).to.eql("User1");
+                expect(user.getUrl()).to.eql("User1");
                 user.setUrl("user/likes");
                 expect(user.getUrl()).to.eql("user/likes");
             });
