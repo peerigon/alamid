@@ -228,7 +228,6 @@ describe("validator", function () {
                     done();
                 });
             });
-            //*/
         });
     });
 });
