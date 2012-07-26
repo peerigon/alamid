@@ -31,7 +31,7 @@ describe("DisplayObject", function () {
         submitButtonTemplate = DOMNodeMocks.getSubmitButtonString();
 
 
-        displayObject = new DisplayObject(formTemplate);
+        displayObject = new ExtendedByDisplayObject(formTemplate);
         submitButtonDisplayObject = new ExtendedByDisplayObject(submitButtonTemplate);
         formDisplayObject = new ExtendedByDisplayObject(formTemplate);
     });
