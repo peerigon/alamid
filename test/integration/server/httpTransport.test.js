@@ -77,6 +77,14 @@ describe("handleHttp", function() {
                     .send({ da : "ta" })
                     .expect(400,/No service found for/, done);
             });
+
+            it("should block the request if the content-type is wrong", function (done) {
+                this.timeout(100000);
+                request(app)
+                    .post("/services/myNonExistentService/")
+                    .set('Content-Type', 'text/plain')
+                    .expect(415, done);
+            });
         });
 
         describe("#onValidatorRequest", function(){
@@ -87,6 +95,23 @@ describe("handleHttp", function() {
                     .set('Content-Type', 'application/json')
                     .send({ da : "ta" })
                     .expect(400,/found for/, done);
+            });
+
+            it("should block validator-routes with wrong content-type request", function (done) {
+                this.timeout(100000);
+                request(app)
+                    .post("/validators/myNonExistentValidator/")
+                    .set('Content-Type', 'text/plain')
+                    .expect(415, done);
+            });
+
+            it("should accept validator requests only via POST", function (done) {
+                this.timeout(100000);
+                request(app)
+                    .put("/validators/myNonExistentValidator/")
+                    .set('Content-Type', 'application/json')
+                    .send({ da : "ta" })
+                    .expect(400,/Invalid Request: validator/, done);
             });
         });
 
