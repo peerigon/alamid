@@ -29,7 +29,8 @@
         "mocha": "1.2.x",
         "rewire": "0.3.x",
         "nof5": "git://github.com/peerigon/nof5.git",
-        "zombie" : "1.x"
+        "zombie" : "1.x",
+        "supertest" : "0.1.x"
     },
     "scripts" : {
         "test" : "mocha ./test/nodejs/ --mode testing",
