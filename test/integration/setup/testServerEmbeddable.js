@@ -1,9 +1,8 @@
 "use strict";
 
 require("nodeclass").registerExtension();
-var path = require("path");
 
-function runTestServer(config, callback) {
+function runTestServer(config) {
 
     process.env.appDir = config.appDir;
 
