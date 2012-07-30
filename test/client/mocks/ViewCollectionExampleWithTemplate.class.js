@@ -3,7 +3,7 @@
 var Class = require("nodeclass").Class,
     ViewCollection = require("../../../lib/client/ViewCollection.class.js");
 
-var ExtendedByViewCollectionWithTemplate = new Class({
+var ViewCollectionExampleWithTemplate = new Class({
 
     Extends: ViewCollection,
 
@@ -11,4 +11,4 @@ var ExtendedByViewCollectionWithTemplate = new Class({
 
 });
 
-module.exports = ExtendedByViewCollectionWithTemplate;
+module.exports = ViewCollectionExampleWithTemplate;
