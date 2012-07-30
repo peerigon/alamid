@@ -3,7 +3,7 @@
 var Class = require("nodeclass").Class,
     View = require("../../../lib/client/View.class.js");
 
-var ExtendedByView = new Class({
+var ViewExample = new Class({
 
     Extends: View,
 
@@ -18,4 +18,4 @@ var ExtendedByView = new Class({
 
 });
 
-module.exports = ExtendedByView;
+module.exports = ViewExample;
