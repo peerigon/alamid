@@ -9,8 +9,8 @@ var is = require("nodeclass").is,
     FormModelDEF = require("./mocks/FormModelDEF.class.js"),
     DisplayObject = require("../../lib/client/DisplayObject.class.js"),
     View = require("../../lib/client/View.class.js"),
-    ExtendedByView = require("./mocks/ExtendedByView.class.js"),
-    ExtendedByViewWithTemplate = require("./mocks/ExtendedByViewWithTemplate.class.js");
+    ViewExample = require("./mocks/ViewExample.class.js"),
+    ViewExampleWithTemplate = require("./mocks/ViewExampleWithTemplate.class.js");
 
 
 describe("View", function () {
@@ -26,7 +26,7 @@ describe("View", function () {
     beforeEach(function () {
         formModelABC = new FormModelABC();
         formModelDEF = new FormModelDEF();
-        view = new ExtendedByView(formTemplate);
+        view = new ViewExample(formTemplate);
     });
 
     describe(".construct()", function () {
@@ -36,7 +36,7 @@ describe("View", function () {
         });
 
         it("should be possible to construct an extended View if it has a template declared", function (done) {
-            view = new ExtendedByViewWithTemplate();
+            view = new ViewExampleWithTemplate();
             done();
         });
 
