@@ -62,4 +62,23 @@ var DOMNodeMocks = DOMNodeMocks || {};
         return incubator.firstChild;
     };
 
+    /**
+     * @return {String}
+     */
+    DOMNodeMocks.getOlString = function () {
+        return "<ul data-node='views'></ul>";
+    };
+
+    /**
+     * @return {Node}
+     */
+    DOMNodeMocks.getOl = function () {
+
+        incubator.innerHTML = this.getOlString();
+
+        return incubator.firstChild;
+    };
+
+
+
 })(window);
