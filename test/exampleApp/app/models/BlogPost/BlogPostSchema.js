@@ -3,8 +3,7 @@ module.exports = {
 		type: String,
 		required: true,
 		validate: function () {
-			isEmail(email);
-			
+            return true;
 		}
 	}
 };
