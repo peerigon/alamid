@@ -7,6 +7,7 @@ var expect = require("expect.js"),
     is = require("nodeclass").is,
     _ = require("underscore"),
     Collection = require("../../lib/shared/Collection.class.js"),
+    CollectionExample = require("./Collection/CollectionExample.class.js"),
     EventEmitter  = require("../../lib/shared/EventEmitter.class.js"),
     OctocatModel = require("./Model/Octocat.class.js");
 
@@ -28,6 +29,17 @@ describe("Collection", function () {
 
         it("should be instance of EventEmitter", function () {
             expect(is(collection).instanceOf(EventEmitter)).to.be.ok();
+        });
+
+        it("should be possible to pass as second argument model(s)", function () {
+            collection = new CollectionExample(OctocatModel, octocatModels);
+            expect(collection.getElements()).to.be.eql(octocatModels);
+        });
+
+        it("should throw an Error if as second argument not a model or an array of models was passed", function () {
+            expect(function () {
+                collection = new CollectionExample(OctocatModel, [{}]);
+            }).to.throwError();
         });
 
     });
