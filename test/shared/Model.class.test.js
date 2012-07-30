@@ -442,6 +442,23 @@ describe("Model", function() {
                     done();
                 });
             });
+
+            it("should also work with sync services", function(done) {
+                octocat.setService({
+                    create : function(model) {
+                        return { status : "success", data : { age : 10 } };
+                    }
+                });
+                octocat.set('name', 'Octocat');
+                expect(octocat.getId()).to.be(null);
+
+                octocat.save(function(err) {
+                    expect(err).to.be(null);
+                    expect(octocat.get("age")).to.be(10);
+                    expect(octocat.get("name")).to.be("Octocat");
+                    done();
+                });
+            });
         });
 
         describe("#destroy", function() {
@@ -470,7 +487,7 @@ describe("Model", function() {
                         callback({ status : "success", data : model });
                     }
                 };
-                services = require("../../lib/shared/services.js");
+                services = require("../../lib/shared/registries/serviceRegistry.js");
                 services.getService =  function() {
                     return testService;
                 };

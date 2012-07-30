@@ -42,7 +42,7 @@ describe("handleRequest", function() {
             handleRequest.__set__("runService", runServiceMock);
         });
 
-        it("should handle the request and return without an error if all middlewares worked fine", function(done) {
+        it("should handle the request and return without an error if all middleware worked fine", function(done) {
             var req = new Request("create", "/services/blogPost", {});
 
             handleRequest(req, function(err, resReq, resRes) {
