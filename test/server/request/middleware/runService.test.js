@@ -20,28 +20,46 @@ describe("runService", function(){
 
     describe("#serviceMiddleware", function() {
 
-        var servicesMock = {
-            getService : function(path) {
+        before(function() {
+            var servicesMock = {
+                getService : function(path) {
 
-                if(path === "test"){
-                    return {
-                        "create" : function(model, callback){ callback({ "status" : "success" }); },
-                        "read" : function(model, callback){ callback( { "status" : "success", "data" : model }); },
-                        "readCollection" : function(model, callback){ callback( { "status" : "success", "data" : { "readCollection" : true }}); },
-                        "update" : function(model, callback){ callback(); }
-                    };
+                    if(path === "test"){
+                        return {
+                            "create" : function(model, callback){
+                                callback({ "status" : "success"});
+                            },
+                            "read" : function(model, callback){
+                                callback( { "status" : "success", "data" : model });
+                            },
+                            "readCollection" : function(model, callback){
+                                callback( { "status" : "success", "data" : { "readCollection" : true }});
+                            },
+                            "update" : function(model, callback){
+                                callback();
+                            }
+                        };
+                    }
+
+                    if(path === "test2"){
+                        return {};
+                    }
+
+                    if(path === "syncasynctest") {
+                        return {
+                            create : function(model) {
+                                return { status : "success"};
+                            },
+                            delete : function(model, callback) {
+                                callback({ status : "success" });
+                            }
+                        };
+                    }
+                    return null;
                 }
+            };
 
-                if(path === "test2"){
-                    return {};
-                }
-                return null;
-            }
-        };
-
-        runService.__set__("services", servicesMock);
-        runService.__set__("paths", {
-            compiledPath : __dirname + "/exampleApp/app"
+            runService.__set__("services", servicesMock);
         });
 
         it("should find the mocked CREATE service, run it and next afterwards", function (done) {
@@ -149,6 +167,44 @@ describe("runService", function(){
                 done();
             });
         });
+
+        it("should accept synchronous functions as services", function(done) {
+            var method = "create",
+                path = "/services/syncasynctest",
+                data = { "da" : "ta" };
+
+            var request = new Request(method, path, data),
+                response = new Response();
+            //we have no middleware for setting the model in this test!
+            request.setModel(data);
+
+            runService(request, response, function(err) {
+                expect(err).to.be(null);
+                expect(response.getStatusCode()).to.be(200);
+                done();
+            });
+
+        });
+
+
+        it("should accept asynchronous functions as services", function(done) {
+            var method = "delete",
+                path = "/services/syncasynctest",
+                data = { "da" : "ta" };
+
+            var request = new Request(method, path, data),
+                response = new Response();
+
+            //we have no middleware for setting the model in this test!
+            request.setModel(data);
+
+            runService(request, response, function(err) {
+                expect(err).to.be(null);
+                expect(response.getStatusCode()).to.be(200);
+                done();
+            });
+        });
+
 
     });
 
