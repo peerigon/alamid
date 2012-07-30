@@ -15,8 +15,9 @@ var config = require("../../../lib/core/config"),
     collectModels = require("../../../lib/core/collectModels.js"),
     collectMiddleware = require("../../../lib/server/collectMiddleware.js"),
     browserifyModules = require("../../../lib/core/browserifyModules.js"),
-    services = require("../../../lib/shared/services.js"),
-    models = require("../../../lib/shared/models.js"),
+    services = require("../../../lib/shared/registries/serviceRegistry.js"),
+    models = require("../../../lib/shared/registries/modelRegistry.js"),
+    schemas = require("../../../lib/shared/registries/schemaRegistry.js"),
     middleware = require("../../../lib/server/request/middleware.js"),
     startServer = require("../../../lib/server/startServer.js");
 

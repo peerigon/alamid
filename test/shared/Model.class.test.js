@@ -470,7 +470,7 @@ describe("Model", function() {
                         callback({ status : "success", data : model });
                     }
                 };
-                services = require("../../lib/shared/services.js");
+                services = require("../../lib/shared/registries/serviceRegistry.js");
                 services.getService =  function() {
                     return testService;
                 };

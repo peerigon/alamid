@@ -28,7 +28,9 @@ describe("WebsocketTransport", function() {
             this.browser = new Browser();
             this.browser
                 .visit("http://localhost:9090/statics/websockettest.html")
-                .then(done, done);
+                .then(done, function(err) {
+                    console.log("err", err);
+                });
         });
 
         it("should load the promises page", function() {
@@ -39,7 +41,7 @@ describe("WebsocketTransport", function() {
 
     describe("#Websocket Requesting", function() {
         before(function(done) {
-            this.browser = new Browser({ debug : true });
+            this.browser = new Browser();
             this.browser
                 .visit("http://localhost:9090/statics/websockettest.html")
                 .then(done, done);
@@ -48,8 +50,6 @@ describe("WebsocketTransport", function() {
         it("should return an not defined error for a service request", function(done) {
             var self = this;
             this.browser.wait(2000, function(){
-
-
                 var pommes = self.browser.evaluate("wsRequestTest('read', '/services/whatever', {});");
                 pommes.success = function(res) {
                     expect(JSON.stringify(res)).to.contain('{"status":"error","message":"(alamid) Request failed for path \'whatever\' with Error: \'No service found for \'read\'');
@@ -58,17 +58,16 @@ describe("WebsocketTransport", function() {
             });
         });
 
-        /*
-         it("should return an not defined error for a validator request", function(done) {
-         var pommes = this.browser.evaluate("wsRequestTest('read', '/validators/whatever', {});");
-         pommes.success = function(res) {
-         expect(JSON.stringify(res)).to.contain('{"status":"error","message":"(alamid) Request failed for path \'whatever\' with Error: ');
-         done();
-         };
-         });
-         */
-    });
 
+        it("should return an not defined error for a validator request", function(done) {
+            var pommes = this.browser.evaluate("wsRequestTest('read', '/validators/whatever', {});");
+            pommes.success = function(res) {
+                expect(JSON.stringify(res)).to.contain('{"status":"error","message":"(alamid) Request failed for path \'whatever\' with Error: ');
+                done();
+            };
+        });
+
+    });
 
     after(function() {
         serverInstance.kill("SIGHUP");
