@@ -31,6 +31,11 @@ describe("ModelCollection", function () {
             expect(is(modelCollection).instanceOf(Collection)).to.be.ok();
         });
 
+        it("should use Model as default class", function () {
+            modelCollection = new ModelCollection();
+            expect(modelCollection.getClass()).to.be.equal(Model);
+        });
+
     });
 
     describe(".sortBy()", function () {

@@ -5,7 +5,7 @@ var expect = require("expect.js"),
     path = require("path"),
     compile = require("nodeclass").compile,
     DisplayObject = require("../../lib/client/DisplayObject.class.js"),
-    ExtendedByDisplayObject = require("./mocks/ExtendedByDisplayObject.class.js");
+    DisplayObjectExample = require("./mocks/DisplayObjectExample.class.js");
 
 describe("DisplayObject", function () {
 
@@ -31,9 +31,9 @@ describe("DisplayObject", function () {
         submitButtonTemplate = DOMNodeMocks.getSubmitButtonString();
 
 
-        displayObject = new ExtendedByDisplayObject(formTemplate);
-        submitButtonDisplayObject = new ExtendedByDisplayObject(submitButtonTemplate);
-        formDisplayObject = new ExtendedByDisplayObject(formTemplate);
+        displayObject = new DisplayObjectExample(formTemplate);
+        submitButtonDisplayObject = new DisplayObjectExample(submitButtonTemplate);
+        formDisplayObject = new DisplayObjectExample(formTemplate);
     });
 
     describe(".construct()", function () {
@@ -43,7 +43,7 @@ describe("DisplayObject", function () {
         });
 
         it("should be possible to declare template in a Class which inherits from DisplayObject", function (done) {
-            displayObject = new ExtendedByDisplayObject(); //Declares template via $template
+            displayObject = new DisplayObjectExample(); //Declares template via $template
             done();
         });
 
@@ -330,8 +330,8 @@ describe("DisplayObject", function () {
             submitButtonDisplayObject;
 
         beforeEach(function () {
-            formDisplayObject = new ExtendedByDisplayObject(formTemplate);
-            submitButtonDisplayObject = new ExtendedByDisplayObject(submitButtonTemplate);
+            formDisplayObject = new DisplayObjectExample(formTemplate);
+            submitButtonDisplayObject = new DisplayObjectExample(submitButtonTemplate);
 
             formDisplayObject.append(submitButtonDisplayObject).at("form");
         });

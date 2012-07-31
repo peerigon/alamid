@@ -19,7 +19,7 @@ describe("collectSchemas", function () {
         rewire.reset();
     });
 
-    it("should collect appropriately and return the defined schemas", function (done) {
+    it("should collect appropriately, extend schemas and return the defined schemas", function (done) {
 
         var expectedSchemas = {
             server: {},
@@ -33,13 +33,25 @@ describe("collectSchemas", function () {
             expect(schemas.client).to.only.have.keys(Object.keys(expectedSchemas.client));
             expect(schemas.shared).to.only.have.keys(Object.keys(expectedSchemas.shared));
             expect(schemas.server.blogpost).to.be.an("object");
+
             expect(schemas.server["blogpost/comment"]).to.be.an("object");
             expect(schemas.shared["blogpost/comment"]).to.be.an("object");
+
+            //required was overwritten by server schema
+            expect(schemas.shared.blogpost.email.required).to.be(true);
+            expect(schemas.server.blogpost.email.required).to.be(false);
+            expect(schemas.client.blogpost.email.required).to.be(true);
+
+            //new attribute for client only
+            expect(schemas.client.blogpost.saved).not.to.be(undefined);
+            expect(schemas.shared.blogpost.saved).to.be(undefined);
+            expect(schemas.server.blogpost.saved).to.be(undefined);
+
             done();
         }
 
         expectedSchemas.server.blogpost = true;
-        expectedSchemas.server.user= true;
+        expectedSchemas.server.user = true;
         expectedSchemas.server["blogpost/comment"] = true;
 
         expectedSchemas.client.blogpost = true;
@@ -53,6 +65,7 @@ describe("collectSchemas", function () {
         collectSchemas = rewire("../../lib/core/collectSchemas.js", false);
         collectSchemas (modelsFolder, onCollectSchemasEnd);
     });
+
 
     it("should fail on non existing folders", function (done) {
 

@@ -28,15 +28,57 @@ var DOMNodeMocks = DOMNodeMocks || {};
         return incubator.firstChild;
     };
 
+    /**
+     * @return {String}
+     */
     DOMNodeMocks.getSubmitButtonString = function () {
         return "<input data-node='submit-button' type='submit' value='submit'/>";
     };
 
+    /**
+     * @return {Node}
+     */
     DOMNodeMocks.getSubmitButton = function () {
 
         incubator.innerHTML = this.getSubmitButtonString();
 
         return incubator.firstChild;
     };
+
+    /**
+     * @return {String}
+     */
+    DOMNodeMocks.getUlString = function () {
+        return "<ul data-node='views'></ul>";
+    };
+
+    /**
+     * @return {Node}
+     */
+    DOMNodeMocks.getUl = function () {
+
+        incubator.innerHTML = this.getUlString();
+
+        return incubator.firstChild;
+    };
+
+    /**
+     * @return {String}
+     */
+    DOMNodeMocks.getOlString = function () {
+        return "<ul data-node='views'></ul>";
+    };
+
+    /**
+     * @return {Node}
+     */
+    DOMNodeMocks.getOl = function () {
+
+        incubator.innerHTML = this.getOlString();
+
+        return incubator.firstChild;
+    };
+
+
 
 })(window);
