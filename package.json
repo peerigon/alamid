@@ -4,7 +4,7 @@
     "version": "0.1.0",
     "repository": "git://github.com/peerigon/alamid.git",
     "author": "peerigon",
-    "main": "./lib/core/compileAlamid.js",
+    "main": "./lib/index.js",
     "keywords": ["client", "server", "framework", "rest", "web application", "websockets", "realtime"],
     "engines": {
         "node": "0.6.x"
