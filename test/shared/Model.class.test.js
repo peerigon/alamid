@@ -479,12 +479,27 @@ describe("Model", function() {
         describe("Statics", function(){
 
             var Model,
-                services;
+                services,
+                mockedOctocats;
 
             before(function() {
+
+                mockedOctocats = [
+                    {
+                        id : 1,
+                        name : "Octo 1",
+                        age : 12
+                    },
+                    {
+                        id : 2,
+                        name : "Octo 2",
+                        age : 10
+                    }
+                ];
+
                 var testService = {
                     readCollection : function(model, callback) {
-                        callback({ status : "success", data : model });
+                        callback({ status : "success", data : mockedOctocats });
                     }
                 };
                 services = require("../../lib/shared/registries/serviceRegistry.js");
@@ -494,10 +509,12 @@ describe("Model", function() {
                 Model = require("../../lib/shared/Model.class.js");
             });
 
-            it("should call the static method and run the mocked readCollection-service", function() {
-                Model.find(Octocat, { da : "ta" }, function(response) {
-                    expect(response.status).to.be("success");
-                    expect(response.data).to.eql({ da : "ta"});
+            it("should call the static method and run the mocked readCollection-service", function(done) {
+                Model.find(Octocat, { da : "ta" }, function(err, models) {
+                    expect(err).to.be(null);
+                    expect(models.get(0).get("name")).to.eql("Octo 1");
+                    expect(models.get(1).get("name")).to.eql("Octo 2");
+                    done();
                 });
             });
         });
