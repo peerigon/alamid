@@ -38,6 +38,87 @@ describe("ModelCollection", function () {
 
     });
 
+    describe(".push()", function() {
+
+        /*
+         it("should emit an 'change'-Event if a Model was pushed", function (done) {
+         collection.on("change", function onChange() {
+         done();
+         });
+         collection.push(octocatModel);
+         });
+         */
+
+    });
+
+    describe(".unshift()", function () {
+
+        /*
+         it("should emit an 'change'-Event if a Model was pushed", function (done) {
+         collection.on("change", function onChange() {
+         done();
+         });
+         collection.unshift(octocatModel);
+         });
+         */
+
+    });
+
+    describe(".pop()", function () {
+
+        //@TODO Move to ModelCollection
+        /*
+         it("should emit 'change'-Event", function (done) {
+         collection.push(octocatModel);
+         collection.on("change", function onChange() {
+         done();
+         });
+         collection.pop();
+         });
+         */
+
+        //@TODO Move to ModelCollection
+        /*
+         it("should not emit 'change'-Event if a popped model emits it's 'change'-Event", function (done) {
+         collection.push(octocatModel); //must be pushed first because after 'change' will be emitted
+         collection.pop();
+         collection.on("change", function onChange() {
+         done(); //Should not be executed
+         });
+         octocatModel.emit("change");
+         done();
+         });
+         */
+
+    });
+
+    describe(".shift()", function () {
+
+        //@TODO
+        /*
+         it("should emit 'change'-Event", function (done) {
+         collection.push(octocatModel);
+         collection.on("change", function onChange() {
+         done();
+         });
+         collection.shift();
+         });
+         */
+
+        //@TODO
+        /*
+         it("should not emit 'change'-Event if a shifted model emits it's 'change'-Event", function (done) {
+         collection.push(octocatModel); //must be pushed first because after 'change' will be emitted
+         collection.shift();
+         collection.on("change", function onChange() {
+         done(); //Should not be executed
+         });
+         octocatModel.emit("change");
+         done();
+         });
+        */
+    });
+
     describe(".sortBy()", function () {
 
         var octocatModelsSortedByName,
@@ -115,6 +196,30 @@ describe("ModelCollection", function () {
 
             modelCollection.sortBy("name");
         });
+
+    });
+
+    describe("dispose()", function () {
+
+        /**
+         describe(".dispose()", function () {
+
+         it("should remove all listeners from it's Models", function (done) {
+         collection.set(0, octocatModel);
+         collection.on("change", function onChange() {
+         done();
+         });
+         collection.dispose();
+         done();
+         });
+
+         it("should make itself unusable", function () {
+         collection.dispose();
+         expect(collection.toArray()).to.be.equal(null);
+         });
+
+         });
+         */
 
     });
 });
