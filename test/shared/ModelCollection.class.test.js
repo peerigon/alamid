@@ -38,6 +38,177 @@ describe("ModelCollection", function () {
 
     });
 
+    describe(".set()", function () {
+
+        it("should proxy 'change'-Event of set Model", function (done) {
+            modelCollection.on("change", function onChange() {
+                done();
+            });
+            modelCollection.set(5, octocatModel);
+            octocatModel.set("name", "sbat");
+        });
+
+        it("should pass changed Model on 'change' as first argument", function (done) {
+            modelCollection.on("change", function onChange(model) {
+                expect(model).to.be.equal(octocatModel);
+                done();
+            });
+            modelCollection.set(5, octocatModel);
+            octocatModel.set("name", "topa");
+        });
+
+        it("should remove 'change'-listener from overwritten Model", function (done) {
+            modelCollection.on("change", function onChange() {
+                done(); //Should not be called
+            });
+            modelCollection.set(3, octocatModel);
+            modelCollection.set(3, octocatModels[2]);
+
+            octocatModel.set("name", "topa");
+            done();
+        });
+
+        it("should proxy 'change'-Event of overwriting Model", function (done) {
+            modelCollection.on("change", function onChange() {
+                done();
+            });
+            modelCollection.set(3, octocatModel);
+            modelCollection.set(3, octocatModels[0]);
+
+            octocatModels[0].set("name", "topa");
+        });
+
+        it("return a reference to itself", function () {
+           expect(modelCollection.set(0, octocatModel)).to.be.equal(modelCollection);
+        });
+
+    });
+
+    describe(".push()", function() {
+
+        it("should proxy 'change'-Event for each pushed Model", function (done) {
+            var changeEventCount = 0;
+
+            modelCollection.on("change", function onChange() {
+                changeEventCount++;
+            });
+
+            modelCollection.push(octocatModels);
+
+            _(octocatModels).each(function setName(model) {
+                model.set("name", "Cpt. Spook");
+            });
+
+            expect(changeEventCount).to.be.equal(octocatModels.length);
+            done();
+        });
+
+        it("should pass Model on 'change' as first argument", function (done) {
+            modelCollection.push(octocatModels);
+            modelCollection.on("change", function onChange(model) {
+                expect(model).to.be.equal(octocatModels[1]);
+                done();
+            });
+            octocatModels[1].set("name", "Master Batti");
+        });
+
+        it("should return a reference to itself", function () {
+            expect(modelCollection.push(octocatModels)).to.be.equal(modelCollection);
+        });
+
+    });
+
+    describe(".unshift()", function () {
+
+        it("should proxy 'change'-Event' for each pushed Model", function (done) {
+            var changeEventCount = 0;
+
+            modelCollection.on("change", function onChange() {
+                changeEventCount++;
+            });
+
+            modelCollection.unshift(octocatModels);
+
+            _(octocatModels).each(function setName(model) {
+                model.set("name", "Dr. siR");
+            });
+
+            expect(changeEventCount).to.be.equal(octocatModels.length);
+            done();
+        });
+
+        it("should pass Model on 'change' as first argument", function (done) {
+            modelCollection.unshift(octocatModels);
+            modelCollection.on("change", function onChange(model) {
+                expect(model).to.be.equal(octocatModels[1]);
+                done();
+            });
+            octocatModels[1].set("name", "Chief Meaku");
+        });
+
+        it("should return a reference to itself", function () {
+            expect(modelCollection.unshift(octocatModels)).to.be.equal(modelCollection);
+        });
+
+    });
+
+    describe(".pop()", function () {
+
+        it("should remove 'change' listener from popped Model", function (done) {
+            modelCollection.push(octocatModels);
+            modelCollection.on("change", function (model) {
+                done(); //Should not be called
+            });
+            modelCollection.pop();
+            octocatModels.pop().set("name", "Dr. Hirsel");
+            done();
+        });
+
+        it("should NOT remove 'change'-listeners which were set outside", function (done) {
+            octocatModels[2].on("change", function onChange() {
+                done();
+            });
+            modelCollection.push(octocatModels);
+            modelCollection.pop();
+            octocatModels[2].set("name", "Namcos");
+
+        });
+
+        it("should return the popped Model", function () {
+            modelCollection.unshift(octocatModels);
+            expect(modelCollection.pop()).to.be.equal(octocatModels.pop());
+        });
+
+    });
+
+    describe(".shift()", function () {
+
+        it("should remove 'change' listener from popped Model", function (done) {
+            modelCollection.push(octocatModels);
+            modelCollection.on("change", function (model) {
+                done(); //Should not be called
+            });
+            modelCollection.shift();
+            octocatModels.shift().set("name", "Dr. Hirsel");
+            done();
+        });
+
+        it("should NOT remove 'change'-listeners which were set outside", function (done) {
+            octocatModels[2].on("change", function onChange() {
+                done();
+            });
+            modelCollection.push(octocatModels[2]);
+            modelCollection.shift();
+            octocatModels[2].set("name", "Namcos");
+        });
+
+        it("should return the popped Model", function () {
+            modelCollection.unshift(octocatModels);
+            expect(modelCollection.pop()).to.be.equal(octocatModels.pop());
+        });
+
+    });
+
     describe(".sortBy()", function () {
 
         var octocatModelsSortedByName,
@@ -105,15 +276,32 @@ describe("ModelCollection", function () {
 
         });
 
-        it("should emit 'change'-event", function (done) {
+        it("should emit an 'sort'-Event", function (done) {
 
             modelCollection.push(octocatModels);
 
-            modelCollection.on("change", function onChange() {
+            modelCollection.on("sort", function onChange() {
                 done();
             });
 
             modelCollection.sortBy("name");
+        });
+
+    });
+
+    describe("dispose()", function () {
+
+        it("should remove 'change'-listeners from all Models", function () {
+            var changeCallCount = 0;
+            modelCollection.on("change", function onChange() {
+                changeCallCount++;
+            });
+            modelCollection.push(octocatModels);
+            modelCollection.dispose();
+            _(octocatModels).each(function triggerChange(model, index) {
+                model.set("name", "" + index + "");
+            });
+            expect(changeCallCount).to.be.equal(0);
         });
 
     });

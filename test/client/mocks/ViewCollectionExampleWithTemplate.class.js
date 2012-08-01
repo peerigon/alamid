@@ -7,11 +7,7 @@ var ViewCollectionExampleWithTemplate = new Class({
 
     Extends: ViewCollection,
 
-    $template: "<ul data-node='views'></ul>",
-
-    getNode: function () {
-        return this.Super.getNode();
-    }
+    $template: "<ul data-node='views'></ul>"
 
 });
 

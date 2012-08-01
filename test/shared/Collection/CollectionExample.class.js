@@ -14,7 +14,7 @@ var CollectionExample = new Class({
      * @return {array}
      */
     getElements: function () {
-        return this.Super.getElements();
+        return this.Super._getElements();
     }
 
 });
