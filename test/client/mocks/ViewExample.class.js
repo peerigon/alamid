@@ -5,16 +5,7 @@ var Class = require("nodeclass").Class,
 
 var ViewExample = new Class({
 
-    Extends: View,
-
-    /**
-     * Exposes protected _node. For testing purposes only
-     *
-     * @return {*}
-     */
-    getNode: function () {
-        return this.Super._getNode();
-    }
+    Extends: View
 
 });
 

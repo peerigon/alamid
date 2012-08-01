@@ -34,13 +34,6 @@ var DisplayObjectExample = new Class({
     },
 
     /**
-     * @retrun {node}
-     */
-    getNode: function () {
-        return this.Super._getNode();
-    },
-
-    /**
      * @return {Object.<string, node>}
      */
     getNodeMap: function () {
