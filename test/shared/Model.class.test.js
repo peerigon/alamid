@@ -7,8 +7,7 @@ require("./testHelpers/compileAlamid.js");
 
 var User1 = require("./Model/User1.class.js"),
     User2 = require("./Model/User2.class.js"),
-    Octocat = require("./Model/Octocat.class.js"),
-    OctocatSchema = require("./Model/schemas/OctocatSchema.js");
+    Octocat = require("./Model/Octocat.class.js");
 
 describe("Model", function() {
 
@@ -80,6 +79,22 @@ describe("Model", function() {
                 expect(user.getUrl()).to.eql("User1");
                 user.setUrl("user/likes");
                 expect(user.getUrl()).to.eql("user/likes");
+            });
+        });
+
+        describe("parentIds", function() {
+
+            var user;
+            beforeEach(function() {
+                user = new User1();
+            });
+
+            it("#setParentID", function() {
+                expect(user.getUrl()).to.eql("User1");
+                user.setParentId("user", 2);
+                user.setParentId("comment", 3);
+                expect(user.getParentId("user")).to.eql(2);
+                expect(user.getParentId("comment")).to.eql(3);
             });
         });
 
