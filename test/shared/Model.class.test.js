@@ -6,6 +6,7 @@ var expect = require("expect.js");
 require("./testHelpers/compileAlamid.js");
 
 var User1 = require("./Model/User1.class.js"),
+    User2 = require("./Model/User2.class.js"),
     Octocat = require("./Model/Octocat.class.js"),
     OctocatSchema = require("./Model/schemas/OctocatSchema.js");
 
@@ -84,14 +85,65 @@ describe("Model", function() {
 
         describe("#Casting", function() {
 
-//             //casting disabled
-//             it("should escape all values on set", function() {
-//             user.set('age', "20");
-//             user.set('name', new Date(0).getFullYear());
-//             expect(user.get("name")).to.eql("1970");
-//             expect(user.get("age")).to.eql(20);
-//             });
+            var user2;
 
+            beforeEach(function() {
+                user2 = new User2();
+            });
+
+            //casting disabled
+            describe("String Fields", function() {
+                it("should accept Numbers", function() {
+                    user2.set('name', "1234");
+                    expect(user2.get("name")).to.eql("1234");
+                });
+
+                it("should accept Dates", function() {
+                    var date = new Date();
+                    user2.set('name', date);
+                    expect(user2.get("name")).to.eql(date.toString());
+                });
+            });
+
+            describe("Number Fields", function() {
+                it("should accept String", function() {
+                    user2.set('age', "1234");
+                    expect(user2.get("age")).to.eql(1234);
+                });
+
+                it("should accept Dates", function() {
+                    var date = new Date();
+                    user2.set('age', date);
+                    expect(user2.get("age")).to.eql(date.getTime());
+                });
+            });
+
+            describe("Date Fields", function() {
+                it("should accept Strings", function() {
+                    var nowDate = new Date();
+                    user2.set('birthday', nowDate.toString());
+                    expect(user2.get("birthday")).to.be.a(Date);
+                    expect(user2.get("birthday").toString()).to.be(nowDate.toString());
+
+                    //Invalid input
+                    user2.set('birthday', "bla bla");
+                    expect(user2.get("birthday")).to.be(null);
+                });
+
+                it("should accept Numbers (Integers)", function() {
+                    var date = new Date();
+                    user2.set('birthday', date.getTime());
+                    expect(user2.get("birthday")).to.be.a(Date);
+                    expect(user2.get("birthday").getTime()).to.eql(date.getTime());
+
+                    //invalid number
+                    //never invalid just unix timestamp!
+                    /*
+                     user2.set('birthday', 1223);
+                     expect(user2.get("birthday")).to.be(null);
+                     */
+                });
+            });
         });
 
         describe("#Escaping", function() {
