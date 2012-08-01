@@ -19,6 +19,10 @@ describe("pageRegistry", function () {
             pageRegistry.setPage("my/page/B", bundleB);
             pageRegistry.setPage("my/page/Async", bundleAsync);
         });
+        it("should overwrite the first entry when called with the same pageURL", function () {
+            pageRegistry.setPage("my/page/A", bundleA);
+            expect(pageRegistry.getPageDataLoader("my/page/A")).to.be(null);
+        });
     });
     describe(".getPageBundle()", function () {
         it("should return a method that acts like the sync bundle", function (done) {
@@ -43,6 +47,7 @@ describe("pageRegistry", function () {
     });
     describe(".getPageDataLoader()", function () {
         it("should return the data loader", function () {
+            pageRegistry.setPage("my/page/A", bundleA, dataLoaderA);
             expect(pageRegistry.getPageDataLoader("my/page/A")).to.be(dataLoaderA);
         });
         it("should return null if the page has no dataLoader", function () {
