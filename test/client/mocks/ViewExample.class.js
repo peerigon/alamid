@@ -13,7 +13,7 @@ var ViewExample = new Class({
      * @return {*}
      */
     getNode: function () {
-        return this.Super.getNode();
+        return this.Super._getNode();
     }
 
 });

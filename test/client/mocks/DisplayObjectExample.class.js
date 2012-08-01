@@ -37,14 +37,14 @@ var DisplayObjectExample = new Class({
      * @retrun {node}
      */
     getNode: function () {
-        return this.Super.getNode();
+        return this.Super._getNode();
     },
 
     /**
      * @return {Object.<string, node>}
      */
     getNodeMap: function () {
-        return this.Super.getNodeMap();
+        return this.Super._getNodeMap();
     }
 
 });
