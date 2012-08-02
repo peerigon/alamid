@@ -65,16 +65,6 @@ describe("Collection", function () {
             }).to.throwError();
         });
 
-        //@TODO Move to ModelCollection
-        /*
-        it("should throw 'change'-Event ", function (done) {
-            collection.on("change", function onChange() {
-                done();
-            });
-            collection.set(1, octocatModel);
-        });
-        */
-
         it("should emit an 'add'-Event ", function (done) {
             collection.on("add", function () {
                 done();
@@ -146,7 +136,7 @@ describe("Collection", function () {
         it("should pass the index where elements was pushed as first argument on 'add'", function (done) {
             collection.push(octocatModels);
             collection.on("add", function onAdd(index) {
-                expect(index).to.be.equal(octocatModels.length - 1);
+                expect(index).to.be.equal(octocatModels.length);
                 done();
             });
             collection.push(octocatModels);
