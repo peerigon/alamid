@@ -1,8 +1,8 @@
 "use strict";
 
 var Class = require("nodeclass").Class,
-    Model = require('../../../lib/shared/Model.class.js'),
-    schema = require("./formSchemaDEF.js");
+    Model = require('../../../../lib/shared/Model.class.js'),
+    schema = require("./schemas/formSchemaDEF.js");
 
 var FormModelDEF = new Class({
 
