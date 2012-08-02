@@ -1,3 +1,4 @@
+//@TODO Catch errors on hooks
 (function (window) {
     "use strict";
 
@@ -14,7 +15,7 @@
                 ui:"bdd",
                 globals: [
                     "io",
-                    "getInterface", //getInterface seems to a global function from mocha ^^
+                    "getInterface", //getInterface seems to be a global function from mocha ^^
                     "stats",
                     "report"
                 ]
@@ -47,34 +48,16 @@
                 }
             });
 
-            function onf5() {
-
-                console.log(new Date().toLocaleTimeString() + ": re-running tests");
-
-                var oldTests = jQuery("script[src='tests.js']");
-
-                if (oldTests.length !== 0) {
-                    jQuery("script[src='tests.js']").remove();
-                }
-
-                jQuery.getScript("tests.js", function onTestsLoaded() {
-
-                    jQuery("#mocha").empty();
-
-                    nof5.enableTests();
-                    mocha.run();
-
-                    socket.once("f5", onf5);
-
-                });
-            }
-
             socket.on("disconnect", function onDisconnect() {
                 mocha.Runner.prototype.removeAllListeners();
             });
 
-            //Run tests initially
-            onf5();
+            socket.once("f5", function onf5() {
+                location.reload();
+            });
+
+            nof5.enableTests();
+            mocha.run();
         });
     });
 
