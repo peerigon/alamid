@@ -652,7 +652,7 @@ describe("Model", function() {
             var Octoduck;
 
             before(function() {
-                Octoduck = require("./Model/Octoduck.class.js", false);
+                Octoduck = require("./Model/OctoDuck.class.js", false);
             });
 
             it("should add an instance to the registry after successful saving", function(done) {
