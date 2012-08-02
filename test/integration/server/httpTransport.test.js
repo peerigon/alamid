@@ -114,6 +114,5 @@ describe("handleHttp", function() {
                     .expect(400,/Invalid Request: validator/, done);
             });
         });
-
     });
 });

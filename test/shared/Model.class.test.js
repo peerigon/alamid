@@ -12,7 +12,6 @@ var User1 = require("./Model/User1.class.js"),
 
 describe("Model", function() {
 
-
     describe("Schema", function(){
 
         var octocat;
@@ -555,12 +554,12 @@ describe("Model", function() {
 
                 mockedOctocats = [
                     {
-                        id : 1,
+                        id : 110,
                         name : "Octo 1",
                         age : 12
                     },
                     {
-                        id : 2,
+                        id : 120,
                         name : "Octo 2",
                         age : 10
                     }
@@ -586,10 +585,9 @@ describe("Model", function() {
                     done();
                 });
             });
+            //TODO add test for cached instances
         });
     });
-
-
 
     describe("Model-Loader (Model-Caching)", function(){
 
