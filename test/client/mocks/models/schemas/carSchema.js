@@ -4,18 +4,18 @@ var carSchema = {
 
     "manufactor": {
         "type": String,
-        require: true
+        "required": true
     },
 
     "model": {
         "type": String,
-        require:true
+        "required":true
     },
 
     //year of construction
     "yoc": {
         type: Date,
-        require: true
+        "required": true
     }
 };
 
