@@ -609,7 +609,7 @@ describe("Model", function() {
             var Octoduck;
 
             before(function() {
-                Octoduck = require("./Model/Octoduck.class.js", false);
+                Octoduck = require("./Model/OctoDuck.class.js", false);
             });
 
             it("should return a cached instance", function(done) {
