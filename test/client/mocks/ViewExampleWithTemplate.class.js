@@ -8,7 +8,7 @@ var ViewExampleWithTemplate = new Class({
 
     Extends: View,
 
-    $template: "<li data-node='listElement'>HTMLLIElement " + (viewCount++) + " +</li>"
+    $template: "<li data-node='listElement'>HTMLLIElement " + (viewCount++) + "</li>"
 
 });
 
