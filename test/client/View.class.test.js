@@ -3,10 +3,10 @@
 var expect = require("expect.js");
 
 var is = require("nodeclass").is,
-    formSchemaABC = require("./mocks/formSchemaABC.js"),
-    formSchemaDEF = require("./mocks/formSchemaDEF.js"),
-    FormModelABC = require("./mocks/FormModelABC.class.js"),
-    FormModelDEF = require("./mocks/FormModelDEF.class.js"),
+    formSchemaABC = require("./mocks/models/schemas/formSchemaABC.js"),
+    formSchemaDEF = require("./mocks/models/schemas/formSchemaDEF.js"),
+    FormModelABC = require("./mocks/models/FormModelABC.class.js"),
+    FormModelDEF = require("./mocks/models/FormModelDEF.class.js"),
     DisplayObject = require("../../lib/client/DisplayObject.class.js"),
     View = require("../../lib/client/View.class.js"),
     ViewExample = require("./mocks/ViewExample.class.js"),
