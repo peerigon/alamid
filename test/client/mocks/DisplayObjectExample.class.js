@@ -25,6 +25,18 @@ var DisplayObjectExample = new Class({
     },
 
     /**
+     *
+     * How to use: displayObjectInstance.prepend(new displayObjectInstance()).at("nodeName").
+     *
+     * @param {!DisplayObject} displayObject
+     * @return {Object.<string, function(string): DisplayObject>}
+     * @protected
+     */
+    prepend: function (displayObject) {
+        return this.Super._prepend(displayObject);
+    },
+
+    /**
      * Exposing protected _addNodeEvents for testing.
      *
      * @param nodeEvents
