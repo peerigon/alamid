@@ -11,11 +11,11 @@ describe("DisplayObject", function () {
 
     var $form,
         form,
-        formTemplate,
+        formTemplate = DOMNodeMocks.getFormString(),
 
         $submitButton,
         submitButton,
-        submitButtonTemplate,
+        submitButtonTemplate = DOMNodeMocks.getSubmitButtonString(),
 
         displayObject,
         formDisplayObject,
@@ -24,12 +24,9 @@ describe("DisplayObject", function () {
     beforeEach(function () {
         form = DOMNodeMocks.getForm();
         $form = jQuery(form);
-        formTemplate = DOMNodeMocks.getFormString();
 
         submitButton = DOMNodeMocks.getSubmitButton();
         $submitButton = jQuery(submitButton);
-        submitButtonTemplate = DOMNodeMocks.getSubmitButtonString();
-
 
         displayObject = new DisplayObjectExample(formTemplate);
         submitButtonDisplayObject = new DisplayObjectExample(submitButtonTemplate);
@@ -120,6 +117,55 @@ describe("DisplayObject", function () {
 
             expect(lastChild.toString()).to.be.equal(submitButtonDisplayObject.getNode().toString());
             expect($lastChild.val()).to.be.equal(submitButtonDisplayObject.getNode().value);
+        });
+
+    });
+
+    describe(".prepend()", function () {
+        it("should throw an Error if a not existent node name was passed to # at()", function () {
+            expect(function () {
+                formDisplayObject.prepend(submitButtonDisplayObject).at("not_existing_node");
+            }).to.throwError();
+        });
+    });
+
+    describe(".prepend().at()", function () {
+
+
+        it("should throw an Error if a not existent node name was passed to # at()", function () {
+            expect(function () {
+                formDisplayObject.prepend(submitButtonDisplayObject).at("not_existing_node");
+            }).to.throwError();
+        });
+
+        it("should return a reference to itself", function () {
+            expect(formDisplayObject.prepend(submitButtonDisplayObject).at("form")).to.be.equal(formDisplayObject);
+        });
+
+        it("should emit an 'beforeprepend'-Event", function (done) {
+            submitButtonDisplayObject.on("beforeprepend", function () {
+                done();
+            });
+
+            formDisplayObject.prepend(submitButtonDisplayObject).at("form");
+        });
+
+        it("should emit an 'prepend'-Event", function (done) {
+            submitButtonDisplayObject.on("prepend", function () {
+                done();
+            });
+
+            formDisplayObject.prepend(submitButtonDisplayObject).at("form");
+        });
+
+        it("should prepend submit-button to form", function () {
+            formDisplayObject.prepend(submitButtonDisplayObject).at("form");
+
+            var $firstChild = jQuery(formDisplayObject.getNode()).find(":first-child"),
+                firstChild = $firstChild[0];
+
+            expect(firstChild.toString()).to.be.equal(submitButtonDisplayObject.getNode().toString());
+            expect($firstChild.val()).to.be.equal(submitButtonDisplayObject.getNode().value);
         });
 
     });
