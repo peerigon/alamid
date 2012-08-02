@@ -1,6 +1,7 @@
 "use strict";
 
-var expect = require("expect.js");
+var expect = require("expect.js"),
+    rewire = require("rewire");
 
 // @browser ./testHelpers/compileAlamidClient.js
 require("./testHelpers/compileAlamid.js");
@@ -153,10 +154,10 @@ describe("Model", function() {
 
                     //invalid number
                     //never invalid just unix timestamp!
-                    /*
-                     user2.set('birthday', 1223);
-                     expect(user2.get("birthday")).to.be(null);
-                     */
+
+                    //user2.set('birthday', 1223);
+                    //expect(user2.get("birthday")).to.be(null);
+
                 });
             });
         });
@@ -553,12 +554,12 @@ describe("Model", function() {
 
                 mockedOctocats = [
                     {
-                        id : 1,
+                        id : 110,
                         name : "Octo 1",
                         age : 12
                     },
                     {
-                        id : 2,
+                        id : 120,
                         name : "Octo 2",
                         age : 10
                     }
@@ -582,6 +583,85 @@ describe("Model", function() {
                     expect(models.get(0).get("name")).to.eql("Octo 1");
                     expect(models.get(1).get("name")).to.eql("Octo 2");
                     done();
+                });
+            });
+            //TODO add test for cached instances
+        });
+    });
+
+    describe("Model-Loader (Model-Caching)", function(){
+
+        var Model;
+
+        before(function() {
+            var modelLoader = require("../../lib/shared/modelLoader.js"),
+                clientModelLoader = require("../../lib/client/modelLoader.client.js");
+
+            modelLoader.get = clientModelLoader.get;
+            modelLoader.add = clientModelLoader.add;
+
+            Model = require("../../lib/shared/Model.class.js", false);
+        });
+
+
+        describe("#find", function() {
+
+            var Octoduck;
+
+            before(function() {
+                Octoduck = require("./Model/OctoDuck.class.js", false);
+            });
+
+            it("should return a cached instance", function(done) {
+                Model.findById(Octoduck, 2, function(err, octo) {
+                    expect(octo).to.be.an("object");
+                    octo.set("name", "emil");
+                    Model.findById(Octoduck, 2, function(err, octo2) {
+                        //check if assigning of this is the right way?
+                        //expect(octo2).to.eql(octo);
+                        expect(octo2.get("name")).to.be("emil");
+                        octo2.set("name", "erpel");
+                        expect(octo2.get("name")).to.be("erpel");
+                        expect(octo.get("name")).to.be("erpel");
+                        done();
+                    });
+                });
+            });
+
+            it("should also cache method created via NEW", function(done) {
+
+                var octo = new Octoduck(24);
+                octo.set("name", "old emil");
+
+                Model.findById(Octoduck, 24, function(err, octo) {
+                    expect(octo).to.be.an("object");
+                    Model.findById(Octoduck, 24, function(err, octo2) {
+                        expect(octo2).to.eql(octo);
+                        expect(octo2.get("name")).to.be("old emil");
+                        octo2.set("name", "erpel");
+                        expect(octo2.get("name")).to.be("erpel");
+                        expect(octo.get("name")).to.be("erpel");
+                        done();
+                    });
+                });
+            });
+        });
+
+        describe("#save", function() {
+
+            var Octoduck;
+
+            before(function() {
+                Octoduck = require("./Model/OctoDuck.class.js", false);
+            });
+
+            it("should add an instance to the registry after successful saving", function(done) {
+                var octo = new Octoduck();
+                octo.save(function(err) {
+                    Model.findById(Octoduck, 2, function(err, octo2) {
+                        expect(octo2).to.eql(octo);
+                        done();
+                    });
                 });
             });
         });
