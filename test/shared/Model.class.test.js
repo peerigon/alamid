@@ -155,7 +155,6 @@ describe("Model", function() {
                     //should fail on floats!
                     user2.set("birthday", 1.2);
                     expect(user2.get("birthday")).to.be(null);
-
                 });
             });
         });
