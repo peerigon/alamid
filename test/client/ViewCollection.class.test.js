@@ -18,6 +18,7 @@ describe("ViewCollection", function () {
         bmw,
         daimler,
         porsche,
+        fiat,
         cars,
         carCollection;
 
@@ -35,7 +36,7 @@ describe("ViewCollection", function () {
         bmw = new CarModel();
         bmw.set({
             "manufactor": "BMW",
-            "model": "3",
+            "model": "3 series",
             "yoc": new Date(2011)
         });
         daimler = new CarModel();
@@ -49,6 +50,12 @@ describe("ViewCollection", function () {
             "manufactor": "Porsche",
             "model": "911",
             "yoc": new Date(1986)
+        });
+        fiat = new CarModel();
+        fiat.set({
+            "manufactor": "Fiat",
+            "model": "126 P - Maluch",
+            "yoc": new Date(1970)
         });
         cars = [audi, bmw, daimler];
         carCollection = new ModelCollection(CarModel, cars);
@@ -109,9 +116,53 @@ describe("ViewCollection", function () {
             });
         });
 
-        it("should create new Views for each Model which was added to ModelCollection", function () {
+        it("should create new Views for each Model which was added to ModelCollection by it's .push()", function () {
             carCollection.push(porsche);
-            //expect($viewCollectioNode.find("li").length).to.be.equal(carCollection.size());
+            expect($viewCollectioNode.find("li").length).to.be.equal(carCollection.size());
+        });
+
+        it("should bind each Model which was added to ModelCollection by it's .push() to a new View", function () {
+            var $liElements;
+
+            carCollection.push([porsche, fiat]);
+
+            $liElements = $viewCollectioNode.find("[data-node='model']");
+
+            expect(jQuery($liElements[$liElements.length - 1]).text()).to.be.equal(fiat.get("model"));
+        });
+
+        it("should create new Views for each Model which was added to ModelCollection by it's .unshift()", function () {
+            carCollection.unshift(fiat);
+            expect($viewCollectioNode.find("li").length).to.be.equal(carCollection.size());
+        });
+
+        it("should bind each Model which was added to ModelCollection by it's .unshift() to a new View", function () {
+            var $liElements;
+
+            carCollection.unshift([fiat, porsche]);
+
+            $liElements = $viewCollectioNode.find("[data-node='model']");
+
+            expect(jQuery($liElements[0]).text()).to.be.equal(fiat.get("model"));
+            expect(jQuery($liElements[1]).text()).to.be.equal(porsche.get("model"));
+        });
+
+        it("should create a new View for the Model which was added to ModelCollection by it's.set() on a new index", function () {
+            carCollection.set(carCollection.size(), fiat);
+            expect($viewCollectioNode.find("li").length).to.be.equal(carCollection.size());
+        });
+
+        it("should NOT create a new View for the Model which was added to ModelCollection by it's.set() on an old index", function () {
+            carCollection.set(0, porsche);
+            carCollection.set(0, fiat);
+            expect($viewCollectioNode.find("li").length).to.be.equal(carCollection.size());
+        });
+
+        it("should bind the Model which was added to ModelCollection by it's .set() on an old index to an existing view", function () {
+            carCollection.set(0, porsche);
+            carCollection.set(0, fiat);
+            fiat.set("model", "p126");
+            expect(jQuery($viewCollectioNode.find("li [data-node='model']")[0]).text()).to.be.equal("p126");
         });
 
         it("should return a reference to itself", function () {
