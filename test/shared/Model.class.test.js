@@ -594,11 +594,12 @@ describe("Model", function() {
         var Model;
 
         before(function() {
-            var modelLoader = require("../../lib/shared/modelLoader.js"),
-                clientModelLoader = require("../../lib/client/modelLoader.client.js");
+            var modelCache = require("../../lib/shared/modelCache.js"),
+                clientModelCache = require("../../lib/client/modelCache.client.js");
 
-            modelLoader.get = clientModelLoader.get;
-            modelLoader.add = clientModelLoader.add;
+            //reMap functions
+            modelCache.get = clientModelCache.get;
+            modelCache.add = clientModelCache.add;
 
             Model = require("../../lib/shared/Model.class.js", false);
         });
