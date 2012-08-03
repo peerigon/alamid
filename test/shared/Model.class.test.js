@@ -554,12 +554,12 @@ describe("Model", function() {
 
                 mockedOctocats = [
                     {
-                        id : 110,
+                        id : 1,
                         name : "Octo 1",
                         age : 12
                     },
                     {
-                        id : 120,
+                        id : 2,
                         name : "Octo 2",
                         age : 10
                     }
@@ -617,8 +617,7 @@ describe("Model", function() {
                     expect(octo).to.be.an("object");
                     octo.set("name", "emil");
                     Model.findById(Octoduck, 2, function(err, octo2) {
-                        //check if assigning of this is the right way?
-                        //expect(octo2).to.eql(octo);
+                        expect(octo).to.eql(octo2);
                         expect(octo2.get("name")).to.be("emil");
                         octo2.set("name", "erpel");
                         expect(octo2.get("name")).to.be("erpel");
@@ -628,21 +627,18 @@ describe("Model", function() {
                 });
             });
 
-            it("should also cache method created via NEW", function(done) {
-
+            it("should not cache instances created with new", function(done) {
                 var octo = new Octoduck(24);
                 octo.set("name", "old emil");
 
-                Model.findById(Octoduck, 24, function(err, octo) {
+                Model.findById(Octoduck, 24, function(err, octo2) {
                     expect(octo).to.be.an("object");
-                    Model.findById(Octoduck, 24, function(err, octo2) {
-                        expect(octo2).to.eql(octo);
-                        expect(octo2.get("name")).to.be("old emil");
-                        octo2.set("name", "erpel");
-                        expect(octo2.get("name")).to.be("erpel");
-                        expect(octo.get("name")).to.be("erpel");
-                        done();
-                    });
+                    expect(octo2).not.to.eql(octo);
+                    expect(octo2.get("name")).to.be(null);
+                    octo2.set("name", "erpel");
+                    expect(octo2.get("name")).to.be("erpel");
+                    expect(octo.get("name")).to.be("old emil");
+                    done();
                 });
             });
         });
