@@ -36,6 +36,23 @@ describe("ModelCollection", function () {
             expect(modelCollection.getClass()).to.be.equal(Model);
         });
 
+        it("should proxy 'change'-Event for each Model given on construction", function (done) {
+            var changeEventCount = 0;
+
+            modelCollection = new ModelCollection(OctocatModel, octocatModels);
+
+            modelCollection.on("change", function onChange() {
+                changeEventCount++;
+            });
+
+            _(octocatModels).each(function setName(model) {
+                model.set("name", "Cpt. Spook");
+            });
+
+            expect(changeEventCount).to.be.equal(octocatModels.length);
+            done();
+        });
+
     });
 
     describe(".set()", function () {
