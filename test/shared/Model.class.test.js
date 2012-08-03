@@ -148,15 +148,13 @@ describe("Model", function() {
 
                 it("should accept Numbers (Integers)", function() {
                     var date = new Date();
-                    user2.set('birthday', date.getTime());
+                    user2.set("birthday", date.getTime());
                     expect(user2.get("birthday")).to.be.a(Date);
                     expect(user2.get("birthday").getTime()).to.eql(date.getTime());
 
-                    //invalid number
-                    //never invalid just unix timestamp!
-
-                    //user2.set('birthday', 1223);
-                    //expect(user2.get("birthday")).to.be(null);
+                    //should fail on floats!
+                    user2.set("birthday", 1.2);
+                    expect(user2.get("birthday")).to.be(null);
 
                 });
             });
