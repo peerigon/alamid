@@ -3,6 +3,7 @@
 var expect = require("expect.js"),
     rewire = require("rewire"),
     App = rewire("../../lib/client/App.class.js"),
+    pageJS = require("page"),
     Page = require("../../lib/client/Page.class.js"),
     PageMock = require("./mocks/PageMock.class.js"),
     PageLoaderMock = require("./mocks/PageLoaderMock.class.js"),
@@ -27,8 +28,6 @@ describe("App", function () {
         });
     });
     beforeEach(function () {
-        pages.main = new PageMock();
-        pages.main.name = "Main";
         pages.blog = new PageMock();
         pages.blog.name = "Blog";   // for debugging purposes
         pages.posts = new PageMock();
@@ -37,10 +36,14 @@ describe("App", function () {
         pages.home.name = "Home";
         pages.about = new PageMock();
         pages.about.name = "About";
-        app = new App(pages.main);
+        app = new App(PageMock);
+        app.start();
+        pages.main = app.getMainPage();
+        pages.main.name = "Main";
+        pageJS.callbacks = [];  // removes previous routes
     });
     describe(".init()", function () {
-        it("should fail when calling without a page", function () {
+        it("should fail when calling without a page class", function () {
             expect(function () {
                 app = new App();
             }).to.throwException(checkForTypeError);
@@ -64,20 +67,81 @@ describe("App", function () {
             }).to.throwException(checkForTypeError);
         });
         it("should throw no exception when calling with a page", function () {
-            app = new App(pages.main);
+            app = new App(PageMock);
         });
     });
-    describe(".route()", function () {
-        it("should work with a string as handler", function () {
-            app.route("/blog", "blog");
+    describe(".route() / .dispatchRoute()", function () {
+        var state;
+
+        before(function () {
+            state = window.location.pathname + window.location.search;
         });
-        it("should work with a function as handler", function () {
-            app.route("/blog/about", function (ctx) {
-                app.changePage("blog/about", ctx.params);
+        after(function () {
+            history.pushState(null, null, state);
+        });
+        it("should modify the history state", function () {
+            app.route("*", function () {
+                // This route handler is needed so pageJS doesn't change the window.location
             });
+            app.dispatchRoute("/blog/posts");
+            expect(window.location.pathname).to.be("/blog/posts");
         });
-        it("should work with a regexp-route", function () {
-            app.route(/(hello){3}/gi, "blog");
+        it("should execute the registered route handlers in the given order", function () {
+            var called = [];
+
+            app.route("*", function (ctx, next) {
+                called.push("*1");
+                next();
+            });
+            app.route(/^\/bl/i, function (ctx, next) {
+                called.push("/bl");
+                next();
+            });
+            app.route("/blog", function (ctx, next) {
+                throw new Error("This handler should not be triggered");
+            });
+            app.route("/blog/*", function (ctx, next) {
+                called.push("/blog/*");
+                next();
+            });
+            app.route("/blog/posts", function (ctx, next) {
+                called.push("/blog/posts");
+                next();
+            });
+            app.route("*", function (ctx) {
+                called.push("*2");
+            });
+
+            app.dispatchRoute("/blog/posts");
+
+            expect(called).to.eql(["*1", "/bl", "/blog/*", "/blog/posts", "*2"]);
+        });
+        it("should work with a string as handler", function () {
+            var pageLoader,
+                pageURLs;
+
+            app.route("/blog/about", "blog/about");
+            app.dispatchRoute("/blog/about");
+            pageLoader = PageLoaderMock.instance;
+            pageURLs = pageLoader.getPageURLs();
+            expect(pageURLs).to.eql(["blog", "blog/about"]);
+        });
+        it("should pass the params", function () {
+            var params,
+                pageLoader;
+
+            app.route("/blog/:author/posts/:postId", function (ctx, next) {
+                expect(ctx.params.author).to.be("spook");
+                expect(ctx.params.postId).to.be("123");
+                next();
+            });
+            app.route("/blog/:author/posts/:postId", "blog/posts");
+            app.dispatchRoute("/blog/spook/posts/123");
+
+            pageLoader = PageLoaderMock.instance;
+            params = pageLoader.getParams();
+            expect(params.author).to.be("spook");
+            expect(params.postId).to.be("123");
         });
         it("should be chainable", function () {
             app
@@ -199,18 +263,6 @@ describe("App", function () {
             expect(pages.blog.getSubPage()).to.be(pages.posts);
             expect(pages.posts.getSubPage()).to.be(null);
             expect(emitted).to.eql(["blog", "posts", "app"]);
-        });
-    });
-    describe(".dispatchRoute()", function () {
-        it("should execute the registered route handlers in the given order", function () {
-            var called = [];
-
-            app.route("*", function (ctx, params) {
-                called.push("*");
-            });
-            app.route("/blog", function (ctx, params) {
-                called.push("/blog");
-            });
         });
     });
 });
