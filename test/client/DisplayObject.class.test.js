@@ -93,16 +93,16 @@ describe("DisplayObject", function () {
             expect(formDisplayObject.append(submitButtonDisplayObject).at("form")).to.be.equal(formDisplayObject);
         });
 
-        it("should emit an 'beforeappend'-Event", function (done) {
-            submitButtonDisplayObject.on("beforeappend", function () {
+        it("should emit an 'beforeadd'-Event", function (done) {
+            submitButtonDisplayObject.on("beforeadd", function () {
                done();
            });
 
            formDisplayObject.append(submitButtonDisplayObject).at("form");
         });
 
-        it("should emit an 'append'-Event", function (done) {
-            submitButtonDisplayObject.on("append", function () {
+        it("should emit an 'add'-Event", function (done) {
+            submitButtonDisplayObject.on("add", function () {
                 done();
             });
 
@@ -142,16 +142,16 @@ describe("DisplayObject", function () {
             expect(formDisplayObject.prepend(submitButtonDisplayObject).at("form")).to.be.equal(formDisplayObject);
         });
 
-        it("should emit an 'beforeprepend'-Event", function (done) {
-            submitButtonDisplayObject.on("beforeprepend", function () {
+        it("should emit an 'beforeadd'-Event", function (done) {
+            submitButtonDisplayObject.on("beforeadd", function () {
                 done();
             });
 
             formDisplayObject.prepend(submitButtonDisplayObject).at("form");
         });
 
-        it("should emit an 'prepend'-Event", function (done) {
-            submitButtonDisplayObject.on("prepend", function () {
+        it("should emit an 'add'-Event", function (done) {
+            submitButtonDisplayObject.on("add", function () {
                 done();
             });
 
@@ -370,7 +370,7 @@ describe("DisplayObject", function () {
 
     });
 
-    describe(".isAppended()", function () {
+    describe(".isChild()", function () {
 
         var formDisplayObject,
             submitButtonDisplayObject;
@@ -383,21 +383,21 @@ describe("DisplayObject", function () {
         });
 
         it("should be false by default (=just created and not appended anywhere)", function () {
-            expect(formDisplayObject.isAppended()).to.be(false);
+            expect(formDisplayObject.isChild()).to.be(false);
         });
 
         it("should be true after appending it anywhere", function () {
-            expect(submitButtonDisplayObject.isAppended()).to.be(true);
+            expect(submitButtonDisplayObject.isChild()).to.be(true);
         });
 
         it("should be false after .destroy()", function () {
             submitButtonDisplayObject.destroy();
-            expect(submitButtonDisplayObject.isAppended()).to.be(false);
+            expect(submitButtonDisplayObject.isChild()).to.be(false);
         });
 
         it("should be false after .dispose()", function () {
             submitButtonDisplayObject.dispose();
-            expect(submitButtonDisplayObject.isAppended()).to.be(false);
+            expect(submitButtonDisplayObject.isChild()).to.be(false);
         });
     });
 });
