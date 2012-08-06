@@ -2,7 +2,7 @@
 
 var Class = require("nodeclass").Class;
 
-var PageLoaderExamplePage = new Class({
+var PageMock = new Class({
     subPage: null,
     params: null,
     emitted: [],
@@ -14,4 +14,4 @@ var PageLoaderExamplePage = new Class({
     }
 });
 
-module.exports = PageLoaderExamplePage;
+module.exports = PageMock;
