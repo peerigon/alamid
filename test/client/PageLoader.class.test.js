@@ -3,7 +3,7 @@
 var expect = require("expect.js"),
     pageRegistry = require("../../lib/shared/registries/pageRegistry.js"),
     PageLoader = require("../../lib/client/PageLoader.class.js"),
-    PageLoaderExamplePage = require("./mocks/PageLoaderExamplePage.class.js"),
+    PageLoaderExamplePage = require("./mocks/PageMock.class.js"),
     is = require("nodeclass").is,
     expectTypeError = expectError(TypeError);
 
