@@ -43,7 +43,7 @@ describe("handleRequest", function() {
         });
 
         it("should handle the request and return without an error if all middleware worked fine", function(done) {
-            var req = new Request("create", "/services/blogPost", {});
+            var req = new Request("create", "/services/blogPost", { da : "ta" });
 
             handleRequest(req, function(err, resReq, resRes) {
                 expect(err).to.be(null);
