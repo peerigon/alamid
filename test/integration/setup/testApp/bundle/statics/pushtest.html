@@ -31,21 +31,32 @@
         return pommes;
     }
 
+
     /*
-     function wsPushHandler() {
-     var pommes = {};
+    var pushHandler = function(url, id, data) {
+        console.log("CLIENT Browser PUSHED", url, id, data);
+    };
 
-     socket.on("update", function(url, id, data) {
-     console.log("PUSHED", url, id, data);
-     pommes.success(url, id, data);
-     });
-
-     return pommes;
-     }
-     */
     socket.on("updatePush", function(url, id, data) {
-        console.log("PUSHED", "url: " + url, "id: ", id, "data: ", data);
+        console.log("PUSH received: " + url, id, data);
+        pushHandler(url, id, data);
     });
+    */
+
+
+    function wsPushHandler() {
+        var pommes = {};
+
+        socket.on("updatePush", function(url, id, data) {
+            console.log("push called", url, id, data);
+            pommes.success(url, id, data);
+        });
+
+        return pommes;
+    }
+
+
+
 
 </script>
 </body>

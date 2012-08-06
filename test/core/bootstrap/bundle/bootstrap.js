@@ -4,6 +4,7 @@ config.mode = "development";
 config.basePath = ""; 
 config.baseUrl = ""; 
 config.isDev = true; 
+config.useCasting = ""; 
 
 
 //module.exports = config;

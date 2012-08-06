@@ -41,7 +41,7 @@ describe("sanitizeData", function () {
             count : 12
         };
 
-        req = new Request("read", "/services/blog", requestData);
+        req = new Request("create", "/services/blog", requestData);
         res = new Response();
     });
 
@@ -68,6 +68,46 @@ describe("sanitizeData", function () {
 
         sanitizeData(req, res, function(err) {
             expect(err).not.to.be(null);
+            done();
+        });
+    });
+
+    it("should not sanitize READ requests", function (done) {
+
+        req.setMethod("read");
+
+        sanitizeData(req, res, function(err) {
+            var expectedKeys = [
+                "title",
+                "createDate",
+                "count",
+                "anotherRandomField",
+                "randomField"
+            ];
+
+            var data = req.getData();
+            expect(err).to.be(undefined);
+            expect(data).to.only.have.keys(expectedKeys);
+            done();
+        });
+    });
+
+    it("should not sanitize READ requests", function (done) {
+
+        req.setMethod("delete");
+
+        sanitizeData(req, res, function(err) {
+            var expectedKeys = [
+                "title",
+                "createDate",
+                "count",
+                "anotherRandomField",
+                "randomField"
+            ];
+
+            var data = req.getData();
+            expect(err).to.be(undefined);
+            expect(data).to.only.have.keys(expectedKeys);
             done();
         });
     });
