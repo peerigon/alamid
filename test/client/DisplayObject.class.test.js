@@ -1,7 +1,7 @@
 "use strict";
 
 var expect = require("expect.js"),
-    STATICS = require("../../lib/client/ALAMID_CLIENT_CONST.js"),
+    CONSTANTS = require("../../lib/client/CONSTANTS.js"),
     path = require("path"),
     compile = require("nodeclass").compile,
     DisplayObject = require("../../lib/client/DisplayObject.class.js"),
@@ -336,17 +336,17 @@ describe("DisplayObject", function () {
 
     describe(".hide()", function () {
 
-        it("node should have the attribute class with at least " + STATICS.HIDE_CLASS + " as value", function () {
+        it("node should have the attribute class with at least " + CONSTANTS.HIDE_CLASS + " as value", function () {
             displayObject.hide();
-            expect(jQuery(displayObject.getNode()).hasClass(STATICS.HIDE_CLASS)).to.be(true);
+            expect(jQuery(displayObject.getNode()).hasClass(CONSTANTS.HIDE_CLASS)).to.be(true);
         });
     });
 
     describe(".display()", function () {
 
-        it("node should NOT have the attribute class with " + STATICS.HIDE_CLASS + " as value", function () {
+        it("node should NOT have the attribute class with " + CONSTANTS.HIDE_CLASS + " as value", function () {
             displayObject.display();
-            expect(jQuery(displayObject.getNode()).hasClass(STATICS.HIDE_CLASS)).to.be(false);
+            expect(jQuery(displayObject.getNode()).hasClass(CONSTANTS.HIDE_CLASS)).to.be(false);
         });
 
     });
