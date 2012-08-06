@@ -4,6 +4,7 @@
     "mode": "development",
     "appDir": null,
     "logDir": null,
+    "useCasting" : true,
     "useSession" : true,
     "useWebsockets" : true,
     "useStaticFileServer" : true
