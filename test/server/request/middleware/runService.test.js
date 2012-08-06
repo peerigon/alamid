@@ -27,7 +27,6 @@ describe("runService", function(){
 
             mockedServiceFunctions = {
                 create : function(ids, model, callback){
-                    console.log("create called");
                     callback({ "status" : "success" });
                 },
                 read : function(ids, callback){
