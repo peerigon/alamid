@@ -1,0 +1,54 @@
+<html>
+<head>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+<h1>Websocket Test</h1>
+
+<script>
+
+    var socket = io.connect('http://localhost:9090');
+
+    function wsRequest(method, url, data, callback) {
+        socket.emit(method, url, data, callback);
+    }
+
+    /**
+     * like websocket request but with promises
+     * @param method
+     * @param url
+     * @param data
+     * @return {Object}
+     */
+    function wsRequestTest(method, url, data) {
+        var pommes = {};
+
+        wsRequest(method, url, data, function(res) {
+            pommes.success(res);
+        });
+
+        return pommes;
+    }
+
+    /*
+     function wsPushHandler() {
+     var pommes = {};
+
+     socket.on("update", function(url, id, data) {
+     console.log("PUSHED", url, id, data);
+     pommes.success(url, id, data);
+     });
+
+     return pommes;
+     }
+     */
+    socket.on("updatePush", function(url, id, data) {
+        console.log("PUSHED", "url: " + url, "id: ", id, "data: ", data);
+    });
+
+</script>
+</body>
+
+
+</html>

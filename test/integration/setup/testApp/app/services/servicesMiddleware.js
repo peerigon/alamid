@@ -13,8 +13,18 @@ function sessionTest(req, res, next) {
     next();
 }
 
+function pushTest(req, res, next) {
+
+    console.log("pushTest called");
+    var sess = req.getSession();
+    sess.activeRoomID = "pushTest";
+
+    next();
+}
+
 var middleware = {
-    "read /session" : sessionTest
+    "read /session" : sessionTest,
+    "* /push" : pushTest
 };
 
 module.exports = middleware;

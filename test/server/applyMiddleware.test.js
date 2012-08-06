@@ -38,7 +38,7 @@ describe("applyMiddleware", function () {
         });
     });
 
-    it("should should call the final error-callback on error", function (done) {
+    it("should call the final error-callback on error", function (done) {
 
         mw3 = function(req, res, next) {
             done(new Error("mw3 should not be reached"));
