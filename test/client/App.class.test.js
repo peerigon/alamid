@@ -70,7 +70,7 @@ describe("App", function () {
             app = new App(PageMock);
         });
     });
-    describe(".route() / .dispatchRoute()", function () {
+    describe(".addRoute() / .dispatchRoute()", function () {
         var state;
 
         before(function () {
@@ -80,7 +80,7 @@ describe("App", function () {
             history.pushState(null, null, state);
         });
         it("should modify the history state", function () {
-            app.route("*", function () {
+            app.addRoute("*", function () {
                 // This route handler is needed so pageJS doesn't change the window.location
             });
             app.dispatchRoute("/blog/posts");
@@ -89,26 +89,26 @@ describe("App", function () {
         it("should execute the registered route handlers in the given order", function () {
             var called = [];
 
-            app.route("*", function (ctx, next) {
+            app.addRoute("*", function (ctx, next) {
                 called.push("*1");
                 next();
             });
-            app.route(/^\/bl/i, function (ctx, next) {
+            app.addRoute(/^\/bl/i, function (ctx, next) {
                 called.push("/bl");
                 next();
             });
-            app.route("/blog", function (ctx, next) {
+            app.addRoute("/blog", function (ctx, next) {
                 throw new Error("This handler should not be triggered");
             });
-            app.route("/blog/*", function (ctx, next) {
+            app.addRoute("/blog/*", function (ctx, next) {
                 called.push("/blog/*");
                 next();
             });
-            app.route("/blog/posts", function (ctx, next) {
+            app.addRoute("/blog/posts", function (ctx, next) {
                 called.push("/blog/posts");
                 next();
             });
-            app.route("*", function (ctx) {
+            app.addRoute("*", function (ctx) {
                 called.push("*2");
             });
 
@@ -120,7 +120,7 @@ describe("App", function () {
             var pageLoader,
                 pageURLs;
 
-            app.route("/blog/about", "blog/about");
+            app.addRoute("/blog/about", "blog/about");
             app.dispatchRoute("/blog/about");
             pageLoader = PageLoaderMock.instance;
             pageURLs = pageLoader.getPageURLs();
@@ -130,12 +130,12 @@ describe("App", function () {
             var params,
                 pageLoader;
 
-            app.route("/blog/:author/posts/:postId", function (ctx, next) {
+            app.addRoute("/blog/:author/posts/:postId", function (ctx, next) {
                 expect(ctx.params.author).to.be("spook");
                 expect(ctx.params.postId).to.be("123");
                 next();
             });
-            app.route("/blog/:author/posts/:postId", "blog/posts");
+            app.addRoute("/blog/:author/posts/:postId", "blog/posts");
             app.dispatchRoute("/blog/spook/posts/123");
 
             pageLoader = PageLoaderMock.instance;
@@ -145,8 +145,8 @@ describe("App", function () {
         });
         it("should be chainable", function () {
             app
-                .route("/blog/posts/:id", "blog/posts")
-                .route("/blog/posts/author=:authorId", "blog/posts");
+                .addRoute("/blog/posts/:id", "blog/posts")
+                .addRoute("/blog/posts/author=:authorId", "blog/posts");
         });
     });
     describe(".getCurrentPages()", function () {
@@ -164,16 +164,16 @@ describe("App", function () {
             pages.main.setSubPage(pages.home);
             pages.home.setSubPage(pages.about);
         });
-        it("should emit 'beforePageChange' first and than 'leave' on every sub page that will be changed from bottom to top", function () {
+        it("should emit 'beforePageChange' first and than 'beforeLeave' on every sub page that will be changed from bottom to top", function () {
             var emitted = [];
 
-            pages.about.on("leave", function () {
+            pages.about.on("beforeLeave", function () {
                 emitted.push("about");
             });
-            pages.home.on("leave", function () {
+            pages.home.on("beforeLeave", function () {
                 emitted.push("home");
             });
-            pages.main.on("leave", function () {
+            pages.main.on("beforeLeave", function () {
                 throw new Error("This event should never be emitted because the main page can be left");
             });
             app.on("beforePageChange", function () {
@@ -188,13 +188,13 @@ describe("App", function () {
             var emitted = [],
                 callsPreventDefault;
 
-            pages.about.on("leave", function (e) {
+            pages.about.on("beforeLeave", function (e) {
                 emitted.push("about");
                 if (callsPreventDefault === "about") {
                     e.preventDefault();
                 }
             });
-            pages.home.on("leave", function (e) {
+            pages.home.on("beforeLeave", function (e) {
                 emitted.push("home");
                 if (callsPreventDefault === "home") {
                     e.preventDefault();
