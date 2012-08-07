@@ -21,7 +21,7 @@ var config = require("../../../lib/core/config"),
     middleware = require("../../../lib/server/request/middleware.js"),
     startServer = require("../../../lib/server/startServer.js");
 
-function populateServices(callback) {
+function populateServerServices(callback) {
     collectServices(config.paths.services, function onCollectServicesCallback(err, collectedServices) {
 
         console.log("FOUND SERVICES", collectedServices.server);
@@ -38,27 +38,25 @@ function populateModels(callback) {
     });
 }
 
-function populateMiddleware(callback) {
+function populateMiddleware(servicesRoutes, validatorsRoutes, callback) {
     async.parallel([
         function(cb){
-            collectMiddleware(config.paths.services + "/servicesMiddleware.js", function(err, servicesMiddleware) {
+            collectMiddleware(servicesRoutes, config.paths.services + "/servicesMiddleware.js", function(err, servicesMiddleware) {
                 middleware.setMiddleware("services", servicesMiddleware);
 
                 if(err) {
-                    log.error(err);
-                    log.debug("No services-middleware found. ");
+                    log.debug("No service-middleware found. ");
                 }
                 cb();
             });
 
         },
         function(cb){
-            collectMiddleware(config.paths.validators + "/validatorsMiddleware.js", function(err, validatorsMiddleware) {
+            collectMiddleware(validatorsRoutes, config.paths.validators + "/validatorsMiddleware.js", function(err, validatorsMiddleware) {
                 middleware.setMiddleware("validators",validatorsMiddleware);
 
                 if(err) {
-                    log.error(err);
-                    log.debug("No validators-middleware found. ");
+                    log.debug("No validator-middleware found. ");
                 }
                 cb();
             });
@@ -72,13 +70,24 @@ function bootstrap() {
 
     //check services
     log.info("Loading Services...");
-    populateServices(function(err) {
-
+    //check services
+    log.info("Loading Services...");
+    populateServerServices(function(err, collectedServices) {
         if(err) {
-            log.error("Error loading Services: ", err);
+            log.error("Error loading Services: ", err.message);
             return;
         }
         log.info("Services ready.");
+
+        //now load middleware
+        log.info("Loading Middleware...");
+        populateMiddleware(collectedServices, [], function(err) {
+            if(err) {
+                log.error("Error loading middleware: ", err.message);
+                return;
+            }
+            log.info("Middlware ready.");
+        });
     });
 
     log.info("Loading Models...");

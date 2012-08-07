@@ -17,28 +17,35 @@ nodeclass.stdout = function() {
 describe("runService", function(){
 
     var runService = rewire("../../../../lib/server/request/middleware/runService.js", false);
+    var Dog = require("./runService/src/Dog.class.js");
 
     describe("#serviceMiddleware", function() {
 
+        var mockedServiceFunctions;
+
         before(function() {
+
+            mockedServiceFunctions = {
+                create : function(ids, model, callback){
+                    callback({ "status" : "success" });
+                },
+                read : function(ids, callback){
+                    callback({ "status" : "success", data : { da : "ta" }});
+                },
+                readCollection : function(ids, params, callback){
+                    callback({ "status" : "success", "data" : { "readCollection" : true }});
+                },
+                update : function(ids, model, callback){
+                    callback();
+                }
+                //delete is not here because we need a missing method for the test
+            };
+
             var servicesMock = {
                 getService : function(path) {
 
                     if(path === "test"){
-                        return {
-                            "create" : function(model, callback){
-                                callback({ "status" : "success"});
-                            },
-                            "read" : function(model, callback){
-                                callback( { "status" : "success", "data" : model });
-                            },
-                            "readCollection" : function(model, callback){
-                                callback( { "status" : "success", "data" : { "readCollection" : true }});
-                            },
-                            "update" : function(model, callback){
-                                callback();
-                            }
-                        };
+                        return mockedServiceFunctions;
                     }
 
                     if(path === "test2"){
@@ -47,10 +54,10 @@ describe("runService", function(){
 
                     if(path === "syncasynctest") {
                         return {
-                            create : function(model) {
+                            create : function(ids, model) {
                                 return { status : "success"};
                             },
-                            delete : function(model, callback) {
+                            delete : function(ids, callback) {
                                 callback({ status : "success" });
                             }
                         };
@@ -70,6 +77,28 @@ describe("runService", function(){
 
             var request = new Request(method, path, data),
                 response = new Response();
+
+            runService(request, response, function(err) {
+                expect(err).to.be(null);
+                expect(response.getStatusCode()).to.be(200);
+                done();
+            });
+        });
+
+        it("should call the CREATE service on the Model if Model was loaded", function (done) {
+
+            var method = "create",
+                path = "/services/test/",
+                data = { "da" : "ta" };
+
+            var dog = new Dog();
+            dog.set("name", "snoop lion");
+            dog.setService(mockedServiceFunctions);
+
+            var request = new Request(method, path, data),
+                response = new Response();
+
+            request.setModel(dog);
 
             runService(request, response, function(err) {
                 expect(err).to.be(null);
@@ -183,9 +212,7 @@ describe("runService", function(){
                 expect(response.getStatusCode()).to.be(200);
                 done();
             });
-
         });
-
 
         it("should accept asynchronous functions as services", function(done) {
             var method = "delete",
@@ -287,10 +314,10 @@ describe("runService", function(){
                 getService : function(path) {
                     if(path === "blogpost"){
                         return {
-                            "create" : function(model, callback){
+                            "create" : function(ids, model, callback){
                                 callback({"status" : "success", "errorMessage" : "my dummy error", "data" : { "da" : "ta" }});
                             },
-                            "update" : function(model, callback){
+                            "update" : function(ids, model, callback){
                                 callback();
                             }
                         };
@@ -339,6 +366,5 @@ describe("runService", function(){
                 done();
             });
         });
-
     });
 });

@@ -7,7 +7,7 @@ var expect = require("expect.js"),
 describe("collectMiddleware", function () {
 
     it("should return the middlewares for services as an usable object", function() {
-        collectMiddleware(path.resolve(__dirname, "./collectMiddleware/servicesMiddleware.js"), function(err, parsedMw) {
+        collectMiddleware([], path.resolve(__dirname, "./collectMiddleware/servicesMiddleware.js"), function(err, parsedMw) {
             expect(parsedMw).to.be.an("object");
             expect(parsedMw["blogpost/comments"]).to.be.an("object");
             expect(parsedMw.blogpost).to.be.an("object");
@@ -18,14 +18,14 @@ describe("collectMiddleware", function () {
     });
 
     it("should return the middlewares for validators as an usable object", function() {
-        collectMiddleware(path.resolve(__dirname, "./collectMiddleware/validatorsMiddleware.js"), function(err, parsedMw) {
+        collectMiddleware([], path.resolve(__dirname, "./collectMiddleware/validatorsMiddleware.js"), function(err, parsedMw) {
             expect(parsedMw).to.be.an("object");
             expect(parsedMw.blogpost).to.be.an("object");
         });
     });
 
     it("should return an error and an empty object for a path which doesn't exist", function() {
-        collectMiddleware(path.resolve(__dirname, "./collectMiddleware/wrongValidatorsPath.js"), function(err, parsedMw) {
+        collectMiddleware([], path.resolve(__dirname, "./collectMiddleware/wrongValidatorsPath.js"), function(err, parsedMw) {
             expect(parsedMw).to.be.an("object");
             expect(err).not.to.be(null);
         });

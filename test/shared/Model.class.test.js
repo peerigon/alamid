@@ -429,13 +429,13 @@ describe("Model", function() {
         beforeEach(function() {
             octocat = new Octocat();
             testService = {
-                create : function(model, callback) {
+                create : function(ids, model, callback) {
                     callback({ status : "success", data : { name : model.get("name"), age : 10 }});
                 },
-                update : function(model, callback) {
+                update : function(ids, model, callback) {
                     callback({ status : "success", data : { name : model.get("name"), age : 12 }});
                 },
-                delete : function(model, callback) {
+                delete : function(ids, callback) {
                     callback({ status : "success" });
                 }
             };
@@ -443,7 +443,7 @@ describe("Model", function() {
 
         describe("Error handling and format parsing (__processResponse)", function() {
             it("should fail if response is no valid object", function(done) {
-                testService.create = function(model, callback) {
+                testService.create = function(ids, model, callback) {
                     callback();
                 };
 
@@ -467,7 +467,7 @@ describe("Model", function() {
             it("should convert an error-response to an internal error", function(done) {
                 octocat = new Octocat();
                 octocat.setService({
-                    create : function(model, callback) {
+                    create : function(ids, model, callback) {
                         callback({ status : "error", message : "my error message" });
                     }
                 });
@@ -510,7 +510,7 @@ describe("Model", function() {
 
             it("should also work with sync services", function(done) {
                 octocat.setService({
-                    create : function(model) {
+                    create : function(ids, model) {
                         return { status : "success", data : { age : 10 } };
                     }
                 });
@@ -632,9 +632,9 @@ describe("Model", function() {
                 Model.findById(Octoduck, 24, function(err, octo2) {
                     expect(octo).to.be.an("object");
                     expect(octo2).not.to.eql(octo);
-                    expect(octo2.get("name")).to.be(null);
-                    octo2.set("name", "erpel");
-                    expect(octo2.get("name")).to.be("erpel");
+                    expect(octo2.get("name")).to.be("emil");
+                    octo2.set("name", "crazy duck");
+                    expect(octo2.get("name")).to.be("crazy duck");
                     expect(octo.get("name")).to.be("old emil");
                     done();
                 });

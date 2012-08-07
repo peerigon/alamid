@@ -3,12 +3,14 @@
 //the session data is processed by the middleware!
 
 var sessionService = {
-    read : function(model, callback) {
-        callback({"status" : "success", data : model });
-
+    read : function(ids, callback) {
+        callback({"status" : "success", "model" : ids });
     },
-    readCollection : function(model, callback) {
-        callback({ "status": "success", data : model });
+    readCollection : function(ids, params, callback) {
+        callback({ status : "success", data : { sessionCount : ids[0] } });
+    },
+    update : function(ids, model, callback) {
+        callback({"status" : "success", data : ids });
     }
 };
 

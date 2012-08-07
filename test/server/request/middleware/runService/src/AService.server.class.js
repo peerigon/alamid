@@ -7,18 +7,20 @@ var ServiceA = new Class({
     "init" : function () {
         //nothing to do here
     },
-    "create" : function(model, callback) {
-        callback({ status : "success", data : model});
+    create : function(ids, model, callback){
+        callback({ "status" : "success" });
     },
-    "read" : function(model, callback) {
-        callback({ status : "success", data : model});
-
+    read : function(ids, callback){
+        callback({ "status" : "success", data : { da : "ta" }});
     },
-    "update" : function(model, callback) {
-        callback({ status : "success", data : model});
+    readCollection : function(ids, params, callback){
+        callback({ "status" : "success", "data" : { "readCollection" : true }});
     },
-    "delete" : function(model, callback) {
-        callback({ status : "success"} );
+    update : function(ids, model, callback){
+        callback({ status : "success", data : { da : "ta" }});
+    },
+    delete : function(ids, callback) {
+        callback({ status : "success" });
     }
 });
 
