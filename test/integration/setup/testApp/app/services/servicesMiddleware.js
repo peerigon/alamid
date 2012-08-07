@@ -9,12 +9,13 @@ function sessionTest(req, res, next) {
     }
 
     sess.counter++;
-    req.setData({ "sessionCount" : sess.counter });
+    //we pass it via IDs because it's the only way for read
+    req.setIds([sess.counter]);
     next();
 }
 
 var middleware = {
-    "read /session" : sessionTest
+    "* /session" : sessionTest
 };
 
 module.exports = middleware;

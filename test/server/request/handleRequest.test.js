@@ -96,7 +96,7 @@ describe("handleRequest", function() {
     describe("#Request with Middleware", function() {
         it("should run the defined middlewares", function(done) {
             var mwPath = path.resolve(__dirname, "../../exampleApp/app/services/servicesMiddleware.js");
-            collectMiddleware(mwPath, function(err, servicesMiddleware) {
+            collectMiddleware([], mwPath, function(err, servicesMiddleware) {
 
                 middleware.setMiddleware("services", servicesMiddleware);
                 handleRequest = rewire("../../../lib/server/request/handleRequest.js", false);
