@@ -3,11 +3,13 @@
 var expect = require("expect.js"),
     is = require("nodeclass").is,
     DisplayObject = require("../../lib/client/DisplayObject.class.js"),
+    View = require("../../lib/client/View.class.js"),
     ViewCollection = require("../../lib/client/ViewCollection.class.js"),
     ViewCollectionExampleWithTemplate = require("./mocks/ViewCollectionExampleWithTemplate.class.js"),
     CarLiElementView = require("./mocks/CarLiElementView.class.js"),
     ModelCollection = require("../../lib/shared/ModelCollection.class.js"),
-    CarModel = require("./mocks/models/CarModel.class.js");
+    CarModel = require("./mocks/models/CarModel.class.js"),
+    _ = require("underscore");
 
 describe("ViewCollection", function () {
 
@@ -212,8 +214,48 @@ describe("ViewCollection", function () {
 
     });
 
+    describe(".destroyViews()", function () {
+
+        beforeEach(function () {
+           viewCollection.bind(carCollection);
+        });
+
+        it("should remove all Views from ViewCollection", function () {
+            var leftViewsCount;
+
+            viewCollection.destroyViews();
+
+            leftViewsCount = $viewCollectioNode.find("li").length;
+
+            expect(leftViewsCount).to.be.equal(0);
+        });
+
+        it("should return an Array containing all destoryed Views", function () {
+            var viewsCount,
+                destroyedViewsCount,
+                destroyedViews;
+
+            viewsCount = $viewCollectioNode.find("li").length;
+            destroyedViews = viewCollection.destroyViews();
+            destroyedViewsCount = destroyedViews.length;
+
+            expect(destroyedViewsCount).to.be.equal(viewsCount);
+            _(destroyedViews).each(function viewCheck(view) {
+                expect(is(view).instanceOf(View)).to.be.equal(true);
+            });
+        });
+
+        it("should emit an 'destroy'-Event", function (done) {
+            viewCollection.on("destroy", function () {
+                done();
+            });
+
+            viewCollection.destroyViews();
+        });
+
+    });
+
 
 
 
 });
-
