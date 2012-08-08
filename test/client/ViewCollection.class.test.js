@@ -169,6 +169,79 @@ describe("ViewCollection", function () {
                 expect(jQuery($viewCollectioNode.find("li [data-node='model']")[0]).text()).to.be.equal("p126");
             });
 
+            it("should emit an 'beforeAdd'-Event", function (done) {
+                viewCollection.on("beforeAdd", function () {
+                    done();
+                });
+                carCollection.push([porsche]);
+            });
+
+            it("should pass on 'beforeAdd'-Event as first argument an array containing all added Views", function (done) {
+                var model,
+                    newCars = [porsche, fiat];
+
+                viewCollection.on("beforeAdd", function (views) {
+                    _(views).each(function isView(view, index) {
+                        model = jQuery(view.getNode()).find("[data-node='model']").text();
+                        expect(model).to.be.equal(newCars[index].get("model"));
+                    });
+                    done();
+                });
+                carCollection.push(newCars);
+            });
+
+
+            it("should pass on 'beforeAdd'-Event as first argument an array containing all added Views in order", function (done) {
+                var model,
+                    newCars = [porsche, fiat],
+                    newCarsLength = newCars.length;
+
+                viewCollection.on("beforeAdd", function (views) {
+                    _(views).each(function isView(view) {
+                        model = jQuery(view.getNode()).find("[data-node='model']").text();
+                        expect(model).to.be.equal(newCars[--newCarsLength].get("model"));
+                    });
+                    done();
+                });
+                carCollection.unshift(newCars);
+            });
+
+            it("should emit an 'add'-Event", function (done) {
+                viewCollection.on("add", function () {
+                   done();
+                });
+                carCollection.push([porsche]);
+            });
+
+            it("should pass on 'add'-Event as first argument an array containing all added Views", function (done) {
+                var model,
+                    newCars = [porsche, fiat];
+
+                viewCollection.on("add", function (views) {
+                    _(views).each(function isView(view, index) {
+                        model = jQuery(view.getNode()).find("[data-node='model']").text();
+                        expect(model).to.be.equal(newCars[index].get("model"));
+                    });
+                    done();
+                });
+                carCollection.push(newCars);
+            });
+
+            it("should pass on 'add'-Event as first argument an array containing all added Views in order", function (done) {
+                var model,
+                    newCars = [porsche, fiat],
+                    newCarsLength = newCars.length;
+
+                viewCollection.on("add", function (views) {
+                    _(views).each(function isView(view) {
+                        model = jQuery(view.getNode()).find("[data-node='model']").text();
+                        expect(model).to.be.equal(newCars[--newCarsLength].get("model"));
+                    });
+                    done();
+                });
+                carCollection.unshift(newCars);
+            });
+
         });
 
         describe("._onRemove()", function () {
