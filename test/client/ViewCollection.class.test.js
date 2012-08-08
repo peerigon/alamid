@@ -214,6 +214,31 @@ describe("ViewCollection", function () {
 
     });
 
+    describe(".each()", function () {
+
+        beforeEach(function () {
+            viewCollection.bind(carCollection);
+        });
+
+        it("should be possible to iterate over each rendered view", function () {
+            var iterationCount = 0,
+                expectedIterationCount = $viewCollectioNode.find("li").length;
+
+            viewCollection.each(function viewsIterator() {
+                iterationCount++;
+            });
+
+            expect(iterationCount).to.be.equal(expectedIterationCount);
+        });
+
+        it("should pass a View as first argument to given iterator function", function () {
+            viewCollection.each(function viewsIterator(view) {
+                expect(is(view).instanceOf(View)).to.be.equal(true);
+            });
+        });
+
+    });
+
     describe(".destroyViews()", function () {
 
         beforeEach(function () {
@@ -246,7 +271,7 @@ describe("ViewCollection", function () {
         });
 
         it("should emit an 'destroy'-Event", function (done) {
-            viewCollection.on("destroy", function () {
+            viewCollection.on("destroyViews", function () {
                 done();
             });
 
@@ -269,7 +294,6 @@ describe("ViewCollection", function () {
             leftViewsCount = $viewCollectioNode.find("li").length;
 
             expect(leftViewsCount).to.be.equal(0);
-
         });
 
         it("should remove all Views", function () {
@@ -278,11 +302,11 @@ describe("ViewCollection", function () {
         });
 
         it("should emit an 'dispose'-Event", function (done) {
-            viewCollection.on("destroy", function () {
+            viewCollection.on("disposeViews", function () {
                 done();
             });
 
-            viewCollection.destroyViews();
+            viewCollection.disposeViews();
         });
 
         it("should be still possible to bind a new ModelCollection", function () {
@@ -296,6 +320,68 @@ describe("ViewCollection", function () {
 
         it("should return a reference to itself", function () {
             expect(viewCollection.disposeViews()).to.be.equal(viewCollection);
+        });
+
+    });
+
+    describe(".render()", function () {
+
+        it("should throw an Error if no ModelCollection was bound", function () {
+           expect(function () {
+               viewCollection = new ViewCollection(ViewCollectionExampleWithTemplate);
+               viewCollection.render();
+           }).to.throwError();
+        });
+
+        it("should re-render all Views", function () {
+            var preRenderViewCount,
+                postRenderViewCount;
+
+            viewCollection.bind(carCollection);
+
+            preRenderViewCount = $viewCollectioNode.find("li").length;
+
+            viewCollection.render();
+
+            postRenderViewCount = $viewCollectioNode.find("li").length;
+
+            expect(preRenderViewCount).to.be.equal(postRenderViewCount);
+        });
+
+        it("should return a reference to itself", function () {
+            viewCollection.bind(carCollection);
+            expect(viewCollection.render()).to.be.equal(viewCollection);
+        });
+
+    });
+
+    describe(".destroy()", function () {
+
+        it("should return a reference to itself", function () {
+            expect(viewCollection.destroy()).to.be.equal(viewCollection);
+        });
+
+        //@TODO
+        /*
+        it("should remove ViewCollection from the node where it was appended", function () {
+
+        });
+        */
+    });
+
+    describe(".dispose()", function () {
+
+        //@TODO
+        /*
+         it("should remove ViewCollection from the node where it was appended", function () {
+
+         });
+         */
+
+        it("should be callable multiple times", function (done) {
+            viewCollection.dispose();
+            viewCollection.dispose();
+            done();
         });
 
     });
