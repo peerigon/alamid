@@ -195,8 +195,6 @@ describe("ViewCollection", function () {
 
                 carCollection.unshift([porsche, fiat]);
 
-                console.log(viewCollectioNode);
-
                 carCollection.shift();
                 firstModel = carCollection.get(0);
 
