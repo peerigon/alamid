@@ -3,11 +3,13 @@
 var expect = require("expect.js"),
     is = require("nodeclass").is,
     DisplayObject = require("../../lib/client/DisplayObject.class.js"),
+    View = require("../../lib/client/View.class.js"),
     ViewCollection = require("../../lib/client/ViewCollection.class.js"),
     ViewCollectionExampleWithTemplate = require("./mocks/ViewCollectionExampleWithTemplate.class.js"),
     CarLiElementView = require("./mocks/CarLiElementView.class.js"),
     ModelCollection = require("../../lib/shared/ModelCollection.class.js"),
-    CarModel = require("./mocks/models/CarModel.class.js");
+    CarModel = require("./mocks/models/CarModel.class.js"),
+    _ = require("underscore");
 
 describe("ViewCollection", function () {
 
@@ -98,7 +100,7 @@ describe("ViewCollection", function () {
             }).to.throwError();
         });
 
-        it("should render for each Model in ModelCollection a View", function () {
+        it("should render a View for each Model in ModelCollection", function () {
             expect($viewCollectioNode.find("li").length).to.be.equal(carCollection.size());
         });
 
@@ -118,12 +120,12 @@ describe("ViewCollection", function () {
 
         describe("._onAdd()", function () {
 
-            it("should create new Views for each Model which was added to ModelCollection by it's .push()", function () {
+            it("should create new Views for each Model which was added to ModelCollection with .push()", function () {
                 carCollection.push(porsche);
                 expect($viewCollectioNode.find("li").length).to.be.equal(carCollection.size());
             });
 
-            it("should bind each Model which was added to ModelCollection by it's .push() to a new View", function () {
+            it("should bind each Model which was added to ModelCollection with .push() to a new View", function () {
                 var $liElements;
 
                 carCollection.push([porsche, fiat]);
@@ -133,12 +135,12 @@ describe("ViewCollection", function () {
                 expect(jQuery($liElements[$liElements.length - 1]).text()).to.be.equal(fiat.get("model"));
             });
 
-            it("should create new Views for each Model which was added to ModelCollection by it's .unshift()", function () {
+            it("should create new Views for each Model which was added to ModelCollection with .unshift()", function () {
                 carCollection.unshift(fiat);
                 expect($viewCollectioNode.find("li").length).to.be.equal(carCollection.size());
             });
 
-            it("should bind each Model which was added to ModelCollection by it's .unshift() to a new View", function () {
+            it("should bind each Model which was added to ModelCollection with .unshift() to a new View", function () {
                 var $liElements;
 
                 carCollection.unshift([fiat, porsche]);
@@ -149,18 +151,18 @@ describe("ViewCollection", function () {
                 expect(jQuery($liElements[1]).text()).to.be.equal(porsche.get("model"));
             });
 
-            it("should create a new View for the Model which was added to ModelCollection by it's.set() on a new index", function () {
+            it("should create a new View for the Model which was added to ModelCollection with.set() on a new index", function () {
                 carCollection.set(carCollection.size(), fiat);
                 expect($viewCollectioNode.find("li").length).to.be.equal(carCollection.size());
             });
 
-            it("should NOT create a new View for the Model which was added to ModelCollection by it's.set() on an old index", function () {
+            it("should NOT create a new View for the Model which was added to ModelCollection with .set() on an old index", function () {
                 carCollection.set(0, porsche);
                 carCollection.set(0, fiat);
                 expect($viewCollectioNode.find("li").length).to.be.equal(carCollection.size());
             });
 
-            it("should bind the Model which was added to ModelCollection by it's .set() on an old index to an existing view", function () {
+            it("should bind the Model which was added to ModelCollection with .set() on an old index to an existing view", function () {
                 carCollection.set(0, porsche);
                 carCollection.set(0, fiat);
                 fiat.set("model", "p126");
@@ -195,8 +197,6 @@ describe("ViewCollection", function () {
 
                 carCollection.unshift([porsche, fiat]);
 
-                console.log(viewCollectioNode);
-
                 carCollection.shift();
                 firstModel = carCollection.get(0);
 
@@ -214,8 +214,90 @@ describe("ViewCollection", function () {
 
     });
 
+    describe(".destroyViews()", function () {
 
+        beforeEach(function () {
+           viewCollection.bind(carCollection);
+        });
 
+        it("should remove all Nodes", function () {
+            var leftViewsCount;
+
+            viewCollection.destroyViews();
+
+            leftViewsCount = $viewCollectioNode.find("li").length;
+
+            expect(leftViewsCount).to.be.equal(0);
+        });
+
+        it("should return an Array containing all destoryed Views", function () {
+            var viewsCount,
+                destroyedViewsCount,
+                destroyedViews;
+
+            viewsCount = $viewCollectioNode.find("li").length;
+            destroyedViews = viewCollection.destroyViews();
+            destroyedViewsCount = destroyedViews.length;
+
+            expect(destroyedViewsCount).to.be.equal(viewsCount);
+            _(destroyedViews).each(function viewCheck(view) {
+                expect(is(view).instanceOf(View)).to.be.equal(true);
+            });
+        });
+
+        it("should emit an 'destroy'-Event", function (done) {
+            viewCollection.on("destroy", function () {
+                done();
+            });
+
+            viewCollection.destroyViews();
+        });
+
+    });
+
+    describe(".disposeViews()", function () {
+
+        beforeEach(function () {
+           viewCollection.bind(carCollection);
+        });
+
+        it("should remove all Nodes", function () {
+            var leftViewsCount;
+
+            viewCollection.disposeViews();
+
+            leftViewsCount = $viewCollectioNode.find("li").length;
+
+            expect(leftViewsCount).to.be.equal(0);
+
+        });
+
+        it("should remove all Views", function () {
+            viewCollection.disposeViews();
+            expect(viewCollection.destroyViews().length).to.be.equal(0);
+        });
+
+        it("should emit an 'dispose'-Event", function (done) {
+            viewCollection.on("destroy", function () {
+                done();
+            });
+
+            viewCollection.destroyViews();
+        });
+
+        it("should be still possible to bind a new ModelCollection", function () {
+            var newCarCollection = new ModelCollection(CarModel, cars);
+
+            viewCollection.disposeViews();
+            viewCollection.bind(newCarCollection);
+
+            expect($viewCollectioNode.find("li").length).to.be.equal(newCarCollection.size());
+        });
+
+        it("should return a reference to itself", function () {
+            expect(viewCollection.disposeViews()).to.be.equal(viewCollection);
+        });
+
+    });
 
 });
-
