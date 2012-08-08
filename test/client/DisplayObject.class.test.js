@@ -332,6 +332,12 @@ describe("DisplayObject", function () {
                 formDisplayObject.append(submitButtonDisplayObject).at("form");
             }).to.be.throwError();
         });
+
+        it("should be callable multiple times", function (done) {
+            submitButtonDisplayObject.dispose();
+            submitButtonDisplayObject.dispose();
+            done();
+        });
     });
 
     describe(".hide()", function () {
