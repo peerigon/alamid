@@ -17,7 +17,7 @@
         "fshelpers": "https://github.com/peerigon/fshelpers/tarball/v0.2.0",
         "toSrc": "0.x",
         "nodeclass": "https://github.com/peerigon/nodeclass/tarball/v0.1.17",
-        "nconf" : "0.x",
+        "nconf" : "0.5.1",
         "socket.io" : "0.x",
         "browserify" : "1.x",
         "browserify-bypass": "0.x",
