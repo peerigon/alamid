@@ -220,7 +220,7 @@ describe("ViewCollection", function () {
            viewCollection.bind(carCollection);
         });
 
-        it("should remove all Views from ViewCollection", function () {
+        it("should remove all Nodes", function () {
             var leftViewsCount;
 
             viewCollection.destroyViews();
@@ -255,7 +255,49 @@ describe("ViewCollection", function () {
 
     });
 
+    describe(".disposeViews()", function () {
 
+        beforeEach(function () {
+           viewCollection.bind(carCollection);
+        });
 
+        it("should remove all Nodes", function () {
+            var leftViewsCount;
+
+            viewCollection.disposeViews();
+
+            leftViewsCount = $viewCollectioNode.find("li").length;
+
+            expect(leftViewsCount).to.be.equal(0);
+
+        });
+
+        it("should remove all Views", function () {
+            viewCollection.disposeViews();
+            expect(viewCollection.destroyViews().length).to.be.equal(0);
+        });
+
+        it("should emit an 'dispose'-Event", function (done) {
+            viewCollection.on("destroy", function () {
+                done();
+            });
+
+            viewCollection.destroyViews();
+        });
+
+        it("should be still possible to bind a new ModelCollection", function () {
+            var newCarCollection = new ModelCollection(CarModel, cars);
+
+            viewCollection.disposeViews();
+            viewCollection.bind(newCarCollection);
+
+            expect($viewCollectioNode.find("li").length).to.be.equal(newCarCollection.size());
+        });
+
+        it("should return a reference to itself", function () {
+            expect(viewCollection.disposeViews()).to.be.equal(viewCollection);
+        });
+
+    });
 
 });
