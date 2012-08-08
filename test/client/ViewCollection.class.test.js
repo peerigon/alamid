@@ -279,6 +279,36 @@ describe("ViewCollection", function () {
                 expect($firstLiElementModel.text()).to.be.equal(firstModel.get("model"));
             });
 
+            it("should emit an 'beforeRemove'-Event", function (done) {
+                viewCollection.on("beforeRemove", function beforeRemove() {
+                   done();
+                });
+                carCollection.pop();
+            });
+
+            it("should pass on 'beforeRemove'-Event all Views which will be removed as an array", function (done) {
+                var model;
+
+                viewCollection.on("beforeRemove", function beforeRemove(views) {
+
+                    _(views).each(function (view)  {
+                        model = jQuery(view.getNode()).find("[data-node='model']").text();
+                        expect(model).to.be.equal(cars[0].get("model"));
+                    });
+
+                    done();
+                });
+
+                carCollection.shift();
+            });
+
+            it("should emit an 'remove'-Event", function (done) {
+                viewCollection.on("remove", function remove() {
+                    done();
+                });
+                carCollection.pop();
+            });
+
         });
 
         it("should return a reference to itself", function () {
