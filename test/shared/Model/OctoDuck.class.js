@@ -14,9 +14,7 @@ var mockedService = {
     }
 };
 
-
-var OctoDuck = new Class({
-    Extends : Model,
+var OctoDuck = Model.define({
     $url : "octoduck",
     "init": function(id) {
         this.Super(id);

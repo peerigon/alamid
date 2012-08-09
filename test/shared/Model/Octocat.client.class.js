@@ -1,9 +1,10 @@
+"use strict";
+
 var Class = require("nodeclass").Class;
 var Model = require('../../../lib/shared/Model.class.js'),
     schema = require("./schemas/OctocatSchema.js");
 
-var Octocat = new Class({
-    Extends : Model,
+var Octocat = Model.define({
     $url : "Octocat",
     "init": function(id) {
         this.Super(id);

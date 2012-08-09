@@ -19,13 +19,17 @@ describe("attachPushHandlers", function(){
 
     it("should receive remoteUpdateEvents", function(done) {
 
-        var modelMock = {
+        var modelInstanceMock = {
+            setParentIds : function(ids) {
+                expect(ids).to.eql({ blogpost : 1 });
+            }
+        };
+
+        var ModelClassMock = {
             emit : function(eventName, event) {
                 expect(eventName).to.be("remoteUpdate");
-                expect(event.preventDefault).to.be.a("function");
-            },
-            set : function(data) {
-                expect(data).to.eql({ da : "ta" });
+                expect(event.parentIds).to.eql({ blogpost : 1 });
+                expect(event.data).to.eql({ da : "ta" });
                 done();
             }
         };
@@ -34,24 +38,33 @@ describe("attachPushHandlers", function(){
             get : function(modelUrl, modelId) {
                 expect(modelUrl).to.be("blogpost");
                 expect(modelId).to.eql(1);
-                return modelMock;
+                return modelInstanceMock;
+            }
+        };
+
+        var modelRegistryMock = {
+            getModel : function(modelUrl) {
+                expect(modelUrl).to.eql("blogpost");
+                return ModelClassMock;
             }
         };
 
         attachPushHandlers.__set__("modelCache", modelCacheMock);
+        attachPushHandlers.__set__("modelRegistry", modelRegistryMock);
         attachPushHandlers(socketMock);
 
         socketMock.emit("remoteUpdate", "blogpost", { blogpost : 1 }, { da : "ta" });
     });
 
+
     it("should receive remoteDeleteEvents", function(done) {
 
-        var modelMock = {
+        var modelInstanceMock = {};
+
+        var ModelClassMock = {
             emit : function(eventName, event) {
                 expect(eventName).to.be("remoteDelete");
-                expect(event.preventDefault).to.be.a("function");
-            },
-            removeAll : function() {
+                expect(event.model).to.be(modelInstanceMock);
                 done();
             }
         };
@@ -60,39 +73,62 @@ describe("attachPushHandlers", function(){
             get : function(modelUrl, modelId) {
                 expect(modelUrl).to.be("blogpost");
                 expect(modelId).to.eql(2);
-                return modelMock;
+                return modelInstanceMock;
             }
         };
 
-        //var modelCacheMock = getModelCacheMock(modelMock, onModelLoad);
+        var modelRegistryMock = {
+            getModel : function(modelUrl) {
+                expect(modelUrl).to.eql("blogpost");
+                return ModelClassMock;
+            }
+        };
+
+        attachPushHandlers.__set__("modelCache", modelCacheMock);
+        attachPushHandlers.__set__("modelRegistry", modelRegistryMock);
+
         attachPushHandlers.__set__("modelCache", modelCacheMock);
         attachPushHandlers(socketMock);
 
         socketMock.emit("remoteDelete", "blogpost", { blogpost : 2 }, { da : "ta" });
     });
 
+
     it("should receive remoteCreateEvents", function(done) {
 
-        function ModelMock(id) {
-            return {
-                id : id,
-                set : function(data) {
-                    expect(data).to.eql({ da : "ta" });
-                }
+        var ModelClassMock = function(id) {
+            this.id = "";
+            var self = this;
+
+            this.set = function(data) {
+                expect(data).to.eql({ da : "ta" });
             };
-        }
+
+            this.setParentIds = function(parentIds) {
+                expect(parentIds).to.eql({ blogpost : 3 });
+            };
+
+            (function init(id) {
+                self.id = id;
+            })(id);
+        };
+
+        ModelClassMock.emit = function(eventName, event) {
+            expect(eventName).to.be("remoteCreate");
+            expect(event.model.id).to.be(3);
+            done();
+        };
 
         var modelRegistryMock = {
             getModel : function(modelUrl) {
                 expect(modelUrl).to.be("blogpost");
-                return ModelMock;
+                return ModelClassMock;
             }
         };
 
         var modelCacheMock = {
             add : function(addModel) {
                 expect(addModel.id).to.be(3);
-                done();
             }
         };
 
@@ -101,34 +137,5 @@ describe("attachPushHandlers", function(){
         attachPushHandlers(socketMock);
 
         socketMock.emit("remoteCreate", "blogpost", { blogpost : 3 }, { da : "ta" });
-    });
-
-    it("should not call the following function on preventDefault remoteDeleteEvents", function(done) {
-
-        var modelMock = {
-            emit : function(eventName, updateEvent) {
-                expect(eventName).to.be("remoteDelete");
-                updateEvent.preventDefault();
-                setTimeout(function() {
-                    done();
-                }, 100);
-            },
-            removeAll : function() {
-                done(new Error("RemoveAll should not be after preventDefault was called"));
-            }
-        };
-
-        var modelCacheMock = {
-            get : function(modelUrl, modelId) {
-                expect(modelUrl).to.be("blogpost");
-                expect(modelId).to.eql(2);
-                return modelMock;
-            }
-        };
-
-        attachPushHandlers.__set__("modelCache", modelCacheMock);
-        attachPushHandlers(socketMock);
-
-        socketMock.emit("remoteDelete", "blogpost", { blogpost : 2 }, { da : "ta" });
     });
 });

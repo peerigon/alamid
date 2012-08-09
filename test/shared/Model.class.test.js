@@ -12,6 +12,18 @@ var User1 = require("./Model/User1.class.js"),
 
 describe("Model", function() {
 
+    describe("$define", function() {
+        var Dog;
+        before(function() {
+            Dog = require("./Model/Dog.class.js");
+        });
+
+        it("should define a model and add all methods of event emitter", function() {
+            expect(Dog.on).to.be.a(Function);
+            expect(Dog.find).to.be.a(Function);
+        });
+    });
+
     describe("Schema", function(){
 
         var octocat;
@@ -541,6 +553,7 @@ describe("Model", function() {
             });
         });
 
+
         describe("Statics", function(){
 
             var Model,
@@ -571,11 +584,11 @@ describe("Model", function() {
                 services.getService =  function() {
                     return testService;
                 };
-                Model = require("../../lib/shared/Model.class.js");
+                Octocat = require("./Model/Octocat.class.js", false);
             });
 
             it("should call the static method and run the mocked readCollection-service", function(done) {
-                Model.find(Octocat, { da : "ta" }, function(err, models) {
+                Octocat.find({ da : "ta" }, function(err, models) {
                     expect(err).to.be(null);
                     expect(models.get(0).get("name")).to.eql("Octo 1");
                     expect(models.get(1).get("name")).to.eql("Octo 2");
@@ -584,6 +597,7 @@ describe("Model", function() {
             });
             //TODO add test for cached instances
         });
+
     });
 
     describe("Model-Loader (Model-Caching)", function(){
@@ -611,10 +625,10 @@ describe("Model", function() {
             });
 
             it("should return a cached instance", function(done) {
-                Model.findById(Octoduck, 2, function(err, octo) {
+                Octoduck.findById(2, function(err, octo) {
                     expect(octo).to.be.an("object");
                     octo.set("name", "emil");
-                    Model.findById(Octoduck, 2, function(err, octo2) {
+                    Octoduck.findById(2, function(err, octo2) {
                         expect(octo).to.eql(octo2);
                         expect(octo2.get("name")).to.be("emil");
                         octo2.set("name", "erpel");
@@ -629,7 +643,7 @@ describe("Model", function() {
                 var octo = new Octoduck(24);
                 octo.set("name", "old emil");
 
-                Model.findById(Octoduck, 24, function(err, octo2) {
+                Octoduck.findById(24, function(err, octo2) {
                     expect(octo).to.be.an("object");
                     expect(octo2).not.to.eql(octo);
                     expect(octo2.get("name")).to.be("emil");
@@ -652,7 +666,7 @@ describe("Model", function() {
             it("should add an instance to the registry after successful saving", function(done) {
                 var octo = new Octoduck();
                 octo.save(function(err) {
-                    Model.findById(Octoduck, 2, function(err, octo2) {
+                    Octoduck.findById(2, function(err, octo2) {
                         expect(octo2).to.eql(octo);
                         done();
                     });

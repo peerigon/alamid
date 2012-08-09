@@ -16,8 +16,7 @@ var schema = {
     tags: []
 };
 
-var User2 = new Class({
-    Extends : Model,
+var User2 = Model.define({
     $url : "User2",
     init: function(id) {
         this.Super(id);
