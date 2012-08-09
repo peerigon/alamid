@@ -313,19 +313,46 @@ describe("ViewCollection", function () {
 
         describe("._onSort", function () {
 
-            /*
             it("should render all Views according to the sorting of the ModelCollection", function () {
+                var liNodes;
 
+                carCollection.sortBy("yoc", true);
+
+                liNodes = $viewCollectioNode.find("li");
+
+                //BMW: 2011
+                expect(jQuery(liNodes[0]).find("[data-node='model']").text()).to.be.equal(cars[1].get("model"));
+                //A6: 2010
+                expect(jQuery(liNodes[1]).find("[data-node='model']").text()).to.be.equal(cars[0].get("model"));
+                //Daimler 2008
+                expect(jQuery(liNodes[2]).find("[data-node='model']").text()).to.be.equal(cars[2].get("model"));
+
+                carCollection.sortBy("manufactor");
+
+                liNodes = $viewCollectioNode.find("li");
+
+                //A6: 2010
+                expect(jQuery(liNodes[0]).find("[data-node='manufactor']").text()).to.be.equal(cars[0].get("manufactor"));
+                //BMW: 2011
+                expect(jQuery(liNodes[1]).find("[data-node='manufactor']").text()).to.be.equal(cars[1].get("manufactor"));
+                //Daimler 2008
+                expect(jQuery(liNodes[2]).find("[data-node='manufactor']").text()).to.be.equal(cars[2].get("manufactor"));
             });
 
-            it("should emit an 'beforeSort'-Event", function (done) {
 
+            it("should emit an 'beforeSort'-Event", function (done) {
+                viewCollection.on("beforeSort", function onBeforeSort() {
+                    done();
+                });
+                carCollection.sortBy("model", true);
             });
 
             it("should emit an 'sort'-Event", function (done) {
-
+                viewCollection.on("sort", function onSort() {
+                    done();
+                });
+                carCollection.sortBy("manufactor");
             });
-            */
 
         });
 
