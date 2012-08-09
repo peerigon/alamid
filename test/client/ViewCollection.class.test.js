@@ -418,18 +418,127 @@ describe("ViewCollection", function () {
 
     });
 
-    describe(".destroy()", function () {
+    describe(".setFilter()", function () {
+
+        it("should throw an Error if neither null nor a function was passed", function () {
+            expect(function () {
+                viewCollection.setFilter({});
+            }).to.throwError();
+        });
 
         it("should return a reference to itself", function () {
-            expect(viewCollection.destroy()).to.be.equal(viewCollection);
+            expect(viewCollection.setFilter(function filter () { } )).to.be.equal(viewCollection);
         });
 
-        //@TODO
-        /*
-        it("should remove ViewCollection from the node where it was appended", function () {
+        it("should display only the Views according to the filter", function () {
+            var liElements;
+
+            viewCollection.setFilter(function filterDaimler(model) {
+                return model.get("manufactor") !== "Daimler";
+            });
+
+            viewCollection.bind(carCollection);
+
+            liElements = $viewCollectioNode.find("li");
+
+            expect(liElements.length).to.equal(2);
+            _(liElements).each(function liElementsIterator(liElement) {
+                expect(jQuery(liElement).find("[data-node='manufactor']").text()).not.to.equal(daimler.get("manufactor"));
+            });
 
         });
-        */
+
+        it("should display all Views after setting the filter to null", function () {
+            var liElements;
+
+            viewCollection.bind(carCollection);
+
+            viewCollection.setFilter(function filterDaimler(model) {
+                return model.get("manufactor") !== "BMW";
+            });
+
+            viewCollection.setFilter(null);
+
+            liElements = $viewCollectioNode.find("li");
+
+            expect(liElements.length).to.equal(3);
+            _(liElements).each(function liElementsIterator(liElement, index) {
+                expect(jQuery(liElement).find("[data-node='model']").text()).to.equal(cars[index].get("model"));
+            });
+        });
+
+        it("should filter new Views created on 'add' if .unshift() was called on ModelCollection", function () {
+            var liElements;
+
+            viewCollection.bind(carCollection);
+
+            viewCollection.setFilter(function filterFiat(model) {
+                return model.get("manufactor") !== fiat.get("manufactor");
+            });
+
+            carCollection.unshift([fiat, porsche]);
+
+            liElements = $viewCollectioNode.find("li");
+
+            expect(liElements.length).to.be.equal(4);
+            expect(jQuery(liElements[0]).find("[data-node='manufactor']").text()).to.equal(porsche.get("manufactor"));
+        });
+
+        it("should filter new Views created on 'add' if .push() was called on ModelCollection", function () {
+            var liElements;
+
+            carCollection = new ModelCollection(CarModel);
+            viewCollection.bind(carCollection);
+
+            viewCollection.setFilter(function filterFiat(model) {
+                return model.get("manufactor") !== fiat.get("manufactor");
+            });
+
+            carCollection.push([fiat, porsche]);
+
+            liElements = $viewCollectioNode.find("li");
+
+            expect(liElements.length).to.be.equal(1);
+            expect(jQuery(liElements[0]).find("[data-node='manufactor']").text()).to.equal(porsche.get("manufactor"));
+        });
+
+        it("should filter new Views created on 'add' if .set() was called on ModelCollection", function () {
+            var liElements;
+
+            carCollection = new ModelCollection(CarModel);
+            viewCollection.bind(carCollection);
+
+            viewCollection.setFilter(function filterFiat(model) {
+                return model.get("manufactor") !== fiat.get("manufactor");
+            });
+
+            carCollection.set(0, fiat);
+            carCollection.set(1, porsche);
+
+            liElements = $viewCollectioNode.find("li");
+
+            expect(jQuery(liElements[0]).find("[data-node='manufactor']").text()).to.equal(porsche.get("manufactor"));
+        });
+
+        it("should render previously new but filtered Views created on 'add' if filter was set to null", function () {
+            var liElements;
+
+            viewCollection.bind(carCollection);
+
+            viewCollection.setFilter(function filterFiat(model) {
+                return model.get("manufactor") !== fiat.get("manufactor");
+            });
+
+            carCollection.unshift([fiat, porsche]);
+
+            viewCollection.setFilter(null);
+
+            liElements = $viewCollectioNode.find("li");
+
+            expect(liElements.length).to.be.equal(5);
+            expect(jQuery(liElements[0]).find("[data-node='manufactor']").text()).to.equal(fiat.get("manufactor"));
+        });
+
     });
 
     describe(".dispose()", function () {
