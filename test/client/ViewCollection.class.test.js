@@ -311,6 +311,24 @@ describe("ViewCollection", function () {
 
         });
 
+        describe("._onSort", function () {
+
+            /*
+            it("should render all Views according to the sorting of the ModelCollection", function () {
+
+            });
+
+            it("should emit an 'beforeSort'-Event", function (done) {
+
+            });
+
+            it("should emit an 'sort'-Event", function (done) {
+
+            });
+            */
+
+        });
+
         it("should return a reference to itself", function () {
            expect(viewCollection.bind(carCollection)).to.be.equal(viewCollection);
         });
