@@ -78,33 +78,33 @@ describe("Collection", function () {
             collection.set(0, octocatModel);
         });
 
-        it("should pass index of set element as first argument", function (done) {
-            collection.on("add", function (index) {
+        it("should pass index of set element as second argument", function (done) {
+            collection.on("add", function (elements, index) {
                 expect(index).to.be.equal(9);
                 done();
             });
             collection.set(9, octocatModel);
         });
 
-        it("should pass set element as an array", function (done) {
-            collection.on("add", function (index, elements) {
+        it("should pass set element as first argument and as array", function (done) {
+            collection.on("add", function (elements) {
                 expect(elements[0]).to.be.equal(octocatModel);
                 done();
             });
             collection.set(3, octocatModel);
         });
 
-        it("should pass true as third argument if no index was overwritten", function (done) {
-            collection.on("add", function (index, elements, isMutated) {
+        it("should pass (isMutated===)true as third argument if no index was overwritten", function (done) {
+            collection.on("add", function (elements, index, isMutated) {
                 expect(isMutated).to.be.equal(true);
                 done();
             });
             collection.set(0, octocatModel);
         });
 
-        it("should pass false as third argument if no index was overwritten", function (done) {
+        it("should pass (isMutated===)false as third argument if no index was overwritten", function (done) {
             collection.set(1, octocatModels[2]);
-            collection.on("add", function (index, elements, isMutated) {
+            collection.on("add", function (elements, index, isMutated) {
                 expect(isMutated).to.be.equal(false);
                 done();
             });
@@ -161,17 +161,8 @@ describe("Collection", function () {
             collection.push(octocatModels);
         });
 
-        it("should pass the index where elements was pushed as first argument on 'add'", function (done) {
-            collection.push(octocatModels);
-            collection.on("add", function onAdd(index) {
-                expect(index).to.be.equal(octocatModels.length);
-                done();
-            });
-            collection.push(octocatModels);
-        });
-
-        it("should pass pushed element as second argument and as Array on 'add'", function (done) {
-            collection.on("add", function (index, elements) {
+        it("should pass pushed element as first argument and as Array on 'add'", function (done) {
+            collection.on("add", function (elements) {
                 expect(elements).to.be.an(Array);
                 expect(elements[0]).to.be.equal(octocatModel);
                 done();
@@ -179,9 +170,18 @@ describe("Collection", function () {
             collection.push(octocatModel);
         });
 
-        it("should pass true as third argument on 'add'", function (done) {
+        it("should pass the index where elements was pushed as second argument on 'add'", function (done) {
             collection.push(octocatModels);
-            collection.on("add", function (index, elements, isMutated) {
+            collection.on("add", function onAdd(elements, index) {
+                expect(index).to.be.equal(octocatModels.length);
+                done();
+            });
+            collection.push(octocatModels);
+        });
+
+        it("should pass (isMutated ===)true as third argument on 'add'", function (done) {
+            collection.push(octocatModels);
+            collection.on("add", function (elements, index, isMutated) {
                 expect(isMutated).to.be.equal(true);
                 done();
             });
@@ -221,28 +221,27 @@ describe("Collection", function () {
             collection.unshift(octocatModel);
         });
 
-        it("should pass 0 as index on 'add'", function (done) {
+        it("should pass unshifted elements as first argument and as array on 'add'", function (done) {
+            collection.on("add", function onAdd(elements) {
+                expect(elements).to.be.an(Array);
+                expect(elements[0]).to.be.equal(octocatModel);
+                done();
+            });
+            collection.unshift(octocatModel);
+        });
+
+        it("should pass 0 as index and second argument on 'add'", function (done) {
             collection.unshift(octocatModels);
-            collection.on("add", function onAdd(index) {
+            collection.on("add", function onAdd(elements, index) {
                 expect(index).to.be.equal(0);
                 done();
             });
             collection.unshift(octocatModels);
         });
 
-        it("should pass unshifted element as second argument and as array on 'add'", function (done) {
-            collection.on("add", function onAdd(index, elements) {
-                expect(elements).to.be.an(Array);
-                expect(elements[0]).to.be.equal(octocatModel);
-                done();
-            });
-            collection.unshift(octocatModel);
-
-        });
-
-        it("should pass true as third argument on 'add'", function(done) {
+        it("should pass (isMutated ===)true as third argument on 'add'", function(done) {
             collection.unshift(octocatModels);
-            collection.on("add", function onAdd(index, elements, isMutated) {
+            collection.on("add", function onAdd(elements, index, isMutated) {
                 expect(isMutated).to.be.equal(true);
                 done();
             });
@@ -303,17 +302,8 @@ describe("Collection", function () {
             collection.pop();
         });
 
-        it("should pass index from where element was popped as first argument on 'remove'", function (done) {
-            collection.on("remove", function (index) {
-                expect(index).to.be.equal(10);
-                done();
-            });
-            collection.set(10, octocatModel);
-            collection.pop();
-        });
-
-        it("should pass popped element as second argument and as array on 'remove'", function (done) {
-            collection.on("remove", function onRemove(index, elements) {
+        it("should pass popped element as first argument and as array on 'remove'", function (done) {
+            collection.on("remove", function onRemove(elements) {
                 expect(elements).to.be.an(Array);
                 expect(elements[0]).to.be.equal(octocatModels.pop());
                 done();
@@ -322,8 +312,17 @@ describe("Collection", function () {
             collection.pop();
         });
 
-        it("should pass true as thrid argument on 'remove'", function (done) {
-            collection.on("remove", function onRemove(index, element, isMutated) {
+        it("should pass index from where element was popped as second argument on 'remove'", function (done) {
+            collection.on("remove", function (elements, index) {
+                expect(index).to.be.equal(10);
+                done();
+            });
+            collection.set(10, octocatModel);
+            collection.pop();
+        });
+
+        it("should pass (isMutated ===)true as thrid argument on 'remove'", function (done) {
+            collection.on("remove", function onRemove(elements, index, isMutated) {
                 expect(isMutated).to.be.equal(true);
                 done();
             });
@@ -356,17 +355,9 @@ describe("Collection", function () {
             collection.shift();
         });
 
-        it("should pass index 0 as first argument 'add'", function (done) {
-            collection.on("remove", function onRemove(index) {
-                expect(index).to.be.equal(0);
-                done();
-            });
-            collection.shift();
-        });
-
-        it("should pass shifted element as second argument and as Array on 'add'", function (done) {
+        it("should pass shifted element as first argument and as Array on 'add'", function (done) {
             collection.push(octocatModels);
-            collection.on("remove", function onRemove(index, elements) {
+            collection.on("remove", function onRemove(elements) {
                 expect(elements).to.be.an(Array);
                 expect(elements[0]).to.be.equal(octocatModels.shift());
                 done();
@@ -374,9 +365,17 @@ describe("Collection", function () {
             collection.shift();
         });
 
-        it("should pass true as  as third argument on 'add'", function (done) {
+        it("should pass index 0 as second argument on 'add'", function (done) {
+            collection.on("remove", function onRemove(elements, index) {
+                expect(index).to.be.equal(0);
+                done();
+            });
+            collection.shift();
+        });
+
+        it("should pass (isMutated===)true as  as third argument on 'add'", function (done) {
             collection.push(octocatModels);
-            collection.on("remove", function onRemove(index, element, isMutated) {
+            collection.on("remove", function onRemove(elements, index, isMutated) {
                 expect(isMutated).to.be.equal(true);
                 done();
             });
