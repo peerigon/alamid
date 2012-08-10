@@ -81,7 +81,7 @@ var DOMNodeMocks = {
      * @return {String}
      */
     getAString: function () {
-
+        return "<a href='waterloo/to/anywhere' >";
     },
 
     /**
