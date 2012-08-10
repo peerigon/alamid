@@ -82,7 +82,7 @@ describe("DisplayObject", function () {
 
     });
 
-    describe(".append().at()", function () {
+    describe("._append().at()", function () {
 
         it("should throw an Error if a not existent node name was passed to # at()", function () {
             expect(function () {
@@ -122,7 +122,7 @@ describe("DisplayObject", function () {
 
     });
 
-    describe(".prepend()", function () {
+    describe("._prepend()", function () {
         it("should throw an Error if a not existent node name was passed to # at()", function () {
             expect(function () {
                 formDisplayObject.prepend(submitButtonDisplayObject).at("not_existing_node");
@@ -130,7 +130,7 @@ describe("DisplayObject", function () {
         });
     });
 
-    describe(".prepend().at()", function () {
+    describe("._prepend().at()", function () {
 
 
         it("should throw an Error if a not existent node name was passed to # at()", function () {
