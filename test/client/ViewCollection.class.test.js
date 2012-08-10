@@ -552,7 +552,7 @@ describe("ViewCollection", function () {
 
             parentView.append(viewCollection).at("child");
 
-            viewCollection.dipose();
+            viewCollection.dispose();
 
             expect(jQuery(parentView.getNode()).find("[data-node='views']").length).to.equal(0);
         });
