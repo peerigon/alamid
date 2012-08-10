@@ -400,6 +400,16 @@ describe("DisplayObject", function () {
             submitButtonDisplayObject.dispose();
         });
 
+        it("should dispose form and child DisplayObjects", function () {
+            var tmpDisplayObject = new DisplayObjectExample("<div data-node='child'></div>");
+
+            tmpDisplayObject.append(formDisplayObject);
+
+            formDisplayObject.dispose();
+
+            expect(jQuery(tmpDisplayObject.getNode()).children().length).to.equal(0);
+        });
+
     });
 
     describe(".hide()", function () {
