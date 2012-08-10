@@ -279,11 +279,24 @@ describe("DisplayObject", function () {
             expect(submitButtonDisplayObject.dispose()).to.be(undefined);
         });
 
+        it("should emit 'beforeDestroy'-Event before it disposes itself", function (done) {
+            submitButtonDisplayObject.on("beforeDestroy", function onBeforeDestroy() {
+                done();
+            });
+            submitButtonDisplayObject.dispose();
+        });
+
+        it("should emit 'destroy'-Event before it disposes itself", function (done) {
+            submitButtonDisplayObject.on("destroy", function onDestroy() {
+                done();
+            });
+            submitButtonDisplayObject.dispose();
+        });
+
         it("should emit an 'beforeDispose'-Event", function (done) {
             submitButtonDisplayObject.on("beforeDispose", function () {
                 done();
             });
-
             submitButtonDisplayObject.dispose();
         });
 
@@ -291,7 +304,6 @@ describe("DisplayObject", function () {
             submitButtonDisplayObject.on("dispose", function () {
                 done();
             });
-
             submitButtonDisplayObject.dispose();
         });
 
@@ -314,7 +326,7 @@ describe("DisplayObject", function () {
             submitButtonDisplayObject.addNodeEvents({
                 "submit-button": {
                     "click": function () {
-                        done();
+                        done(); //Should not be executed
                     }
                 }
             });
