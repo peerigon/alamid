@@ -1,8 +1,29 @@
-var config = require("./shared/config.js");
-config.isClient = true;
-<%= clientConfig %>
+"use strict";
 
-//module.exports = config;
+function initAlamid() {
+    var App = require("App"),
+        index = require("./index.js"),
+        MainPage = require("../../../../app/pages/MainPage.class.js");
 
+    index.app = new App(MainPage);
+}
 
+function initRegistries() {
+    require("../../../../bundle/initRegistries.js");
+}
 
+function initClient() {
+    require("../../../../app/init.client.js");
+}
+
+function initConfig() {
+    var config = require("./shared/config.js");
+
+    config.isClient = true;
+    <%= clientConfig %>
+}
+
+initConfig();
+initRegistries();
+initAlamid();
+initClient();

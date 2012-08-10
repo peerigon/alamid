@@ -23,7 +23,8 @@
         "browserify-bypass": "0.x",
         "jake" : "0.x",
         "cookie" : "0.x",
-        "page": "1.x"
+        "page": "1.x",
+        "webpack": "0.x"
     },
     "devDependencies": {
         "expect.js": "0.x",
