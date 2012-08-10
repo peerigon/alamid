@@ -338,6 +338,31 @@ describe("DisplayObject", function () {
             submitButtonDisplayObject.dispose();
             done();
         });
+
+        it("should emit 'beforeDispose'-Event if .dispose() is called only on first call", function (done) {
+            submitButtonDisplayObject.on("beforeDispose", function beforeDispose() {
+                done();
+            });
+            submitButtonDisplayObject.dispose();
+
+            submitButtonDisplayObject.on("beforeDispose", function beforeDispose() {
+                done(); //Should not be called
+            });
+            submitButtonDisplayObject.dispose();
+        });
+
+        it("should emit 'dispose'-Event if .dispose() is called only on first call", function (done) {
+            submitButtonDisplayObject.on("dispose", function dispose() {
+                done();
+            });
+            submitButtonDisplayObject.dispose();
+
+            submitButtonDisplayObject.on("dispose", function dispose() {
+                done(); //Should not be called
+            });
+            submitButtonDisplayObject.dispose();
+        });
+
     });
 
     describe(".hide()", function () {
