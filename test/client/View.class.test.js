@@ -175,7 +175,7 @@ describe("View", function () {
         });
 
         it("should call Super's dispose()", function (done) {
-            view.on("beforedispose", function () {
+            view.on("beforeDispose", function () {
                 done();
             });
 

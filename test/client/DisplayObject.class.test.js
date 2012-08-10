@@ -93,8 +93,8 @@ describe("DisplayObject", function () {
             expect(formDisplayObject.append(submitButtonDisplayObject).at("form")).to.be.equal(formDisplayObject);
         });
 
-        it("should emit an 'beforeadd'-Event", function (done) {
-            submitButtonDisplayObject.on("beforeadd", function () {
+        it("should emit an 'beforeAdd'-Event", function (done) {
+            submitButtonDisplayObject.on("beforeAdd", function () {
                done();
            });
 
@@ -142,8 +142,8 @@ describe("DisplayObject", function () {
             expect(formDisplayObject.prepend(submitButtonDisplayObject).at("form")).to.be.equal(formDisplayObject);
         });
 
-        it("should emit an 'beforeadd'-Event", function (done) {
-            submitButtonDisplayObject.on("beforeadd", function () {
+        it("should emit an 'beforeAdd'-Event", function (done) {
+            submitButtonDisplayObject.on("beforeAdd", function () {
                 done();
             });
 
@@ -218,8 +218,8 @@ describe("DisplayObject", function () {
             expect(submitButtonDisplayObject.destroy()).to.be.equal(submitButtonDisplayObject);
         });
 
-        it("should emit a 'beforedestroy'-Event", function (done) {
-            submitButtonDisplayObject.on("beforedestroy", function () {
+        it("should emit a 'beforeDestroy'-Event", function (done) {
+            submitButtonDisplayObject.on("beforeDestroy", function () {
                 done();
             });
 
@@ -278,8 +278,8 @@ describe("DisplayObject", function () {
             expect(submitButtonDisplayObject.dispose()).to.be(undefined);
         });
 
-        it("should emit an 'beforedispose'-Event", function (done) {
-            submitButtonDisplayObject.on("beforedispose", function () {
+        it("should emit an 'beforeDispose'-Event", function (done) {
+            submitButtonDisplayObject.on("beforeDispose", function () {
                 done();
             });
 
