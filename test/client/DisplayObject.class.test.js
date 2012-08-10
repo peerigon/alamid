@@ -5,7 +5,8 @@ var expect = require("expect.js"),
     path = require("path"),
     compile = require("nodeclass").compile,
     DisplayObject = require("../../lib/client/DisplayObject.class.js"),
-    DisplayObjectExample = require("./mocks/DisplayObjectExample.class.js");
+    DisplayObjectExample = require("./mocks/DisplayObjectExample.class.js"),
+    DOMNodeMocks = require("./mocks/DOMNodeMocks.js");
 
 describe("DisplayObject", function () {
 

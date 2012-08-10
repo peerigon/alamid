@@ -10,7 +10,8 @@ var is = require("nodeclass").is,
     DisplayObject = require("../../lib/client/DisplayObject.class.js"),
     View = require("../../lib/client/View.class.js"),
     ViewExample = require("./mocks/ViewExample.class.js"),
-    ViewExampleWithTemplate = require("./mocks/ViewExampleWithTemplate.class.js");
+    ViewExampleWithTemplate = require("./mocks/ViewExampleWithTemplate.class.js"),
+    DOMNodeMocks = require("./mocks/DOMNodeMocks.js");
 
 
 describe("View", function () {

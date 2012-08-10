@@ -9,6 +9,7 @@ var expect = require("expect.js"),
     CarLiElementView = require("./mocks/CarLiElementView.class.js"),
     ModelCollection = require("../../lib/shared/ModelCollection.class.js"),
     CarModel = require("./mocks/models/CarModel.class.js"),
+    DOMNodeMocks = require("./mocks/DOMNodeMocks.js"),
     _ = require("underscore");
 
 describe("ViewCollection", function () {
