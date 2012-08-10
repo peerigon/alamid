@@ -76,9 +76,10 @@ describe("View", function () {
 
         it("should emit an 'beforeRender'-Event", function (done) {
             view.bind(formModelABC);
-            view.on("beforeRender", function onBeforeRende() {
+            view.on("beforeRender", function onBeforeRender() {
                 done();
             });
+            view.render();
         });
 
         it("should emit an 'render'-Event", function (done) {
@@ -86,6 +87,7 @@ describe("View", function () {
             view.on("render", function onRender() {
                 done();
             });
+            view.render();
         });
 
     });
