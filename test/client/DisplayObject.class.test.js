@@ -352,6 +352,30 @@ describe("DisplayObject", function () {
             done();
         });
 
+        it("should emit 'beforeDestroy'-Event if .dispose() is called only on first call", function (done) {
+            submitButtonDisplayObject.on("beforeDestroy", function beforeDispose() {
+                done();
+            });
+            submitButtonDisplayObject.dispose();
+
+            submitButtonDisplayObject.on("beforeDestroy", function beforeDispose() {
+                done(); //Should not be called
+            });
+            submitButtonDisplayObject.dispose();
+        });
+
+        it("should emit 'destroy'-Event if .dispose() is called only on first call", function (done) {
+            submitButtonDisplayObject.on("destroy", function beforeDispose() {
+                done();
+            });
+            submitButtonDisplayObject.dispose();
+
+            submitButtonDisplayObject.on("destroy", function beforeDispose() {
+                done(); //Should not be called
+            });
+            submitButtonDisplayObject.dispose();
+        });
+
         it("should emit 'beforeDispose'-Event if .dispose() is called only on first call", function (done) {
             submitButtonDisplayObject.on("beforeDispose", function beforeDispose() {
                 done();
