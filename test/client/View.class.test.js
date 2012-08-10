@@ -74,6 +74,20 @@ describe("View", function () {
             expect($inputC.val()).to.be.equal(formSchemaABC["input-c"].default);
         });
 
+        it("should emit an 'beforeRender'-Event", function (done) {
+            view.bind(formModelABC);
+            view.on("beforeRender", function onBeforeRende() {
+                done();
+            });
+        });
+
+        it("should emit an 'render'-Event", function (done) {
+            view.bind(formModelABC);
+            view.on("render", function onRender() {
+                done();
+            });
+        });
+
     });
 
     describe(".bind()", function () {
