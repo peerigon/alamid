@@ -6,10 +6,10 @@ var Model = require('../../../lib/shared/Model.class.js'),
     serverSchema = require("./schemas/OctocatSchema.server.js");
 
 var mockedService = {
-    read : function(ids, callback) {
+    read : function(remote, ids, callback) {
         callback({ status : "success", data : { name : "emil" } });
     },
-    create : function(ids, model, callback) {
+    create : function(remote, ids, model, callback) {
         callback({ status : "success", data : { name : "serverDuck", id : 2 }});
     }
 };
