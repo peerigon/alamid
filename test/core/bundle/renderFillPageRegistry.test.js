@@ -1,7 +1,7 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
-    renderFillRegistries = require("../../../lib/core/bundle/renderFillRegistries.js"),
+    renderFillRegistries = require("../../../lib/core/bundle/renderFillPageRegistry.js"),
     vm = require("vm");
 
 var pagesPath = __dirname + "/renderFillRegistries";
