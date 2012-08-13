@@ -177,7 +177,6 @@ describe("Collection", function () {
             _(collection.toArray()).each(function compareCollection(element, index) {
                 expect(element).to.equal(reference[index]);
             });
-
         });
 
         it("should return a reference to itself", function () {
@@ -242,6 +241,19 @@ describe("Collection", function () {
         it("should be possible to unshift an Array of Models", function (done) {
             collection.unshift(octocatModels);
             done();
+        });
+
+        it("should be possible to unshift a Collection", function () {
+            var reference = octocatModels.concat(octocatModels[0], octocatModels[1], octocatModels[2]),
+                newCollection = new Collection(OctocatModel, octocatModels),
+                previousCollectionSize = collection.size();
+
+            collection.unshift(newCollection);
+
+            expect(collection.size()).to.equal(previousCollectionSize + octocatModels.length);
+            _(collection.toArray()).each(function compareCollection(element, index) {
+                expect(element).to.equal(reference[index]);
+            });
         });
 
         it("should emit an 'add'-Event", function (done) {
