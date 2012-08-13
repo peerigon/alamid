@@ -9,8 +9,7 @@ var Model = require('../../../../../../lib/shared/Model.class.js');
         }
     };
 
-var Dog = new Class({
-    Extends : Model,
+var Dog = Model.define({
     $url : "dog",
     "init": function(id) {
         this.Super(id);
