@@ -16,7 +16,7 @@ var mockedService = {
 
 var OctoDuck = Model.define({
     $url : "octoduck",
-    "init": function(id) {
+    init: function(id) {
         this.Super(id);
         this.Super.setSchema(schema, "shared");
         this.Super.setSchema(serverSchema);
