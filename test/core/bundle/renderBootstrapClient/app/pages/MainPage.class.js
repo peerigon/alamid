@@ -1,4 +1,4 @@
-var Class = require("alamid").util.Class;
+var Class = require("nodeclass").Class;
 
 var MainPage = new Class({
 
