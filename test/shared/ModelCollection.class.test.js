@@ -31,9 +31,10 @@ describe("ModelCollection", function () {
             expect(is(modelCollection).instanceOf(Collection)).to.be.ok();
         });
 
-        it("should use Model as default class", function () {
-            modelCollection = new ModelCollection();
-            expect(modelCollection.getClass()).to.be.equal(Model);
+        it("should throw an Error if Model-Class was given", function () {
+            expect(function() {
+                modelCollection = new ModelCollection();
+            }).to.throwError();
         });
 
         it("should proxy 'change'-Event for each Model given on construction", function (done) {
