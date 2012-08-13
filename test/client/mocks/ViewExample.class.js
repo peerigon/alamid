@@ -5,7 +5,27 @@ var Class = require("nodeclass").Class,
 
 var ViewExample = new Class({
 
-    Extends: View
+    Extends: View,
+
+    /**
+     * Exposes append
+     *
+     * @param {DisplayObject} displayObject
+     * @return {Object.<string, function(string): DisplayObject>}
+     */
+    append: function(displayObject) {
+        return this.Super._append(displayObject);
+    },
+
+    /**
+     * Exposes prepend
+     *
+     * @param {DisplayObject} displayObject
+     * @return {Object.<string, function(string): DisplayObject>}
+     */
+    prepend: function(displayObject) {
+        return this.Super._prepend(displayObject);
+    }
 
 });
 

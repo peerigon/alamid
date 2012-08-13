@@ -82,7 +82,7 @@ describe("DisplayObject", function () {
 
     });
 
-    describe(".append().at()", function () {
+    describe("._append().at()", function () {
 
         it("should throw an Error if a not existent node name was passed to # at()", function () {
             expect(function () {
@@ -122,7 +122,7 @@ describe("DisplayObject", function () {
 
     });
 
-    describe(".prepend()", function () {
+    describe("._prepend()", function () {
         it("should throw an Error if a not existent node name was passed to # at()", function () {
             expect(function () {
                 formDisplayObject.prepend(submitButtonDisplayObject).at("not_existing_node");
@@ -130,7 +130,7 @@ describe("DisplayObject", function () {
         });
     });
 
-    describe(".prepend().at()", function () {
+    describe("._prepend().at()", function () {
 
 
         it("should throw an Error if a not existent node name was passed to # at()", function () {
@@ -279,11 +279,24 @@ describe("DisplayObject", function () {
             expect(submitButtonDisplayObject.dispose()).to.be(undefined);
         });
 
+        it("should emit 'beforeDestroy'-Event before it disposes itself", function (done) {
+            submitButtonDisplayObject.on("beforeDestroy", function onBeforeDestroy() {
+                done();
+            });
+            submitButtonDisplayObject.dispose();
+        });
+
+        it("should emit 'destroy'-Event before it disposes itself", function (done) {
+            submitButtonDisplayObject.on("destroy", function onDestroy() {
+                done();
+            });
+            submitButtonDisplayObject.dispose();
+        });
+
         it("should emit an 'beforeDispose'-Event", function (done) {
             submitButtonDisplayObject.on("beforeDispose", function () {
                 done();
             });
-
             submitButtonDisplayObject.dispose();
         });
 
@@ -291,7 +304,6 @@ describe("DisplayObject", function () {
             submitButtonDisplayObject.on("dispose", function () {
                 done();
             });
-
             submitButtonDisplayObject.dispose();
         });
 
@@ -314,7 +326,7 @@ describe("DisplayObject", function () {
             submitButtonDisplayObject.addNodeEvents({
                 "submit-button": {
                     "click": function () {
-                        done();
+                        done(); //Should not be executed
                     }
                 }
             });
@@ -340,6 +352,30 @@ describe("DisplayObject", function () {
             done();
         });
 
+        it("should emit 'beforeDestroy'-Event if .dispose() is called only on first call", function (done) {
+            submitButtonDisplayObject.on("beforeDestroy", function beforeDispose() {
+                done();
+            });
+            submitButtonDisplayObject.dispose();
+
+            submitButtonDisplayObject.on("beforeDestroy", function beforeDispose() {
+                done(); //Should not be called
+            });
+            submitButtonDisplayObject.dispose();
+        });
+
+        it("should emit 'destroy'-Event if .dispose() is called only on first call", function (done) {
+            submitButtonDisplayObject.on("destroy", function beforeDispose() {
+                done();
+            });
+            submitButtonDisplayObject.dispose();
+
+            submitButtonDisplayObject.on("destroy", function beforeDispose() {
+                done(); //Should not be called
+            });
+            submitButtonDisplayObject.dispose();
+        });
+
         it("should emit 'beforeDispose'-Event if .dispose() is called only on first call", function (done) {
             submitButtonDisplayObject.on("beforeDispose", function beforeDispose() {
                 done();
@@ -362,6 +398,16 @@ describe("DisplayObject", function () {
                 done(); //Should not be called
             });
             submitButtonDisplayObject.dispose();
+        });
+
+        it("should dispose form and child DisplayObjects", function () {
+            var tmpDisplayObject = new DisplayObjectExample("<div data-node='child'></div>");
+
+            tmpDisplayObject.append(formDisplayObject);
+
+            formDisplayObject.dispose();
+
+            expect(jQuery(tmpDisplayObject.getNode()).children().length).to.equal(0);
         });
 
     });

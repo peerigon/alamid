@@ -4,6 +4,7 @@ var expect = require("expect.js"),
     is = require("nodeclass").is,
     DisplayObject = require("../../lib/client/DisplayObject.class.js"),
     View = require("../../lib/client/View.class.js"),
+    ViewExample = require("./mocks/ViewExample.class.js"),
     ViewCollection = require("../../lib/client/ViewCollection.class.js"),
     ViewCollectionExampleWithTemplate = require("./mocks/ViewCollectionExampleWithTemplate.class.js"),
     CarLiElementView = require("./mocks/CarLiElementView.class.js"),
@@ -544,12 +545,17 @@ describe("ViewCollection", function () {
 
     describe(".dispose()", function () {
 
-        //@TODO
-        /*
-         it("should remove ViewCollection from the node where it was appended", function () {
+        it("should remove ViewCollection from the node where it was appended", function () {
+            var parentView = new ViewExample("<div data-node='child'></div>");
 
-         });
-         */
+            viewCollection.bind(carCollection);
+
+            parentView.append(viewCollection).at("child");
+
+            viewCollection.dispose();
+
+            expect(jQuery(parentView.getNode()).find("[data-node='views']").length).to.equal(0);
+        });
 
         it("should be callable multiple times", function (done) {
             viewCollection.dispose();
