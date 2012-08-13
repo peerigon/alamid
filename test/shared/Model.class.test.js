@@ -538,19 +538,8 @@ describe("Model", function() {
             });
         });
 
-        describe("#destroy", function() {
-            it("call the delete-service if ID is set and return successfully", function(done) {
-                octocat = new Octocat(2);
-                octocat.setService(testService);
-                octocat.set('name', 'Octocat');
-                octocat.set('age', 8);
-                expect(octocat.getId()).to.be(2);
-
-                octocat.save(function(err) {
-                    expect(err).to.be(null);
-                    done();
-                });
-            });
+        describe("#delete", function() {
+           //TODO add test for delete
         });
 
 
@@ -595,7 +584,6 @@ describe("Model", function() {
                     done();
                 });
             });
-            //TODO add test for cached instances
         });
 
     });
