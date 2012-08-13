@@ -451,6 +451,10 @@ describe("Model", function() {
                     callback({ status : "success" });
                 }
             };
+
+            var config = require("../../lib/shared/config");
+            //we simulate client-services
+            config.isServer = false;
         });
 
         describe("Error handling and format parsing (__processResponse)", function() {
