@@ -31,6 +31,12 @@ describe("Collection", function () {
             expect(is(collection).instanceOf(EventEmitter)).to.be.ok();
         });
 
+        it("should throw an Error if no Class was given as", function () {
+            expect(function () {
+                collection = new Collection();
+            }).to.throwError();
+        });
+
         it("should be possible to pass as second argument model(s)", function () {
             collection = new CollectionExample(OctocatModel, octocatModels);
             expect(collection.getElements()).to.be.eql(octocatModels);
@@ -44,12 +50,22 @@ describe("Collection", function () {
 
     });
 
-    describe(".getClass()", function () {
+    describe(".toArray", function () {
 
-        it("should return Model as null", function () {
-            collection = new Collection();
-            expect(collection.getClass()).to.be.equal(null);
+        it("should return an array", function () {
+            expect(collection.toArray()).to.be.an(Array);
         });
+
+        it("should return an array with all passed Model", function () {
+            collection.set(0, octocatModels[0]);
+            collection.push([octocatModels[1], octocatModels[2]]);
+
+            expect(collection.toArray()).to.be.eql([octocatModels[0], octocatModels[1], octocatModels[2]]);
+        });
+
+    });
+
+    describe(".getClass()", function () {
 
         it("should return OctocatClass", function () {
             expect(collection.getClass()).to.be.equal(OctocatModel);
@@ -150,6 +166,19 @@ describe("Collection", function () {
             done();
         });
 
+        it("should be possible to push a Collection", function () {
+            var reference = octocatModels.concat(octocatModels[0], octocatModels[1], octocatModels[2]),
+                newCollection = new Collection(OctocatModel, octocatModels),
+                previousCollectionSize = collection.size();
+
+            collection.push(newCollection);
+
+            expect(collection.size()).to.equal(previousCollectionSize + octocatModels.length);
+            _(collection.toArray()).each(function compareCollection(element, index) {
+                expect(element).to.equal(reference[index]);
+            });
+        });
+
         it("should return a reference to itself", function () {
             expect(collection.push(octocatModel)).to.be.equal(collection);
         });
@@ -212,6 +241,19 @@ describe("Collection", function () {
         it("should be possible to unshift an Array of Models", function (done) {
             collection.unshift(octocatModels);
             done();
+        });
+
+        it("should be possible to unshift a Collection", function () {
+            var reference = octocatModels.concat(octocatModels[0], octocatModels[1], octocatModels[2]),
+                newCollection = new Collection(OctocatModel, octocatModels),
+                previousCollectionSize = collection.size();
+
+            collection.unshift(newCollection);
+
+            expect(collection.size()).to.equal(previousCollectionSize + octocatModels.length);
+            _(collection.toArray()).each(function compareCollection(element, index) {
+                expect(element).to.equal(reference[index]);
+            });
         });
 
         it("should emit an 'add'-Event", function (done) {
@@ -382,21 +424,6 @@ describe("Collection", function () {
             collection.shift();
         });
 
-
-    });
-
-    describe(".toArray", function () {
-
-        it("should return an array", function () {
-            expect(collection.toArray()).to.be.an(Array);
-        });
-
-        it("should return an array with all passed Model", function () {
-            collection.set(0, octocatModels[0]);
-            collection.push([octocatModels[1], octocatModels[2]]);
-
-            expect(collection.toArray()).to.be.eql([octocatModels[0], octocatModels[1], octocatModels[2]]);
-        });
 
     });
 
