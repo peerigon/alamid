@@ -1,12 +1,12 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
-    renderFillRegistries = require("../../../lib/core/bundle/renderFillRegistries.js"),
+    renderFillPageRegistry = require("../../../lib/core/bundle/renderFillPageRegistry.js"),
     vm = require("vm");
 
-var pagesPath = __dirname + "/renderFillRegistries";
+var pagesPath = __dirname + "/renderFillPageRegistry";
 
-describe("renderFillRegistries", function () {
+describe("renderFillPageRegistry", function () {
     var registry = {},
         sandbox = {
             require: function (path) {
@@ -35,7 +35,7 @@ describe("renderFillRegistries", function () {
     }
 
     it("should throw no error", function () {
-        var src = renderFillRegistries(pagesPath);
+        var src = renderFillPageRegistry(pagesPath);
 
         vm.runInNewContext(src, sandbox);
     });
