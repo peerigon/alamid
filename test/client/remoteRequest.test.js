@@ -38,6 +38,12 @@ describe("remoteRequest", function () {
                     useWebsockets : true
                 };
 
+                var appMock = {
+                    getSocket : function() {
+                        return socketMock;
+                    }
+                };
+
                 var socketMock ={
                     emit : function(method, url, model, callback) {
                         expect(method).to.be("create");
@@ -45,7 +51,8 @@ describe("remoteRequest", function () {
                         expect(model).to.eql({ da : "ta" });
                         expect(callback).to.be.a("function");
                         callback();
-                    }
+                    },
+                    connected : true
                 };
 
                 var httpRequestMock = function(method, url, modelData, callback) {
@@ -55,7 +62,7 @@ describe("remoteRequest", function () {
                 remoteRequest.__set__("httpRequest", httpRequestMock);
                 remoteRequest.__set__("config", configMock);
                 //overwrite predefined mock!
-                remoteRequest.__set__("socket", socketMock);
+                remoteRequest.__set__("app", appMock);
 
                 remoteRequest.request("create", "services/blog", { da : "ta" }, function(response){
                     done();
