@@ -94,22 +94,22 @@ describe("handleRequest", function() {
 
 
     describe("#Request with Middleware", function() {
-        it("should run the defined middlewares", function(done) {
+        it("should run the defined middleware", function(done) {
             var mwPath = path.resolve(__dirname, "../../exampleApp/app/services/servicesMiddleware.js");
-            collectMiddleware([], mwPath, function(err, servicesMiddleware) {
 
-                middleware.setMiddleware("services", servicesMiddleware);
-                handleRequest = rewire("../../../lib/server/request/handleRequest.js", false);
-                handleRequest.__set__("getMiddleware", middleware.getMiddleware);
+            var servicesMiddleware = collectMiddleware([], mwPath);
 
-                var req = new Request("create", "/services/blog", {});
+            middleware.setMiddleware("services", servicesMiddleware);
 
-                handleRequest(req, function(err) {
-                    expect(req.getData()).to.eql({ fancy : true });
-                    expect(err).not.to.be(null);
-                    done();
-                });
+            handleRequest = rewire("../../../lib/server/request/handleRequest.js", false);
+            handleRequest.__set__("getMiddleware", middleware.getMiddleware);
 
+            var req = new Request("create", "/services/blog", {});
+
+            handleRequest(req, function(err) {
+                expect(req.getData()).to.eql({ fancy : true });
+                expect(err).not.to.be(null);
+                done();
             });
         });
     });
