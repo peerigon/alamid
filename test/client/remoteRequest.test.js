@@ -110,7 +110,7 @@ describe("remoteRequest", function () {
             remoteRequest.__set__("request",requestMock);
             var serviceAdapter = new remoteRequest.RemoteService("blogpost");
 
-            serviceAdapter.create(model, function(response) {
+            serviceAdapter.create(true, model, function(response) {
                 done();
             });
         });
@@ -137,7 +137,7 @@ describe("remoteRequest", function () {
             remoteRequest.__set__("request",requestMock);
             var serviceAdapter = new remoteRequest.RemoteService("blogpost");
 
-            serviceAdapter.update(model, function(response) {
+            serviceAdapter.update(true, model, function(response) {
                 done();
             });
         });
