@@ -9,11 +9,18 @@ var PageExample = Page.define({
 
     /**
      * Exposes protected ._getParams()
-     *
-     * @return {Object}
+     * @return {object}
      */
     getParams: function () {
         return this._getParams();
+    },
+
+    /**
+     * Exposes ._isDisposed()
+     * @return {boolean}
+     */
+    isDisposed: function () {
+        return this._isDisposed();
     },
 
     $template: "<div data-node='page'></div>"
