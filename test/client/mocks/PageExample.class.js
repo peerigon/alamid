@@ -31,6 +31,8 @@ var PageExample = Page.define({
 */
 var PageExample = new Class({
 
+    Extends: Page,
+
     /**
      * Exposes protected ._getParams()
      * @return {object}
