@@ -5,8 +5,7 @@ var expect = require("expect.js"),
     nodeclass = require("nodeclass"),
     path = require("path"),
     collectServices,
-    testFolder = __dirname + "/collectServices",
-    servicesFolder = testFolder + "/app/services";
+    servicesFolder = __dirname + "/collectServices";
 
 nodeclass.registerExtension();
 

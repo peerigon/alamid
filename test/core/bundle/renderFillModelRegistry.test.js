@@ -1,10 +1,11 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
+    path = require("path"),
     renderFillModelRegistry = require("../../../lib/core/bundle/renderFillModelRegistry.js"),
     vm = require("vm");
 
-var modelsPath = __dirname + "/renderFillModelRegistry/models";
+var modelsPath = path.resolve(__dirname, "../collect/collectModels");
 
 describe("renderFillModelRegistry", function () {
     var registry = {},

@@ -5,7 +5,7 @@ var expect = require("expect.js"),
     renderFillServiceRegistry = require("../../../lib/core/bundle/renderFillServiceRegistry.js"),
     vm = require("vm");
 
-var servicesPath = path.resolve(__dirname, "../collect/collectServices/app/services/");
+var servicesPath = path.resolve(__dirname, "../collect/collectServices");
 
 describe("renderFillServiceRegistry", function () {
     var registry = {},
