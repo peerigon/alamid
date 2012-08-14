@@ -3,9 +3,6 @@
 var Class = require("nodeclass").Class,
     Page = require("../../../lib/client/Page.class.js");
 
-console.log(Page.define);
-console.log(Page.$define);
-
 /*
 var PageExample = Page.define({
 
