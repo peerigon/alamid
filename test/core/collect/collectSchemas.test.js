@@ -42,25 +42,11 @@ describe("collectSchemas", function () {
         expect(schemas.server).to.only.have.keys(Object.keys(expectedSchemas.server));
         expect(schemas.client).to.only.have.keys(Object.keys(expectedSchemas.client));
         expect(schemas.shared).to.only.have.keys(Object.keys(expectedSchemas.shared));
-        expect(schemas.server.blogpost).to.eql(path.resolve(__dirname, "./collectModels/BlogPost/BlogPostSchema.js"));
-
-        /*
-         //COPY THESE tests to BOOTSTRAP.server test
-         expect(schemas.shared.blogpost.email.required).to.be(true);
-         expect(schemas.server.blogpost.email.required).to.be(false);
-         expect(schemas.client.blogpost.email.required).to.be(true);
-
-
-         //new attribute for client only
-         expect(schemas.client.blogpost.saved).not.to.be(undefined);
-         expect(schemas.shared.blogpost.saved).to.be(undefined);
-         expect(schemas.server.blogpost.saved).to.be(undefined);
-         */
+        expect(schemas.server.blogpost).to.eql(path.resolve(__dirname, "./collectModels/BlogPost/BlogPostSchema.server.js"));
 
         expect(schemas.server["blogpost/comment"]).to.eql(path.resolve(__dirname, "./collectModels/BlogPost/Comment/CommentSchema.js"));
         expect(schemas.shared["blogpost/comment"]).to.be.eql(path.resolve(__dirname, "./collectModels/BlogPost/Comment/CommentSchema.js"));
     });
-
 
     it("should fail on non existing folders", function () {
 
