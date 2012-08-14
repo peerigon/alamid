@@ -3,6 +3,7 @@
 var Class = require("nodeclass").Class,
     Page = require("../../../lib/client/Page.class.js");
 
+//@TODO use Page.define
 /*
 var PageExample = Page.define({
 
