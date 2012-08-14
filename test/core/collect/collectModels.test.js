@@ -30,6 +30,7 @@ describe("collectModels", function () {
         expectedModels.server.blogpost = true;
         expectedModels.server["blogpost/comment"] = true;
         expectedModels.client.blogpost = true;
+        expectedModels.client["blogpost/comment"] = true;
 
         collectModels = rewire("../../../lib/core/collect/collectModels.js", false);
         var models = collectModels(servicesFolder);
