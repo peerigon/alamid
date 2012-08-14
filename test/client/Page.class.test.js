@@ -33,7 +33,7 @@ describe("Page", function () {
     describe(".construct()", function () {
 
         it("should be possible to overwrite the template with second argument", function () {
-            pageExample = new PageExample("<div></div>");
+            pageExample = new PageExample({}, "<div></div>");
 
             expect(jQuery(pageExample.getNode()).find("[data-node='page']").length).to.equal(0);
         });
