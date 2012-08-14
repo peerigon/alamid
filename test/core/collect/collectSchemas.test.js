@@ -5,7 +5,7 @@ var expect = require("expect.js"),
     nodeclass = require("nodeclass"),
     path = require("path"),
     collectSchemas,
-    modelsFolder = path.resolve(__dirname, "./collectModels/app/models");
+    modelsFolder = path.resolve(__dirname, "./collectModels");
 
 nodeclass.registerExtension();
 
@@ -42,7 +42,7 @@ describe("collectSchemas", function () {
         expect(schemas.server).to.only.have.keys(Object.keys(expectedSchemas.server));
         expect(schemas.client).to.only.have.keys(Object.keys(expectedSchemas.client));
         expect(schemas.shared).to.only.have.keys(Object.keys(expectedSchemas.shared));
-        expect(schemas.server.blogpost).to.eql(path.resolve(__dirname, "./collectModels/app/models/BlogPost/BlogPostSchema.js"));
+        expect(schemas.server.blogpost).to.eql(path.resolve(__dirname, "./collectModels/BlogPost/BlogPostSchema.js"));
 
         /*
          //COPY THESE tests to BOOTSTRAP.server test
@@ -57,8 +57,8 @@ describe("collectSchemas", function () {
          expect(schemas.server.blogpost.saved).to.be(undefined);
          */
 
-        expect(schemas.server["blogpost/comment"]).to.eql(path.resolve(__dirname, "./collectModels/app/models/BlogPost/Comment/CommentSchema.js"));
-        expect(schemas.shared["blogpost/comment"]).to.be.eql(path.resolve(__dirname, "./collectModels/app/models/BlogPost/Comment/CommentSchema.js"));
+        expect(schemas.server["blogpost/comment"]).to.eql(path.resolve(__dirname, "./collectModels/BlogPost/Comment/CommentSchema.js"));
+        expect(schemas.shared["blogpost/comment"]).to.be.eql(path.resolve(__dirname, "./collectModels/BlogPost/Comment/CommentSchema.js"));
     });
 
 
