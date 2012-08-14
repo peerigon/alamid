@@ -1,7 +1,7 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
-    pageRegistry = require("../../../lib/shared/registries/pageRegistry.js");
+    pageRegistry = require("../../../lib/client/registries/pageRegistry.js");
 
 describe("pageRegistry", function () {
     function bundleA(callback) { callback("A"); }
