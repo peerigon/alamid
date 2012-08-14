@@ -46,7 +46,7 @@ var PageExample = new Class({
      * @return {boolean}
      */
     isDisposed: function () {
-        return this.Super._isDisposed();
+        return this.Super._getIsDisposed();
     },
 
     $template: "<div data-node='page'></div>"
