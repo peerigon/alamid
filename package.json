@@ -14,7 +14,7 @@
         "async": "0.x",
         "connect": "2.x",
         "winston": "0.x",
-        "fshelpers": "https://github.com/peerigon/fshelpers/tarball/v0.2.0",
+        "fshelpers": "https://github.com/peerigon/fshelpers/tarball/v0.2.1",
         "toSrc": "0.x",
         "nodeclass": "https://github.com/peerigon/nodeclass/tarball/v0.1.17",
         "nconf" : "0.5.1",
