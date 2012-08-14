@@ -49,24 +49,6 @@ describe("App", function () {
 
         it("should fail when calling without a page class", function () {
             expect(function () {
-                app = new App();
-            }).to.throwException(checkForTypeError);
-            expect(function () {
-                app = new App(null);
-            }).to.throwException(checkForTypeError);
-            expect(function () {
-                app = new App(true);
-            }).to.throwException(checkForTypeError);
-            expect(function () {
-                app = new App(2);
-            }).to.throwException(checkForTypeError);
-            expect(function () {
-                app = new App("hello");
-            }).to.throwException(checkForTypeError);
-            expect(function () {
-                app = new App([]);
-            }).to.throwException(checkForTypeError);
-            expect(function () {
                 app = new App({});
             }).to.throwException(checkForTypeError);
         });
