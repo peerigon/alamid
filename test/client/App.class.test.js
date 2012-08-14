@@ -19,6 +19,7 @@ function expectError(Constructor) {
 }
 
 describe("App", function () {
+
     var app;
 
     before(function () {
@@ -27,6 +28,7 @@ describe("App", function () {
             PageLoader: PageLoaderMock
         });
     });
+
     beforeEach(function () {
         pages.blog = new PageMock();
         pages.blog.name = "Blog";   // for debugging purposes
@@ -42,7 +44,9 @@ describe("App", function () {
         pages.main.name = "Main";
         pageJS.callbacks = [];  // removes previous routes
     });
+
     describe(".init()", function () {
+
         it("should fail when calling without a page class", function () {
             expect(function () {
                 app = new App();
@@ -66,19 +70,24 @@ describe("App", function () {
                 app = new App({});
             }).to.throwException(checkForTypeError);
         });
+
         it("should throw no exception when calling with a page", function () {
             app = new App(PageMock);
         });
     });
+
     describe(".addRoute() / .dispatchRoute()", function () {
+
         var state;
 
         before(function () {
             state = window.location.pathname + window.location.search;
         });
+
         after(function () {
             history.pushState(null, null, state);
         });
+
         it("should modify the history state", function () {
             app.addRoute("*", function () {
                 // This route handler is needed so pageJS doesn't change the window.location
@@ -86,6 +95,7 @@ describe("App", function () {
             app.dispatchRoute("/blog/posts");
             expect(window.location.pathname).to.be("/blog/posts");
         });
+
         it("should execute the registered route handlers in the given order", function () {
             var called = [];
 
@@ -116,6 +126,7 @@ describe("App", function () {
 
             expect(called).to.eql(["*1", "/bl", "/blog/*", "/blog/posts", "*2"]);
         });
+
         it("should work with a string as handler", function () {
             var pageLoader,
                 pageURLs;
@@ -126,6 +137,7 @@ describe("App", function () {
             pageURLs = pageLoader.getPageURLs();
             expect(pageURLs).to.eql(["blog", "blog/about"]);
         });
+
         it("should pass the params", function () {
             var params,
                 pageLoader;
@@ -143,27 +155,34 @@ describe("App", function () {
             expect(params.author).to.be("spook");
             expect(params.postId).to.be("123");
         });
+
         it("should be chainable", function () {
             app
                 .addRoute("/blog/posts/:id", "blog/posts")
                 .addRoute("/blog/posts/author=:authorId", "blog/posts");
         });
     });
+
     describe(".getCurrentPages()", function () {
+
         it("should return an array with the main page at the beginning", function () {
             expect(app.getCurrentPages()).to.eql([pages.main]);
         });
+
         it("should return an array with the current page hierarchy", function () {
             pages.main.setSubPage(pages.home);
             pages.home.setSubPage(pages.about);
             expect(app.getCurrentPages()).to.eql([pages.main, pages.home, pages.about]);
         });
     });
+
     describe(".changePage()", function () {
+
         beforeEach(function () {
             pages.main.setSubPage(pages.home);
             pages.home.setSubPage(pages.about);
         });
+
         it("should emit 'beforePageChange' first and than 'beforeLeave' on every sub page that will be changed from bottom to top", function () {
             var emitted = [];
 
@@ -184,6 +203,7 @@ describe("App", function () {
 
             expect(emitted).to.eql(["app", "about", "home"]);
         });
+
         it("should immediately cancel the process when calling event.preventDefault()", function () {
             var emitted = [],
                 callsPreventDefault;
@@ -223,6 +243,7 @@ describe("App", function () {
             app.changePage("blog", {});
             expect(emitted).to.eql(["app", "about", "home"]);
         });
+
         it("should call cancel() on the previous pageLoader that is still running", function () {
             var pageLoader;
 
@@ -231,6 +252,7 @@ describe("App", function () {
             app.changePage("blog", {});
             expect(pageLoader.getCancelled()).to.be(true);
         });
+
         it("should not call cancel() on the previous pageLoader that finished", function () {
             var pageLoader;
 
@@ -240,6 +262,7 @@ describe("App", function () {
             app.changePage("blog", {});
             expect(pageLoader.getCancelled()).to.be(false);
         });
+
         it("should append all loaded pages from top to bottom and emit 'pageChange' after that", function () {
             var emitted = [],
                 pageLoader;
@@ -266,6 +289,3 @@ describe("App", function () {
         });
     });
 });
-
-
-
