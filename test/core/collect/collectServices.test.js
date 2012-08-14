@@ -31,6 +31,7 @@ describe("collectServices", function () {
         expectedServices.server["b/c"] = true;
         expectedServices.server.a = true;
         expectedServices.server.b = true;
+        expectedServices.server["a/d"] = true;
 
         expectedServices.client["b/c"] = true;
         expectedServices.client.a = true;
