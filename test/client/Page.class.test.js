@@ -20,6 +20,7 @@ describe("Page", function () {
         pageExample = new PageExample(params);
     });
 
+    /*
     describe(".define()", function () {
 
         it("should return an instance of Page", function () {
@@ -27,6 +28,7 @@ describe("Page", function () {
         });
 
     });
+    */
 
     describe(".construct()", function () {
 
