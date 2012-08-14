@@ -1,6 +1,7 @@
 "use strict";
 
 var expect = require("expect.js"),
+    is = require("nodeclass").is,
     CONSTANTS = require("../../lib/client/CONSTANTS.js"),
     path = require("path"),
     compile = require("nodeclass").compile,
@@ -33,6 +34,21 @@ describe("DisplayObject", function () {
         submitButtonDisplayObject = new DisplayObjectExample(submitButtonTemplate);
         formDisplayObject = new DisplayObjectExample(formTemplate);
     });
+
+    //@TODO
+    /*
+    describe(".define()", function () {
+
+        it("should return an instance of DisplayObject", function () {
+            expect(is(DisplayObject.define({
+                init: function () {
+                    this.Super("<p></p>");
+                }
+            })).instanceOf(DisplayObject)).to.equal(true);
+        });
+
+    });
+    */
 
     describe(".construct()", function () {
 
