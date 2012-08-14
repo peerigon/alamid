@@ -38,7 +38,7 @@ var PageExample = new Class({
      * @return {object}
      */
     getParams: function () {
-        return this._getParams();
+        return this.Super._getParams();
     },
 
     /**
@@ -46,7 +46,7 @@ var PageExample = new Class({
      * @return {boolean}
      */
     isDisposed: function () {
-        return this._isDisposed();
+        return this.Super._isDisposed();
     },
 
     $template: "<div data-node='page'></div>"
