@@ -5,11 +5,10 @@
 
 var expect = require("expect.js"),
     page = require("../../../lib/client/helpers/page.js"),
-    historyAdapter = require("../../../lib/client/helpers/historyAdapter.js"),
     called;
 
 // XXX: super lame hack
-
+//@TODO Check if it is working with historyAdapter
 page('/', function () {
     called = true;
 });
@@ -132,6 +131,4 @@ describe('page.js', function () {
     });
 });
 
-page.start({
-    historyAdapter: historyAdapter
-});
+page();
