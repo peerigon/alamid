@@ -5,17 +5,54 @@
 
 var expect = require("expect.js"),
     page = require("../../../lib/client/helpers/page.js"),
+    historyAdapterMock = require("../mocks/historyAdapterMock.js"),
     called;
-
-// XXX: super lame hack
-//@TODO Check if it is working with historyAdapter
-page('/', function () {
-    called = true;
-});
 
 describe('page.js', function () {
 
+    var pathNameAndSearch;
+
+    before(function () {
+        pathNameAndSearch = location.pathname + location.search;
+    });
+
+    describe("use of historyAdapter", function () {
+
+        afterEach(function () {
+            page.stop();
+        });
+
+        it("should call historyAdapter's .pushState()", function () {
+            page("/historyAdapterPushStateTest", function () { });
+            page.start({
+                historyAdapter: historyAdapterMock
+            });
+            page("/historyAdapterPushStateTest");
+
+            expect(historyAdapterMock.isPushStateCalled).to.equal(true);
+        });
+
+        it("should call historyAdapter's .replaceState()", function () {
+            page("/historyAdapterReplaceStateTest", function () { });
+            page.start({
+                historyAdapter: historyAdapterMock
+            });
+            page("/historyAdapterReplaceStateTest");
+            expect(historyAdapterMock.isReplaceStateCalled).to.equal(true);
+        });
+
+    });
+
     describe('on page load', function () {
+
+        before(function (done) {
+            page("/", function () {
+                called = true;
+                done();
+            });
+
+            page();
+        });
 
         it('should invoke the matching callback', function () {
             expect(called).to.equal(true);
@@ -124,11 +161,11 @@ describe('page.js', function () {
                 page('/forum/1/thread/2');
             });
         });
+
     });
 
     after(function(){
-        page('/');
+        page(pathNameAndSearch);
+        page.stop();
     });
 });
-
-page();
