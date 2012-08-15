@@ -205,6 +205,7 @@ describe("DisplayObject", function () {
         it("should attach Events to nodes", function () {
             var focusEvent = "untriggered",
                 blurEvent = "untriggered",
+            //alamid's jQuery must be used here, cause node is not in the DOM.
                 $inputA = alamidjQuery(formDisplayObject.getNode()).find("[data-node='input-a']"),
                 $inputB = alamidjQuery(formDisplayObject.getNode()).find("[data-node='input-b']");
 
