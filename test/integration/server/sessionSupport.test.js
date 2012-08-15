@@ -12,7 +12,7 @@ require("nodeclass").registerExtension();
 var runTestServer = require("../setup/runTestServer.js");
 
 function httpRequest(reqPath, callback) {
-    http.get({host:'localhost', port:9090, path: reqPath, agent:false}, function (res) {
+    http.get({host:'localhost', port:9000, path: reqPath, agent:false}, function (res) {
         // Do stuff
         var data = "";
 
@@ -42,7 +42,7 @@ describe("Session Support", function() {
             }, function(srvInstance) {
                 serverInstance = srvInstance;
                 browser
-                    .visit("http://localhost:9090/statics/websockettest.html")
+                    .visit("http://localhost:9000/statics/websockettest.html")
                     .then(done, done);
             });
         });
@@ -79,7 +79,7 @@ describe("Session Support", function() {
             }, function(srvInstance) {
                 serverInstance = srvInstance;
                 browser
-                    .visit("http://localhost:9090/statics/websockettest.html")
+                    .visit("http://localhost:9000/statics/websockettest.html")
                     .then(done, done);
             });
         });
@@ -95,9 +95,9 @@ describe("Session Support", function() {
         });
 
         it("should incremented the sessionCounter for http-requests", function(done) {
-            browser.visit("http://localhost:9090/services/session", function(e, browser) {
+            browser.visit("http://localhost:9000/services/session", function(e, browser) {
                 expect(browser.html()).to.contain('{"status":"success","data":{"sessionCount":1}}');
-                browser.visit("http://localhost:9090/services/session", function(e, browser) {
+                browser.visit("http://localhost:9000/services/session", function(e, browser) {
                     expect(browser.html()).to.contain('{"status":"success","data":{"sessionCount":2}}');
                     done();
                 });
@@ -122,7 +122,7 @@ describe("Session Support", function() {
             }, function(srvInstance) {
                 serverInstance = srvInstance;
                 browser
-                    .visit("http://localhost:9090/statics/websockettest.html")
+                    .visit("http://localhost:9000/statics/websockettest.html")
                     .then(done, done);
             });
         });
@@ -132,7 +132,7 @@ describe("Session Support", function() {
             var pommes = browser.evaluate("wsRequestTest('read', '/services/session', {});");
             pommes.success = function(res) {
                 expect(JSON.stringify(res)).to.contain('{"status":"success","data":{"sessionCount":1}}');
-                browser.visit("http://localhost:9090/services/session", function(e, browser) {
+                browser.visit("http://localhost:9000/services/session", function(e, browser) {
                     expect(browser.html()).to.contain('{"status":"success","data":{"sessionCount":2}}');
                     done();
                 });
@@ -141,7 +141,7 @@ describe("Session Support", function() {
 
         it("should increment the session-counter on mixed service requests (HTTP first)", function(done) {
             //first request
-            browser.visit("http://localhost:9090/services/session", function(e, browser) {
+            browser.visit("http://localhost:9000/services/session", function(e, browser) {
                 expect(browser.html()).to.contain('{"status":"success","data":{"sessionCount":3}}');
                 var pommes = browser.evaluate("wsRequestTest('read', '/services/session', {});");
                 pommes.success = function(res) {

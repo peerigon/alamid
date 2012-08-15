@@ -8,7 +8,7 @@
 
 <script>
 
-    var socket = io.connect('http://localhost:9090');
+    var socket = io.connect('http://localhost:9000');
 
     function wsRequest(method, url, data, callback) {
         socket.emit(method, url, data, callback);

@@ -1,9 +1,7 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
 
-    var socket = io.connect('http://localhost:9090');
-
-    //var socket = io.connect("http://localhost:9090", { transports : ["flashsocket"]});
+    var socket = io.connect('http://localhost:9000');
 
     function getSessionData() {
         socket.emit('SESSION', function(sessionData) {
