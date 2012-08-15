@@ -10,7 +10,7 @@ describe("renderFillPageRegistry", function () {
     var registry = {},
         sandbox = {
             require: function (path) {
-                if (path === "alamid/lib/shared/registries/pageRegistry.js") {
+                if (path === "alamid/lib/client/registries/pageRegistry.js") {
                     return {
                         setPage: function setPage(pageURL, pageBundle, pageDataLoader) {
                             registry[pageURL] = {

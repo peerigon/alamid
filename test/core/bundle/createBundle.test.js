@@ -24,7 +24,7 @@ describe("createBundle()", function () {
     it("should write an executable bundle", function (done) {
         createBundle(config, function (err, stats) {
             console.log(err);
-            console.log(stats);
+            console.log(stats.errors);
             done();
         });
     });
