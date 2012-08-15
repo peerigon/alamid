@@ -543,9 +543,38 @@ describe("Model", function() {
         });
 
         describe("#delete", function() {
-           //TODO add test for delete
-        });
 
+            var mockedDeleteService = {
+                delete : function(remote, ids, callback) {
+                    if(ids !== null) {
+                        callback({ status : "success" });
+                        return;
+                    }
+                    callback({ status : "error", message : "missing IDs" });
+                }
+            };
+
+            it("call the delete service if ID is set and return successfully", function(done) {
+                octocat = new Octocat(2);
+                octocat.setService(mockedDeleteService);
+
+                octocat.delete(function(err) {
+                    expect(err).to.be(null);
+                    done();
+                });
+            });
+
+            it("should fail with a missing ID", function(done) {
+                octocat = new Octocat();
+                octocat.setService(mockedDeleteService);
+                expect(octocat.getId()).to.be(null);
+
+                octocat.save(function(err) {
+                    expect(err).to.be.an(Error);
+                    done();
+                });
+            });
+        });
 
         describe("Statics", function(){
 
