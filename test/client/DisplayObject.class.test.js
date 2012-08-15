@@ -1,12 +1,14 @@
 "use strict";
 
 var expect = require("expect.js"),
+    is = require("nodeclass").is,
     CONSTANTS = require("../../lib/client/CONSTANTS.js"),
     path = require("path"),
     compile = require("nodeclass").compile,
     DisplayObject = require("../../lib/client/DisplayObject.class.js"),
     DisplayObjectExample = require("./mocks/DisplayObjectExample.class.js"),
-    DOMNodeMocks = require("./mocks/DOMNodeMocks.js");
+    DOMNodeMocks = require("./mocks/DOMNodeMocks.js"),
+    alamidjQuery = require("../../lib/client/helpers/jQuery.js");
 
 describe("DisplayObject", function () {
 
@@ -33,6 +35,21 @@ describe("DisplayObject", function () {
         submitButtonDisplayObject = new DisplayObjectExample(submitButtonTemplate);
         formDisplayObject = new DisplayObjectExample(formTemplate);
     });
+
+    //@TODO
+    /*
+    describe(".define()", function () {
+
+        it("should return an instance of DisplayObject", function () {
+            expect(is(DisplayObject.define({
+                init: function () {
+                    this.Super("<p></p>");
+                }
+            })).instanceOf(DisplayObject)).to.equal(true);
+        });
+
+    });
+    */
 
     describe(".construct()", function () {
 
@@ -186,10 +203,11 @@ describe("DisplayObject", function () {
         });
 
         it("should attach Events to nodes", function () {
-            var focusEvent = "untriggred",
+            var focusEvent = "untriggered",
                 blurEvent = "untriggered",
-                $inputA = jQuery(formDisplayObject.getNode()).find("[data-node='input-a']"),
-                $inputB = jQuery(formDisplayObject.getNode()).find("[data-node='input-b']");
+            //alamid's jQuery must be used here, cause node is not in the DOM.
+                $inputA = alamidjQuery(formDisplayObject.getNode()).find("[data-node='input-a']"),
+                $inputB = alamidjQuery(formDisplayObject.getNode()).find("[data-node='input-b']");
 
             formDisplayObject.addNodeEvents({
                 "input-a": {

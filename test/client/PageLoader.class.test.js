@@ -1,7 +1,7 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
-    pageRegistry = require("../../lib/shared/registries/pageRegistry.js"),
+    pageRegistry = require("../../lib/client/registries/pageRegistry.js"),
     PageLoader = require("../../lib/client/PageLoader.class.js"),
     PageLoaderExamplePage = require("./mocks/PageMock.class.js"),
     is = require("nodeclass").is,
