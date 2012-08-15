@@ -7,7 +7,7 @@
     "main": "./lib/index.js",
     "keywords": ["client", "server", "framework", "rest", "web application", "websockets", "realtime"],
     "engines": {
-        "node": "0.6.x"
+        "node": "< 0.9"
     },
     "dependencies": {
         "underscore": "1.x",
@@ -24,7 +24,7 @@
         "jake" : "0.x",
         "cookie" : "0.x",
         "page": "1.x",
-        "webpack": "0.x"
+        "webpack": "0.5.8"
     },
     "devDependencies": {
         "expect.js": "0.x",
