@@ -7,7 +7,8 @@ var expect = require("expect.js"),
     compile = require("nodeclass").compile,
     DisplayObject = require("../../lib/client/DisplayObject.class.js"),
     DisplayObjectExample = require("./mocks/DisplayObjectExample.class.js"),
-    DOMNodeMocks = require("./mocks/DOMNodeMocks.js");
+    DOMNodeMocks = require("./mocks/DOMNodeMocks.js"),
+    alamidjQuery = require("../../lib/client/helpers/jQuery.js");
 
 describe("DisplayObject", function () {
 
@@ -202,10 +203,10 @@ describe("DisplayObject", function () {
         });
 
         it("should attach Events to nodes", function () {
-            var focusEvent = "untriggred",
+            var focusEvent = "untriggered",
                 blurEvent = "untriggered",
-                $inputA = jQuery(formDisplayObject.getNode()).find("[data-node='input-a']"),
-                $inputB = jQuery(formDisplayObject.getNode()).find("[data-node='input-b']");
+                $inputA = alamidjQuery(formDisplayObject.getNode()).find("[data-node='input-a']"),
+                $inputB = alamidjQuery(formDisplayObject.getNode()).find("[data-node='input-b']");
 
             formDisplayObject.addNodeEvents({
                 "input-a": {
