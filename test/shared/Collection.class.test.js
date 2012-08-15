@@ -1,8 +1,5 @@
 "use strict";
 
-// @browser ./testHelpers/compileAlamidClient.js
-require("./testHelpers/compileAlamid.js");
-
 var expect = require("expect.js"),
     is = require("nodeclass").is,
     _ = require("underscore"),
@@ -10,8 +7,6 @@ var expect = require("expect.js"),
     CollectionExample = require("./Collection/CollectionExample.class.js"),
     EventEmitter  = require("../../lib/shared/EventEmitter.class.js"),
     OctocatModel = require("./Model/Octocat.class.js");
-
-
 
 describe("Collection", function () {
 
@@ -53,7 +48,7 @@ describe("Collection", function () {
     describe(".toArray", function () {
 
         it("should return an array", function () {
-            expect(collection.toArray()).to.be.an(Array);
+            expect(collection.toArray()).to.be.an("array");
         });
 
         it("should return an array with all passed Model", function () {

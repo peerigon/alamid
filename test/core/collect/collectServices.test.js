@@ -2,17 +2,9 @@
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
-    nodeclass = require("nodeclass"),
     path = require("path"),
     collectServices,
     servicesFolder = __dirname + "/collectServices";
-
-nodeclass.registerExtension();
-
-nodeclass.stdout = function(msg) {
-    //No output in test mode
-};
-
 
 describe("collectServices", function () {
 

@@ -1,8 +1,5 @@
 "use strict";
 
-// @browser ./testHelpers/compileAlamidClient.js
-require("./testHelpers/compileAlamid.js");
-
 var expect = require("expect.js"),
     is = require("nodeclass").is,
     _ = require("underscore"),

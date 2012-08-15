@@ -1,7 +1,5 @@
 "use strict"; // run code in ES5 strict mode
 
-require("nodeclass").registerExtension();
-
 var expect = require("expect.js"),
     pathUtil = require("path"),
     renderBootstrapClient = require("../../../lib/core/bundle/renderBootstrapClient.js"),

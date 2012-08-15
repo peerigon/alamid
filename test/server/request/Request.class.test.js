@@ -1,7 +1,5 @@
 "use strict";
 
-require("nodeclass").registerExtension();
-
 var expect = require("expect.js"),
     Request = require("../../../lib/server/request/Request.class.js");
 

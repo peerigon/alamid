@@ -2,16 +2,9 @@
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
-    nodeclass = require("nodeclass"),
     path = require("path"),
     collectSchemas,
     modelsFolder = path.resolve(__dirname, "./collectModels");
-
-nodeclass.registerExtension();
-
-nodeclass.stdout = function(msg) {
-    //No output in test mode
-};
 
 describe("collectSchemas", function () {
 

@@ -1,7 +1,4 @@
-var path = require("path"),
-    nodeclass = require("nodeclass");
-
-nodeclass.registerExtension();
+var path = require("path");
 
 desc('This is the default task.');
 task('default', function () {

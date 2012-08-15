@@ -2,10 +2,7 @@
 
 
 var expect = require("expect.js"),
-    rewire = require("rewire"),
-    nodeclass = require("nodeclass");
-
-nodeclass.registerExtension();
+    rewire = require("rewire");
 
 var log = require("../../../../lib/shared/logger.js").get("server"),
     Request = require("../../../../lib/server/request/Request.class.js"),

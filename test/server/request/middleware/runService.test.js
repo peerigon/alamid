@@ -2,17 +2,10 @@
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
-    nodeclass = require("nodeclass"),
     path = require("path");
-
-nodeclass.registerExtension();
 
 var Request = require("../../../../lib/server/request/Request.class.js"),
     Response = require("../../../../lib/server/request/Response.class.js");
-
-nodeclass.stdout = function() {
-    //No output in test mode
-};
 
 describe("runService", function(){
 

@@ -6,9 +6,6 @@ var path = require("path"),
     http = require("http"),
     Browser = require("zombie");
 
-require("nodeclass").registerExtension();
-//compile classes if found
-
 var runTestServer = require("../setup/runTestServer.js");
 
 function httpRequest(reqPath, callback) {

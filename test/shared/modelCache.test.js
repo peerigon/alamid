@@ -1,8 +1,5 @@
 "use strict";
 
-// @browser ./testHelpers/compileAlamidClient.js
-require("./testHelpers/compileAlamid.js");
-
 var clientModelCache = require("../../lib/client/modelCache.client.js");
 var serverModelCache = require("../../lib/server/modelCache.server.js");
 var Octocat = require("./Model/Octocat.class.js");

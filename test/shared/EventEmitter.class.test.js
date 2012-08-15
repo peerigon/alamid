@@ -2,8 +2,6 @@
 
 var expect = require("expect.js"),
     rewire = require("rewire");
-// @browser ./testHelpers/compileAlamidClient.js
-require("./testHelpers/compileAlamid.js");
 
 var EventEmitter = require("../../lib/shared/EventEmitter.class.js");
 

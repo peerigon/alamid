@@ -8,7 +8,6 @@ var path = require("path"),
 
 var runTestServer = require("../setup/runTestServer.js");
 
-require("nodeclass").registerExtension();
 //compile classes if found
 describe("WebsocketTransport", function() {
 

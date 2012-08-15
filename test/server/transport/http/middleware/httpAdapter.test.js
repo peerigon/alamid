@@ -1,10 +1,7 @@
 "use strict";
 
 var expect = require("expect.js"),
-    rewire = require("rewire"),
-    nodeclass = require("nodeclass");
-
-nodeclass.registerExtension();
+    rewire = require("rewire");
 
 var Response = require("../../../../../lib/server/request/Response.class.js");
 var Request = require("../../../../../lib/server/request/Request.class.js");

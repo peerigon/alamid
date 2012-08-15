@@ -2,18 +2,11 @@
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
-    nodeclass = require("nodeclass"),
     path = require("path");
-
-nodeclass.registerExtension();
 
 var Request = require("../../../../lib/server/request/Request.class.js"),
     Response = require("../../../../lib/server/request/Response.class.js"),
     pushNotification = require("../../../../lib/server/request/middleware/pushNotification.js");
-
-nodeclass.stdout = function() {
-    //No output in test mode
-};
 
 function getSocketMock(callback) {
     return {

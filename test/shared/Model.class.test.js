@@ -3,9 +3,6 @@
 var expect = require("expect.js"),
     rewire = require("rewire");
 
-// @browser ./testHelpers/compileAlamidClient.js
-require("./testHelpers/compileAlamid.js");
-
 var User1 = require("./Model/User1.class.js"),
     User2 = require("./Model/User2.class.js"),
     Octocat = require("./Model/Octocat.class.js");

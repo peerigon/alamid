@@ -1,7 +1,5 @@
 "use strict";
 
-require("nodeclass").registerExtension();
-
 var expect = require("expect.js"),
     rewire = require("rewire"),
     path = require("path"),

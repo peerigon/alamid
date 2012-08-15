@@ -4,8 +4,6 @@ var path = require("path"),
     expect = require("expect.js"),
     request = require("supertest");
 
-require("nodeclass").registerExtension();
-
 var runTestServerNew = require("../setup/testServerEmbeddable.js");
 
 describe("handleHttp", function() {
