@@ -20,7 +20,11 @@ describe("handleRequest", function() {
     describe("#Services Request", function() {
 
         beforeEach(function() {
-            function middlewareMock(req, res, next) {
+            function runServiceMock(req, res, next) {
+                next();
+            }
+
+            function sanitizeDataMock(req, res, next) {
                 next();
             }
 
@@ -37,8 +41,8 @@ describe("handleRequest", function() {
             }
 
             handleRequest.__set__("getMiddleware", getMiddlewareMock);
-            handleRequest.__set__("runService", middlewareMock);
-            handleRequest.__set__("sanitizeData", middlewareMock);
+            handleRequest.__set__("runService", runServiceMock);
+            handleRequest.__set__("sanitizeData", sanitizeDataMock);
         });
 
         it("should handle the request and return without an error if all middleware worked fine", function(done) {
@@ -102,6 +106,7 @@ describe("handleRequest", function() {
 
             handleRequest = rewire("../../../lib/server/request/handleRequest.js", false);
             handleRequest.__set__("getMiddleware", middleware.getMiddleware);
+            handleRequest.__set__("sanitizeData", function(req, res, next) { next(); });
 
             var req = new Request("create", "/services/blog", {});
 
