@@ -1,8 +1,11 @@
 "use strict";
 
+var nodeclass = require("nodeclass"),
+    Class = nodeclass.Class;
+
 //the session data is processed by the middleware!
 
-var sessionService = {
+var SessionService = new Class({
     read : function(ids, callback) {
         callback({"status" : "success", "model" : ids });
     },
@@ -12,6 +15,6 @@ var sessionService = {
     update : function(ids, model, callback) {
         callback({"status" : "success", data : ids });
     }
-};
+});
 
-module.exports = sessionService;
+module.exports = SessionService;

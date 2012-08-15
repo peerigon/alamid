@@ -1,7 +1,8 @@
+"use strict"
+
 var Model = require("alamid/Model"),
 	_ = require("underscore");
 
-var MyModel = new Class({
-	Extends: Model,
+var MyModel = Model.define({
 	url: "/blogPost"
 });

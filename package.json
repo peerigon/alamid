@@ -1,7 +1,7 @@
 {
     "name": "alamid",
     "description": "Framework for realtime JavaScript web applications that run both on the server- and clientside.",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "repository": "git://github.com/peerigon/alamid.git",
     "author": "peerigon",
     "main": "./lib/index.js",
@@ -14,7 +14,7 @@
         "async": "0.x",
         "connect": "2.x",
         "winston": "0.x",
-        "fshelpers": "https://github.com/peerigon/fshelpers/tarball/v0.2.0",
+        "fshelpers": "https://github.com/peerigon/fshelpers/tarball/v0.2.1",
         "toSrc": "0.x",
         "nodeclass": "https://github.com/peerigon/nodeclass/tarball/v0.1.17",
         "nconf" : "0.5.1",
@@ -23,7 +23,8 @@
         "browserify-bypass": "0.x",
         "jake" : "0.x",
         "cookie" : "0.x",
-        "page": "1.x"
+        "page": "1.x",
+        "webpack": "0.x"
     },
     "devDependencies": {
         "expect.js": "0.x",

@@ -10,7 +10,7 @@ nodeclass.registerExtension();
 var log = require("../../../../lib/shared/logger.js").get("server"),
     Request = require("../../../../lib/server/request/Request.class.js"),
     Response = require("../../../../lib/server/request/Response.class.js"),
-    Dog = require("./runService/src/Dog.class.js");
+    Dog = require("./runService/Dog.class.js");
 
 describe("loadModel", function () {
     var loadModel;

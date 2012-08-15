@@ -6,7 +6,7 @@ var path = require("path"),
 
 require("nodeclass").registerExtension();
 
-var runTestServerNew = require("../setup/testServerEmbeddable.js");
+var runTestServer = require("../setup/testServerEmbeddable.js");
 
 describe("handleHttp", function() {
 
@@ -15,7 +15,7 @@ describe("handleHttp", function() {
         var app;
 
         before(function() {
-            app = runTestServerNew({ appDir : path.resolve(__dirname, "../setup/testApp")});
+            app = runTestServer({ appDir : path.resolve(__dirname, "../setup/testApp")});
         });
 
         describe("## INDEX.html, Landing-Request", function(){
@@ -69,13 +69,31 @@ describe("handleHttp", function() {
         });
 
         describe("#onServiceRequest", function(){
-            it("should hand the request on to the service-route", function (done) {
+            it("should return an error if no schema was defined for routes (sanitize)", function (done) {
                 this.timeout(100000);
                 request(app)
                     .post("/services/myNonExistentService/")
                     .type("application/json")
                     .send({ da : "ta" })
+                    .expect(400,/failed/, done);
+            });
+
+            it("should return an error if not service is defined for service-route", function (done) {
+                this.timeout(100000);
+                request(app)
+                    .post("/services/user/")
+                    .type("application/json")
+                    .send({ da : "ta" })
                     .expect(400,/No service found for/, done);
+            });
+
+            it("should return a service-response for a defined service", function (done) {
+                this.timeout(100000);
+                request(app)
+                    .post("/services/blog/")
+                    .type("application/json")
+                    .send({ da : "ta" })
+                    .expect(200,/"status":"success"/, done);
             });
 
             it("should block the request if the content-type is wrong", function (done) {
@@ -94,7 +112,7 @@ describe("handleHttp", function() {
                     .post("/validators/myNonExistentValidator/")
                     .set('Content-Type', 'application/json')
                     .send({ da : "ta" })
-                    .expect(400,/found for/, done);
+                    .expect(400,/failed/, done);
             });
 
             it("should block validator-routes with wrong content-type request", function (done) {

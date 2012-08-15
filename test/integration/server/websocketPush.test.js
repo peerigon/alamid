@@ -28,7 +28,7 @@ describe("WebsocketTransport", function() {
         before(function(done) {
             this.browser = new Browser();
             this.browser
-                .visit("http://localhost:9090/statics/pushtest.html")
+                .visit("http://localhost:9000/statics/pushtest.html")
                 .then(done, done);
         });
 
@@ -37,7 +37,7 @@ describe("WebsocketTransport", function() {
             var self = this;
 
             var secondBrowser = new Browser({ debug : true })
-                .visit("http://localhost:9090/statics/pushtest.html")
+                .visit("http://localhost:9000/statics/pushtest.html")
                 .then(checkPush, function(err) {
                     console.log("err", err);
                     done(err);

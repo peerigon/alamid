@@ -27,7 +27,7 @@ describe("WebsocketTransport", function() {
         before(function(done) {
             this.browser = new Browser();
             this.browser
-                .visit("http://localhost:9090/statics/websockettest.html")
+                .visit("http://localhost:9000/statics/websockettest.html")
                 .then(done, function(err) {
                     console.log("err", err);
                 });
@@ -43,19 +43,17 @@ describe("WebsocketTransport", function() {
         before(function(done) {
             this.browser = new Browser();
             this.browser
-                .visit("http://localhost:9090/statics/websockettest.html")
+                .visit("http://localhost:9000/statics/websockettest.html")
                 .then(done, done);
         });
 
         it("should return an not defined error for a service request", function(done) {
             var self = this;
-            this.browser.wait(2000, function(){
-                var pommes = self.browser.evaluate("wsRequestTest('read', '/services/whatever', {});");
-                pommes.success = function(res) {
-                    expect(JSON.stringify(res)).to.contain('{"status":"error","message":"(alamid) Request failed for path \'whatever\' with Error: \'No service found for \'read\'');
-                    done();
-                };
-            });
+            var pommes = self.browser.evaluate("wsRequestTest('read', '/services/whatever', {});");
+            pommes.success = function(res) {
+                expect(JSON.stringify(res)).to.contain('{"status":"error","message":"(alamid) Request failed for path \'whatever\' with Error: \'No service found for \'read\'');
+                done();
+            };
         });
 
 

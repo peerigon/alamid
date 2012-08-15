@@ -92,7 +92,7 @@ describe("sanitizeData", function () {
         });
     });
 
-    it("should not sanitize READ requests", function (done) {
+    it("should not sanitize DELETE requests", function (done) {
 
         req.setMethod("delete");
 
@@ -111,5 +111,4 @@ describe("sanitizeData", function () {
             done();
         });
     });
-
 });

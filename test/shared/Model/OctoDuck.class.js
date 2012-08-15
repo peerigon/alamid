@@ -6,17 +6,17 @@ var Model = require('../../../lib/shared/Model.class.js'),
     serverSchema = require("./schemas/OctocatSchema.server.js");
 
 var mockedService = {
-    read : function(ids, callback) {
+    read : function(remote, ids, callback) {
         callback({ status : "success", data : { name : "emil" } });
     },
-    create : function(ids, model, callback) {
+    create : function(remote, ids, model, callback) {
         callback({ status : "success", data : { name : "serverDuck", id : 2 }});
     }
 };
 
 var OctoDuck = Model.define({
     $url : "octoduck",
-    "init": function(id) {
+    init: function(id) {
         this.Super(id);
         this.Super.setSchema(schema, "shared");
         this.Super.setSchema(serverSchema);

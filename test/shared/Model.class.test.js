@@ -421,7 +421,7 @@ describe("Model", function() {
             });
         });
 
-        it("should only call shared validator if fullValidation is disabled", function(done) {
+        it("should only call shared validator and therefor work if only shared passes", function(done) {
             octocat.set('name', 'Octocat');
             octocat.set('age', 99);
 
@@ -441,21 +441,25 @@ describe("Model", function() {
         beforeEach(function() {
             octocat = new Octocat();
             testService = {
-                create : function(ids, model, callback) {
+                create : function(remote, ids, model, callback) {
                     callback({ status : "success", data : { name : model.get("name"), age : 10 }});
                 },
-                update : function(ids, model, callback) {
+                update : function(remote, ids, model, callback) {
                     callback({ status : "success", data : { name : model.get("name"), age : 12 }});
                 },
-                delete : function(ids, callback) {
+                delete : function(remote, ids, callback) {
                     callback({ status : "success" });
                 }
             };
+
+            var config = require("../../lib/shared/config");
+            //we simulate client-services
+            config.isServer = false;
         });
 
         describe("Error handling and format parsing (__processResponse)", function() {
             it("should fail if response is no valid object", function(done) {
-                testService.create = function(ids, model, callback) {
+                testService.create = function(remote, ids, model, callback) {
                     callback();
                 };
 
@@ -479,7 +483,7 @@ describe("Model", function() {
             it("should convert an error-response to an internal error", function(done) {
                 octocat = new Octocat();
                 octocat.setService({
-                    create : function(ids, model, callback) {
+                    create : function(remote, ids, model, callback) {
                         callback({ status : "error", message : "my error message" });
                     }
                 });
@@ -522,7 +526,7 @@ describe("Model", function() {
 
             it("should also work with sync services", function(done) {
                 octocat.setService({
-                    create : function(ids, model) {
+                    create : function(remote, ids, model) {
                         return { status : "success", data : { age : 10 } };
                     }
                 });
@@ -538,21 +542,39 @@ describe("Model", function() {
             });
         });
 
-        describe("#destroy", function() {
-            it("call the delete-service if ID is set and return successfully", function(done) {
-                octocat = new Octocat(2);
-                octocat.setService(testService);
-                octocat.set('name', 'Octocat');
-                octocat.set('age', 8);
-                expect(octocat.getId()).to.be(2);
+        describe("#delete", function() {
 
-                octocat.save(function(err) {
+            var mockedDeleteService = {
+                delete : function(remote, ids, callback) {
+                    if(ids !== null) {
+                        callback({ status : "success" });
+                        return;
+                    }
+                    callback({ status : "error", message : "missing IDs" });
+                }
+            };
+
+            it("call the delete service if ID is set and return successfully", function(done) {
+                octocat = new Octocat(2);
+                octocat.setService(mockedDeleteService);
+
+                octocat.delete(function(err) {
                     expect(err).to.be(null);
                     done();
                 });
             });
-        });
 
+            it("should fail with a missing ID", function(done) {
+                octocat = new Octocat();
+                octocat.setService(mockedDeleteService);
+                expect(octocat.getId()).to.be(null);
+
+                octocat.save(function(err) {
+                    expect(err).to.be.an(Error);
+                    done();
+                });
+            });
+        });
 
         describe("Statics", function(){
 
@@ -595,9 +617,7 @@ describe("Model", function() {
                     done();
                 });
             });
-            //TODO add test for cached instances
         });
-
     });
 
     describe("Model-Loader (Model-Caching)", function(){
