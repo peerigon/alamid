@@ -8,12 +8,12 @@ describe("historyAdapter", function () {
     //@see https://developer.mozilla.org/en-US/docs/DOM/window.history
     it("should provide the same API as specified on MDN", function () {
 
-        expect(history.back).to.be.a(Function);
-        expect(history.forward).to.be.a(Function);
-        expect(history.go).to.be.a(Function);
-        expect(history.pushState).to.be.a(Function);
-        expect(history.replaceState).to.be.a(Function);
-        expect(typeof history.length).to.equal("number");
+        expect(historyAdapter.back).to.be.a(Function);
+        expect(historyAdapter.forward).to.be.a(Function);
+        expect(historyAdapter.go).to.be.a(Function);
+        expect(historyAdapter.pushState).to.be.a(Function);
+        expect(historyAdapter.replaceState).to.be.a(Function);
+        expect(typeof historyAdapter.length).to.equal("number");
 
     });
 
