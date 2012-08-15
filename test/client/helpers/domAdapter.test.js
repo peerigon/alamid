@@ -227,8 +227,9 @@ describe("domAdapter", function () {
                 var $inputA = $form.find("[data-node='input-a']"),
                     inputA = $inputA[0];
 
-                $inputA.on("click", function () { done(); });
-                $inputA.on("blur", function () { done(); });
+                //Must be attached with domAdapter, cause if element is not part of the DOM it is not reachable by jQuery.
+                domAdapter(inputA).on("click", function () { done(); });
+                domAdapter(inputA).on("blur", function () { done(); });
 
                 domAdapter(inputA).dispose();
 
