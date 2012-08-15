@@ -35,7 +35,6 @@
         "supertest" : "0.x"
     },
     "scripts" : {
-        "test" : "mocha ./test/nodejs/ --mode testing",
-        "test-nodejs" : "mocha ./test/nodejs/ --mode testing"
+        "test" : "jake test-all"
     }
 }
