@@ -618,7 +618,6 @@ describe("Model", function() {
                 });
             });
         });
-
     });
 
     describe("Model-Loader (Model-Caching)", function(){
