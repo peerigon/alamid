@@ -22,7 +22,7 @@ describe("handleRequest", function() {
     describe("#Services Request", function() {
 
         beforeEach(function() {
-            function runServiceMock(req, res, next) {
+            function middlewareMock(req, res, next) {
                 next();
             }
 
@@ -39,7 +39,8 @@ describe("handleRequest", function() {
             }
 
             handleRequest.__set__("getMiddleware", getMiddlewareMock);
-            handleRequest.__set__("runService", runServiceMock);
+            handleRequest.__set__("runService", middlewareMock);
+            handleRequest.__set__("sanitizeData", middlewareMock);
         });
 
         it("should handle the request and return without an error if all middleware worked fine", function(done) {
