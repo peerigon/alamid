@@ -1,7 +1,7 @@
 "use strict";
 
 var Class = require("nodeclass").Class;
-var Model = require('../../../../../../lib/shared/Model.class.js');
+var Model = require('../../../../../lib/shared/Model.class.js');
 
  var DogSchema = {
         name: {

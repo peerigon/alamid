@@ -17,7 +17,7 @@ nodeclass.stdout = function() {
 describe("runService", function(){
 
     var runService = rewire("../../../../lib/server/request/middleware/runService.js", false);
-    var Dog = require("./runService/src/Dog.class.js");
+    var Dog = require("./runService/Dog.class.js");
 
     describe("#serviceMiddleware", function() {
 
@@ -241,7 +241,7 @@ describe("runService", function(){
             var servicesMock = {
                 getService : function(path) {
                     if(path === "servicea"){
-                        var ServiceA = require("./runService/src/AService.server.class.js");
+                        var ServiceA = require("./runService/AService.server.class.js");
                         return new ServiceA();
                     }
                     return null;
@@ -277,7 +277,7 @@ describe("runService", function(){
             var servicesMock = {
                 getService : function(path) {
                     if(path === "blogpost/comments"){
-                        var ServiceA = require("./runService/src/AService.server.class.js");
+                        var ServiceA = require("./runService/AService.server.class.js");
                         return new ServiceA();
                     }
                     return null;
