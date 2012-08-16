@@ -22,6 +22,7 @@ describe("createBundle()", function () {
         fs.rmdirSync(__dirname + "/node_modules");
     });
     it("should write an executable bundle", function (done) {
+        this.timeout(10000);
         createBundle(config, function (err, stats) {
             console.log(err);
             done();
