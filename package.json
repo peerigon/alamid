@@ -7,7 +7,7 @@
     "main": "./lib/index.js",
     "keywords": ["client", "server", "framework", "rest", "web application", "websockets", "realtime"],
     "engines": {
-        "node": "0.6.x"
+        "node": "< 0.9"
     },
     "dependencies": {
         "underscore": "1.x",
@@ -24,7 +24,8 @@
         "jake" : "0.x",
         "cookie" : "0.x",
         "page": "1.x",
-        "webpack": "0.x"
+        "webpack": "0.5.8",
+        "raw-loader": "0.x"
     },
     "devDependencies": {
         "expect.js": "0.x",
@@ -35,7 +36,6 @@
         "supertest" : "0.x"
     },
     "scripts" : {
-        "test" : "mocha ./test/nodejs/ --mode testing",
-        "test-nodejs" : "mocha ./test/nodejs/ --mode testing"
+        "test" : "jake test-all"
     }
 }

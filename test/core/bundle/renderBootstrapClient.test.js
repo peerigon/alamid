@@ -74,6 +74,15 @@ describe("renderBootstrapClient", function () {
     it("should call fillPageRegistry.js", function () {
         expect(require.cache[appPath + "/bundle/tmp/fillPageRegistry.js"]).to.be.an(Object);
     });
+    it("should call fillServiceRegistry.js", function () {
+        expect(require.cache[appPath + "/bundle/tmp/fillServiceRegistry.js"]).to.be.an(Object);
+    });
+    it("should call fillSchemaRegistry.js", function () {
+        expect(require.cache[appPath + "/bundle/tmp/fillSchemaRegistry.js"]).to.be.an(Object);
+    });
+    it("should call fillModelRegistry.js", function () {
+        expect(require.cache[appPath + "/bundle/tmp/fillModelRegistry.js"]).to.be.an(Object);
+    });
     it("should call /app/init.client.js", function () {
         expect(require.cache[appPath + "/app/init.client.js"]).to.be.an(Object);
     });

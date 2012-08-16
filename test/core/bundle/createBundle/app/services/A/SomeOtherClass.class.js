@@ -1,11 +1,16 @@
 "use strict"; // run code in ES5 strict mode
 
+"use strict";
+
 var Class = require("nodeclass").Class;
 
-var Comment = new Class({
-    init : function () {
+var SomeOtherClass = new Class({
+
+    "init" : function () {
         //nothing to do here
     }
 });
 
-module.exports = Comment;
+module.exports = SomeOtherClass;
+
+

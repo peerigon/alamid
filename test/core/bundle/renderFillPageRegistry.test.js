@@ -10,7 +10,7 @@ describe("renderFillPageRegistry", function () {
     var registry = {},
         sandbox = {
             require: function (path) {
-                if (path === "alamid/lib/shared/registries/pageRegistry.js") {
+                if (path === "alamid/lib/client/registries/pageRegistry.js") {
                     return {
                         setPage: function setPage(pageURL, pageBundle, pageDataLoader) {
                             registry[pageURL] = {
@@ -44,12 +44,13 @@ describe("renderFillPageRegistry", function () {
     });
     it("should register the page bundles", function () {
         registry["blog"].bundle(function (path) {
-            expect(path).to.be("bundle!" + pagesPath + "/blog/BlogPage.class.js");
+            expect(path).to.be("bundle/lazy!" + pagesPath + "/blog/BlogPage.class.js");
         });
         registry["blog/posts"].bundle(function (path) {
-            expect(path).to.be("bundle!" + pagesPath + "/blog/posts/PostsPage.class.js");
+            expect(path).to.be("bundle/lazy!" + pagesPath + "/blog/posts/PostsPage.class.js");
         });
         // We have to test "home" differently because we don't have a HomePage.class.js
+        // The HomePage is not bundled lazily because it is wrapped by loadTemplate()
         registry["home"].bundle(function (page) {
             expect(page.template).to.be("bundle!" + pagesPath + "/home/HomePage.html");
         });
