@@ -86,7 +86,7 @@ describe("Model", function() {
             });
 
             it("should set and get urls", function() {
-                expect(user.getUrl()).to.eql("User1");
+                expect(user.getUrl()).to.eql("user1");
                 user.setUrl("user/likes");
                 expect(user.getUrl()).to.eql("user/likes");
             });
@@ -100,7 +100,7 @@ describe("Model", function() {
             });
 
             it("#setParentID", function() {
-                expect(user.getUrl()).to.eql("User1");
+                expect(user.getUrl()).to.eql("user1");
                 user.setParentId("user", 2);
                 user.setParentId("comment", 3);
                 expect(user.getParentId("user")).to.eql(2);
