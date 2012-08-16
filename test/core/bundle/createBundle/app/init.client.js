@@ -4,6 +4,4 @@ console.log("I'm the init baby");
 
 var app = require("alamid").app;
 
-var alamid = require("alamid");
-
 app.start();

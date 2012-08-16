@@ -24,7 +24,6 @@ describe("createBundle()", function () {
     it("should write an executable bundle", function (done) {
         createBundle(config, function (err, stats) {
             console.log(err);
-            fs.writeFileSync(__dirname + "/moduleDump.json", require("util").inspect(stats.fileModules, false, 10, false), "utf8");
             done();
         });
     });
