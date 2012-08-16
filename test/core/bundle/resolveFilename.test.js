@@ -3,7 +3,7 @@
 var expect = require("expect.js"),
     resolveFilename = require("../../../lib/core/bundle/resolveFilename.js");
 
-var testFolder = "./resolveFilename/";
+var testFolder = __dirname + "/resolveFilename/";
 
 describe("resolveFilename", function() {
 
