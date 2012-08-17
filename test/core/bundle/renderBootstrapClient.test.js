@@ -19,7 +19,8 @@ describe("renderBootstrapClient", function () {
     var config = {
             "mode" : "development",
             "useCasting" : true,
-            "useWebsockets": true
+            "useWebsockets": true,
+            "isClient" : true
         },
         index = {},
         sandbox = {
@@ -31,8 +32,12 @@ describe("renderBootstrapClient", function () {
                 // Alamid mocks
                 if (path.indexOf("alamid/lib/client/App.class.js") !== -1) {
                     return App;
-                } else if (path.indexOf("alamid/lib/index.js") !== -1) {
+                }
+                else if (path.indexOf("alamid/lib/index.js") !== -1) {
                     return index;
+                }
+                else if(path.indexOf("alamid/lib/shared/config.js") !== -1){
+                    return require("../../../lib/client/config.client.js");
                 }
 
                 return require(path);

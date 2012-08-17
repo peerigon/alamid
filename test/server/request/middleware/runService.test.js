@@ -86,9 +86,13 @@ describe("runService", function(){
 
             var dog = new Dog();
             dog.set("name", "snoop lion");
-            dog.setService(mockedServiceFunctions);
+            dog.setService({
+                create : function(ids, model, callback){
+                    callback({ "status" : "success"});
+                }
+            });
 
-            var request = new Request(method, path, data),
+            var request = new Request(method, path, {}),
                 response = new Response();
 
             request.setModel(dog);
