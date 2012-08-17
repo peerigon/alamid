@@ -5,8 +5,9 @@ var Class = require("nodeclass").Class,
 
 var MainPage = new Class({
     Extends: Page,
+    $template : require("./MainPage.html"),
     init : function () {
-        //nothing to do here
+
     }
 });
 
