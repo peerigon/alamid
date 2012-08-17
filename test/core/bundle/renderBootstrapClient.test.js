@@ -62,8 +62,6 @@ describe("renderBootstrapClient", function () {
     it("should throw no error", function () {
         var src = renderBootstrapClient(config);
 
-        console.log("srrc", src);
-
         vm.runInNewContext(src, sandbox);
     });
     it("should only assign client config keys", function () {
@@ -71,7 +69,6 @@ describe("renderBootstrapClient", function () {
     });
     it("should use the same values as in the server config", function () {
         _(index.config).each(function eachConfigValue(value, key) {
-            console.log("val: " + value + "key" + config[key]);
             expect(value).to.be(config[key]);
         });
     });
