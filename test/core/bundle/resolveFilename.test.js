@@ -3,9 +3,13 @@
 var expect = require("expect.js"),
     resolveFilename = require("../../../lib/core/bundle/resolveFilename.js");
 
-var testFolder = __dirname + "/resolveFilename/";
+var testFolder = "someLoader.js!" + __dirname + "/resolveFilename/";
 
 describe("resolveFilename", function() {
+
+    beforeEach(function () {
+        resolveFilename.statCache = {};
+    });
 
     it("should return a client-file as replacement for a server-file if existent", function(done) {
         resolveFilename(testFolder + "config.server.js", function(err, resolvedFilename) {
@@ -39,8 +43,15 @@ describe("resolveFilename", function() {
         });
     });
 
-    it("should should fail if a server-file is being required without client or shared replacement", function(done) {
+    it("should fail if a server-file is being required without client or shared replacement", function(done) {
         resolveFilename(testFolder + "serverOnly.server.js", function(err, resolvedFilename) {
+            expect(err).to.be.an(Error);
+            done();
+        });
+    });
+
+    it("should fail if the file doesn't exist", function (done) {
+        resolveFilename(testFolder + "abc", function (err) {
             expect(err).to.be.an(Error);
             done();
         });
