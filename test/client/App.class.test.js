@@ -4,6 +4,7 @@ var expect = require("expect.js"),
     rewire = require("rewire"),
     App = rewire("../../lib/client/App.class.js"),
     pageJS = require("page"),
+    historyAdapter = require("../../lib/client/helpers/historyAdapter.js"),
     Page = require("../../lib/client/Page.class.js"),
     PageMock = require("./mocks/PageMock.class.js"),
     PageLoaderMock = require("./mocks/PageLoaderMock.class.js"),
@@ -39,9 +40,6 @@ describe("App", function () {
         pages.about = new PageMock();
         pages.about.name = "About";
         app = new App(PageMock);
-        app.start();
-        pages.main = app.getMainPage();
-        pages.main.name = "Main";
         pageJS.callbacks = [];  // removes previous routes
     });
 
@@ -67,14 +65,22 @@ describe("App", function () {
         });
 
         after(function () {
-            history.pushState(null, null, state);
+            historyAdapter.pushState(null, null, state);
+        });
+
+        afterEach(function () {
+            app.stop();
         });
 
         it("should modify the history state", function () {
             app.addRoute("*", function () {
                 // This route handler is needed so pageJS doesn't change the window.location
             });
+
+            app.start();
+
             app.dispatchRoute("/blog/posts");
+
             expect(window.location.pathname).to.be("/blog/posts");
         });
 
@@ -104,6 +110,8 @@ describe("App", function () {
                 called.push("*2");
             });
 
+            app.start();
+
             app.dispatchRoute("/blog/posts");
 
             expect(called).to.eql(["*1", "/bl", "/blog/*", "/blog/posts", "*2"]);
@@ -114,7 +122,11 @@ describe("App", function () {
                 pageURLs;
 
             app.addRoute("/blog/about", "blog/about");
+
+            app.start();
+
             app.dispatchRoute("/blog/about");
+
             pageLoader = PageLoaderMock.instance;
             pageURLs = pageLoader.getPageURLs();
             expect(pageURLs).to.eql(["blog", "blog/about"]);
@@ -130,6 +142,9 @@ describe("App", function () {
                 next();
             });
             app.addRoute("/blog/:author/posts/:postId", "blog/posts");
+
+            app.start();
+
             app.dispatchRoute("/blog/spook/posts/123");
 
             pageLoader = PageLoaderMock.instance;
@@ -147,6 +162,15 @@ describe("App", function () {
 
     describe(".getCurrentPages()", function () {
 
+        beforeEach(function () {
+            app.start();
+            pages.main = app.getMainPage();
+        });
+
+        afterEach(function () {
+            app.stop();
+        });
+
         it("should return an array with the main page at the beginning", function () {
             expect(app.getCurrentPages()).to.eql([pages.main]);
         });
@@ -156,13 +180,20 @@ describe("App", function () {
             pages.home.setSubPage(pages.about);
             expect(app.getCurrentPages()).to.eql([pages.main, pages.home, pages.about]);
         });
+
     });
 
     describe(".changePage()", function () {
 
         beforeEach(function () {
+            app.start();
+            pages.main = app.getMainPage();
             pages.main.setSubPage(pages.home);
             pages.home.setSubPage(pages.about);
+        });
+
+        afterEach(function () {
+            app.stop();
         });
 
         it("should emit 'beforePageChange' first and than 'beforeLeave' on every sub page that will be changed from bottom to top", function () {
