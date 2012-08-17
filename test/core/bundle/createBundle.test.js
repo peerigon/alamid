@@ -26,9 +26,7 @@ describe("createBundle()", function () {
             extensionHandlers[key] = handler;
         });
 
-        browser = new Browser({
-            //debug: true
-        });
+        browser = new Browser();
     });
     after(function () {
         fs.unlinkSync(__dirname + "/node_modules/alamid");
