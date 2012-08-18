@@ -7,7 +7,7 @@ var resolveFilename = require("../../lib/core/bundle/resolveFilename.js"),
 exports.use = function () {
 
     return {
-        context: path.resolve(__dirname + "../../"),
+        context: path.resolve(__dirname, "../../"),
         includeFilenames: true,
         debug: true,
         extensions: ["", ".client.js", ".js"],
