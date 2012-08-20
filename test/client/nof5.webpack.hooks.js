@@ -2,11 +2,12 @@
 
 var resolveFilename = require("../../lib/core/bundle/resolveFilename.js"),
     nodeclassLoader = require("nodeclass").bundlers.webpack,
+    rewireWebpackExtension= require("rewire").bundlers.webpack,
     path = require("path");
 
 exports.use = function () {
 
-    return {
+    var options = {
         context: path.resolve(__dirname, "../../"),
         includeFilenames: true,
         debug: true,
@@ -21,5 +22,9 @@ exports.use = function () {
             }
         }
     };
+
+    rewireWebpackExtension(options);
+
+    return options;
 
 };
