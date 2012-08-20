@@ -8,10 +8,6 @@ var Request = require("../../../../../lib/server/request/Request.class.js");
 
 describe("httpAdapter", function(){
 
-    afterEach(function() {
-        rewire.reset();
-    });
-
     var httpAdapter = rewire("../../../../../lib/server/transport/http/middleware/httpAdapter.js", false);
 
     it("should hand the request on to the httpAdapter if everything is alright", function (done) {
