@@ -19,8 +19,6 @@
         "nodeclass": "https://github.com/peerigon/nodeclass/tarball/v0.2.1",
         "nconf" : "0.5.1",
         "socket.io" : "0.x",
-        "browserify" : "1.x",
-        "browserify-bypass": "0.x",
         "jake" : "0.x",
         "cookie" : "0.x",
         "page": "1.x",
@@ -30,8 +28,8 @@
     "devDependencies": {
         "expect.js": "0.x",
         "mocha": "1.x",
-        "rewire": "0.x",
-        "nof5": "https://github.com/peerigon/nof5/tarball/0.2.1",
+        "rewire": "1.0.x",
+        "nof5": "https://github.com/peerigon/nof5/tarball/0.2.2",
         "zombie" : "1.x",
         "supertest" : "0.x"
     },
