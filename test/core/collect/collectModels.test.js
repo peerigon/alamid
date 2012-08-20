@@ -8,10 +8,6 @@ var expect = require("expect.js"),
 
 describe("collectModels", function () {
 
-    afterEach(function () {
-        rewire.reset();
-    });
-
     it("should collect appropriately and return urls and paths for the services", function () {
 
         var expectedModels = {

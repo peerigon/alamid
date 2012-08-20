@@ -8,10 +8,6 @@ var expect = require("expect.js"),
 
 describe("collectSchemas", function () {
 
-    afterEach(function () {
-        rewire.reset();
-    });
-
     it("should collect appropriately, extend schemas and return paths to the defined schemas", function () {
 
         var expectedSchemas = {

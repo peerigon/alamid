@@ -27,7 +27,4 @@ describe("onRequest", function(){
         });
     });
 
-    after(function() {
-        rewire.reset();
-    });
 });

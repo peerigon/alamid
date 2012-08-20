@@ -8,10 +8,6 @@ var expect = require("expect.js"),
 
 describe("collectServices", function () {
 
-    afterEach(function () {
-        rewire.reset();
-    });
-
     it("should collect appropriately and return required modules for server-services", function () {
 
         var expectedServices = {
