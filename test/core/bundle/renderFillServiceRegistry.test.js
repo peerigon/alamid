@@ -26,7 +26,6 @@ describe("renderFillServiceRegistry", function () {
 
     it("should throw no error", function () {
         var src = renderFillServiceRegistry(servicesPath);
-        console.log("src", src);
         vm.runInNewContext(src, sandbox);
     });
 
