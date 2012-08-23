@@ -19,15 +19,14 @@ describe("renderFillServiceRegistry", function () {
                     };
                 }
 
-                return function (callback) {
-                    callback(path); // returning the path for testing purposes
-                };
+                return require(path);
             },
             console: console
         };
 
     it("should throw no error", function () {
         var src = renderFillServiceRegistry(servicesPath);
+        console.log("src", src);
         vm.runInNewContext(src, sandbox);
     });
 
