@@ -575,6 +575,8 @@ describe("Model", function() {
 
         describe("Statics", function(){
 
+            //TODO write test for client & Server
+            //assumes client at the moment
             var Model,
                 services,
                 mockedOctocats;
@@ -595,7 +597,7 @@ describe("Model", function() {
                 ];
 
                 var testService = {
-                    readCollection : function(model, callback) {
+                    readCollection : function(remote, ids, params, callback) {
                         callback({ status : "success", data : mockedOctocats });
                     }
                 };
@@ -607,7 +609,7 @@ describe("Model", function() {
             });
 
             it("should call the static method and run the mocked readCollection-service", function(done) {
-                Octocat.find({ da : "ta" }, function(err, models) {
+                Octocat.find({},{ da : "ta" }, function(err, models) {
                     expect(err).to.be(null);
                     expect(models.get(0).get("name")).to.eql("Octo 1");
                     expect(models.get(1).get("name")).to.eql("Octo 2");
