@@ -10,7 +10,7 @@ describe("remoteRequest", function () {
         var remoteRequest;
 
         beforeEach(function(){
-            remoteRequest = rewire("../../lib/client/remoteRequest.js", false);
+            remoteRequest = rewire("../../lib/client/request.js");
         });
 
         describe("HTTP-Transport", function() {
@@ -25,7 +25,7 @@ describe("remoteRequest", function () {
                 };
 
                 remoteRequest.__set__("httpRequest", httpRequestMock);
-                remoteRequest.request("create", "services/blog", { da : "ta" }, function(response){
+                remoteRequest("create", "services/blog", { da : "ta" }, function(response){
                     done();
                 });
             });
@@ -64,7 +64,7 @@ describe("remoteRequest", function () {
                 //overwrite predefined mock!
                 remoteRequest.__set__("app", appMock);
 
-                remoteRequest.request("create", "services/blog", { da : "ta" }, function(response){
+                remoteRequest("create", "services/blog", { da : "ta" }, function(response){
                     done();
                 });
             });
@@ -134,9 +134,9 @@ describe("remoteRequest", function () {
                 return "blogpost/comment";
             };
 
-            var RemoteService = rewire("../../lib/client/RemoteService.js", false);
+            var RemoteService = rewire("../../lib/client/RemoteService.js");
             RemoteService.__set__("request",requestMock);
-            var serviceAdapter = new RemoteService.RemoteService("blogpost");
+            var serviceAdapter = new RemoteService("blogpost");
 
             serviceAdapter.update(true, model, function(response) {
                 done();
