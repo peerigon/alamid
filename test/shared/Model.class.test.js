@@ -575,49 +575,163 @@ describe("Model", function() {
 
         describe("Statics", function(){
 
-            //TODO write test for client & Server
-            //assumes client at the moment
-            var Model,
-                services,
-                mockedOctocats;
-
             before(function() {
-
-                mockedOctocats = [
-                    {
-                        id : 1,
-                        name : "Octo 1",
-                        age : 12
-                    },
-                    {
-                        id : 2,
-                        name : "Octo 2",
-                        age : 10
-                    }
-                ];
-
-                var testService = {
-                    readCollection : function(remote, ids, params, callback) {
-                        callback({ status : "success", data : mockedOctocats });
-                    }
-                };
-                services = require("../../lib/shared/registries/serviceRegistry.js");
-                services.getService =  function() {
-                    return testService;
-                };
-                Octocat = require("./Model/Octocat.class.js", false);
+                var config = require("../../lib/shared/config");
+                //we simulate client-services
+                config.isServer = false;
             });
 
-            it("should call the static method and run the mocked readCollection-service", function(done) {
-                Octocat.find({},{ da : "ta" }, function(err, models) {
-                    expect(err).to.be(null);
-                    expect(models.get(0).get("name")).to.eql("Octo 1");
-                    expect(models.get(1).get("name")).to.eql("Octo 2");
-                    done();
+            describe("#findById", function() {
+
+                var Model,
+                    services,
+                    mockedOctocats;
+
+                beforeEach(function() {
+
+                    mockedOctocats = [
+                        {
+                            id : 0,
+                            name : "Octo 0",
+                            age : 12
+                        },
+                        {
+                            id : 1,
+                            name : "Octo 1",
+                            age : 10
+                        },
+                        {
+                            id : 2,
+                            name : "Octo 2",
+                            age : 10
+                        }
+                    ];
+
+                    var testService = {
+                        read : function(remote, ids, callback) {
+                            callback({ status : "success", data : mockedOctocats[ids["octocat"]] });
+                        }
+                    };
+                    services = require("../../lib/shared/registries/serviceRegistry.js");
+                    services.getService =  function() {
+                        return testService;
+                    };
+                    Octocat = require("./Model/Octocat.class.js", false);
+                });
+
+                it("should work with findById(1, callback) ", function(done) {
+                    Octocat.findById(1, function(err, model) {
+                        expect(err).to.be(null);
+                        expect(model.get("name")).to.eql("Octo 1");
+                        done();
+                    });
+                });
+
+                it("should work with findById(false, id, callback) ", function(done) {
+                    Octocat.findById(false, 0, function(err, model) {
+                        expect(err).to.be(null);
+                        expect(model.get("name")).to.eql("Octo 0");
+                        done();
+                    });
+                });
+
+                it("should work with findById({}, id, callback) ", function(done) {
+                    Octocat.findById({}, 2, function(err, model) {
+                        expect(err).to.be(null);
+                        expect(model.get("name")).to.eql("Octo 2");
+                        done();
+                    });
+                });
+
+                it("should work with findById(true, {}, id, callback) ", function(done) {
+                    Octocat.findById(true, {}, 2, function(err, model) {
+                        expect(err).to.be(null);
+                        expect(model.get("name")).to.eql("Octo 2");
+                        done();
+                    });
+                });
+
+                it("should append the parent ids to the octocat ", function(done) {
+                    Octocat.findById({ "group" : 2}, 1, function(err, model) {
+                        expect(err).to.be(null);
+                        expect(model.get("name")).to.eql("Octo 1");
+                        expect(model.getParentId("group")).to.eql(2);
+                        done();
+                    });
+                });
+            });
+
+            describe("#find", function() {
+                var Model,
+                    services,
+                    mockedOctocats;
+
+                beforeEach(function() {
+
+                    mockedOctocats = [
+                        {
+                            id : 1,
+                            name : "Octo 1",
+                            age : 12
+                        },
+                        {
+                            id : 2,
+                            name : "Octo 2",
+                            age : 10
+                        }
+                    ];
+
+                    var testService = {
+                        readCollection : function(remote, ids, params, callback) {
+                            callback({ status : "success", data : mockedOctocats });
+                        }
+                    };
+                    services = require("../../lib/shared/registries/serviceRegistry.js");
+                    services.getService =  function() {
+                        return testService;
+                    };
+                    Octocat = require("./Model/Octocat.class.js", false);
+                });
+
+                it("should call the static method and run the mocked readCollection-service", function(done) {
+                    Octocat.find({},{ da : "ta" }, function(err, models) {
+                        expect(err).to.be(null);
+                        expect(models.get(0).get("name")).to.eql("Octo 1");
+                        expect(models.get(1).get("name")).to.eql("Octo 2");
+                        done();
+                    });
+                });
+
+                it("should accept remote as first argument", function(done) {
+                    Octocat.find(true, {},{ da : "ta" }, function(err, models) {
+                        expect(err).to.be(null);
+                        expect(models.get(0).get("name")).to.eql("Octo 1");
+                        expect(models.get(1).get("name")).to.eql("Octo 2");
+                        done();
+                    });
+                });
+
+                it("should accept remote as first argument when called with three arguments ", function(done) {
+                    Octocat.find(false,{ da : "ta" }, function(err, models) {
+                        expect(err).to.be(null);
+                        expect(models.get(0).get("name")).to.eql("Octo 1");
+                        expect(models.get(1).get("name")).to.eql("Octo 2");
+                        done();
+                    });
+                });
+
+                it("should accept requests without ids and remote as arguments", function(done) {
+                    Octocat.find({ da : "ta" }, function(err, models) {
+                        expect(err).to.be(null);
+                        expect(models.get(0).get("name")).to.eql("Octo 1");
+                        expect(models.get(1).get("name")).to.eql("Octo 2");
+                        done();
+                    });
                 });
             });
         });
     });
+
 
     describe("Model-Loader (Model-Caching)", function(){
 
