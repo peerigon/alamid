@@ -88,10 +88,11 @@ describe("remoteRequest", function () {
             }
         };
 
-        var remoteRequest = require("../../lib/client/remoteRequest.js");
+        var RemoteService = require("../../lib/client/RemoteService.js"),
+            request = require("../../lib/client/request.js");
 
-        it("should return a valid remoteService", function() {
-            var serviceAdapter = new remoteRequest.RemoteService("blogpost");
+        it("should return a valid RemoteService", function() {
+            var serviceAdapter = new RemoteService("blogpost");
             expect(serviceAdapter.read).to.be.a("function");
             expect(serviceAdapter.create).to.be.a("function");
             expect(serviceAdapter.update).to.be.a("function");
@@ -106,9 +107,9 @@ describe("remoteRequest", function () {
                 callback();
             };
 
-            var remoteRequest = rewire("../../lib/client/remoteRequest.js", false);
-            remoteRequest.__set__("request",requestMock);
-            var serviceAdapter = new remoteRequest.RemoteService("blogpost");
+            var RemoteService = rewire("../../lib/client/RemoteService.js", false);
+            RemoteService.__set__("request",requestMock);
+            var serviceAdapter = new RemoteService("blogpost");
 
             serviceAdapter.create(true, model, function(response) {
                 done();
@@ -133,9 +134,9 @@ describe("remoteRequest", function () {
                 return "blogpost/comment";
             };
 
-            var remoteRequest = rewire("../../lib/client/remoteRequest.js", false);
-            remoteRequest.__set__("request",requestMock);
-            var serviceAdapter = new remoteRequest.RemoteService("blogpost");
+            var RemoteService = rewire("../../lib/client/RemoteService.js", false);
+            RemoteService.__set__("request",requestMock);
+            var serviceAdapter = new RemoteService.RemoteService("blogpost");
 
             serviceAdapter.update(true, model, function(response) {
                 done();
