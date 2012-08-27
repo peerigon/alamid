@@ -312,7 +312,7 @@ describe("runService", function(){
                     if(path === "blogpost"){
                         return {
                             "create" : function(ids, model, callback){
-                                callback({"status" : "success", "errorMessage" : "my dummy error", "data" : { "da" : "ta" }});
+                                callback({"status" : "success", "message" : "my dummy error", "data" : { "da" : "ta" }});
                             },
                             "update" : function(ids, model, callback){
                                 callback();
