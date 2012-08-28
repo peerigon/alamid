@@ -8,20 +8,28 @@ var path = require("path"),
 
 var runTestServer = require("../setup/runTestServer.js");
 
+var createFakePackageJSON = require("../helpers/createFakePackageJSON.js"),
+    removeFakePackageJSON = require("../helpers/removeFakePackageJSON.js");
+
 //compile classes if found
 describe("WebsocketTransport", function() {
 
     var serverInstance;
 
     before(function(done) {
-        runTestServer({
-            "appDir" : path.resolve(__dirname, "../setup/testApp")
-        }, function(srvInstance) {
-            serverInstance = srvInstance;
-            done();
+            createFakePackageJSON(function() {
+                runTestServer({
+                    "appDir" : path.resolve(__dirname, "../setup/testApp")
+                }, function(srvInstance) {
+                    serverInstance = srvInstance;
+                    done();
+                });
+            });
         });
-    });
 
+    after(function(done) {
+        removeFakePackageJSON(done);
+    });
 
     describe("#Websocket Requesting", function() {
         before(function(done) {
@@ -57,7 +65,6 @@ describe("WebsocketTransport", function() {
                     expect(res.status).to.be("success");
                     //done();
                 };
-
             }
         });
     });

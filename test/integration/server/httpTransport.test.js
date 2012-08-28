@@ -9,7 +9,7 @@ var createFakePackageJSON = require("../helpers/createFakePackageJSON.js"),
     removeFakePackageJSON = require("../helpers/removeFakePackageJSON.js");
 
 
-describe("handleHttp", function() {
+describe("httpTransport", function() {
 
     before(function(done) {
         createFakePackageJSON(done);
@@ -19,18 +19,15 @@ describe("handleHttp", function() {
         removeFakePackageJSON(done);
     });
 
-
     describe("#Basic Requesting", function() {
 
         var app;
 
         before(function() {
-
             app = runTestServer({
                 appDir : path.resolve(__dirname, "../setup/testApp"),
                 useBundling : false
             });
-
         });
 
         describe("## INDEX.html, Landing-Request", function(){

@@ -6,6 +6,9 @@ var path = require("path"),
     http = require("http"),
     Browser = require("zombie");
 
+var createFakePackageJSON = require("../helpers/createFakePackageJSON.js"),
+    removeFakePackageJSON = require("../helpers/removeFakePackageJSON.js");
+
 var runTestServer = require("../setup/runTestServer.js");
 
 //compile classes if found
@@ -14,12 +17,18 @@ describe("WebsocketTransport", function() {
     var serverInstance;
 
     before(function(done) {
-        runTestServer({
-            "appDir" : path.resolve(__dirname, "../setup/testApp")
-        }, function(srvInstance) {
-            serverInstance = srvInstance;
-            done();
+        createFakePackageJSON(function() {
+            runTestServer({
+                "appDir" : path.resolve(__dirname, "../setup/testApp")
+            }, function(srvInstance) {
+                serverInstance = srvInstance;
+                done();
+            });
         });
+    });
+
+    after(function(done) {
+        removeFakePackageJSON(done);
     });
 
     describe("#Basic Requesting", function() {

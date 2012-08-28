@@ -6,7 +6,8 @@ var path = require("path"),
     http = require("http"),
     Browser = require("zombie");
 
-var runTestServer = require("../setup/runTestServer.js");
+var createFakePackageJSON = require("../helpers/createFakePackageJSON.js"),
+    removeFakePackageJSON = require("../helpers/removeFakePackageJSON.js");
 
 function httpRequest(reqPath, callback) {
     http.get({host:'localhost', port:9000, path: reqPath, agent:false}, function (res) {
@@ -24,6 +25,17 @@ function httpRequest(reqPath, callback) {
 }
 
 describe("Session Support", function() {
+
+    var runTestServer;
+
+    before(function(done) {
+        runTestServer = require("../setup/runTestServer.js");
+        createFakePackageJSON(done);
+    });
+
+    after(function(done) {
+        removeFakePackageJSON(done);
+    });
 
     describe("#Websockets", function() {
 
