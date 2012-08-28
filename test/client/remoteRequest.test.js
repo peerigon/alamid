@@ -52,7 +52,9 @@ describe("remoteRequest", function () {
                         expect(callback).to.be.a("function");
                         callback();
                     },
-                    connected : true
+                    socket : {
+                        connected : true
+                    }
                 };
 
                 var httpRequestMock = function(method, url, modelData, callback) {
