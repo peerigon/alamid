@@ -5,7 +5,7 @@ var path = require("path"),
 
 function runTestServer(configEnv, callback) {
 
-    var cmd = "node " + path.resolve(__dirname, "./testServer.js"),
+    var cmd = "node " + path.resolve(__dirname, "./testApp/app/init.server.js"),
         testSrv;
 
     testSrv = exec(cmd, { "env" : configEnv },

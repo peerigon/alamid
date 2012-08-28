@@ -1,11 +1,15 @@
 "use strict";
 
+var _ = require("underscore");
+
 function runTestServer(config) {
 
-    process.env.appDir = config.appDir;
-    //to be required here after we set the config
-    var bootstrap = require("../../../lib/server/bootstrap.server.js");
-    return bootstrap();
+    process.env = _.extend(process.env, config);
+    var alamid = require("alamid");
+
+    //start the server
+    return alamid.startServer();
+
 }
 
 module.exports = runTestServer;

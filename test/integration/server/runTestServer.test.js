@@ -2,18 +2,39 @@
 
 var path = require("path"),
     expect = require("expect.js"),
-    request = require("supertest");
-
-var runTestServerNew = require("../setup/testServerEmbeddable.js");
+    request = require("supertest"),
+    _ = require("underscore"),
+    fs = require("fs"),
+    fshelpers = require("fshelpers"),
+    pathUtil = require("path");
 
 describe("handleHttp", function() {
 
-    describe("#Basic Requesting", function() {
+    var runTestServerNew;
+
+
+    before(function () {
+        fshelpers.makeDirSync(pathUtil.resolve(__dirname, "../setup/testApp/node_modules"));
+        fs.symlinkSync(pathUtil.resolve(__dirname, "../../../"), pathUtil.resolve(__dirname, "../setup/testApp/node_modules/alamid"));
+
+        runTestServerNew = require("../setup/testServerEmbeddable.js");
+
+    });
+
+    after(function () {
+        fs.unlinkSync(pathUtil.resolve(__dirname, "../setup/testApp/node_modules/alamid"));
+        fs.rmdirSync(pathUtil.resolve(__dirname, "../setup/testApp/node_modules"));
+    });
+
+   describe("#Basic Requesting", function() {
 
         var app;
 
         before(function() {
-            app = runTestServerNew({ appDir : path.resolve(__dirname, "../setup/testApp")});
+            app = runTestServerNew({
+                appDir : path.resolve(__dirname, "../setup/testApp"),
+
+            });
         });
 
         describe("## INDEX.html, Landing-Request", function(){
@@ -57,12 +78,12 @@ describe("handleHttp", function() {
             });
         });
 
-        describe("## /bootstrap.js", function(){
-            it("should return the bootstrap-file", function (done) {
+        describe("## Statics", function(){
+            it("should return the style-file", function (done) {
                 this.timeout(100000);
                 request(app)
-                    .get('/bootstrap.js')
-                    .expect(200,/bootstrap/, done);
+                    .get('/statics/style.css')
+                    .expect(200, done);
             });
         });
 

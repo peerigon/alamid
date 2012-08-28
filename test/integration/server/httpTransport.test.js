@@ -5,15 +5,32 @@ var path = require("path"),
     request = require("supertest");
 
 var runTestServer = require("../setup/testServerEmbeddable.js");
+var createFakePackageJSON = require("../helpers/createFakePackageJSON.js"),
+    removeFakePackageJSON = require("../helpers/removeFakePackageJSON.js");
+
 
 describe("handleHttp", function() {
+
+    before(function(done) {
+        createFakePackageJSON(done);
+    });
+
+    after(function(done) {
+        removeFakePackageJSON(done);
+    });
+
 
     describe("#Basic Requesting", function() {
 
         var app;
 
         before(function() {
-            app = runTestServer({ appDir : path.resolve(__dirname, "../setup/testApp")});
+
+            app = runTestServer({
+                appDir : path.resolve(__dirname, "../setup/testApp"),
+                useBundling : false
+            });
+
         });
 
         describe("## INDEX.html, Landing-Request", function(){
@@ -40,29 +57,12 @@ describe("handleHttp", function() {
             });
         });
 
-        describe("## /pages/ Request-Handling", function() {
-
-            it("should return the page-javascript if page exists", function (done) {
-                this.timeout(100000);
-                request(app)
-                    .get('/pages/blog.js')
-                    .expect(200,/blog.js/, done);
-            });
-
-            it("should return not-found if page-javascript does not exist", function (done) {
-                this.timeout(100000);
-                request(app)
-                    .get('/pages/notThere.js')
-                    .expect(404,/Not found/, done);
-            });
-        });
-
-        describe("## /bootstrap.js", function(){
+        describe("## /app.js", function(){
             it("should return the bootstrap-file", function (done) {
                 this.timeout(100000);
                 request(app)
-                    .get('/bootstrap.js')
-                    .expect(200,/bootstrap/, done);
+                    .get('/app.js')
+                    .expect(200, done);
             });
         });
 
