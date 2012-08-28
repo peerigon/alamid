@@ -20,4 +20,4 @@ var Push = new Class({
     }
 });
 
-module.exports = PushSchema;
+module.exports = Push;
