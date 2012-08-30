@@ -100,7 +100,7 @@ describe("Response", function() {
             expect(resBody.message).to.be(undefined);
         });
 
-        it("should return data and status if status = fail", function() {
+        it("should return data and status and maybe message if status = fail", function() {
 
             var testData = { "baaanschi" : "the dog"};
 
@@ -110,7 +110,6 @@ describe("Response", function() {
             var resBody = myResponse.getResBody();
             expect(resBody.status).to.be("fail");
             expect(resBody.data).to.eql(testData);
-            expect(resBody.message).to.be(undefined);
         });
 
         it("should return message and status if status = error", function() {
