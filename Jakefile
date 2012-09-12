@@ -84,7 +84,7 @@ desc('Test all server files');
 task('test-integration', function () {
 
     var list = new jake.FileList();
-    list.include('test/integration/**.test.js');
+    list.include('test/integration/**/*.test.js');
 
     var cmd = "mocha -c -R spec " + list.join(" ") + " --mode testing";
 
@@ -96,9 +96,9 @@ task('test-integration', function () {
 task('test-all', function() {
 
     var list = new jake.FileList();
-    list.include('test/server/**.test.js');
-    list.include('test/core/**.test.js');
-    list.include('test/shared/**.test.js');
+    list.include('test/server/**/*.test.js');
+    list.include('test/core/**/*.test.js');
+    list.include('test/shared/**/*.test.js');
 
     var cmd = "mocha -c -R spec " + list.join(" ") + " --mode testing";
 
@@ -110,9 +110,9 @@ task('test-all', function() {
 task('test-jenkins', function() {
 
     var list = new jake.FileList();
-    list.include('test/server/**.test.js');
-    list.include('test/core/**.test.js');
-    list.include('test/shared/**.test.js');
+    list.include('test/server/**/*.test.js');
+    list.include('test/core/**/*.test.js');
+    list.include('test/shared/**/*.test.js');
 
     var cmd = "mocha -R xunit " + list.join(" ") + " --mode testing > xunit.xml";
 
