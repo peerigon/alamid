@@ -22,7 +22,7 @@
         "jake" : "0.x",
         "cookie" : "0.x",
         "page": "1.x",
-        "webpack": "0.5.8",
+        "webpack": "0.6.0",
         "raw-loader": "0.x"
     },
     "devDependencies": {
