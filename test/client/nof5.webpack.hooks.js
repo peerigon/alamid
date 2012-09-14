@@ -2,7 +2,7 @@
 
 var resolveFilename = require("../../lib/core/bundle/resolveFilename.js"),
     nodeclassLoader = require("nodeclass").bundlers.webpack,
-    rewireWebpackExtension= require("rewire").bundlers.webpack,
+    rewireWebpackExtension = require("rewire").bundlers.webpack,
     path = require("path");
 
 exports.use = function () {
