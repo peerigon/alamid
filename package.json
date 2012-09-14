@@ -29,7 +29,7 @@
         "expect.js": "0.x",
         "mocha": "1.x",
         "rewire": "1.0.x",
-        "nof5": "https://github.com/peerigon/nof5/tarball/0.2.2",
+        "nof5": "nof5",
         "zombie" : "1.x",
         "supertest" : "0.x"
     },
