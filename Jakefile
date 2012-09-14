@@ -114,7 +114,7 @@ task('test-jenkins', function() {
     list.include('test/core/**/*.test.js');
     list.include('test/shared/**/*.test.js');
 
-    var cmd = "mocha -R xunit " + list.join(" ") + " --mode testing > xunit.xml";
+    var cmd = "mocha -R xunit-file " + list.join(" ") + " --mode testing --ignore-leaks";
 
     jake.exec(cmd, function () {
         complete();
