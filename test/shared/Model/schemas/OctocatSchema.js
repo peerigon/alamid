@@ -24,6 +24,7 @@ var OctocatSchema = {
             return true;
         }
     },
+    birthday: Date,
     location : String
 };
 

@@ -6,7 +6,7 @@ var expect = require("expect.js"),
     Collection = require("../../lib/shared/Collection.class.js"),
     ModelCollection = require("../../lib/shared/ModelCollection.class.js"),
     Model = require("../../lib/shared/Model.class.js"),
-    OctocatModel = require("./Model/Octocat.class.js");
+    OctocatModel = require("./Model/Octocat.client.class.js");
 
 
 
