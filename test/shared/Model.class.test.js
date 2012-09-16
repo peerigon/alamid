@@ -745,7 +745,7 @@ describe("Model", function() {
             modelCache.get = clientModelCache.get;
             modelCache.add = clientModelCache.add;
 
-            Model = require("../../lib/shared/Model.class.js", false);
+            Model = require("../../lib/shared/Model.class.js");
         });
 
 
