@@ -1,7 +1,7 @@
 "use strict";
 
 var clientModelCache = require("../../lib/client/modelCache.client.js");
-var serverModelCache = require("../../lib/server/modelCache.server.js");
+
 var Octocat = require("./Model/Octocat.class.js");
 
 var expect = require("expect.js");
