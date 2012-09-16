@@ -9,27 +9,31 @@
 
         nof5.connect(function onConnect(socket) {
 
-            jQuery("#mocha").empty();
+            var runner;
 
             mocha.setup({
                 ui:"bdd",
                 globals: [
                     "io",
-                    "getInterface", //getInterface seems to be a global function from mocha ^^
+                    //"getInterface", //getInterface seems to be a global function from mocha ^^
                     "stats",
                     "report"
                 ]
             });
 
-            mocha.Runner.prototype.on("suite", function (suite) {
+            nof5.enableTests();
+
+            runner = mocha.run();
+
+            runner.on("suite", function (suite) {
                 if(suite.root) {
                     socket.emit("start", new Date());
                 }
             });
 
-            mocha.Runner.prototype.on("fail", function onFail(test) {
+            runner.on("fail", function onFail(test) {
 
-                mocha.Runner.prototype.once("test end", function onTestEnd() {
+                runner.once("test end", function onTestEnd() {
 
                     var error = {
                         "suite": test.parent.title,
@@ -41,7 +45,7 @@
                 });
             });
 
-            mocha.Runner.prototype.on("suite end", function onSuiteEnd(suite) {
+            runner.on("suite end", function onSuiteEnd(suite) {
                 if (suite.root) {
                     socket.emit("end", new Date());
                     mocha.Runner.prototype.removeAllListeners("test end");
@@ -49,15 +53,13 @@
             });
 
             socket.on("disconnect", function onDisconnect() {
-                mocha.Runner.prototype.removeAllListeners();
+                runner.removeAllListeners();
             });
 
             socket.once("f5", function onf5() {
                 location.reload();
             });
 
-            nof5.enableTests();
-            mocha.run();
         });
     });
 
