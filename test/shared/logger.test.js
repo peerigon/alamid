@@ -1,13 +1,19 @@
 "use strict";
 
 var expect = require("expect.js"),
-    clientLogger = require("../../lib/client/logger.client.js");
+    clientLogger = require("../../lib/client/logger.client.js"),
+    sharedLogger = require("../../lib/shared/logger.js");
+
 
 describe("Logger", function() {
 
+    var logger;
+
     describe("#onClient", function() {
 
-        var logger = clientLogger;
+        beforeEach(function () {
+            logger = clientLogger;
+        });
 
         it("should return the different log-types", function() {
             expect(logger.get("server")).not.to.be(undefined);
@@ -29,7 +35,9 @@ describe("Logger", function() {
 
     describe("#onServer", function() {
 
-        var logger = require("../../lib/shared/logger.js", false);
+        beforeEach(function () {
+            logger = sharedLogger;
+        });
 
         it("should return the different log-types", function() {
             expect(logger.get("server")).not.to.be(undefined);
