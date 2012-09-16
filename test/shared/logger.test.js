@@ -9,6 +9,7 @@ describe("Logger", function() {
 
     var logger;
 
+    /*
     describe("#onClient", function() {
 
         beforeEach(function () {
@@ -56,4 +57,6 @@ describe("Logger", function() {
             expect(log.bullshit).to.be(undefined);
         });
     });
+    */
+
 });
