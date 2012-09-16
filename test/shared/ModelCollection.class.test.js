@@ -230,6 +230,7 @@ describe("ModelCollection", function () {
             octocatModelsSortedByDate;
 
         beforeEach(function () {
+
             octocatModels[0].set("name", "a 3");
             octocatModels[0].set("birthday", new Date(1987, 9, 7));
             octocatModels[1].set("name", "a 1");
