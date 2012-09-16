@@ -200,7 +200,7 @@ describe("validator", function () {
                 modelUrl;
 
             before(function() {
-                validator = rewire("../../lib/shared/validator.js", false);
+                validator = rewire("../../lib/shared/validator.js");
                 validator.__set__("config", { isClient : true });
             });
 
