@@ -1,11 +1,11 @@
 "use strict"; // run code in ES5 strict mode
 
 var Class = require("nodeclass").Class,
-    EventEmitter = require("../../../lib/shared/EventEmitter.class.js");
+    DisplayObject = require("../../../lib/client/DisplayObject.class.js");
 
 var PageMock = new Class({
 
-    Extends: EventEmitter,
+    Extends: DisplayObject,
 
     subPage: null,
 
@@ -15,6 +15,7 @@ var PageMock = new Class({
 
     init: function (params) {
         this.params = params;
+        this.Super("<div data-node='page'></div>");
     },
 
     emit: function () {
