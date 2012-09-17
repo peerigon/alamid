@@ -104,7 +104,7 @@ describe("handleRequest", function() {
 
             middleware.setMiddleware("services", servicesMiddleware);
 
-            handleRequest = rewire("../../../lib/server/request/handleRequest.js", false);
+            handleRequest = rewire("../../../lib/server/request/handleRequest.js");
             handleRequest.__set__("getMiddleware", middleware.getMiddleware);
             handleRequest.__set__("sanitizeData", function(req, res, next) { next(); });
 
