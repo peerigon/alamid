@@ -3,7 +3,7 @@
 var expect = require("expect.js"),
     rewire = require("rewire"),
     App = rewire("../../lib/client/App.class.js"),
-    pageJS = require("page"),
+    pageJS = require("../../lib/client/helpers/page.js"),
     historyAdapter = require("../../lib/client/helpers/historyAdapter.js"),
     Page = require("../../lib/client/Page.class.js"),
     PageMock = require("./mocks/PageMock.class.js"),
@@ -21,25 +21,38 @@ function expectError(Constructor) {
 
 describe("App", function () {
 
-    var app;
+    var app,
+        $dataNodePageDiv;
 
     before(function () {
-        PageMock.Extends = Page;    // tricks the instanceof check in App.init()
         App.__set__({
             PageLoader: PageLoaderMock
         });
+
+        jQuery("body").append("<div data-node='page' style='display:none;'></div>");
+        $dataNodePageDiv = jQuery("body").find("[data-node=page]").last();
+    });
+
+    after(function () {
+        $dataNodePageDiv.remove();
     });
 
     beforeEach(function () {
+
         pages.blog = new PageMock();
         pages.blog.name = "Blog";   // for debugging purposes
+
         pages.posts = new PageMock();
         pages.posts.name = "Posts";
+
         pages.home = new PageMock();
         pages.home.name = "Home";
+
         pages.about = new PageMock();
         pages.about.name = "About";
+
         app = new App(PageMock);
+
         pageJS.callbacks = [];  // removes previous routes
     });
 
@@ -77,8 +90,6 @@ describe("App", function () {
                 // This route handler is needed so pageJS doesn't change the window.location
             });
 
-            app.start();
-
             app.dispatchRoute("/blog/posts");
 
             expect(window.location.pathname).to.be("/blog/posts");
@@ -87,30 +98,29 @@ describe("App", function () {
         it("should execute the registered route handlers in the given order", function () {
             var called = [];
 
-            app.addRoute("*", function (ctx, next) {
-                called.push("*1");
-                next();
-            });
-            app.addRoute(/^\/bl/i, function (ctx, next) {
-                called.push("/bl");
-                next();
-            });
-            app.addRoute("/blog", function (ctx, next) {
-                throw new Error("This handler should not be triggered");
-            });
-            app.addRoute("/blog/*", function (ctx, next) {
-                called.push("/blog/*");
-                next();
-            });
-            app.addRoute("/blog/posts", function (ctx, next) {
-                called.push("/blog/posts");
-                next();
-            });
-            app.addRoute("*", function (ctx) {
-                called.push("*2");
-            });
-
-            app.start();
+            app
+                .addRoute("*", function (ctx, next) {
+                    called.push("*1");
+                    next();
+                })
+                .addRoute(/^\/bl/i, function (ctx, next) {
+                    called.push("/bl");
+                    next();
+                })
+                .addRoute("/blog", function (ctx, next) {
+                    throw new Error("This handler should not be triggered");
+                })
+                .addRoute("/blog/*", function (ctx, next) {
+                    called.push("/blog/*");
+                    next();
+                })
+                .addRoute("/blog/posts", function (ctx, next) {
+                    called.push("/blog/posts");
+                    next();
+                })
+                .addRoute("*", function (ctx) {
+                    called.push("*2");
+                });
 
             app.dispatchRoute("/blog/posts");
 
@@ -122,8 +132,6 @@ describe("App", function () {
                 pageURLs;
 
             app.addRoute("/blog/about", "blog/about");
-
-            app.start();
 
             app.dispatchRoute("/blog/about");
 
