@@ -4,7 +4,7 @@ var expect = require("expect.js"),
     is = require("nodeclass").is,
     rewire = require("rewire");
 
-describe("remoteRequest", function () {
+describe("request", function () {
     describe("request", function() {
 
         var remoteRequest;
