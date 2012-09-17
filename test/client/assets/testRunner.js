@@ -48,7 +48,7 @@
             runner.on("suite end", function onSuiteEnd(suite) {
                 if (suite.root) {
                     socket.emit("end", new Date());
-                    mocha.Runner.prototype.removeAllListeners("test end");
+                    runner.prototype.removeAllListeners("test end");
                 }
             });
 
