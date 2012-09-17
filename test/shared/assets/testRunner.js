@@ -15,7 +15,6 @@
                 ui:"bdd",
                 globals: [
                     "io",
-                    //"getInterface", //getInterface seems to be a global function from mocha ^^
                     "stats",
                     "report"
                 ]
