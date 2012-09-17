@@ -109,7 +109,7 @@ describe("remoteRequest", function () {
                 callback();
             };
 
-            var RemoteService = rewire("../../lib/client/RemoteService.js", false);
+            var RemoteService = rewire("../../lib/client/RemoteService.js");
             RemoteService.__set__("request",requestMock);
             var serviceAdapter = new RemoteService("blogpost");
 
