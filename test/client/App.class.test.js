@@ -82,25 +82,26 @@ describe("App", function () {
 
     describe(".dispatchRoute()", function () {
 
-        var state;
+        var url;
 
         before(function () {
-            state = window.location.pathname + window.location.search;
+            url = window.location.pathname + window.location.search;
         });
 
         after(function () {
-            app.stop();
-            historyAdapter.pushState(null, null, state);
+            historyAdapter.replaceState(null, null, url);
         });
 
         afterEach(function () {
-            app.stop();
+            pageJS.stop();
         });
 
         it("should call automatically .start() with {dispatch: false} if it was not called manually", function () {
 
             var isStartCalled = false,
-                startParams;
+                startParams,
+                //pageJS muss be saved, cause it behaves like a singleton
+                startBackup = pageJS.start;
 
             App.__set__(
                 "pageJS.start",
@@ -119,8 +120,7 @@ describe("App", function () {
             expect(isStartCalled).to.be(true);
             expect(startParams.dispatch).to.be(false);
 
-            App.__set__("pageJS.start", pageJS.start);
-
+            App.__set__("pageJS.start", startBackup);
         });
 
         it("should modify the history state", function () {
@@ -136,19 +136,24 @@ describe("App", function () {
 
     describe(".addRoute()", function () {
 
-        var state;
+        var url,
+            pushStateBackup = historyAdapter.pushState,
+            replaceStateBackup = historyAdapter.replaceState;;
 
         before(function () {
-            state = window.location.pathname + window.location.search;
+            url = window.location.pathname + window.location.search;
+            historyAdapter.pushState = function () { /* do nothing */};
+            historyAdapter.replaceState = function () { /* do nothing */};
         });
 
         after(function () {
-            app.stop();
-            historyAdapter.pushState(null, null, state);
+            historyAdapter.pushState = pushStateBackup;
+            historyAdapter.replaceState = replaceStateBackup;
+            historyAdapter.replaceState(null, null, url);
         });
 
         afterEach(function () {
-            app.stop();
+            pageJS.stop();
         });
 
         it("should execute the registered route handlers in the given order", function () {
@@ -231,19 +236,19 @@ describe("App", function () {
         beforeEach(function () {
             app.start();
             pages.main = app.getMainPage();
+            pages.main.setSubPage(pages.home);
+            pages.home.setSubPage(pages.about);
         });
 
         afterEach(function () {
-            app.stop();
+            pageJS.stop();
         });
 
         it("should return an array with the main page at the beginning", function () {
-            expect(app.getCurrentPages()).to.eql([pages.main]);
+            expect(app.getCurrentPages()[0]).to.eql(pages.main);
         });
 
         it("should return an array with the current page hierarchy", function () {
-            pages.main.setSubPage(pages.home);
-            pages.home.setSubPage(pages.about);
             expect(app.getCurrentPages()).to.eql([pages.main, pages.home, pages.about]);
         });
 
@@ -259,7 +264,7 @@ describe("App", function () {
         });
 
         afterEach(function () {
-            app.stop();
+            pageJS.stop();
         });
 
         it("should emit 'beforePageChange' first and than 'beforeLeave' on every sub page that will be changed from bottom to top", function () {
@@ -281,6 +286,22 @@ describe("App", function () {
             app.changePage("blog", {});
 
             expect(emitted).to.eql(["app", "about", "home"]);
+        });
+
+        it("should pass an object on 'beforePageChange' including .preventDefault(), toPageURL, pageParams", function (done) {
+
+            var toPageURL = "/blog/posts",
+                pageParams = { "key": "value" };
+
+            app.on("beforePageChange", function (event) {
+                expect(event.preventDefault).to.be.a(Function);
+                expect(event.toPageURL).to.equal(toPageURL);
+                expect(event.pageParams).to.equal(pageParams);
+                done();
+            });
+
+            app.changePage(toPageURL, pageParams);
+
         });
 
         it("should immediately cancel the process when calling event.preventDefault()", function () {
