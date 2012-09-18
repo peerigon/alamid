@@ -2,38 +2,48 @@
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
-    App = rewire("../../lib/client/App.class.js"),
+    _ = require("underscore"),
+
     pageJS = require("../../lib/client/helpers/page.js"),
     historyAdapter = require("../../lib/client/helpers/historyAdapter.js"),
+
+    App = rewire("../../lib/client/App.class.js"),
+
     Page = require("../../lib/client/Page.class.js"),
     PageMock = require("./mocks/PageMock.class.js"),
-    PageLoaderMock = require("./mocks/PageLoaderMock.class.js"),
-    _ = require("underscore");
-
-var checkForTypeError = expectError(TypeError),
-    pages = {};
-
-function expectError(Constructor) {
-    return function (err) {
-        expect(err.constructor).to.be(Constructor);
-    };
-}
+    PageLoaderMock = require("./mocks/PageLoaderMock.class.js");
 
 describe("App", function () {
 
     var app,
+        pages,
+        checkForTypeError,
         $dataNodePageDiv;
 
     before(function () {
+
         App.__set__({
             PageLoader: PageLoaderMock
         });
 
+        pages = {};
+
+        checkForTypeError = expectError(TypeError);
+
+        function expectError(Constructor) {
+            return function (err) {
+                expect(err.constructor).to.be(Constructor);
+            };
+        }
+
+        //Fakes the index.html that is required to call App.start.
         jQuery("body").append("<div data-node='page' style='display:none;'></div>");
         $dataNodePageDiv = jQuery("body").find("[data-node=page]").last();
+
     });
 
     after(function () {
+        //Clean index.html fake.
         $dataNodePageDiv.remove();
     });
 
@@ -58,7 +68,7 @@ describe("App", function () {
 
     describe(".init()", function () {
 
-        it("should fail when calling without a page class", function () {
+        it("should fail with an TypeError when calling without a Page class", function () {
             expect(function () {
                 app = new App({});
             }).to.throwException(checkForTypeError);
@@ -67,9 +77,10 @@ describe("App", function () {
         it("should throw no exception when calling with a page", function () {
             app = new App(PageMock);
         });
+
     });
 
-    describe(".addRoute() / .dispatchRoute()", function () {
+    describe(".dispatchRoute()", function () {
 
         var state;
 
@@ -78,6 +89,7 @@ describe("App", function () {
         });
 
         after(function () {
+            app.stop();
             historyAdapter.pushState(null, null, state);
         });
 
@@ -85,14 +97,58 @@ describe("App", function () {
             app.stop();
         });
 
+        it("should call automatically .start() with {dispatch: false} if it was not called manually", function () {
+
+            var isStartCalled = false,
+                startParams;
+
+            App.__set__(
+                "pageJS.start",
+                function (params) {
+                    isStartCalled = true;
+                    startParams = params;
+                }
+            );
+
+            app = new App(PageMock);
+
+            app.addRoute("*", function () { /* do nothing */} );
+
+            app.dispatchRoute("/any/route");
+
+            expect(isStartCalled).to.be(true);
+            expect(startParams.dispatch).to.be(false);
+
+            App.__set__("pageJS.start", pageJS.start);
+
+        });
+
         it("should modify the history state", function () {
-            app.addRoute("*", function () {
-                // This route handler is needed so pageJS doesn't change the window.location
-            });
+            // This route handler is needed so pageJS doesn't change the window.location
+            app.addRoute("*", function () { /* do nothing */});
 
             app.dispatchRoute("/blog/posts");
 
             expect(window.location.pathname).to.be("/blog/posts");
+        });
+
+    });
+
+    describe(".addRoute()", function () {
+
+        var state;
+
+        before(function () {
+            state = window.location.pathname + window.location.search;
+        });
+
+        after(function () {
+            app.stop();
+            historyAdapter.pushState(null, null, state);
+        });
+
+        afterEach(function () {
+            app.stop();
         });
 
         it("should execute the registered route handlers in the given order", function () {
@@ -129,11 +185,13 @@ describe("App", function () {
 
         it("should work with a string as handler", function () {
             var pageLoader,
-                pageURLs;
+                pageURLs,
+                route = "/blog/about",
+                handler = "blog/about";
 
-            app.addRoute("/blog/about", "blog/about");
+            app.addRoute(route, handler);
 
-            app.dispatchRoute("/blog/about");
+            app.dispatchRoute(route);
 
             pageLoader = PageLoaderMock.instance;
             pageURLs = pageLoader.getPageURLs();
