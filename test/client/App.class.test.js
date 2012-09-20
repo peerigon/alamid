@@ -118,11 +118,11 @@ describe("App", function () {
                 startParams = params;
             };
 
-            app.addRoute("*", function () {
+            app.addRoute("blog", function () {
                 //do nothing
             });
 
-            app.dispatchRoute("/");
+            app.dispatchRoute("blog");
 
             expect(isStartCalled).to.be(true);
             expect(startParams.dispatch).to.be(false);
