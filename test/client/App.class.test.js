@@ -4,12 +4,10 @@ var expect = require("expect.js"),
     rewire = require("rewire"),
     _ = require("underscore"),
 
-    pageJS = require("../../lib/client/helpers/page.js"),
-    historyAdapter = require("../../lib/client/helpers/historyAdapter.js"),
+    pageJS = require("page"),
 
     App = rewire("../../lib/client/App.class.js"),
 
-    Page = require("../../lib/client/Page.class.js"),
     PageMock = require("./mocks/PageMock.class.js"),
     PageLoaderMock = require("./mocks/PageLoaderMock.class.js");
 
@@ -89,47 +87,48 @@ describe("App", function () {
         });
 
         after(function () {
-            historyAdapter.replaceState(null, null, url);
+            history.replaceState(null, null, url);
         });
 
         afterEach(function () {
             pageJS.stop();
         });
 
-        it("should call automatically .start() with {dispatch: false} if it was not called manually", function () {
-
-            var isStartCalled = false,
-                startParams,
-                //pageJS muss be saved, cause it behaves like a singleton
-                startBackup = pageJS.start;
-
-            App.__set__(
-                "pageJS.start",
-                function (params) {
-                    isStartCalled = true;
-                    startParams = params;
-                }
-            );
-
-            app = new App(PageMock);
-
-            app.addRoute("*", function () { /* do nothing */} );
-
-            app.dispatchRoute("/any/route");
-
-            expect(isStartCalled).to.be(true);
-            expect(startParams.dispatch).to.be(false);
-
-            App.__set__("pageJS.start", startBackup);
-        });
-
         it("should modify the history state", function () {
             // This route handler is needed so pageJS doesn't change the window.location
-            app.addRoute("*", function () { /* do nothing */});
+            app.addRoute("*", function () {
+                //do nothing
+            });
 
             app.dispatchRoute("/blog/posts");
 
             expect(window.location.pathname).to.be("/blog/posts");
+        });
+
+        it("should call automatically .start() with {dispatch: false} if it was not called manually", function () {
+
+            var isStartCalled = false,
+                startParams,
+            //pageJS muss be saved, cause it behaves like a singleton
+                pageJSStart = pageJS.start;
+
+            //Apply monkey patch to .start()
+            pageJS.start = function (params) {
+                isStartCalled = true;
+                startParams = params;
+            };
+
+            app.addRoute("*", function () {
+                //do nothing
+            });
+
+            app.dispatchRoute("/");
+
+            expect(isStartCalled).to.be(true);
+            expect(startParams.dispatch).to.be(false);
+
+            //Revert monkey patch .start()
+            pageJS.start = pageJSStart;
         });
 
     });
@@ -137,26 +136,39 @@ describe("App", function () {
     describe(".addRoute()", function () {
 
         var url,
-            pushStateBackup = historyAdapter.pushState,
-            replaceStateBackup = historyAdapter.replaceState;;
+            historyPushState,
+            historyPushStateMonkeyPatch = function () {
+                // do nothing
+            },
+            historyReplaceState,
+            historyReplaceStateMock = function () {
+                // do nothing
+            };
 
         before(function () {
             url = window.location.pathname + window.location.search;
-            historyAdapter.pushState = function () { /* do nothing */};
-            historyAdapter.replaceState = function () { /* do nothing */};
+
+            //backup
+            historyPushState = history.pushState;
+            historyReplaceState = history.replaceState;
+
+            //apply monkey patches to prevent modifications of history's state
+            history.pushState = historyPushStateMonkeyPatch;
+            history.replaceState = historyReplaceStateMock;
         });
 
         after(function () {
-            historyAdapter.pushState = pushStateBackup;
-            historyAdapter.replaceState = replaceStateBackup;
-            historyAdapter.replaceState(null, null, url);
+            //undo monkey patches
+            history.pushState = historyPushState;
+            history.replaceState = historyReplaceState;
+            history.replaceState(null, null, url);
         });
 
         afterEach(function () {
             pageJS.stop();
         });
 
-        it("should execute the registered route handlers in the given order", function () {
+        it("should execute the added route handlers in the given order", function () {
             var called = [];
 
             app
@@ -164,18 +176,18 @@ describe("App", function () {
                     called.push("*1");
                     next();
                 })
-                .addRoute(/^\/bl/i, function (ctx, next) {
+                .addRoute(/^bl/i, function (ctx, next) {
                     called.push("/bl");
                     next();
                 })
-                .addRoute("/blog", function (ctx, next) {
+                .addRoute("blog", function (ctx, next) {
                     throw new Error("This handler should not be triggered");
                 })
-                .addRoute("/blog/*", function (ctx, next) {
+                .addRoute("blog/*", function (ctx, next) {
                     called.push("/blog/*");
                     next();
                 })
-                .addRoute("/blog/posts", function (ctx, next) {
+                .addRoute("blog/posts", function (ctx, next) {
                     called.push("/blog/posts");
                     next();
                 })
@@ -183,7 +195,7 @@ describe("App", function () {
                     called.push("*2");
                 });
 
-            app.dispatchRoute("/blog/posts");
+            app.dispatchRoute("blog/posts");
 
             expect(called).to.eql(["*1", "/bl", "/blog/*", "/blog/posts", "*2"]);
         });
@@ -191,7 +203,7 @@ describe("App", function () {
         it("should work with a string as handler", function () {
             var pageLoader,
                 pageURLs,
-                route = "/blog/about",
+                route = "blog/about",
                 handler = "blog/about";
 
             app.addRoute(route, handler);
@@ -203,20 +215,20 @@ describe("App", function () {
             expect(pageURLs).to.eql(["blog", "blog/about"]);
         });
 
-        it("should pass the params", function () {
+        it("should pass the params from route", function () {
             var params,
                 pageLoader;
 
-            app.addRoute("/blog/:author/posts/:postId", function (ctx, next) {
+            app.addRoute("blog/:author/posts/:postId", function (ctx, next) {
                 expect(ctx.params.author).to.be("spook");
                 expect(ctx.params.postId).to.be("123");
                 next();
             });
-            app.addRoute("/blog/:author/posts/:postId", "blog/posts");
+            app.addRoute("blog/:author/posts/:postId", "blog/posts");
 
             app.start();
 
-            app.dispatchRoute("/blog/spook/posts/123");
+            app.dispatchRoute("blog/spook/posts/123");
 
             pageLoader = PageLoaderMock.instance;
             params = pageLoader.getParams();
@@ -226,8 +238,8 @@ describe("App", function () {
 
         it("should be chainable", function () {
             app
-                .addRoute("/blog/posts/:id", "blog/posts")
-                .addRoute("/blog/posts/author=:authorId", "blog/posts");
+                .addRoute("blog/posts/:id", "blog/posts")
+                .addRoute("blog/posts/author=:authorId", "blog/posts");
         });
     });
 
@@ -267,19 +279,70 @@ describe("App", function () {
             pageJS.stop();
         });
 
-        it("should emit 'beforePageChange' first and than 'beforeLeave' on every sub page that will be changed from bottom to top", function () {
+        it("should emit 'pageChange' if it has finished and pass an Object including .toPageURL and .pageParams", function (done) {
+
+            var toPageUrl = "blog",
+                pageParams = {};
+
+            app.on("pageChange", function onPageChange(event) {
+
+                expect(event.toPageURL).to.equal(toPageUrl);
+                expect(event.pageParams).to.equal(pageParams);
+
+                //.changePage has finished when blog-Page is the sub-Page of the main-Page
+                expect(pages.main.getSubPage()).to.equal(pages.blog);
+
+                done();
+
+            });
+
+            app.changePage(toPageUrl, pageParams);
+
+            PageLoaderMock.instance.getCallback()(null, [pages.blog]);
+        });
+
+        it("should be possible to change current page to MainPage with '/' as route", function (done) {
+
+            app.on("pageChange", function onPageChange() {
+                done();
+            });
+
+            app.changePage("/", {});
+
+            PageLoaderMock.instance.getCallback()();
+
+            //MainPage is always on index 0.
+            expect(app.getCurrentPages().length).to.equal(1);
+
+        });
+
+        it("should be possible to change current page to MainPage with '' as route", function (done) {
+
+            app.on("pageChange", function onPageChange() {
+                done();
+            });
+
+            app.changePage("", {});
+
+            PageLoaderMock.instance.getCallback()();
+
+            //MainPage is always on index 0.
+            expect(app.getCurrentPages().length).to.equal(1);
+        });
+
+        it("should emit 'beforePageChange' first and than 'beforeLeave' on every Sub-Ppage that will be changed from bottom to top", function () {
             var emitted = [];
 
-            pages.about.on("beforeLeave", function () {
+            pages.about.on("beforeLeave", function beforeLeaveAbout() {
                 emitted.push("about");
             });
-            pages.home.on("beforeLeave", function () {
+            pages.home.on("beforeLeave", function beforeLeaveHome() {
                 emitted.push("home");
             });
-            pages.main.on("beforeLeave", function () {
-                throw new Error("This event should never be emitted because the main page can be left");
+            pages.main.on("beforeLeave", function beforeLeaveMain() {
+                throw new Error("This event should never be emitted because the main page can't be left");
             });
-            app.on("beforePageChange", function () {
+            app.on("beforePageChange", function beforeChangePage() {
                 emitted.push("app");
             });
 
@@ -288,12 +351,12 @@ describe("App", function () {
             expect(emitted).to.eql(["app", "about", "home"]);
         });
 
-        it("should pass an object on 'beforePageChange' including .preventDefault(), toPageURL, pageParams", function (done) {
+        it("should pass an Object on 'beforePageChange' including .preventDefault(), .toPageURL and .pageParams", function (done) {
 
-            var toPageURL = "/blog/posts",
+            var toPageURL = "blog/posts",
                 pageParams = { "key": "value" };
 
-            app.on("beforePageChange", function (event) {
+            app.on("beforePageChange", function beforePageChange(event) {
                 expect(event.preventDefault).to.be.a(Function);
                 expect(event.toPageURL).to.equal(toPageURL);
                 expect(event.pageParams).to.equal(pageParams);
@@ -301,6 +364,26 @@ describe("App", function () {
             });
 
             app.changePage(toPageURL, pageParams);
+
+        });
+
+        it("should pass an Object on 'beforeLeave' including .preventDefault(), .toPageURL and .pageParams for each Page that will be leaved", function () {
+
+            var pageParams = { "key": "value" };
+
+            pages.about.on("beforeLeave", function beforeLeaveAbout(event) {
+                expect(event.preventDefault).to.be.a(Function);
+                expect(event.toPageURL).to.equal("/");
+                expect(event.pageParams).to.equal(pageParams);
+            });
+
+            pages.home.on("beforeLeave", function beforeLeaveAbout(event) {
+                expect(event.preventDefault).to.be.a(Function);
+                expect(event.toPageURL).to.equal("/");
+                expect(event.pageParams).to.equal(pageParams);
+            });
+
+            app.changePage("/", pageParams);
 
         });
 
