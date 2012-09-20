@@ -23,13 +23,13 @@
         "cookie" : "0.x",
         "page": "1.x",
         "webpack": "0.6.x",
-        "raw-loader": "0.x"
+        "raw-loader": "0.x",
+        "page": "1.3.x"
     },
     "devDependencies": {
         "expect.js": "0.x",
         "mocha": "1.x",
         "rewire": "1.0.x",
-        "nof5": "0.2.x",
         "zombie" : "1.x",
         "supertest" : "0.x"
     },
