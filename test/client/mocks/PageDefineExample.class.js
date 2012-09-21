@@ -1,7 +1,6 @@
 "use strict";
 
-var Page = require("../../../lib/client/Page.class.js"),
-    PageExample = require("./PageExample.class.js");
+var Page = require("../../../lib/client/Page.class.js");
 
 var PageDefineExample = Page.define({
 
