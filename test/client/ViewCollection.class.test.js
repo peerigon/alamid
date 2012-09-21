@@ -6,6 +6,7 @@ var expect = require("expect.js"),
     View = require("../../lib/client/View.class.js"),
     ViewExample = require("./mocks/ViewExample.class.js"),
     ViewCollection = require("../../lib/client/ViewCollection.class.js"),
+    ViewCollectionDefineExample = require("./mocks/ViewCollectionDefineExample.class.js"),
     ViewCollectionExampleWithTemplate = require("./mocks/ViewCollectionExampleWithTemplate.class.js"),
     CarLiElementView = require("./mocks/CarLiElementView.class.js"),
     ModelCollection = require("../../lib/shared/ModelCollection.class.js"),
@@ -86,6 +87,21 @@ describe("ViewCollection", function () {
             expect(function () {
                 viewCollection = new ViewCollection(CarLiElementView, "<ul></ul>");
             }).to.throwError();
+        });
+
+    });
+
+    describe(".define()", function () {
+
+        it("should return an instance of Page", function () {
+            expect(is(new ViewCollectionDefineExample()).instanceOf(ViewCollection)).to.equal(true);
+        });
+
+        it("should provide .executeDone() defined in descriptor", function (done) {
+
+            var definedView = new ViewCollectionDefineExample(done);
+
+            definedView.executeDone();
         });
 
     });
