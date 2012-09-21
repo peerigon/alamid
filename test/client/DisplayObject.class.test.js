@@ -7,6 +7,7 @@ var expect = require("expect.js"),
     compile = require("nodeclass").compile,
     DisplayObject = require("../../lib/client/DisplayObject.class.js"),
     DisplayObjectExample = require("./mocks/DisplayObjectExample.class.js"),
+    DisplayObjectDefineExample = require("./mocks/DisplayObjectDefineExample.class.js"),
     DOMNodeMocks = require("./mocks/DOMNodeMocks.js"),
     alamidjQuery = require("../../lib/client/helpers/jQuery.js");
 
@@ -36,20 +37,20 @@ describe("DisplayObject", function () {
         formDisplayObject = new DisplayObjectExample(formTemplate);
     });
 
-    //@TODO
-    /*
     describe(".define()", function () {
 
-        it("should return an instance of DisplayObject", function () {
-            expect(is(DisplayObject.define({
-                init: function () {
-                    this.Super("<p></p>");
-                }
-            })).instanceOf(DisplayObject)).to.equal(true);
+        it("should return an instance of Page", function () {
+            expect(is(new DisplayObjectDefineExample()).instanceOf(DisplayObject)).to.equal(true);
+        });
+
+        it("should provide .executeDone() defined in descriptor", function (done) {
+
+            var definedDisplayObject = new DisplayObjectDefineExample(done);
+
+            definedDisplayObject.executeDone();
         });
 
     });
-    */
 
     describe(".construct()", function () {
 
