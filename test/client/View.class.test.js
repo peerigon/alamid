@@ -11,6 +11,7 @@ var is = require("nodeclass").is,
     View = require("../../lib/client/View.class.js"),
     ViewExample = require("./mocks/ViewExample.class.js"),
     ViewExampleWithTemplate = require("./mocks/ViewExampleWithTemplate.class.js"),
+    ViewDefineExample = require("./mocks/ViewDefineExample.class.js"),
     DOMNodeMocks = require("./mocks/DOMNodeMocks.js");
 
 
@@ -39,6 +40,21 @@ describe("View", function () {
         it("should be possible to construct an extended View if it has a template declared", function (done) {
             view = new ViewExampleWithTemplate();
             done();
+        });
+
+    });
+
+    describe(".define()", function () {
+
+        it("should return an instance of Page", function () {
+            expect(is(new ViewDefineExample()).instanceOf(View)).to.equal(true);
+        });
+
+        it("should provide .executeDone() defined in descriptor", function (done) {
+
+            var definedView = new ViewDefineExample(done);
+
+            definedView.executeDone();
         });
 
     });
