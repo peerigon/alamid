@@ -13,7 +13,7 @@ describe("historyAdapter", function () {
         expect(historyAdapter.go).to.be.a(Function);
         expect(historyAdapter.pushState).to.be.a(Function);
         expect(historyAdapter.replaceState).to.be.a(Function);
-        expect(historyAdapter.state).to.be.a(Object);
+        expect(historyAdapter.state).to.not.be(undefined);
 
     });
 
