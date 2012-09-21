@@ -99,9 +99,9 @@ describe("ViewCollection", function () {
 
         it("should provide .executeDone() defined in descriptor", function (done) {
 
-            var definedView = new ViewCollectionDefineExample(done);
+            var definedViewCollection = new ViewCollectionDefineExample(done);
 
-            definedView.executeDone();
+            definedViewCollection.executeDone();
         });
 
     });
