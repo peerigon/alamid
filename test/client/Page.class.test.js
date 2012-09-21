@@ -4,7 +4,8 @@ var expect = require("expect.js"),
     is = require("nodeclass").is,
     DisplayObject = require("../../lib/client/DisplayObject.class.js"),
     Page = require("../../lib/client/Page.class.js"),
-    PageExample = require("./mocks/PageExample.class.js");
+    PageExample = require("./mocks/PageExample.class.js"),
+    PageDefineExample = require("./mocks/PageDefineExample.class.js");
 
 
 describe("Page", function () {
@@ -23,7 +24,14 @@ describe("Page", function () {
     describe(".define()", function () {
 
         it("should return an instance of Page", function () {
-            expect(is(pageExample).instanceOf(Page)).to.equal(true);
+            expect(is(new PageDefineExample()).instanceOf(Page)).to.equal(true);
+        });
+
+        it("should provide .executeDone() defined in descriptor", function (done) {
+
+            var definedPage = new PageDefineExample(done);
+
+            definedPage.executeDone();
         });
 
     });
