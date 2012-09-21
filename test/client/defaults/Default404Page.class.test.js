@@ -25,41 +25,93 @@ describe("Default404Page", function () {
             expect(is(default404Page).instanceOf(Page)).to.be(true);
         });
 
-        it("node should contain an h1-element with the attribute data-node='title'", function (){
+        it("node should contain one element with the attribute data-node='title'", function (){
             var $h1 = $pageNode.find("[data-node='title']");
 
-            expect($h1[0].toString().search("HTMLHeadingElement") > -1).to.be(true);
+            expect($h1.length).to.equal(1);
         });
 
-        it("node should contain an h2-element with the attribute data-node='sub'", function (){
+        it("node should contain one element with the attribute data-node='sub'", function (){
             var $h1 = $pageNode.find("[data-node='sub']");
 
-            expect($h1[0].toString().search("HTMLHeadingElement") > -1).to.be(true);
+            expect($h1.length).to.equal(1);
         });
 
-        it("node should contain an p-element with the attribute data-node='message'", function (){
+        it("node should contain one element with the attribute data-node='message'", function (){
             var $h1 = $pageNode.find("[data-node='message']");
 
-            expect($h1[0].toString().search("HTMLParagraphElement") > -1).to.be(true);
+            expect($h1.length).to.equal(1);
         });
 
-        it("node should contain an div-element with the attribute data-node='info'", function (){
+        it("node should contain one element with the attribute data-node='info'", function (){
             var $h1 = $pageNode.find("[data-node='info']");
 
-            expect($h1[0].toString().search("HTMLDivElement") > -1).to.be(true);
+            expect($h1.length).to.equal(1);
         });
 
     });
 
     describe(".setTitle()", function () {
 
-        it("should set given text to h1 - node", function () {
+        it("should set given text to title node", function () {
 
-            var title = "404";
+            var title = "404",
+                $titleNode = $pageNode.find("[data-node='title']");
 
             default404Page.setTitle(title);
 
-            $pageNode.find("h1")
+            expect($titleNode.text()).to.equal(title);
+
+        });
+
+    });
+
+    describe(".setSubTitle()", function () {
+
+        it("should set given text to title node", function () {
+
+            var subTitle = "Page not found",
+                $subTitleNode = $pageNode.find("[data-node='sub']");
+
+            default404Page.setSubTitle(subTitle);
+
+            expect($subTitleNode.text()).to.equal(subTitle);
+
+        });
+
+    });
+
+    describe(".setMessage()", function () {
+
+        it("should set given text to title node", function () {
+
+            var message = "This is alamid's default 404 Page. It will be only shown in development mode.",
+                $messageTitleNode = $pageNode.find("[data-node='message']");
+
+            default404Page.setMessage(message);
+
+            expect($messageTitleNode.text()).to.equal(message);
+
+        });
+
+    });
+
+    describe(".setInfo()", function () {
+
+        it("should set given text to title node", function () {
+
+            var info = {
+                    route: "blog/post",
+                    params: {
+                        "key": "value",
+                        "array": "1,2,3"
+                    }
+                },
+                $infoNode = $pageNode.find("[data-node='info']");
+
+            default404Page.setInfo(info);
+
+            expect($infoNode.text()).to.equal(JSON.stringify(info, null, 4));
 
         });
 
