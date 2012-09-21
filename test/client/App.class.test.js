@@ -3,13 +3,15 @@
 var expect = require("expect.js"),
     rewire = require("rewire"),
     _ = require("underscore"),
+    is = require("nodeclass").is,
 
     pageJS = require("page"),
-
+    config = require("../../lib/client/config.client.js"),
     App = rewire("../../lib/client/App.class.js"),
 
     PageMock = require("./mocks/PageMock.class.js"),
-    PageLoaderMock = require("./mocks/PageLoaderMock.class.js");
+    PageLoaderMock = require("./mocks/PageLoaderMock.class.js"),
+    Default404Page = require("../../lib/client/defaults/Default404Page.class.js");
 
 describe("App", function () {
 
@@ -234,6 +236,14 @@ describe("App", function () {
             params = pageLoader.getParams();
             expect(params.author).to.be("spook");
             expect(params.postId).to.be("123");
+        });
+
+        it("should display Default404Page if App is in 'development' mode and no handler for given route was added", function () {
+            config.mode = "development";
+
+            app.dispatchRoute("404");
+
+            expect(is(app.getMainPage().getSubPage()).instanceOf(Default404Page)).to.equal(true);
         });
 
         it("should be chainable", function () {
