@@ -47,7 +47,7 @@
             runner.on("suite end", function onSuiteEnd(suite) {
                 if (suite.root) {
                     socket.emit("end", new Date());
-                    runner.prototype.removeAllListeners("test end");
+                    runner.removeAllListeners("test end");
                 }
             });
 
