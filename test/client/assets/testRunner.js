@@ -24,10 +24,15 @@
 
             runner = mocha.run();
 
-            runner.on("suite", function (suite) {
-                if(suite.root) {
-                    socket.emit("start", new Date());
-                }
+            socket.emit("start", new Date());
+
+            socket.on("disconnect", function onDisconnect() {
+                runner.removeAllListeners();
+            });
+
+            //Reload if a file has changed on server
+            socket.once("f5", function onf5() {
+                location.reload();
             });
 
             runner.on("fail", function onFail(test) {
@@ -44,19 +49,9 @@
                 });
             });
 
-            runner.on("suite end", function onSuiteEnd(suite) {
-                if (suite.root) {
-                    socket.emit("end", new Date());
-                    runner.removeAllListeners("test end");
-                }
-            });
-
-            socket.on("disconnect", function onDisconnect() {
-                runner.removeAllListeners();
-            });
-
-            socket.once("f5", function onf5() {
-                location.reload();
+            runner.on("end", function onEnd() {
+                socket.emit("end", new Date());
+                runner.removeAllListeners("test end");
             });
 
         });
