@@ -12,5 +12,3 @@ var Cat = Model.define("Cat", {
 });
 
 module.exports = Cat;
-
-console.log(Cat);
