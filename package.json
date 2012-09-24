@@ -16,7 +16,7 @@
         "winston": "0.x",
         "fshelpers": "https://github.com/peerigon/fshelpers/tarball/v0.2.1",
         "toSrc": "0.x",
-        "nodeclass": "https://github.com/peerigon/nodeclass/tarball/v0.2.1",
+        "nodeclass": "https://github.com/peerigon/nodeclass/tarball/v0.2.2",
         "nconf" : "0.5.1",
         "socket.io" : "0.x",
         "jake" : "0.x",
