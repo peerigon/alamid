@@ -1,11 +1,13 @@
 "use strict"; // run code in ES5 strict mode
 
 var Class = require("nodeclass").Class,
-    DisplayObject = require("../../../lib/client/DisplayObject.class.js");
+    Page = require("../../../lib/client/Page.class.js");
 
 var PageMock = new Class({
 
-    Extends: DisplayObject,
+    Extends: Page,
+
+    $template: "<div data-node='page'></div>",
 
     subPage: null,
 
@@ -24,8 +26,9 @@ var PageMock = new Class({
     },
 
     setSubPage: function (subPage) {
-        subPage.emit("append");
+        this.Super.setSubPage(subPage);
         this.subPage = subPage;
+        return this.Instance;
     }
 
 });
