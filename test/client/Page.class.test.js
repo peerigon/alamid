@@ -69,6 +69,11 @@ describe("Page", function () {
             }).to.throwError();
         });
 
+        it("should be possible to reset the page by passing null", function (done) {
+            pageExample.setSubPage(null);
+            done();
+        });
+
         it("should dispose a previously set Sub-Page", function () {
             pageExample.setSubPage(new PageExample());
             expect(subPageExample.isDisposed()).to.equal(true);
@@ -87,6 +92,11 @@ describe("Page", function () {
         beforeEach(function () {
             subPageExample = new PageExample();
             pageExample.setSubPage(subPageExample);
+        });
+
+        it("should return null by default", function () {
+            pageExample = new PageExample();
+            expect(pageExample.getSubPage()).to.equal(null);
         });
 
         it("should return the previously set Sub-Page", function () {
