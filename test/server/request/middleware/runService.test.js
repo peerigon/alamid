@@ -4,61 +4,59 @@ var expect = require("expect.js"),
     rewire = require("rewire"),
     path = require("path");
 
-var Request = require("../../../../lib/server/request/Request.class.js"),
-    Response = require("../../../../lib/server/request/Response.class.js");
-
 describe("runService", function(){
 
-    var runService = rewire("../../../../lib/server/request/middleware/runService.js", false);
-    var Dog = require("./runService/Dog.class.js");
+    var Request = require("../../../../lib/server/request/Request.class.js"),
+        Response = require("../../../../lib/server/request/Response.class.js");
+
+    var runService,
+        Dog = require("./runService/Dog.class.js");
 
     describe("#serviceMiddleware", function() {
 
-        var mockedServiceFunctions;
+        var mockedServiceFunctions = {
+            create : function(ids, model, callback){
+                callback({ "status" : "success" });
+            },
+            read : function(ids, callback){
+                callback({ "status" : "success", data : { da : "ta" }});
+            },
+            readCollection : function(ids, params, callback){
+                callback({ "status" : "success", "data" : { "readCollection" : true }});
+            },
+            update : function(ids, model, callback){
+                callback();
+            }
+            //delete is not here because we need a missing method for the test
+        };
 
-        before(function() {
+        var servicesMock = {
+            getService : function(path) {
 
-            mockedServiceFunctions = {
-                create : function(ids, model, callback){
-                    callback({ "status" : "success" });
-                },
-                read : function(ids, callback){
-                    callback({ "status" : "success", data : { da : "ta" }});
-                },
-                readCollection : function(ids, params, callback){
-                    callback({ "status" : "success", "data" : { "readCollection" : true }});
-                },
-                update : function(ids, model, callback){
-                    callback();
+                if(path === "test"){
+                    return mockedServiceFunctions;
                 }
-                //delete is not here because we need a missing method for the test
-            };
 
-            var servicesMock = {
-                getService : function(path) {
-
-                    if(path === "test"){
-                        return mockedServiceFunctions;
-                    }
-
-                    if(path === "test2"){
-                        return {};
-                    }
-
-                    if(path === "syncasynctest") {
-                        return {
-                            create : function(ids, model) {
-                                return { status : "success"};
-                            },
-                            delete : function(ids, callback) {
-                                callback({ status : "success" });
-                            }
-                        };
-                    }
-                    return null;
+                if(path === "test2"){
+                    return {};
                 }
-            };
 
+                if(path === "syncasynctest") {
+                    return {
+                        create : function(ids, model) {
+                            return { status : "success"};
+                        },
+                        delete : function(ids, callback) {
+                            callback({ status : "success" });
+                        }
+                    };
+                }
+                return null;
+            }
+        };
+
+        beforeEach(function() {
+            runService = rewire("../../../../lib/server/request/middleware/runService.js");
             runService.__set__("services", servicesMock);
         });
 
@@ -78,11 +76,11 @@ describe("runService", function(){
             });
         });
 
+
         it("should call the CREATE service on the Model if Model was loaded", function (done) {
 
             var method = "create",
-                path = "/services/test/",
-                data = { "da" : "ta" };
+                path = "/services/test/";
 
             var dog = new Dog();
             dog.set("name", "snoop lion");
@@ -103,6 +101,7 @@ describe("runService", function(){
                 done();
             });
         });
+
 
         it("should find the READ service, run it and next afterwards with data attached to response", function (done) {
 
@@ -234,17 +233,20 @@ describe("runService", function(){
 
     describe("#serviceFormat", function() {
 
-        before(function() {
-            var servicesMock = {
-                getService : function(path) {
-                    if(path === "servicea"){
-                        var ServiceA = require("./runService/AService.server.class.js");
-                        return new ServiceA();
-                    }
-                    return null;
-                }
-            };
+        var runService;
 
+        var servicesMock = {
+            getService : function(path) {
+                if(path === "servicea"){
+                    var ServiceA = require("./runService/AService.server.class.js");
+                    return new ServiceA();
+                }
+                return null;
+            }
+        };
+
+        beforeEach(function() {
+            runService = rewire("../../../../lib/server/request/middleware/runService.js");
             runService.__set__("services", servicesMock);
         });
 
@@ -270,17 +272,20 @@ describe("runService", function(){
 
     describe("#service with deeper hierarchy - embedded documents", function() {
 
-        before(function() {
-            var servicesMock = {
-                getService : function(path) {
-                    if(path === "blogpost/comments"){
-                        var ServiceA = require("./runService/AService.server.class.js");
-                        return new ServiceA();
-                    }
-                    return null;
-                }
-            };
+        var runService;
 
+        var servicesMock = {
+            getService : function(path) {
+                if(path === "blogpost/comments"){
+                    var ServiceA = require("./runService/AService.server.class.js");
+                    return new ServiceA();
+                }
+                return null;
+            }
+        };
+
+        beforeEach(function() {
+            runService = rewire("../../../../lib/server/request/middleware/runService.js");
             runService.__set__("services", servicesMock);
         });
 
@@ -306,23 +311,26 @@ describe("runService", function(){
 
     describe("#Callback value assignment", function() {
 
-        before(function() {
-            var servicesMock = {
-                getService : function(path) {
-                    if(path === "blogpost"){
-                        return {
-                            "create" : function(ids, model, callback){
-                                callback({"status" : "success", "message" : "my dummy error", "data" : { "da" : "ta" }});
-                            },
-                            "update" : function(ids, model, callback){
-                                callback();
-                            }
-                        };
-                    }
-                    return null;
-                }
-            };
+        var runService;
 
+        var servicesMock = {
+            getService : function(path) {
+                if(path === "blogpost"){
+                    return {
+                        "create" : function(ids, model, callback){
+                            callback({"status" : "success", "message" : "my dummy error", "data" : { "da" : "ta" }});
+                        },
+                        "update" : function(ids, model, callback){
+                            callback();
+                        }
+                    };
+                }
+                return null;
+            }
+        };
+
+        beforeEach(function() {
+            runService = rewire("../../../../lib/server/request/middleware/runService.js");
             runService.__set__("services", servicesMock);
         });
 
