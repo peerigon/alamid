@@ -1,7 +1,6 @@
 "use strict";
 
-var expect = require("expect.js"),
-    rewire = require("rewire");
+var expect = require("expect.js");
 
 var User1 = require("./Model/User1.class.js"),
     User2 = require("./Model/User2.class.js"),
@@ -616,7 +615,7 @@ describe("Model", function() {
                     services.getService =  function() {
                         return testService;
                     };
-                    Octocat = require("./Model/Octocat.class.js", false);
+                    Octocat = require("./Model/Octocat.class.js");
                 });
 
                 it("should work with findById(1, callback) ", function(done) {
@@ -690,7 +689,7 @@ describe("Model", function() {
                     services.getService =  function() {
                         return testService;
                     };
-                    Octocat = require("./Model/Octocat.class.js", false);
+                    Octocat = require("./Model/Octocat.class.js");
                 });
 
                 it("should call the static method and run the mocked readCollection-service", function(done) {
@@ -754,7 +753,7 @@ describe("Model", function() {
             var Octoduck;
 
             before(function() {
-                Octoduck = require("./Model/OctoDuck.class.js", false);
+                Octoduck = require("./Model/OctoDuck.class.js");
             });
 
             it("should return a cached instance", function(done) {
@@ -793,7 +792,7 @@ describe("Model", function() {
             var Octoduck;
 
             before(function() {
-                Octoduck = require("./Model/OctoDuck.class.js", false);
+                Octoduck = require("./Model/OctoDuck.class.js");
             });
 
             it("should add an instance to the registry after successful saving", function(done) {
