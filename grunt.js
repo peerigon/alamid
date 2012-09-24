@@ -76,8 +76,12 @@ module.exports = function(grunt) {
         }
     });
 
-
     grunt.loadNpmTasks('grunt-simple-mocha');
+
+    grunt.registerTask("enable-testing-mode", "sets env to testing to keep the console quiet", function() {
+        var env = process.env;
+        env.mode = "testing"; //logger be quiet
+    });
 
     //mocha tests
     grunt.registerTask("test-server", "simplemocha:server");
@@ -86,12 +90,6 @@ module.exports = function(grunt) {
     grunt.registerTask("test-shared", "simplemocha:shared");
 
     grunt.registerTask('test-all', "simplemocha:all");
-
-
-    grunt.registerTask("enable-testing-mode", "sets env to testing to keep the console quiet", function() {
-        var env = process.env;
-        env.mode = "testing"; //to kill all random blabla
-    });
 
     grunt.registerTask("test-jenkins", "enable-testing-mode simplemocha:jenkins");
 };
