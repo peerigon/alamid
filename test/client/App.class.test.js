@@ -314,30 +314,27 @@ describe("App", function () {
         it("should be possible to change current page to MainPage with '/' as route", function (done) {
 
             app.on("pageChange", function onPageChange() {
+                //MainPage is always on index 0.
+                expect(app.getCurrentPages().length).to.equal(1);
                 done();
             });
 
             app.changePage("/", {});
 
             PageLoaderMock.instance.getCallback()();
-
-            //MainPage is always on index 0.
-            expect(app.getCurrentPages().length).to.equal(1);
-
         });
 
         it("should be possible to change current page to MainPage with '' as route", function (done) {
 
             app.on("pageChange", function onPageChange() {
+                //MainPage is always on index 0.
+                expect(app.getCurrentPages().length).to.equal(1);
                 done();
             });
 
             app.changePage("", {});
 
             PageLoaderMock.instance.getCallback()();
-
-            //MainPage is always on index 0.
-            expect(app.getCurrentPages().length).to.equal(1);
         });
 
         it("should emit 'beforePageChange' first and than 'beforeLeave' on every Sub-Ppage that will be changed from bottom to top", function () {
@@ -460,13 +457,13 @@ describe("App", function () {
             var emitted = [],
                 pageLoader;
 
-            pages.main.on("append", function () {
+            pages.main.on("add", function () {
                 throw new Error("The main page doesn't get re-appended");
             });
-            pages.blog.on("append", function () {
+            pages.blog.on("add", function () {
                 emitted.push("blog");
             });
-            pages.posts.on("append", function () {
+            pages.posts.on("add", function () {
                 emitted.push("posts");
             });
             app.on("pageChange", function () {
