@@ -60,7 +60,7 @@ describe("createBundle()", function () {
     it("should restore require.extensions when finished", function () {
         expect(require.extensions).to.eql(extensionHandlers);
     });
-    it("should output an browser-executable bundle", function (done) {
+    it("should output a browser-executable bundle", function (done) {
         browser
             .visit("file://" + paths.bundle + "/index.html", { /* debug: true */ }, function onBrowserReady(err) {
                 if (err) {
