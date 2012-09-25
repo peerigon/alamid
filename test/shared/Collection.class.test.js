@@ -48,7 +48,7 @@ describe("Collection", function () {
 
     describe(".define()", function describeDefine() {
 
-        it("should create a new Instance of Collection", function () {
+        it("should create a new instance of Collection", function () {
             var collection = new DefinedCollectionExample(OctocatModel);
 
             expect(is(collection).instanceOf(Collection)).to.be(true);
