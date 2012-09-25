@@ -389,6 +389,30 @@ describe("Model", function() {
     describe("Validation", function(){
         var octocat;
 
+        var environment = require("../../lib/shared/environment.js");
+
+        before(function() {
+
+            environment.isServer = function() {
+                return true;
+            };
+
+            environment.isClient = function() {
+                return false;
+            };
+        });
+
+        after(function() {
+
+            environment.isServer = function() {
+                return true;
+            };
+
+            environment.isClient = function() {
+                return false;
+            };
+        });
+
         beforeEach(function() {
             octocat = new Octocat();
         });
@@ -433,6 +457,29 @@ describe("Model", function() {
     describe("Services", function(){
 
         var octocat, testService;
+        var environment = require("../../lib/shared/environment.js");
+
+        before(function() {
+
+            environment.isServer = function() {
+                return false;
+            };
+
+            environment.isClient = function() {
+                return true;
+            };
+        });
+
+        after(function() {
+
+            environment.isServer = function() {
+                return true;
+            };
+
+            environment.isClient = function() {
+                return false;
+            };
+        });
 
         beforeEach(function() {
             octocat = new Octocat();
@@ -447,14 +494,11 @@ describe("Model", function() {
                     callback({ status : "success" });
                 }
             };
-
-            var config = require("../../lib/shared/config");
-            //we simulate client-services
-            config.isServer = false;
         });
 
         describe("Error handling and format parsing (__processResponse)", function() {
             it("should fail if response is no valid object", function(done) {
+
                 testService.create = function(remote, ids, model, callback) {
                     callback();
                 };
@@ -582,9 +626,33 @@ describe("Model", function() {
 
             describe("#findById", function() {
 
+                var environment = require("../../lib/shared/environment.js");
+
                 var Model,
                     services,
                     mockedOctocats;
+
+                before(function() {
+
+                    environment.isServer = function() {
+                        return false;
+                    };
+
+                    environment.isClient = function() {
+                        return true;
+                    };
+                });
+
+                after(function() {
+
+                    environment.isServer = function() {
+                        return true;
+                    };
+
+                    environment.isClient = function() {
+                        return false;
+                    };
+                });
 
                 beforeEach(function() {
 
@@ -608,7 +676,7 @@ describe("Model", function() {
 
                     var testService = {
                         read : function(remote, ids, callback) {
-                            callback({ status : "success", data : mockedOctocats[ids["octocat"]] });
+                            callback({ status : "success", data : mockedOctocats[ids.octocat] });
                         }
                     };
                     services = require("../../lib/shared/registries/serviceRegistry.js");
@@ -665,69 +733,96 @@ describe("Model", function() {
                     services,
                     mockedOctocats;
 
-                beforeEach(function() {
+                describe("on the client", function() {
 
-                    mockedOctocats = [
-                        {
-                            id : 1,
-                            name : "Octo 1",
-                            age : 12
-                        },
-                        {
-                            id : 2,
-                            name : "Octo 2",
-                            age : 10
-                        }
-                    ];
+                    before(function() {
 
-                    var testService = {
-                        readCollection : function(remote, ids, params, callback) {
-                            callback({ status : "success", data : mockedOctocats });
-                        }
-                    };
-                    services = require("../../lib/shared/registries/serviceRegistry.js");
-                    services.getService =  function() {
-                        return testService;
-                    };
-                    Octocat = require("./Model/Octocat.class.js");
-                });
+                        environment.isServer = function() {
+                            return false;
+                        };
 
-                it("should call the static method and run the mocked readCollection-service", function(done) {
-                    Octocat.find({},{ da : "ta" }, function(err, models) {
-                        expect(err).to.be(null);
-                        expect(models.get(0).get("name")).to.eql("Octo 1");
-                        expect(models.get(1).get("name")).to.eql("Octo 2");
-                        done();
+                        environment.isClient = function() {
+                            return true;
+                        };
                     });
-                });
 
-                it("should accept remote as first argument", function(done) {
-                    Octocat.find(true, {},{ da : "ta" }, function(err, models) {
-                        expect(err).to.be(null);
-                        expect(models.get(0).get("name")).to.eql("Octo 1");
-                        expect(models.get(1).get("name")).to.eql("Octo 2");
-                        done();
+                    after(function() {
+
+                        environment.isServer = function() {
+                            return true;
+                        };
+
+                        environment.isClient = function() {
+                            return false;
+                        };
                     });
-                });
 
-                it("should accept remote as first argument when called with three arguments ", function(done) {
-                    Octocat.find(false,{ da : "ta" }, function(err, models) {
-                        expect(err).to.be(null);
-                        expect(models.get(0).get("name")).to.eql("Octo 1");
-                        expect(models.get(1).get("name")).to.eql("Octo 2");
-                        done();
+                    beforeEach(function() {
+
+                        mockedOctocats = [
+                            {
+                                id : 1,
+                                name : "Octo 1",
+                                age : 12
+                            },
+                            {
+                                id : 2,
+                                name : "Octo 2",
+                                age : 10
+                            }
+                        ];
+
+                        var testService = {
+                            readCollection : function(remote, ids, params, callback) {
+                                callback({ status : "success", data : mockedOctocats });
+                            }
+                        };
+                        services = require("../../lib/shared/registries/serviceRegistry.js");
+                        services.getService =  function() {
+                            return testService;
+                        };
+                        Octocat = require("./Model/Octocat.class.js");
                     });
-                });
 
-                it("should accept requests without ids and remote as arguments", function(done) {
-                    Octocat.find({ da : "ta" }, function(err, models) {
-                        expect(err).to.be(null);
-                        expect(models.get(0).get("name")).to.eql("Octo 1");
-                        expect(models.get(1).get("name")).to.eql("Octo 2");
-                        done();
+                    it("should call the static method and run the mocked readCollection-service", function(done) {
+                        Octocat.find({},{ da : "ta" }, function(err, models) {
+                            expect(err).to.be(null);
+                            expect(models.get(0).get("name")).to.eql("Octo 1");
+                            expect(models.get(1).get("name")).to.eql("Octo 2");
+                            done();
+                        });
+                    });
+
+                    it("should accept remote as first argument", function(done) {
+                        Octocat.find(true, {},{ da : "ta" }, function(err, models) {
+                            expect(err).to.be(null);
+                            expect(models.get(0).get("name")).to.eql("Octo 1");
+                            expect(models.get(1).get("name")).to.eql("Octo 2");
+                            done();
+                        });
+                    });
+
+                    it("should accept remote as first argument when called with three arguments ", function(done) {
+                        Octocat.find(false,{ da : "ta" }, function(err, models) {
+                            expect(err).to.be(null);
+                            expect(models.get(0).get("name")).to.eql("Octo 1");
+                            expect(models.get(1).get("name")).to.eql("Octo 2");
+                            done();
+                        });
+                    });
+
+                    it("should accept requests without ids and remote as arguments", function(done) {
+                        Octocat.find({ da : "ta" }, function(err, models) {
+                            expect(err).to.be(null);
+                            expect(models.get(0).get("name")).to.eql("Octo 1");
+                            expect(models.get(1).get("name")).to.eql("Octo 2");
+                            done();
+                        });
                     });
                 });
             });
+
+
         });
     });
 
@@ -735,6 +830,8 @@ describe("Model", function() {
     describe("Model-Loader (Model-Caching)", function(){
 
         var Model;
+
+        var environment = require("../../lib/shared/environment.js");
 
         before(function() {
             var modelCache = require("../../lib/shared/modelCache.js"),
@@ -745,6 +842,28 @@ describe("Model", function() {
             modelCache.add = clientModelCache.add;
 
             Model = require("../../lib/shared/Model.class.js");
+        });
+
+        before(function() {
+
+            environment.isServer = function() {
+                return false;
+            };
+
+            environment.isClient = function() {
+                return true;
+            };
+        });
+
+        after(function() {
+
+            environment.isServer = function() {
+                return true;
+            };
+
+            environment.isClient = function() {
+                return false;
+            };
         });
 
 

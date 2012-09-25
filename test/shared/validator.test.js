@@ -193,15 +193,13 @@ describe("validator", function () {
 
         describe("Client", function() {
 
-            ///*
-            //not working on client.. rewire + nof5 = 1 x crazy shiat!
             var validator,
                 testModel,
                 modelUrl;
 
             before(function() {
                 validator = rewire("../../lib/shared/validator.js");
-                validator.__set__("config", { isClient : true });
+                validator.__set__("environment", { isClient : function() { return true; } });
             });
 
             beforeEach(function(){
