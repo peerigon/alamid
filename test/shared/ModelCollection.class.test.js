@@ -6,7 +6,8 @@ var expect = require("expect.js"),
     Collection = require("../../lib/shared/Collection.class.js"),
     ModelCollection = require("../../lib/shared/ModelCollection.class.js"),
     Model = require("../../lib/shared/Model.class.js"),
-    OctocatModel = require("./Model/Octocat.client.class.js");
+    OctocatModel = require("./Model/Octocat.client.class.js"),
+    DefinedModelCollection = require("./ModelCollection/DefinedModelCollectionExample.class.js");
 
 
 
@@ -49,6 +50,21 @@ describe("ModelCollection", function () {
 
             expect(changeEventCount).to.be.equal(octocatModels.length);
             done();
+        });
+
+    });
+
+    describe(".define()", function () {
+
+        it("should create a new instance of ModeCollection", function () {
+            var modelCollection = new DefinedModelCollection(OctocatModel);
+
+           expect(is(modelCollection).instanceOf(ModelCollection)).to.be(true);
+        });
+
+        it("should execute described method", function (done) {
+            modelCollection = new DefinedModelCollection(OctocatModel);
+            modelCollection.executeDone(done);
         });
 
     });
