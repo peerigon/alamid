@@ -28,10 +28,6 @@ describe("renderFillPageRegistry", function () {
             console: console
         };
 
-    function Page(params, template) {
-        this.template = template;
-    }
-
     it("should throw no error", function () {
         var src = renderFillPageRegistry(pagesPath);
 

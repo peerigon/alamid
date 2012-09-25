@@ -4,7 +4,7 @@ var Class = require("nodeclass").Class,
     Model = require('../../../../lib/shared/Model.class.js'),
     schema = require("./schemas/formSchemaABC.js");
 
-var FormModelABC = new Class({
+var FormModelABC = new Class("FormModelABC", {
 
     Extends : Model,
 

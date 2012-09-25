@@ -3,7 +3,7 @@
 var Class = require("nodeclass").Class,
     Page = require("../../../lib/client/Page.class.js");
 
-var PageExample = new Class({
+var PageExample = new Class("PageExample", {
 
     Extends: Page,
 

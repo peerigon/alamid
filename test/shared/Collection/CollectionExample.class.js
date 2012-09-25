@@ -3,7 +3,7 @@
 var Class = require("nodeclass").Class,
     Collection = require("../../../lib/shared/Collection.class.js");
 
-var CollectionExample = new Class({
+var CollectionExample = new Class("CollectionExample", {
 
     Extends: Collection,
 

@@ -3,7 +3,7 @@
 var Class = require("nodeclass").Class,
     Page = require("../../../../../../lib/client/Page.class.js");
 
-var MainPage = new Class({
+var MainPage = new Class("MainPage", {
     Extends: Page,
     $template : require("./MainPage.html"),
     init : function () {

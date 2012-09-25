@@ -5,7 +5,7 @@ var nodeclass = require("nodeclass"),
 
 //the session data is processed by the middleware!
 
-var SessionService = new Class({
+var SessionService = new Class("SessionService", {
     read : function(ids, callback) {
         callback({"status" : "success", "model" : ids });
     },

@@ -1,6 +1,6 @@
 var Class = require("nodeclass").Class;
 
-var MainPage = new Class({
+var MainPage = new Class("MainPage", {
 
 });
 

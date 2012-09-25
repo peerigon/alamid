@@ -3,7 +3,7 @@
 var nodeclass = require("nodeclass"),
     Class = nodeclass.Class;
 
-var PushService = new Class({
+var PushService = new Class("PushService", {
     init : function() {
 
     },

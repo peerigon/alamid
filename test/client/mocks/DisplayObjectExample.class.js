@@ -6,7 +6,7 @@ var Class = require("nodeclass").Class,
 /**
  * This is a mock for testing DisplayObject's append() by making it a public method.
  */
-var DisplayObjectExample = new Class({
+var DisplayObjectExample = new Class("DisplayObjectExample", {
 
     Extends: DisplayObject,
 

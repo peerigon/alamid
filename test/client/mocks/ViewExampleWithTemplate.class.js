@@ -4,7 +4,7 @@ var Class = require("nodeclass").Class,
     View = require("../../../lib/client/View.class.js"),
     viewCount = 0;
 
-var ViewExampleWithTemplate = new Class({
+var ViewExampleWithTemplate = new Class("ViewExampleWithTemplate", {
 
     Extends: View,
 

@@ -3,7 +3,7 @@
 var Class = require("nodeclass").Class,
     View = require("../../../lib/client/View.class.js");
 
-var CarLiElementView = new Class({
+var CarLiElementView = new Class("CarLiElementView", {
 
     Extends: View,
 

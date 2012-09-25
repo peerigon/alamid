@@ -2,7 +2,7 @@
 
 var Class = require("nodeclass").Class;
 
-var Comment = new Class({
+var Comment = new Class("Comment", {
 
     "init" : function () {
         //nothing to do here

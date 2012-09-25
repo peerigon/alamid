@@ -3,7 +3,7 @@
 var nodeclass = require("nodeclass"),
     Class = nodeclass.Class;
 
-var BlogService = new Class({
+var BlogService = new Class("BlogService", {
     init : function() {
 
     },
