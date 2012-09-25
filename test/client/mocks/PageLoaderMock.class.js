@@ -2,7 +2,7 @@
 
 var Class = require("nodeclass").Class;
 
-var PageLoaderMock = new Class({
+var PageLoaderMock = new Class("PageLoaderMock", {
 
     /**
      * @type {Function}

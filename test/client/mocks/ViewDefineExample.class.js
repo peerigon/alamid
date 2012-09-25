@@ -2,7 +2,7 @@
 
 var View = require("../../../lib/client/View.class.js");
 
-var ViewDefineExample = View.define({
+var ViewDefineExample = View.define("ViewDefineExample", {
 
     /**
      * @type {Function}

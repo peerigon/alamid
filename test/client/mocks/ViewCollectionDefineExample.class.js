@@ -3,7 +3,7 @@
 var ViewExampleWithTemplate = require("./ViewExampleWithTemplate.class.js"),
     ViewCollection = require("../../../lib/client/ViewCollection.class.js");
 
-var ViewCollectionDefineExample = ViewCollection.define({
+var ViewCollectionDefineExample = ViewCollection.define("ViewCollectionDefineExample", {
 
     /**
      * @type {Function}
