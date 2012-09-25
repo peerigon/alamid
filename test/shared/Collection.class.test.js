@@ -5,6 +5,7 @@ var expect = require("expect.js"),
     _ = require("underscore"),
     Collection = require("../../lib/shared/Collection.class.js"),
     CollectionExample = require("./Collection/CollectionExample.class.js"),
+    DefinedCollectionExample = require("./Collection/DefinedCollectionExample.class.js"),
     EventEmitter  = require("../../lib/shared/EventEmitter.class.js"),
     OctocatModel = require("./Model/Octocat.class.js");
 
@@ -41,6 +42,21 @@ describe("Collection", function () {
             expect(function () {
                 collection = new CollectionExample(OctocatModel, [{}]);
             }).to.throwError();
+        });
+
+    });
+
+    describe(".define()", function describeDefine() {
+
+        it("should create a new Instance of Collection", function () {
+            var collection = new DefinedCollectionExample(OctocatModel);
+
+            expect(is(collection).instanceOf(Collection)).to.be(true);
+        });
+
+        it("should provide described method ", function (done) {
+            collection = new DefinedCollectionExample(OctocatModel);
+            collection.executeDone(done);
         });
 
     });

@@ -28,7 +28,7 @@
         "expect.js": "0.x",
         "mocha": "1.x",
         "xunit-file" : "*",
-        "rewire": "1.0.x",
+        "rewire": "1.x",
         "zombie" : "1.x",
         "supertest" : "0.x",
         "grunt-simple-mocha" : "0.x"
