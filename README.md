@@ -1,6 +1,5 @@
-<p style="margin:0 auto;">
-  <img src="http://alamidjs.com/img/alamid.0.jpg" alt="alamid logo" />
-</p>
+![alamid-logo](http://alamidjs.com/img/alamid.0.jpg)
+
 
 __node.js framework for JavaScript real-time applications.__
 
