@@ -7,8 +7,7 @@ var createFakePackageJSON = require("../helpers/createFakePackageJSON.js"),
     removeFakePackageJSON = require("../helpers/removeFakePackageJSON.js");
 
 describe("alamidAPI", function() {
-
-
+    
     before(function(done) {
         createFakePackageJSON(done);
     });

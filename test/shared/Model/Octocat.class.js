@@ -5,7 +5,7 @@ var Model = require('../../../lib/shared/Model.class.js'),
     schema = require("./schemas/OctocatSchema.js"),
     serverSchema = require("./schemas/OctocatSchema.server.js");
 
-var Octocat = Model.define({
+var Octocat = Model.define("Octocat", {
     $url : "Octocat",
     "init": function(id) {
         this.Super(id);

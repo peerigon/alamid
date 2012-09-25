@@ -15,7 +15,7 @@ var schema = {
     kills: Number
 };
 
-var User1 = Model.define({
+var User1 = Model.define("User1", {
     $url : "User1",
     init: function(id) {
         this.Super(id);
