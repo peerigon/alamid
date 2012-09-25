@@ -19,8 +19,6 @@ describe("renderFillPageRegistry", function () {
                             };
                         }
                     };
-                } else if (path === "alamid/lib/client/Page.class.js") {
-                    return Page;
                 }
 
                 return function (callback) {
@@ -51,8 +49,8 @@ describe("renderFillPageRegistry", function () {
         });
         // We have to test "home" differently because we don't have a HomePage.class.js
         // The HomePage is not bundled lazily because it is wrapped by loadTemplate()
-        registry["home"].bundle(function (page) {
-            expect(page.template).to.be("bundle!raw!" + pagesPath + "/home/HomePage.html");
+        registry["home"].bundle(function (path) {
+            expect(path).to.be("bundle/lazy!raw!" + pagesPath + "/home/HomePage.html");
         });
     });
     it("should register the data loader of 'blog'", function () {
