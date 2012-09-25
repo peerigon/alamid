@@ -2,7 +2,7 @@
 
 var Model = require("../../../lib/shared/Model.class.js");
 
-var Dog = Model.define({
+var Dog = Model.define("Dog", {
     $url : "dog",
     init : function() {
 

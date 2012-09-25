@@ -2,7 +2,7 @@
 
 var Service = require("../../../lib/shared/Service.class.js");
 
-var BlogPostService = Service.define({
+var BlogPostService = Service.define("BlogPostService", {
     init : function() {
 
     },
