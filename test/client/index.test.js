@@ -13,8 +13,7 @@ var underscore = require("underscore"),
 
 var config = require("../../lib/client/config.client.js");
 
-var App = require("../../lib/client/App.class.js"),
-    DisplayObject = require("../../lib/client/DisplayObject.class.js"),
+var DisplayObject = require("../../lib/client/DisplayObject.class.js"),
     View = require("../../lib/client/View.class.js"),
     ViewCollection = require("../../lib/client/ViewCollection.class.js"),
     Page = require("../../lib/client/Page.class.js");
@@ -53,9 +52,6 @@ describe("index.js", function () {
         expect(alamid.config).to.equal(config);
     });
 
-    it("should export App", function () {
-        expect(alamid.App).to.equal(App);
-    });
     it("should export DisplayObject", function () {
         expect(alamid.DisplayObject).to.equal(DisplayObject);
     });
