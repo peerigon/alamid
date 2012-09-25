@@ -84,12 +84,12 @@ module.exports = function(grunt) {
     });
 
     //mocha tests
-    grunt.registerTask("test-server", "simplemocha:server");
-    grunt.registerTask("test-core", "simplemocha:core");
+    grunt.registerTask("test-server", "enable-testing-mode simplemocha:server");
+    grunt.registerTask("test-core", "enable-testing-mode simplemocha:core");
 
-    grunt.registerTask("test-shared", "simplemocha:shared");
+    grunt.registerTask("test-shared", "enable-testing-mode simplemocha:shared");
 
-    grunt.registerTask('test-all', "simplemocha:all");
+    grunt.registerTask('test-all', "enable-testing-mode simplemocha:all");
 
     grunt.registerTask("test-jenkins", "enable-testing-mode simplemocha:jenkins");
 };
