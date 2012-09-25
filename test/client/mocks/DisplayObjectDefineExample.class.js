@@ -2,7 +2,7 @@
 
 var DisplayObject = require("../../../lib/client/DisplayObject.class.js");
 
-var DisplayObjectDefineExample = DisplayObject.define({
+var DisplayObjectDefineExample = DisplayObject.define("DisplayObjectDefineExample", {
 
     /**
      * @type {Function}

@@ -2,7 +2,7 @@
 
 var Page = require("../../../lib/client/Page.class.js");
 
-var PageDefineExample = Page.define({
+var PageDefineExample = Page.define("PageDefineExample", {
 
     /**
      * @type {Function}
