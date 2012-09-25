@@ -2,6 +2,8 @@
 
 var expect = require("expect.js");
 
+var alamid = require("../../lib/index.js");
+
 //util
 var underscore = require("underscore"),
     jQuery = require("../../lib/client/helpers/jQuery.js"),
@@ -24,8 +26,6 @@ var Collection = require("../../lib/shared/Collection.class.js"),
     ModelCollection = require("../../lib/shared/ModelCollection.class.js");
 
 var Service = require("../../lib/shared/Service.class.js");
-
-var alamid = require("../../lib/index.js");
 
 describe("index.js", function () {
 
