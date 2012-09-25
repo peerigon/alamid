@@ -12,9 +12,11 @@ exports.use = function () {
         includeFilenames: true,
         debug: true,
         extensions: ["", ".client.js", ".js"],
+        preLoaders: [
+            nodeclassLoader
+        ],
         resolve: {
             loaders: [
-                nodeclassLoader,
                 { test: /\.html$/i, loader: "raw" }
             ],
             postprocess: {
