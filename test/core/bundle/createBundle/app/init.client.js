@@ -2,7 +2,7 @@
 
 var alamid = require("alamid"),
     app = alamid.app,
-    jQuery = alamid.client.util.jQuery;
+    jQuery = alamid.util.jQuery;
 
 app
     .addRoute("blog", "blog")

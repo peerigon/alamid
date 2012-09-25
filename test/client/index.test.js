@@ -26,9 +26,9 @@ var Collection = require("../../lib/shared/Collection.class.js"),
 
 var Service = require("../../lib/shared/Service.class.js");
 
-var alamid = require("../../lib/index.client.js");
+var alamid = require("../../lib/index.js");
 
-describe("alamid", function () {
+describe("index.js", function () {
 
     it("should export underscore", function () {
         expect(alamid.util.underscore).to.equal(underscore);
