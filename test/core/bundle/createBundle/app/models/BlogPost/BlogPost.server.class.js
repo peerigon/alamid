@@ -2,7 +2,7 @@
 
 var Class = require("nodeclass").Class;
 
-var BlogPost = new Class({
+var BlogPost = new Class("BlogPost", {
 
     "init" : function () {
         //nothing to do here

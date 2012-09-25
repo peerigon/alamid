@@ -4,7 +4,7 @@
 
 var Class = require("nodeclass").Class;
 
-var SomeOtherClass = new Class({
+var SomeOtherClass = new Class("SomeOtherClass", {
 
     "init" : function () {
         //nothing to do here

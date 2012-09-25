@@ -3,7 +3,7 @@
 var Class = require("nodeclass").Class,
     Page = require("../../../../../../../../lib/client/Page.class.js");
 
-var PostsPage = new Class({
+var PostsPage = new Class("PostsPage", {
     Extends: Page,
     init : function () {
         //nothing to do here

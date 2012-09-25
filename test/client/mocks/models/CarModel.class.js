@@ -4,7 +4,7 @@ var Class = require("nodeclass").Class,
     Model = require("../../../../lib/shared/Model.class.js"),
     carSchema = require("./schemas/carSchema.js");
 
-var Car = new Class({
+var Car = new Class("Car", {
 
     Extends: Model,
 

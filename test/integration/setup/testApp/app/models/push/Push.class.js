@@ -7,7 +7,7 @@ var Model = require('../../../../../../../lib/shared/Model.class.js');
         }
     };
 
-var Push = new Class({
+var Push = new Class("Push", {
     Extends : Model,
     $url : "push",
     "init": function(id) {

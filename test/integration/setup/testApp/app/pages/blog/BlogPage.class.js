@@ -3,7 +3,7 @@
 var Class = require("nodeclass").Class,
     Page = require("alamid").Page;
 
-var BlogPage = new Class({
+var BlogPage = new Class("BlogPage", {
     Extends: Page,
     $template : require("./BlogPage.html"),
     init : function () {

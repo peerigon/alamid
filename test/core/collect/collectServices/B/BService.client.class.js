@@ -2,7 +2,7 @@
 
 var Class = require("nodeclass").Class;
 
-var ServiceB = new Class({
+var ServiceB = new Class("ServiceB", {
 
     "init" : function () {
         //nothing to do here
