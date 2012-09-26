@@ -38,6 +38,16 @@ module.exports = function(grunt) {
                     reporter: 'spec'
                 }
             },
+            nyan: {
+                src: ["test/server/**/*.test.js", "test/shared/**/*.test.js", "test/core/**/*.test.js"],
+                options: {
+                    globals: ['should'],
+                    timeout: 3000,
+                    ignoreLeaks: false,
+                    ui: 'bdd',
+                    reporter: 'nyan'
+                }
+            },
             shared : {
                 src: 'test/shared/**/*.test.js',
                 options: {
