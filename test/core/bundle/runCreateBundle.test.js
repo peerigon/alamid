@@ -5,26 +5,21 @@ var expect = require("expect.js"),
     fshelpers = require("fshelpers"),
     pathUtil = require("path"),
     getAppPaths = require("../../../lib/shared/helpers/resolvePaths.js").getAppPaths,
-    createBundle = require("../../../lib/core/bundle/createBundle.js"),
+    runCreateBundle = require("../../../lib/core/bundle/runCreateBundle.js"),
     _ = require("underscore"),
     Browser = require("zombie");
 
-describe("createBundle()", function () {
-    var paths = getAppPaths(__dirname + "/createBundle"),
+describe("runCreateBundle()", function () {
+    var paths = getAppPaths(__dirname + "/runCreateBundle"),
         devConfig = {
-            isDev: true,
-            paths: paths
+            appDir: __dirname + "/runCreateBundle",
+            useWebsockets: false
         },
-        extensionHandlers = {},
         browser;
 
     before(function () {
         fshelpers.makeDirSync(__dirname + "/node_modules");
         fs.symlinkSync(pathUtil.resolve(__dirname, "../../../"), __dirname + "/node_modules/alamid");
-
-        _(require.extensions).each(function cacheExtensionHandler(handler, key) {
-            extensionHandlers[key] = handler;
-        });
 
         browser = new Browser();
     });
@@ -34,10 +29,8 @@ describe("createBundle()", function () {
     });
     it("should return no errors nor warnings", function (done) {
         this.timeout(10000);    // we need to expand mocha's default timeout
-        createBundle(devConfig, function onCreateBundleFinished(err, stats) {
+        runCreateBundle(devConfig, function onCreateBundleFinished(err) {
             expect(err).to.be(null);
-            expect(stats.errors).to.have.length(0);
-            expect(stats.warnings).to.have.length(0);
 
             done();
         });
@@ -56,9 +49,6 @@ describe("createBundle()", function () {
     });
     it("should remove " + paths.bundle + "/tmp", function () {
         expect(fs.existsSync(paths.bundle + "/tmp")).to.be(false);
-    });
-    it("should restore require.extensions when finished", function () {
-        expect(require.extensions).to.eql(extensionHandlers);
     });
     it("should output a browser-executable bundle", function (done) {
         browser
