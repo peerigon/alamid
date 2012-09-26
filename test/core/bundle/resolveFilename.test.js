@@ -4,8 +4,8 @@ var expect = require("expect.js"),
     path = require("path"),
     resolveFilename = require("../../../lib/core/bundle/resolveFilename.js");
 
-var testFolder = "someLoader.js!" + __dirname + "/resolveFilename/",
-    alamidFolder = path.resolve(__dirname, "../../../lib/");
+var testFolder = "someLoader.js!" + __dirname + "/resolveFilename/";
+    //alamidFolder = path.resolve(__dirname, "./resolveFilename");
 
 describe("resolveFilename", function() {
 
@@ -16,21 +16,20 @@ describe("resolveFilename", function() {
         });
 
         it("should handle a require from the alamid server folder", function(done) {
-            resolveFilename(alamidFolder + "/server/environment.server.js", function(err, resolvedFilename) {
+            resolveFilename(testFolder + "alamid/lib/server/modelCache.server.js", function(err, resolvedFilename) {
                 expect(err).to.be(null);
-                expect(resolvedFilename).to.eql(alamidFolder + "/client/environment.client.js");
+                expect(resolvedFilename).to.eql(testFolder + "alamid/lib/client/modelCache.client.js");
                 done();
             });
         });
 
         it("should handle a require from the alamid core folder", function(done) {
-            resolveFilename(alamidFolder + "/core/config.server.js", function(err, resolvedFilename) {
+            resolveFilename(testFolder + "alamid/lib/core/logger.server.js", function(err, resolvedFilename) {
                 expect(err).to.be(null);
-                expect(resolvedFilename).to.eql(alamidFolder + "/client/config.client.js");
+                expect(resolvedFilename).to.eql(testFolder + "alamid/lib/client/logger.client.js");
                 done();
             });
         });
-
     });
 
     describe("app requires", function() {
@@ -85,6 +84,4 @@ describe("resolveFilename", function() {
             });
         });
     });
-
-
 });
