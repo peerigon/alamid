@@ -58,6 +58,12 @@ describe("DisplayObject", function () {
             expect(function () { var dO = new DisplayObject(); }).to.throwError();
         });
 
+        it("should throw an error if a template woth more than one parent node is given", function () {
+            expect(function () {
+                var dO = new DisplayObject("<p></p><div></div>");
+            }).to.throwError();
+        });
+
         it("should be possible to declare template in a Class which inherits from DisplayObject", function (done) {
             displayObject = new DisplayObjectExample(); //Declares template via $template
             done();
