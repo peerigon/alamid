@@ -1,9 +1,9 @@
 {
     "name": "alamid",
     "description": "Framework for realtime JavaScript web applications that run both on the server- and clientside.",
-    "version": "0.2.0",
-    "repository": "git://github.com/peerigon/alamid.git",
-    "author": "peerigon",
+    "version": "0.8.0",
+    "repository": "git://github.com/peerigon/alamid",
+    "author": "peerigon <developers@peerigon.com>",
     "main": "./lib/index.js",
     "keywords": ["client", "server", "framework", "rest", "web application", "websockets", "realtime"],
     "engines": {
