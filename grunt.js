@@ -1,7 +1,8 @@
 "use strict";
 
-var exec = require('child_process').exec,
-    child,
+var child_process = require('child_process'),
+    exec = child_process.exec,
+    spawn = child_process.spawn,
     path = require("path");
 
 module.exports = function(grunt) {
@@ -84,77 +85,69 @@ module.exports = function(grunt) {
 
     grunt.registerTask("enable-testing-mode", "sets env to testing to keep the console quiet", function() {
         var env = process.env;
-        env.mode = "testing"; //logger be quiet
+        env.mode = "testing"; //logger be quiet!
     });
 
-    grunt.registerTask("test-nof5", "tests with nof5", function() {
+    grunt.registerTask("freshNpmInstall","deletes the node_modules folder and does npm install afterwards", function() {
+
+        var done = this.async();
+
+        var rmNodeModulesProcess = exec("rm -r -f " + __dirname + "/node_modules  ",
+            function (error, stdout, stderr) {
+
+                if (error !== null) {
+                    done(error);
+                    return;
+                }
+
+                var npmInstall = spawn("npm", ["install"]);
+
+                //awesome pipeing!
+                npmInstall.stdout.pipe(process.stdout);
+                npmInstall.stderr.pipe(process.stderr);
+
+                npmInstall.on('exit', function (code) {
+                    if(code === 0) {
+                        done(null);
+                    }
+                    else {
+                        done(new Error("NPM Install error!"));
+                    }
+                });
+            });
+    });
+
+
+    grunt.registerTask("test-client", "tests with nof5", function() {
 
         var done = this.async(),
-            cmd = 'cd ' + path.resolve(__dirname, "./test/client") + " ; nof5";
+            nof5Command = 'cd ' + path.resolve(__dirname, "./test/client") + " ; nof5";
 
-        console.log(cmd);
-
-        child = exec(cmd,
+        var nof5Process = exec(nof5Command,
             function (error, stdout, stderr) {
-                console.log('stdout: ' + stdout);
-                console.log('stderr: ' + stderr);
                 if (error !== null) {
                     console.log('exec error: ' + error);
                 }
             });
 
+        //give nof5 some time to initialize
         setTimeout(function() {
-            var cmd2 = "open http://localhost:11234";
-            console.log("cms2", cmd2);
-            var browser = exec(cmd2, function(err, stdout, stderr){
-                console.log(err, stdout, stderr);
+            var openBrowserCmd = "open http://localhost:11234";
+            var openBrowserProcess = exec(openBrowserCmd, function(error){
+                if (error !== null) {
+                    console.log('exec error: ' + error);
+                }
             });
-
         }, 1000);
-
-
     });
 
-    //mocha tests
+    //mocha server tests
     grunt.registerTask("test-server", "enable-testing-mode simplemocha:server");
     grunt.registerTask("test-core", "enable-testing-mode simplemocha:core");
-
     grunt.registerTask("test-shared", "enable-testing-mode simplemocha:shared");
 
     grunt.registerTask('test-all', "enable-testing-mode simplemocha:all");
 
     grunt.registerTask("test-jenkins", "enable-testing-mode simplemocha:jenkins");
-
-
-    // ==========================================================================
-    // HELPERS
-    // ==========================================================================
-
-    grunt.registerHelper('phantomjs', function(options) {
-        return grunt.utils.spawn({
-            cmd: 'phantomjs',
-            args: options.args
-        }, function(err, result, code) {
-            if (!err) { return options.done(null); }
-            // Something went horribly wrong.
-            grunt.verbose.or.writeln();
-            grunt.log.write('Running PhantomJS...').error();
-            if (code === 127) {
-                grunt.log.errorlns(
-                    'In order for this task to work properly, PhantomJS must be ' +
-                        'installed and in the system PATH (if you can run "phantomjs" at' +
-                        ' the command line, this task should work). Unfortunately, ' +
-                        'PhantomJS cannot be installed automatically via npm or grunt. ' +
-                        'See the grunt FAQ for PhantomJS installation instructions: ' +
-                        'https://github.com/cowboy/grunt/blob/master/docs/faq.md'
-                );
-                grunt.warn('PhantomJS not found.', options.code);
-            } else {
-                result.split('\n').forEach(grunt.log.error, grunt.log);
-                grunt.warn('PhantomJS exited unexpectedly with exit code ' + code + '.', options.code);
-            }
-            options.done(code);
-        });
-    });
 
 };
