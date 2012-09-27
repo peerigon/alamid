@@ -17,8 +17,7 @@ describe("App", function () {
 
     var app,
         pages,
-        checkForTypeError,
-        $dataNodePageDiv;
+        checkForTypeError;
 
     before(function () {
 
@@ -36,15 +35,6 @@ describe("App", function () {
             };
         }
 
-        //Fakes the index.html that is required to call App.start.
-        jQuery("body").append("<div data-node='page' style='display:none;'></div>");
-        $dataNodePageDiv = jQuery("body").find("[data-node=page]").last();
-
-    });
-
-    after(function () {
-        //Clean index.html fake.
-        $dataNodePageDiv.remove();
     });
 
     beforeEach(function () {
@@ -66,6 +56,11 @@ describe("App", function () {
         pageJS.callbacks = [];  // removes previous routes
     });
 
+    afterEach(function () {
+        //Clean appended pages after each test
+        jQuery("[data-node='page']").remove();
+    });
+
     describe(".init()", function () {
 
         it("should fail with an TypeError when calling without a Page class", function () {
@@ -76,6 +71,22 @@ describe("App", function () {
 
         it("should throw no exception when calling with a page", function () {
             app = new App(PageMock);
+        });
+
+    });
+
+    describe(".start()", function () {
+
+        it("should append MainPage to document's body", function () {
+            var mainPageDiv;
+
+            app.start();
+
+            mainPageDiv = jQuery("body").find("[data-node='page']");
+
+            expect(mainPageDiv.length).to.equal(1);
+            expect(mainPageDiv[0].toString().search("Div") !== -1).to.be(true);
+
         });
 
     });
