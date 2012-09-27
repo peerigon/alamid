@@ -138,7 +138,17 @@ describe("validator", function () {
         describe("Server", function() {
 
             var testModel,
-                modelUrl;
+                modelUrl,
+                validate;
+
+            before(function() {
+                validator = rewire("../../lib/shared/validator.js");
+                validator.__set__("environment", {
+                    isClient : function() { return false; },
+                    isServer : function() { return true; }
+                });
+                validate = validator.validate;
+            });
 
             beforeEach(function() {
                 testModel = {
@@ -199,7 +209,10 @@ describe("validator", function () {
 
             before(function() {
                 validator = rewire("../../lib/shared/validator.js");
-                validator.__set__("environment", { isClient : function() { return true; } });
+                validator.__set__("environment", {
+                    isClient : function() { return true; },
+                    isServer : function() { return false; }
+                });
             });
 
             beforeEach(function(){
