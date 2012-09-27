@@ -9,14 +9,6 @@ var expect = require("expect.js"),
     _ = require("underscore"),
     Browser = require("zombie");
 
-var env = process.env;
-
-//those tests are not working on jenkins ATM
-//TODO solve this!
-if(env.JENKINS_HOME !== undefined) {
-    return;
-}
-
 describe("runCreateBundle()", function () {
     var paths = getAppPaths(__dirname + "/runCreateBundle"),
         devConfig = {
