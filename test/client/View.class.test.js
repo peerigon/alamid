@@ -193,6 +193,15 @@ describe("View", function () {
 
     });
 
+    describe(".getModel()", function () {
+
+        it("should return the bound Model", function () {
+            view.bind(formModelABC);
+            expect(view.getModel()).to.equal(formModelABC);
+        });
+
+    });
+
     describe(".dispose()", function () {
 
         it("should unbind a bound Model", function () {
