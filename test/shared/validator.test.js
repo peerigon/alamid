@@ -255,6 +255,9 @@ describe("validator", function () {
                 var remoteValidationMock = function(schema, modelData, callback) {
                     callback({
                         result : true,
+                        failedFields : {
+
+                        },
                         shared : {
                             result : true
                         },
