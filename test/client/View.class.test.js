@@ -226,4 +226,51 @@ describe("View", function () {
 
     });
 
+    describe("on Model.delete()", function () {
+
+        var formModelABCService;
+
+        before(function () {
+           formModelABCService = {
+               delete: function (remote, ids, onDelete) {
+                   onDelete({ status: "success" });
+               }
+           }
+        });
+
+        beforeEach(function () {
+            formModelABC.setService(formModelABCService);
+            view.bind(formModelABC);
+        });
+
+        it ("should dispose View if bound Model was deleted", function (done) {
+
+            view.on("dispose", function () {
+                done();
+            });
+
+            formModelABC.delete(function onDelete(err) {
+                if (err) throw err;
+            });
+
+        });
+
+        it("should not dispose View if bound Model was unbound and then deleted", function (done) {
+
+            view.on("dispose", function () {
+                // should not be called otherwise mocha will display an Error
+                done();
+            });
+
+            view.unbind();
+
+            formModelABC.delete(function onDelete(err) {
+                if (err) throw err;
+                done();
+            });
+
+        });
+
+    });
+
 });
