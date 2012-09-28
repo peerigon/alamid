@@ -405,6 +405,112 @@ describe("ViewCollection", function () {
 
     });
 
+    describe(".delegate()", function () {
+
+        var expectedRemoveEventCount,
+            removeEventCount,
+            i;
+
+        beforeEach(function () {
+            viewCollection.bind(carCollection);
+            expectedRemoveEventCount = carCollection.size();
+            removeEventCount = 0;
+            i = null;
+
+            viewCollection.delegate("dispose", function onRemove() {
+                removeEventCount++;
+            });
+        });
+
+        it("should delegate the given event and listener to each View in collection", function () {
+
+            // If a bound model is removed from ModelCollection, than the according View in ViewCollection
+            // will be also removed by disposing the View.
+            for(i = 0; i < expectedRemoveEventCount; i++) {
+                carCollection.shift();
+            }
+
+            expect(removeEventCount).to.equal(expectedRemoveEventCount)
+
+        });
+
+        it("should delegate the given event and listener to new the View", function () {
+
+            carCollection.push(fiat);
+            expectedRemoveEventCount = carCollection.size();
+
+            // If a bound model is removed from ModelCollection, than the according View in ViewCollection
+            // will be also removed by disposing the View.
+            for(i = 0; i < expectedRemoveEventCount; i++) {
+                carCollection.shift();
+            }
+
+            expect(removeEventCount).to.equal(expectedRemoveEventCount)
+
+        });
+
+    });
+
+    describe(".undelegate()", function () {
+
+        var expectedRemoveEventCount,
+            removeEventCount,
+            i,
+            onRemove;
+
+        beforeEach(function () {
+            viewCollection.bind(carCollection);
+            expectedRemoveEventCount = 0;
+            removeEventCount = 0;
+            i = null,
+            onRemove = function onRemove() {
+                removeEventCount++;
+            };
+
+            viewCollection.delegate("dispose", onRemove);
+        });
+
+        it("should remove all listeners from Views in collection", function () {
+
+            viewCollection.undelegate("dispose", onRemove);
+
+            for(i = 0; i < expectedRemoveEventCount; i++) {
+                carCollection.shift();
+            }
+
+            expect(removeEventCount).to.equal(expectedRemoveEventCount);
+
+        });
+
+        it("should stop to attach event to new Views", function () {
+
+            viewCollection.undelegate("dispose", onRemove);
+
+            carCollection.push(fiat);
+
+            for(i = 0; i < expectedRemoveEventCount; i++) {
+                carCollection.shift();
+            }
+
+            expect(removeEventCount).to.equal(expectedRemoveEventCount);
+
+        });
+
+        it("should remove only given listener from given event", function (done) {
+
+            viewCollection.delegate("beforeDestroy", function onAdd() {
+                done();
+            });
+
+            viewCollection.undelegate("dispose", onRemove);
+
+            //pop only one item otherwise done() will be called multiple times
+            carCollection.pop();
+
+        });
+
+    });
+
     describe(".render()", function () {
 
         it("should throw an Error if no ModelCollection was bound", function () {
