@@ -6,18 +6,14 @@ var expect = require("expect.js"),
 
 var validator = require("../../lib/shared/validator.js"),
     validate = validator.validate,
-    localValidation = validator.localValidation,
-    testSchema = require("./Model/schemas/OctocatSchema.js"),
-    clientSchema = require("./Model/schemas/OctocatSchema.client.js"),
-    serverSchema = require("./Model/schemas/OctocatSchema.server.js"),
-    pandaSchema = require("./Model/schemas/PandaSchema.js"),
-    sharedSchema = testSchema;
+    localValidation = validator.localValidation;
 
 describe("validator", function () {
 
     describe("Default Validators", function() {
 
-        var testModel;
+        var testModel,
+            pandaSchema = require("./Model/schemas/PandaSchema.js");
 
         beforeEach(function() {
             testModel = {
@@ -79,6 +75,8 @@ describe("validator", function () {
 
     describe("localValidation", function() {
 
+        var sharedSchema = require("./Model/schemas/OctocatSchema.js");
+
         var testModel;
 
         beforeEach(function() {
@@ -90,7 +88,7 @@ describe("validator", function () {
         });
 
         it("should apply the validators and succeed with the default model data", function (done) {
-            localValidation(testSchema, testModel, function(result) {
+            localValidation(sharedSchema, testModel, function(result) {
                 expect(result.result).to.be(true);
                 expect(result.fields.name).to.be(true);
                 expect(result.fields.age).to.be(true);
@@ -101,10 +99,10 @@ describe("validator", function () {
         it("should fail if some fields are wrong", function(done) {
             testModel.age = 120;
 
-            localValidation(testSchema, testModel, function(result) {
+            localValidation(sharedSchema, testModel, function(result) {
                 expect(result.result).to.be(false);
                 expect(result.fields.name).to.be(true);
-                expect(result.fields.age).to.be(false);
+                expect(result.fields.age).to.be("tooOld-shared");
                 done();
             });
         });
@@ -112,7 +110,7 @@ describe("validator", function () {
         it("should fail if some fields are wrong", function(done) {
             testModel.name = null;
 
-            localValidation(testSchema, testModel, function(result) {
+            localValidation(sharedSchema, testModel, function(result) {
                 expect(result.result).to.be(false);
                 //expect(result.fields.name).to.be(false);
                 expect(result.fields.age).to.be(true);
@@ -124,7 +122,7 @@ describe("validator", function () {
             delete testModel.name;
             delete testModel.age;
 
-            localValidation(testSchema, testModel, function(result) {
+            localValidation(sharedSchema, testModel, function(result) {
                 expect(result.result).to.be(false);
                 expect(result.fields.name).to.be("required");
                 expect(result.fields.age).to.be(true);
@@ -135,11 +133,15 @@ describe("validator", function () {
 
     describe("validate", function() {
 
+        var sharedSchema = require("./Model/schemas/OctocatSchema.js");
+
         describe("Server", function() {
 
             var testModel,
                 modelUrl,
                 validate;
+
+            var serverSchema = require("./Model/schemas/OctocatSchema.server.js");
 
             before(function() {
                 validator = rewire("../../lib/shared/validator.js");
@@ -184,18 +186,41 @@ describe("validator", function () {
                     expect(result.result).to.be(false);
                     expect(result.shared.result).to.be(true);
                     expect(result.local.result).to.be(false);
-                    expect(result.local.fields.age).to.be(false);
+                    expect(result.local.fields.age).to.contain("tooOld");
                     done();
                 });
             });
 
-            it("should not run the localValidation if the shared validation failed", function(done) {
+            it("should return all failed fields at the top-level of result", function(done) {
                 testModel.age = 102;
                 validate(sharedSchema, serverSchema, modelUrl, testModel, true, function(result) {
+
                     expect(result.result).to.be(false);
-                    expect(result.shared.fields.age).to.be(false);
+                    expect(result.shared.failedFields.age[0]).to.be("tooOld-shared");
+                    expect(result.shared.fields.age).to.be("tooOld-shared");
+                    expect(result.shared.result).to.be(false);
+
+                    //TODO resolve strange bug with server-schema being replace with client schema in browser
+                    //add check for tooOld-server
+                    expect(result.local.failedFields.age[0]).to.contain("tooOld");
+                    expect(result.local.fields.age).to.contain("tooOld");
+                    //also check for "tooOld-server" if bug above is fixed
+                    expect(result.failedFields.age).to.contain("tooOld-shared");
+
+                    done();
+                });
+            });
+
+            it("should not run local & shared validation if the schemas are identical", function(done) {
+                testModel.age = 102;
+                validate(sharedSchema, sharedSchema, modelUrl, testModel, true, function(result) {
+
+                    expect(result.result).to.be(false);
+                    expect(result.shared.failedFields.age[0]).to.be("tooOld-shared");
+                    expect(result.shared.fields.age).to.be("tooOld-shared");
                     expect(result.shared.result).to.be(false);
                     expect(result.local).to.be(undefined);
+
                     done();
                 });
             });
@@ -206,6 +231,8 @@ describe("validator", function () {
             var validator,
                 testModel,
                 modelUrl;
+
+            var clientSchema = require("./Model/schemas/OctocatSchema.client.js");
 
             before(function() {
                 validator = rewire("../../lib/shared/validator.js");
@@ -226,16 +253,48 @@ describe("validator", function () {
 
             it("should call the remote validator on client if shared-validation and local validation worked out", function(done) {
                 var remoteValidationMock = function(schema, modelData, callback) {
-                    callback({ result : true, shared : { result : true}, local : { result : true}});
+                    callback({
+                        result : true,
+                        shared : {
+                            result : true
+                        },
+                        local : {
+                            result : true
+                        }
+                    });
                 };
 
                 validator.__set__("remoteValidation", remoteValidationMock);
 
-                validator.validate(sharedSchema, serverSchema, modelUrl, testModel, true, function(result) {
+                validator.validate(sharedSchema, clientSchema, modelUrl, testModel, true, function(result) {
                     expect(result.result).to.be(true);
                     expect(result.shared.result).to.be(true);
                     expect(result.local.result).to.be(true);
                     expect(result.remote.result).to.be(true);
+                    done();
+                });
+            });
+
+            it("should not call the remote validator on client if remoteValidaton is disabled", function(done) {
+                var remoteValidationMock = function(schema, modelData, callback) {
+                    callback({
+                        result : true,
+                        shared : {
+                            result : true
+                        },
+                        local : {
+                            result : true
+                        }
+                    });
+                };
+
+                validator.__set__("remoteValidation", remoteValidationMock);
+
+                validator.validate(sharedSchema, clientSchema, modelUrl, testModel, false, function(result) {
+                    expect(result.result).to.be(true);
+                    expect(result.shared.result).to.be(true);
+                    expect(result.local.result).to.be(true);
+                    expect(result.remote).to.be(undefined);
                     done();
                 });
             });

@@ -19,13 +19,14 @@ var OctocatSchema = {
         "default" : 5,
         "validate" : function(age) {
             if(age >= 100) {
-                return false;
+                return "tooOld-shared";
             }
             return true;
         }
     },
     birthday: Date,
-    location : String
+    location : String,
+    shared : String
 };
 
 module.exports = OctocatSchema;

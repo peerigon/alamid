@@ -15,13 +15,14 @@ var OctocatSchema = {
         "default" : 5,
         "validate" : function(age) {
             if(age >= 50) {
-                return false;
+                return "tooOld-server";
             }
             return true;
         }
     },
     birthday: Date,
-    location : String
+    location : String,
+    server : String
 };
 
 module.exports = OctocatSchema;

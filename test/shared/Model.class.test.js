@@ -402,17 +402,6 @@ describe("Model", function() {
             };
         });
 
-        after(function() {
-
-            environment.isServer = function() {
-                return true;
-            };
-
-            environment.isClient = function() {
-                return false;
-            };
-        });
-
         beforeEach(function() {
             octocat = new Octocat();
         });
@@ -429,14 +418,14 @@ describe("Model", function() {
             });
         });
 
-        it("should only call shared validator if fullValidation is disabled", function(done) {
+        it("should only call shared & local validator if remoteValidation is disabled", function(done) {
             octocat.set('name', 'Octocat');
             octocat.set('age', 8);
 
             octocat.validate(false, function(result) {
                 expect(result.result).to.be(true);
                 expect(result.shared).to.be.an("object");
-                expect(result.local).to.be(undefined);
+                expect(result.remote).to.be(undefined);
                 done();
             });
         });

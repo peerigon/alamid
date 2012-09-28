@@ -15,12 +15,13 @@ var OctocatSchema = {
         "default" : 5,
         "validate" : function(age) {
             if(age >= 80) {
-                return false;
+                return "tooOld-client";
             }
             return true;
         }
     },
-    location : String
+    location : String,
+    client : String
 };
 
 module.exports = OctocatSchema;
