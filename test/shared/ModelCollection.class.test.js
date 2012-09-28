@@ -7,7 +7,8 @@ var expect = require("expect.js"),
     ModelCollection = require("../../lib/shared/ModelCollection.class.js"),
     Model = require("../../lib/shared/Model.class.js"),
     OctocatModel = require("./Model/Octocat.client.class.js"),
-    DefinedModelCollection = require("./ModelCollection/DefinedModelCollectionExample.class.js");
+    DefinedModelCollection = require("./ModelCollection/DefinedModelCollectionExample.class.js"),
+    environment = require("../../lib/shared/environment.js");
 
 
 
@@ -19,8 +20,8 @@ describe("ModelCollection", function () {
 
     beforeEach(function () {
         modelCollection = new ModelCollection(OctocatModel);
-        octocatModel = new OctocatModel();
-        octocatModels = [octocatModel, new OctocatModel(), new OctocatModel()];
+        octocatModel = new OctocatModel(1);
+        octocatModels = [octocatModel, new OctocatModel(2), new OctocatModel(3)];
     });
 
     describe(".construct()", function () {
@@ -321,7 +322,7 @@ describe("ModelCollection", function () {
 
     });
 
-    describe("dispose()", function () {
+    describe(".dispose()", function () {
 
         it("should remove 'change'-listeners from all Models", function () {
             var changeCallCount = 0;
@@ -334,6 +335,67 @@ describe("ModelCollection", function () {
                 model.set("name", "" + index + "");
             });
             expect(changeCallCount).to.be.equal(0);
+        });
+
+    });
+
+    describe("on Model.delete()", function () {
+
+        var octocatService;
+
+        // monkey-patch environment
+        before(function () {
+
+            environment.isServer = function() { return false; };
+            environment.isClient = function() { return true; };
+
+        });
+
+        beforeEach(function () {
+
+            octocatService = {
+                delete: function (remote, ids, onDelete) {
+                    onDelete( { status: "success" } );
+                }
+            };
+
+            octocatModel.setService(octocatService);
+
+            modelCollection.push(octocatModels);
+        });
+
+        // revert monkey-patch
+        after(function () {
+
+            environment.isServer = function() { return true; };
+            environment.isClient = function() { return false; };
+
+        });
+
+        it("should emit 'remove'-Event if a Model was deleted and pass the Model", function (done) {
+
+            modelCollection.on("remove", function checkPassedParam(models) {
+                expect(octocatModel).to.equal(models[0]);
+                done();
+            });
+
+            octocatModel.delete(function onDelete(err) {
+                if (err) throw err;
+            });
+
+        });
+
+        it("it should remove the Model from Collection if it was deleted", function (done) {
+
+            var previousCollectionLength = modelCollection.size(),
+                expectedCollectionLength = previousCollectionLength - 1;
+
+            octocatModel.delete(function onDelete(err) {
+                if (err) throw err;
+                expect(modelCollection.size()).to.equal(expectedCollectionLength);
+                done();
+            });
+
         });
 
     });
