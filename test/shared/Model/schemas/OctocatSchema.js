@@ -25,7 +25,15 @@ var OctocatSchema = {
         }
     },
     birthday: Date,
-    location : String,
+    location : {
+        type : String,
+        validate : function(location) {
+            if(location === "") {
+                return false;
+            }
+            return true;
+        }
+    },
     shared : String
 };
 

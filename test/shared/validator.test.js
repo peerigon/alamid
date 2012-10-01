@@ -191,6 +191,19 @@ describe("validator", function () {
                 });
             });
 
+            it("should not pass the validator if shared validation fails", function(done) {
+                testModel.location = "";
+                validate(sharedSchema, serverSchema, modelUrl, testModel, true, function(result) {
+                    expect(result.result).to.be(false);
+                    expect(result.shared.result).to.be(false);
+                    expect(result.local.result).to.be(true);
+                    expect(result.shared.fields.location).to.be(false);
+                    expect(result.local.fields.location).to.be(true);
+                    done();
+                });
+            });
+
+
             it("should return all failed fields at the top-level of result", function(done) {
                 testModel.age = 102;
                 validate(sharedSchema, serverSchema, modelUrl, testModel, true, function(result) {
