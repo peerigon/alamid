@@ -341,60 +341,35 @@ describe("ModelCollection", function () {
 
     describe("on Model.delete()", function () {
 
-        var octocatService;
-
-        // monkey-patch environment
-        before(function () {
-
-            environment.isServer = function() { return false; };
-            environment.isClient = function() { return true; };
-
-        });
-
         beforeEach(function () {
-
-            octocatService = {
-                delete: function (remote, ids, onDelete) {
-                    onDelete( { status: "success" } );
-                }
-            };
-
-            octocatModel.setService(octocatService);
-
-            modelCollection.push(octocatModels);
-        });
-
-        // revert monkey-patch
-        after(function () {
-
-            environment.isServer = function() { return true; };
-            environment.isClient = function() { return false; };
-
+             modelCollection.push(octocatModels);
         });
 
         it("should emit 'remove'-Event if a Model was deleted and pass the Model", function (done) {
 
-            modelCollection.on("remove", function checkPassedParam(models) {
+            modelCollection.once("remove", function checkPassedParam(models) {
                 expect(octocatModel).to.equal(models[0]);
+            });
+
+            octocatModel.emit("delete");    // faking delete, we just emit the event.
+
+            modelCollection.once("remove", function checkPassedParam(models) {
+                expect(octocatModels[1]).to.equal(models[0]);
                 done();
             });
 
-            octocatModel.delete(function onDelete(err) {
-                if (err) throw err;
-            });
+            octocatModels[1].emit("delete");    // faking delete, we just emit the event.
 
         });
 
-        it("it should remove the Model from Collection if it was deleted", function (done) {
+        it("it should remove the Model from Collection if it was deleted", function () {
 
-            var previousCollectionLength = modelCollection.size(),
-                expectedCollectionLength = previousCollectionLength - 1;
-
-            octocatModel.delete(function onDelete(err) {
-                if (err) throw err;
-                expect(modelCollection.size()).to.equal(expectedCollectionLength);
-                done();
-            });
+            octocatModels[0].emit("delete");    // faking delete, we just emit the event.
+            expect(modelCollection.toArray()).to.eql([octocatModels[1], octocatModels[2]]);
+            octocatModels[1].emit("delete");
+            expect(modelCollection.toArray()).to.eql([octocatModels[2]]);
+            octocatModels[2].emit("delete");
+            expect(modelCollection.toArray()).to.eql([]);
 
         });
 
