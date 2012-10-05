@@ -5,7 +5,6 @@ var expect = require("expect.js"),
     resolveFilename = require("../../../lib/core/bundle/resolveFilename.js");
 
 var testFolder = "someLoader.js!" + __dirname + "/resolveFilename/";
-    //alamidFolder = path.resolve(__dirname, "./resolveFilename");
 
 describe("resolveFilename", function() {
 
