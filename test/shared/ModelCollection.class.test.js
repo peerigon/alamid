@@ -324,7 +324,7 @@ describe("ModelCollection", function () {
 
     describe(".dispose()", function () {
 
-        it("should remove 'change'-listeners from all Models", function () {
+        it("should stop to proxy Model events", function () {
             var changeCallCount = 0;
             modelCollection.on("change", function onChange() {
                 changeCallCount++;
@@ -335,6 +335,12 @@ describe("ModelCollection", function () {
                 model.set("name", "" + index + "");
             });
             expect(changeCallCount).to.be.equal(0);
+        });
+
+        it("should remove all models from collection", function () {
+            modelCollection.push(octocatModels);
+            modelCollection.dispose();
+            expect(modelCollection.toArray()).to.equal(null);
         });
 
     });
