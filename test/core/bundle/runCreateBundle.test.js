@@ -7,6 +7,7 @@ var expect = require("expect.js"),
     getAppPaths = require("../../../lib/shared/helpers/resolvePaths.js").getAppPaths,
     runCreateBundle = require("../../../lib/core/bundle/runCreateBundle.js"),
     _ = require("underscore"),
+    connect = require("connect"),
     Browser = require("zombie");
 
 describe("runCreateBundle()", function () {
@@ -17,11 +18,16 @@ describe("runCreateBundle()", function () {
         },
         browser;
 
-    before(function () {
+    before(function (done) {
         fshelpers.makeDirSync(__dirname + "/node_modules");
         fs.symlinkSync(pathUtil.resolve(__dirname, "../../../"), __dirname + "/node_modules/alamid");
 
         browser = new Browser();
+        var app = connect()
+            .use(connect.static(paths.bundle))
+         .listen(3000, done);
+
+
     });
     after(function () {
         fs.unlinkSync(__dirname + "/node_modules/alamid");
@@ -52,7 +58,7 @@ describe("runCreateBundle()", function () {
     });
     it("should output a browser-executable bundle", function (done) {
         browser
-            .visit("file://" + paths.bundle + "/index.html", { /* debug: true */ }, function onBrowserReady(err) {
+            .visit("http://localhost:3000/index.html", { /* debug: true */ }, function onBrowserReady(err) {
                 if (err) {
                     throw err;
                 }
