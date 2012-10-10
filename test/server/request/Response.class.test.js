@@ -46,7 +46,7 @@ describe("Response", function() {
             myResponse.setStatus("success");
             expect(myResponse.getStatusCode()).to.be(200);
             myResponse.setStatus("fail");
-            expect(myResponse.getStatusCode()).to.be(500);
+            expect(myResponse.getStatusCode()).to.be(400);
             myResponse.setStatusCode(418);
             expect(myResponse.getStatusCode()).to.be(418);
         });

@@ -91,7 +91,7 @@ describe("runValidator", function(){
                 var resultObj = response.getData();
                 expect(err).to.be(undefined);
                 expect(response.getStatus()).to.be("fail");
-                expect(response.getStatusCode()).to.be(500);
+                expect(response.getStatusCode()).to.be(400);
                 expect(response.getData()).to.be.an("object");
                 expect(resultObj.result).to.be(false);
                 expect(resultObj.shared.fields.title).to.be("toShort");
@@ -115,7 +115,7 @@ describe("runValidator", function(){
                 var resultObj = response.getData();
                 expect(err).to.be(undefined);
                 expect(response.getStatus()).to.be("fail");
-                expect(response.getStatusCode()).to.be(500);
+                expect(response.getStatusCode()).to.be(400);
                 expect(response.getData()).to.be.an("object");
                 expect(resultObj.result).to.be(false);
                 expect(resultObj.shared.result).to.be(true);
