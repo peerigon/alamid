@@ -9,7 +9,8 @@ var BlogService = new Class("BlogService", {
     },
     create : function(ids, data, callback) {
         data.id = 1;
-        callback({ status : "success", data : data });
+        console.log("create called");
+        callback({ status : "success" });
     },
     read : function(ids, callback) {
         callback({ status : "success", data : { title : "blogpost", txt : "text" } });
@@ -18,7 +19,7 @@ var BlogService = new Class("BlogService", {
         callback({ status : "success", data : [{ title : "blogpost", txt : "text" }] });
     },
     update : function(ids, model, callback) {
-        callback({ status : "success" });
+        callback({ status : "success", data : {} });
     },
     delete : function(ids, callback) {
         callback({ status : "success" });
