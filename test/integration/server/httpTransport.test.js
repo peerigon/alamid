@@ -46,11 +46,18 @@ describe("httpTransport", function() {
                     .expect(200,/<!-- index.html -->/, done);
             });
 
-            it("should return 'not found' if a non existent page was requested", function (done) {
+            it("should return 'not found' if a non existent file was requested under /assets", function (done) {
                 this.timeout(100000);
                 request(app)
-                    .get('/myNonExistentPage')
-                    .expect(404,/Not found/, done);
+                    .get('/assets/doesNotExist')
+                    .expect(404, done);
+            });
+
+            it("should return 'not found' if a non existent file was requested under /", function (done) {
+                this.timeout(100000);
+                request(app)
+                    .get('/assets/doesNotExist.png')
+                    .expect(404, done);
             });
         });
 
@@ -78,7 +85,7 @@ describe("httpTransport", function() {
                 request(app)
                     .post("/services/user/")
                     .type("application/json")
-                    .send({ da : "ta" })
+                    .send({ title : "test" })
                     .expect(400,/No service found for/, done);
             });
 
@@ -87,7 +94,7 @@ describe("httpTransport", function() {
                 request(app)
                     .post("/services/blog/")
                     .type("application/json")
-                    .send({ da : "ta" })
+                    .send({ title : "test" })
                     .expect(200,/"status":"success"/, done);
             });
 
