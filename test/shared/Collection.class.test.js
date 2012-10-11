@@ -153,6 +153,60 @@ describe("Collection", function () {
 
     });
 
+    describe(".remove()", function () {
+
+        beforeEach(function () {
+            collection.push(octocatModels);
+        });
+
+        it("should remove the element at given index", function () {
+            collection.remove(0);
+            expect(collection.toArray().length).to.equal(octocatModels.length - 1);
+        });
+
+        it("should return the removed element", function () {
+           expect(collection.remove(0)).to.equal(octocatModels[0]);
+        });
+
+        it("should return undefined when an not set index was given", function () {
+            expect(collection.remove(999)).to.equal(undefined);
+        });
+
+        it("should emit an 'remove'-event and pass as first argument an Array with the removed element on index 0", function (done) {
+
+            collection.on("remove", function onRemove(elements) {
+                expect(elements[0]).to.equal(octocatModels[1]);
+                done();
+            });
+
+            collection.remove(1);
+
+        });
+
+        it("should emit an 'remove'-event and pass as second argument the index of removed element", function (done) {
+
+            var indexToRemove = 2;
+
+            collection.on("remove", function onRemove(elements, index) {
+                expect(index).to.equal(indexToRemove);
+                done();
+            });
+
+            collection.remove(indexToRemove);
+
+        });
+
+        it("should emit an 'remove'-event and pass (isMutated ===)true as third argument", function (done) {
+
+            collection.on("remove", function (elements, index, isMutated) {
+                expect(isMutated).to.be.equal(true);
+                done();
+            });
+            collection.remove(0);
+        });
+
+    });
+
     describe(".push()", function () {
 
         it("should throw an Error if no instance of Model was given", function () {
