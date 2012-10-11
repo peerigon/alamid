@@ -116,6 +116,28 @@ describe("ModelCollection", function () {
 
     });
 
+    describe(".remove()", function () {
+
+        beforeEach(function () {
+            modelCollection.push(octocatModels);
+        });
+
+        it ("should be possible to remove an Model by passing it's reference", function (done) {
+
+            var indexToRemove = 2;
+
+            modelCollection.on("remove", function onRemove(elements, index, isMutated) {
+                expect(elements[0]).to.equal(octocatModels[indexToRemove]);
+                expect(index).to.equal(indexToRemove);
+                expect(isMutated).to.equal(true);
+                done();
+            });
+
+            modelCollection.remove(octocatModels[indexToRemove]);
+        });
+
+    });
+
     describe(".push()", function() {
 
         it("should proxy 'change'-Event for each pushed Model", function (done) {
