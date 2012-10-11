@@ -365,6 +365,21 @@ describe("ModelCollection", function () {
             expect(modelCollection.toArray()).to.equal(null);
         });
 
+        // memory leak test
+        it("should remove all event listeners from models", function (done) {
+            modelCollection.push(octocatModels);
+            modelCollection.dispose();
+            modelCollection.on("change", function onRemove() {
+                throw new Error("change-listener shall be removed, but it wasn't!");
+            });
+            modelCollection.on("remove", function onRemove() {
+                throw new Error("remove-listener shall be removed, but it wasn't!");
+            });
+            octocatModels[0].emit("change");
+            octocatModels[1].emit("delete");
+            done();
+        });
+
     });
 
     describe("on Model.delete()", function () {
