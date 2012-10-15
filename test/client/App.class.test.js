@@ -229,7 +229,7 @@ describe("App", function () {
         });
 
         it("should pass the params from route", function () {
-            var params,
+            var pageCtx,
                 pageLoader;
 
             app.addRoute("blog/:author/posts/:postId", function (ctx, next) {
@@ -244,9 +244,9 @@ describe("App", function () {
             app.dispatchRoute("blog/spook/posts/123");
 
             pageLoader = PageLoaderMock.instance;
-            params = pageLoader.getParams();
-            expect(params.author).to.be("spook");
-            expect(params.postId).to.be("123");
+            pageCtx = pageLoader.getParams();
+            expect(pageCtx.params.author).to.be("spook");
+            expect(pageCtx.params.postId).to.be("123");
         });
 
         it("should display Default404Page if App is in 'development' mode and no handler for given route was added", function () {
