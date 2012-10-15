@@ -116,6 +116,28 @@ describe("ModelCollection", function () {
 
     });
 
+    describe(".remove()", function () {
+
+        beforeEach(function () {
+            modelCollection.push(octocatModels);
+        });
+
+        it ("should be possible to remove an Model by passing it's reference", function (done) {
+
+            var indexToRemove = 2;
+
+            modelCollection.on("remove", function onRemove(elements, index, isMutated) {
+                expect(elements[0]).to.equal(octocatModels[indexToRemove]);
+                expect(index).to.equal(indexToRemove);
+                expect(isMutated).to.equal(true);
+                done();
+            });
+
+            modelCollection.remove(octocatModels[indexToRemove]);
+        });
+
+    });
+
     describe(".push()", function() {
 
         it("should proxy 'change'-Event for each pushed Model", function (done) {
@@ -341,6 +363,21 @@ describe("ModelCollection", function () {
             modelCollection.push(octocatModels);
             modelCollection.dispose();
             expect(modelCollection.toArray()).to.equal(null);
+        });
+
+        // memory leak test
+        it("should remove all event listeners from models", function (done) {
+            modelCollection.push(octocatModels);
+            modelCollection.dispose();
+            modelCollection.on("change", function onRemove() {
+                throw new Error("change-listener shall be removed, but it wasn't!");
+            });
+            modelCollection.on("remove", function onRemove() {
+                throw new Error("remove-listener shall be removed, but it wasn't!");
+            });
+            octocatModels[0].emit("change");
+            octocatModels[1].emit("delete");
+            done();
         });
 
     });
