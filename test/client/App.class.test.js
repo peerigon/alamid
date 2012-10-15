@@ -200,17 +200,26 @@ describe("App", function () {
                     called.push("/blog/*");
                     next();
                 })
-                .addRoute("blog/posts", function (ctx, next) {
-                    called.push("/blog/posts");
-                    next();
-                })
+                .addRoute(
+                    "blog/posts",
+                    function (ctx, next) {
+                        console.log(1);
+                        called.push("/blog/posts");
+                        next();
+                    },
+                    function (ctx, next) {
+                        console.log(2);
+                        called.push("/blog/posts2");
+                        next();
+                    }
+                )
                 .addRoute("*", function (ctx) {
                     called.push("*2");
                 });
 
             app.dispatchRoute("blog/posts");
 
-            expect(called).to.eql(["*1", "/bl", "/blog/*", "/blog/posts", "*2"]);
+            expect(called).to.eql(["*1", "/bl", "/blog/*", "/blog/posts", "/blog/posts2", "*2"]);
         });
 
         it("should work with a string as handler", function () {
