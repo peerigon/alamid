@@ -73,10 +73,10 @@ describe("domAdapter", function () {
             $button = jQuery(button);
         });
 
-        describe("# on()", function () {
+        describe(".on()", function () {
 
             it("should execute the binded event-listener", function (done) {
-                domAdapter(button).on("click", function () {
+                domAdapter(button).on("click", function onClick() {
                     done();
                 });
 
@@ -85,7 +85,22 @@ describe("domAdapter", function () {
 
         });
 
-        describe("# off()", function () {
+        describe(".once()", function () {
+
+            it("should execute listener only once", function () {
+
+                domAdapter(button).once("click", function onClick() {
+                    done();
+                });
+
+                $button.trigger("click");
+                $button.trigger("click");
+
+            });
+
+        });
+
+        describe(".off()", function () {
 
             it("should not execute listener A", function (done) {
                 var listenerA = function () {
@@ -157,7 +172,7 @@ describe("domAdapter", function () {
 
         var className = "cool-cat-class";
 
-        describe("# addClass()", function () {
+        describe(".addClass()", function () {
 
             it("should have a class '" + className + '"', function () {
                 domAdapter(form.firstChild).addClass(className);
@@ -166,7 +181,7 @@ describe("domAdapter", function () {
 
         });
 
-        describe("# removeClass()", function () {
+        describe(".removeClass()", function () {
 
             it("should not have a class '" + className + "'", function () {
                 jQuery(form.firstChild).addClass(className);
@@ -175,7 +190,7 @@ describe("domAdapter", function () {
             });
         });
 
-        describe("# hasClass()", function () {
+        describe(".hasClass()", function () {
 
             it("should have the class '" + className + "'", function () {
                 jQuery(form.firstChild).addClass(className);
@@ -188,7 +203,7 @@ describe("domAdapter", function () {
 
     describe("Destroy & Dispose", function () {
 
-        describe("# destroy()", function () {
+        describe(".destroy()", function () {
 
             it("should remove the element from DOMElement", function () {
                 var inputA = $form.find("[data-node='input-a']")[0];
@@ -213,7 +228,7 @@ describe("domAdapter", function () {
 
         });
 
-        describe("# dispose()", function () {
+        describe(".dispose()", function () {
 
             it("should remove the element form DOMElemet like # destroy()", function () {
                 var $inputA = $form.find("[data-node='input-a']"),
@@ -255,7 +270,7 @@ describe("domAdapter", function () {
             };
         });
 
-        describe("# stringifyJSON()", function () {
+        describe(".stringifyJSON()", function () {
 
             it("should behave like JSON.stringify", function () {
                 expect(domAdapter.stringifyJSON(json)).to.be.equal(JSON.stringify(json));
@@ -263,7 +278,7 @@ describe("domAdapter", function () {
 
         });
 
-        describe("# parseJSON()", function () {
+        describe(".parseJSON()", function () {
 
             it("should be a cross client compatible JSON parser", function () {
                 var string = jQuery.parseJSON(json);
@@ -286,7 +301,7 @@ describe("domAdapter", function () {
             queryStringFirefox = "this%3Dis%261%3Dunit%26test%3D";
         });
 
-        describe("# stringifyQuery()", function () {
+        describe(".stringifyQuery()", function () {
 
             it("should return an equal query-string to '1=unit&this=is&test='", function () {
 
@@ -299,7 +314,7 @@ describe("domAdapter", function () {
 
         });
 
-        describe("# parseQuery()", function () {
+        describe(".parseQuery()", function () {
 
             it("should parse '1=unit&this=is&test=' to an to the reference eql object", function () {
                 expect(domAdapter.parseQuery(queryStringOthers)).to.be.eql(queryObject);
