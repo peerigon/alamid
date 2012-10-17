@@ -290,8 +290,8 @@ describe("Model", function() {
             });
         });
 
-        describe("#toJSON", function() {
-            it("should return the attributes as JSON-string", function() {
+        describe("#toObject", function() {
+            it("should return an object containing id & ids", function() {
                 user.set('name', 'Octocat');
                 user.set({
                     age: 5,
@@ -302,7 +302,33 @@ describe("Model", function() {
                     age: 45,
                     kills: null
                 });
-                expect(JSON.parse(user.toJSON())).to.eql({
+
+                expect(user.toObject()).to.eql({
+                    id : null,
+                    ids : {},
+                    name: 'Octocat',
+                    age: 5,
+                    kills: 1
+                });
+            });
+        });
+
+        describe("#toJSON (alias for toObject)", function() {
+            it("should return an object to be used with JSON-Stringify", function() {
+                user.set('name', 'Octocat');
+                user.set({
+                    age: 5,
+                    kills: 1
+                });
+                expect(user.getDefaults()).to.eql({
+                    name: 'John Wayne',
+                    age: 45,
+                    kills: null
+                });
+
+                expect(JSON.parse(JSON.stringify(user))).to.eql({
+                    id : null,
+                    ids : {},
                     name: 'Octocat',
                     age: 5,
                     kills: 1
