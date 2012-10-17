@@ -89,4 +89,29 @@ describe("applyMiddleware", function () {
         });
     });
 
+    it("should return an error if next was called after res.end", function (done) {
+
+        var resData = { status : "success", data : { da : "ta" }};
+
+        mw3 = function(req, res, next) {
+            done(new Error("mw3 should not be reached"));
+        };
+
+        mw2 = function nextingAfterResMiddleware(req, res, next) {
+            res.end(resData);
+            next();
+        };
+
+        var req = {},
+            res = new Response();
+
+        expect(function() {
+            applyMiddleware([mw1, mw2, mw3], req, res, function(err) {
+                expect(res.getResBody()).to.eql({ status : "success", data : { da : "ta" }});
+                expect(err).not.to.be(null);
+                done();
+            });
+        }).to.throwError();
+    });
+
 });
