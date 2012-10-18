@@ -35,9 +35,11 @@ describe("index.js", function () {
     it("should export jQuery", function () {
         expect(alamid.util.jQuery).to.equal(jQuery);
     });
+    /*
     it("should export historyAdapter as history", function () {
         expect(alamid.util.history).to.equal(history);
     });
+    */
     it("should export logger", function () {
         expect(alamid.util.logger).to.equal(logger);
     });
