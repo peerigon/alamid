@@ -203,12 +203,10 @@ describe("App", function () {
                 .addRoute(
                     "blog/posts",
                     function (ctx, next) {
-                        console.log(1);
                         called.push("/blog/posts");
                         next();
                     },
                     function (ctx, next) {
-                        console.log(2);
                         called.push("/blog/posts2");
                         next();
                     }
