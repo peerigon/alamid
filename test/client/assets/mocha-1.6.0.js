@@ -591,7 +591,7 @@
                 context.describe = context.context = function(title, fn){
                     var suite = Suite.create(suites[0], title);
                     suites.unshift(suite);
-                    fn();
+                    fn.call(suite);
                     suites.shift();
                     return suite;
                 };
@@ -606,7 +606,7 @@
                             var suite = Suite.create(suites[0], title);
                             suite.pending = true;
                             suites.unshift(suite);
-                            fn();
+                            fn.call(suite);
                             suites.shift();
                         };
 
@@ -903,7 +903,7 @@
                 context.suite = function(title, fn){
                     var suite = Suite.create(suites[0], title);
                     suites.unshift(suite);
-                    fn();
+                    fn.call(suite);
                     suites.shift();
                     return suite;
                 };
@@ -1462,14 +1462,22 @@
                     , index = stack.indexOf(message) + message.length
                     , msg = stack.slice(0, index)
                     , actual = err.actual
-                    , expected = err.expected;
+                    , expected = err.expected
+                    , escape = true;
+
+                // explicitly show diff
+                if (err.showDiff) {
+                    escape = false;
+                    err.actual = actual = JSON.stringify(actual, null, 2);
+                    err.expected = expected = JSON.stringify(expected, null, 2);
+                }
 
                 // actual / expected diff
                 if ('string' == typeof actual && 'string' == typeof expected) {
                     var len = Math.max(actual.length, expected.length);
 
-                    if (len < 20) msg = errorDiff(err, 'Chars');
-                    else msg = errorDiff(err, 'Words');
+                    if (len < 20) msg = errorDiff(err, 'Chars', escape);
+                    else msg = errorDiff(err, 'Words', escape);
 
                     // linenos
                     var lines = msg.split('\n');
@@ -1523,6 +1531,8 @@
 
             if (!runner) return;
             this.runner = runner;
+
+            runner.stats = stats;
 
             runner.on('start', function(){
                 stats.start = new Date;
@@ -1645,12 +1655,14 @@
          * @api private
          */
 
-        function errorDiff(err, type) {
+        function errorDiff(err, type, escape) {
             return diff['diff' + type](err.actual, err.expected).map(function(str){
-                str.value = str.value
-                    .replace(/\t/g, '<tab>')
-                    .replace(/\r/g, '<CR>')
-                    .replace(/\n/g, '<LF>\n');
+                if (escape) {
+                    str.value = str.value
+                        .replace(/\t/g, '<tab>')
+                        .replace(/\r/g, '<CR>')
+                        .replace(/\n/g, '<LF>\n');
+                }
                 if (str.added) return colorLines('diff added', str.value);
                 if (str.removed) return colorLines('diff removed', str.value);
                 return str.value;
@@ -1713,7 +1725,7 @@
                 ++indents;
                 console.log('%s<section class="suite">', indent());
                 ++indents;
-                console.log('%s<h1>%s</h1>', indent(), suite.title);
+                console.log('%s<h1>%s</h1>', indent(), utils.escape(suite.title));
                 console.log('%s<dl>', indent());
             });
 
@@ -1726,7 +1738,7 @@
             });
 
             runner.on('pass', function(test){
-                console.log('%s  <dt>%s</dt>', indent(), test.title);
+                console.log('%s  <dt>%s</dt>', indent(), utils.escape(test.title));
                 var code = utils.escape(utils.clean(test.fn.toString()));
                 console.log('%s  <dd><pre><code>%s</code></pre></dd>', indent(), code);
             });
@@ -1936,15 +1948,19 @@
             if (!root) return error('#mocha div missing, add it to your document');
 
             // pass toggle
-            on(passesLink, 'click', function () {
-                var className = /pass/.test(report.className) ? '' : ' pass';
-                report.className = report.className.replace(/fail|pass/g, '') + className;
+            on(passesLink, 'click', function(){
+                unhide();
+                var name = /pass/.test(report.className) ? '' : ' pass';
+                report.className = report.className.replace(/fail|pass/g, '') + name;
+                if (report.className.trim()) hideSuitesWithout('test pass');
             });
 
             // failure toggle
-            on(failuresLink, 'click', function () {
-                var className = /fail/.test(report.className) ? '' : ' fail';
-                report.className = report.className.replace(/fail|pass/g, '') + className;
+            on(failuresLink, 'click', function(){
+                unhide();
+                var name = /fail/.test(report.className) ? '' : ' fail';
+                report.className = report.className.replace(/fail|pass/g, '') + name;
+                if (report.className.trim()) hideSuitesWithout('test fail');
             });
 
             root.appendChild(stat);
@@ -1989,11 +2005,11 @@
 
                 // test
                 if ('passed' == test.state) {
-                    var el = fragment('<li class="test pass %e"><h2>%e<span class="duration">%ems</span></h2></li>', test.speed, test.title, test.duration);
+                    var el = fragment('<li class="test pass %e"><h2>%e<span class="duration">%ems</span> <a href="?grep=%e" class="replay">‣</a></h2></li>', test.speed, test.title, test.duration, test.fullTitle());
                 } else if (test.pending) {
                     var el = fragment('<li class="test pass pending"><h2>%e</h2></li>', test.title);
                 } else {
-                    var el = fragment('<li class="test fail"><h2>%e</h2></li>', test.title);
+                    var el = fragment('<li class="test fail"><h2>%e <a href="?grep=%e" class="replay">‣</a></h2></li>', test.title, test.fullTitle());
                     var str = test.err.stack || test.err.toString();
 
                     // FF / Opera do not add the message
@@ -2058,6 +2074,30 @@
             });
 
             return div.firstChild;
+        }
+
+        /**
+         * Check for suites that do not have elements
+         * with `classname`, and hide them.
+         */
+
+        function hideSuitesWithout(classname) {
+            var suites = document.getElementsByClassName('suite');
+            for (var i = 0; i < suites.length; i++) {
+                var els = suites[i].getElementsByClassName(classname);
+                if (0 == els.length) suites[i].className += ' hidden';
+            }
+        }
+
+        /**
+         * Unhide .hidden suites.
+         */
+
+        function unhide() {
+            var els = document.getElementsByClassName('suite hidden');
+            for (var i = 0; i < els.length; ++i) {
+                els[i].className = els[i].className.replace('suite hidden', 'suite');
+            }
         }
 
         /**
@@ -3423,7 +3463,8 @@
          */
 
         var EventEmitter = require('browser/events').EventEmitter
-            , debug = require('browser/debug')('mocha:runnable');
+            , debug = require('browser/debug')('mocha:runnable')
+            , milliseconds = require('./ms');
 
         /**
          * Save timer references to avoid Sinon interfering (see GH-237).
@@ -3470,13 +3511,14 @@
         /**
          * Set & get timeout `ms`.
          *
-         * @param {Number} ms
+         * @param {Number|String} ms
          * @return {Runnable|Number} ms or self
          * @api private
          */
 
         Runnable.prototype.timeout = function(ms){
             if (0 == arguments.length) return this._timeout;
+            if ('string' == typeof ms) ms = milliseconds(ms);
             debug('timeout %d', ms);
             this._timeout = ms;
             if (this.timer) this.resetTimeout();
@@ -3486,13 +3528,14 @@
         /**
          * Set & get slow `ms`.
          *
-         * @param {Number} ms
+         * @param {Number|String} ms
          * @return {Runnable|Number} ms or self
          * @api private
          */
 
         Runnable.prototype.slow = function(ms){
             if (0 === arguments.length) return this._slow;
+            if ('string' == typeof ms) ms = milliseconds(ms);
             debug('timeout %d', ms);
             this._slow = ms;
             return this;
@@ -3954,7 +3997,7 @@
 
         Runner.prototype.runTests = function(suite, fn){
             var self = this
-                , tests = suite.tests
+                , tests = suite.tests.slice()
                 , test;
 
             function next(err) {
