@@ -13,9 +13,10 @@ var PageMock = new Class("PageMock", {
 
     params: null,
 
-    emitted: [],
+    emitted: null,
 
     init: function (params) {
+        this.emitted = [];
         this.params = params;
         this.Super("<div data-node='page'></div>");
     },
