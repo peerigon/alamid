@@ -1,7 +1,7 @@
 "use strict";
 
 var expect = require("expect.js"),
-    is = require("nodeclass").is,
+    value = require("value"),
     CONSTANTS = require("../../lib/client/CONSTANTS.js"),
     path = require("path"),
     compile = require("nodeclass").compile,
@@ -40,7 +40,7 @@ describe("DisplayObject", function () {
     describe(".define()", function () {
 
         it("should return an instance of Page", function () {
-            expect(is(new DisplayObjectDefineExample()).instanceOf(DisplayObject)).to.equal(true);
+            expect(value(new DisplayObjectDefineExample()).instanceOf(DisplayObject)).to.equal(true);
         });
 
         it("should provide .executeDone() defined in descriptor", function (done) {

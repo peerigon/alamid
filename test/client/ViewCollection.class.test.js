@@ -1,7 +1,7 @@
 "use strict";
 
 var expect = require("expect.js"),
-    is = require("nodeclass").is,
+    value = require("value"),
     DisplayObject = require("../../lib/client/DisplayObject.class.js"),
     View = require("../../lib/client/View.class.js"),
     ViewExample = require("./mocks/ViewExample.class.js"),
@@ -69,7 +69,7 @@ describe("ViewCollection", function () {
     describe(".construct()", function () {
 
         it("should be an DisplayObject", function () {
-           expect(is(viewCollection).instanceOf(DisplayObject)).to.be.ok();
+           expect(value(viewCollection).instanceOf(DisplayObject)).to.be.ok();
         });
 
         it("should be possible to set a template", function (done) {
@@ -94,7 +94,7 @@ describe("ViewCollection", function () {
     describe(".define()", function () {
 
         it("should return an instance of Page", function () {
-            expect(is(new ViewCollectionDefineExample()).instanceOf(ViewCollection)).to.equal(true);
+            expect(value(new ViewCollectionDefineExample()).instanceOf(ViewCollection)).to.equal(true);
         });
 
         it("should provide .executeDone() defined in descriptor", function (done) {
@@ -399,7 +399,7 @@ describe("ViewCollection", function () {
 
         it("should pass a View as first argument to given iterator function", function () {
             viewCollection.each(function viewsIterator(view) {
-                expect(is(view).instanceOf(View)).to.be.equal(true);
+                expect(value(view).instanceOf(View)).to.be.equal(true);
             });
         });
 

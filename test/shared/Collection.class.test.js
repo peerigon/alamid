@@ -1,7 +1,7 @@
 "use strict";
 
 var expect = require("expect.js"),
-    is = require("nodeclass").is,
+    value = require("value"),
     _ = require("underscore"),
     Collection = require("../../lib/shared/Collection.class.js"),
     CollectionExample = require("./Collection/CollectionExample.class.js"),
@@ -24,7 +24,7 @@ describe("Collection", function () {
     describe(".construct()", function () {
 
         it("should be instance of EventEmitter", function () {
-            expect(is(collection).instanceOf(EventEmitter)).to.be.ok();
+            expect(value(collection).instanceOf(EventEmitter)).to.be.ok();
         });
 
         it("should throw an Error if no Class was given as", function () {
@@ -51,7 +51,7 @@ describe("Collection", function () {
         it("should create a new instance of Collection", function () {
             var collection = new DefinedCollectionExample(OctocatModel);
 
-            expect(is(collection).instanceOf(Collection)).to.be(true);
+            expect(value(collection).instanceOf(Collection)).to.be(true);
         });
 
         it("should provide described method ", function (done) {

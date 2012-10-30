@@ -3,7 +3,7 @@
 var expect = require("expect.js"),
     rewire = require("rewire"),
     _ = require("underscore"),
-    is = require("nodeclass").is,
+    value = require("value"),
 
     pageJS = require("page"),
     config = require("../../lib/client/config.client.js"),
@@ -261,7 +261,7 @@ describe("App", function () {
 
             app.dispatchRoute("404");
 
-            expect(is(app.getMainPage().getSubPage()).instanceOf(Default404Page)).to.equal(true);
+            expect(value(app.getMainPage().getSubPage()).instanceOf(Default404Page)).to.equal(true);
         });
 
         it("should be chainable", function () {

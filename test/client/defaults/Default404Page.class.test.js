@@ -2,7 +2,7 @@
 
 var expect = require("expect.js");
 
-var is = require("nodeclass").is;
+var value = require("value");
 
 var Page = require("../../../lib/client/Page.class.js"),
     Default404Page = require("../../../lib/client/defaults/Default404Page.class.js");
@@ -22,7 +22,7 @@ describe("Default404Page", function () {
     describe(".init()", function () {
 
         it("should by a Page", function () {
-            expect(is(default404Page).instanceOf(Page)).to.be(true);
+            expect(value(default404Page).instanceOf(Page)).to.be(true);
         });
 
         it("node should contain one element with the attribute data-node='title'", function (){

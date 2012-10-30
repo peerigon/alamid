@@ -4,7 +4,7 @@ var expect = require("expect.js"),
     pageRegistry = require("../../lib/client/registries/pageRegistry.js"),
     PageLoader = require("../../lib/client/PageLoader.class.js"),
     PageLoaderExamplePage = require("./mocks/PageMock.class.js"),
-    is = require("nodeclass").is,
+    value = require("value"),
     expectTypeError = expectError(TypeError);
 
 function expectError(Constructor) {

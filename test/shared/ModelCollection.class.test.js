@@ -1,7 +1,7 @@
 "use strict";
 
 var expect = require("expect.js"),
-    is = require("nodeclass").is,
+    value = require("value"),
     _ = require("underscore"),
     Collection = require("../../lib/shared/Collection.class.js"),
     ModelCollection = require("../../lib/shared/ModelCollection.class.js"),
@@ -27,7 +27,7 @@ describe("ModelCollection", function () {
     describe(".construct()", function () {
 
         it("should be instance of Collection", function () {
-            expect(is(modelCollection).instanceOf(Collection)).to.be.ok();
+            expect(value(modelCollection).instanceOf(Collection)).to.be.ok();
         });
 
         it("should throw an Error if Model-Class was given", function () {
@@ -60,7 +60,7 @@ describe("ModelCollection", function () {
         it("should create a new instance of ModeCollection", function () {
             var modelCollection = new DefinedModelCollection(OctocatModel);
 
-           expect(is(modelCollection).instanceOf(ModelCollection)).to.be(true);
+           expect(value(modelCollection).instanceOf(ModelCollection)).to.be(true);
         });
 
         it("should execute described method", function (done) {

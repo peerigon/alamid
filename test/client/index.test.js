@@ -10,7 +10,7 @@ var underscore = require("underscore"),
     history = require("../../lib/client/helpers/historyAdapter.js"),
     logger = require("../../lib/client/logger.client.js"),
     Class = require("nodeclass").Class,
-    is = require("nodeclass").is;
+    value = require("value");
 
 
 var config = require("../../lib/client/config.client.js");
@@ -45,9 +45,6 @@ describe("index.js", function () {
     });
     it("should export nodeclass.Class", function () {
         expect(alamid.util.Class).to.equal(Class);
-    });
-    it("should export nodeclass.is", function () {
-        expect(alamid.util.is).to.equal(is);
     });
 
     it("should export config", function () {

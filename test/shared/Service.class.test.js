@@ -2,7 +2,7 @@
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
-    is = require("nodeclass").is;
+    value = require("value");
 
 var Service = require("../../lib/shared/Service.class.js");
 
@@ -22,7 +22,7 @@ describe("Service", function() {
             blogServiceInstance = new BlogService();
 
             expect(BlogService).not.to.be(undefined);
-            expect(is(blogServiceInstance).instanceOf(Service)).to.be(true);
+            expect(value(blogServiceInstance).instanceOf(Service)).to.be(true);
         });
     });
 });

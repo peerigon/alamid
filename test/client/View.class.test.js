@@ -2,7 +2,7 @@
 
 var expect = require("expect.js");
 
-var is = require("nodeclass").is,
+var value = require("value"),
     formSchemaABC = require("./mocks/models/schemas/formSchemaABC.js"),
     formSchemaDEF = require("./mocks/models/schemas/formSchemaDEF.js"),
     FormModelABC = require("./mocks/models/FormModelABC.class.js"),
@@ -34,7 +34,7 @@ describe("View", function () {
     describe(".construct()", function () {
 
         it("should be kind of DisplayObject", function () {
-            expect(is(view).instanceOf(DisplayObject));
+            expect(value(view).instanceOf(DisplayObject));
         });
 
         it("should be possible to construct an extended View if it has a template declared", function (done) {
@@ -47,7 +47,7 @@ describe("View", function () {
     describe(".define()", function () {
 
         it("should return an instance of Page", function () {
-            expect(is(new ViewDefineExample()).instanceOf(View)).to.equal(true);
+            expect(value(new ViewDefineExample()).instanceOf(View)).to.equal(true);
         });
 
         it("should provide .executeDone() defined in descriptor", function (done) {
