@@ -15,8 +15,8 @@ describe("Model", function() {
         });
 
         it("should define a model and add all methods of event emitter", function() {
-            expect(Dog.on).to.be.a(Function);
-            expect(Dog.find).to.be.a(Function);
+            expect(Dog.on).to.be.a("function");
+            expect(Dog.find).to.be.a("function");
         });
     });
 
