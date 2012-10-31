@@ -91,7 +91,7 @@ describe("sanitizeData", function () {
 
     it("should not sanitize DELETE requests", function (done) {
 
-        req.setMethod("delete");
+        req.setMethod("destroy");
 
         sanitizeData(req, res, function(err) {
             var expectedKeys = [

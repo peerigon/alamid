@@ -11,8 +11,8 @@ var usersD = function usersD(){},
 
 var middleware = {
     "read /blogPost/comments": blogPostCommentsG,
-    "create update delete /blogPost": blogPostCPD,
-    "delete /users" : usersD,
+    "create update destroy /blogPost": blogPostCPD,
+    "destroy /users" : usersD,
     "create /users" : usersC,
     "create update /users/friends": [usersCommentsCU1, usersCommentsCU2],
     "create /users/friends/comments" : usersFriendsCommentsC

@@ -78,14 +78,14 @@ describe("Request", function() {
             myRequest3.setMethod("create");
             myRequest3.setMethod("update");
             myRequest3.setMethod("read");
-            myRequest3.setMethod("delete");
+            myRequest3.setMethod("destroy");
         });
 
         it("should also set allowed methods written in highercase", function() {
             myRequest3.setMethod("CREATE");
             myRequest3.setMethod("READ");
             myRequest3.setMethod("UPDATE");
-            myRequest3.setMethod("DELETE");
+            myRequest3.setMethod("DESTROY");
         });
 
         it("should not allow you to set wrong methods and throw error", function() {

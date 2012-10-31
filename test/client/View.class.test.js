@@ -226,14 +226,14 @@ describe("View", function () {
 
     });
 
-    describe("on Model.delete()", function () {
+    describe("on Model.destroy()", function () {
 
         var formModelABCService;
 
         before(function () {
            formModelABCService = {
-               delete: function (remote, ids, onDelete) {
-                   onDelete({ status: "success" });
+               destroy: function (remote, ids, onDestroy) {
+                   onDestroy({ status: "success" });
                }
            }
         });
@@ -249,13 +249,13 @@ describe("View", function () {
                 done();
             });
 
-            formModelABC.delete(function onDelete(err) {
+            formModelABC.destroy(function onDestroy(err) {
                 if (err) throw err;
             });
 
         });
 
-        it("should not dispose View if bound Model was unbound and then deleted", function (done) {
+        it("should not dispose View if bound Model was unbound and then destroyed", function (done) {
 
             view.on("dispose", function () {
                 // should not be called otherwise mocha will display an Error
@@ -264,7 +264,7 @@ describe("View", function () {
 
             view.unbind();
 
-            formModelABC.delete(function onDelete(err) {
+            formModelABC.destroy(function onDestroyed(err) {
                 if (err) throw err;
                 done();
             });

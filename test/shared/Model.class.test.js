@@ -505,7 +505,7 @@ describe("Model", function() {
                 update : function(remote, ids, model, callback) {
                     callback({ status : "success", data : { name : model.get("name"), age : 12 }});
                 },
-                delete : function(remote, ids, callback) {
+                destroy : function(remote, ids, callback) {
                     callback({ status : "success" });
                 }
             };
@@ -597,10 +597,10 @@ describe("Model", function() {
             });
         });
 
-        describe("#delete", function() {
+        describe("#destroy", function() {
 
             var mockedDeleteService = {
-                delete : function(remote, ids, callback) {
+                destroy : function(remote, ids, callback) {
                     if(ids !== null) {
                         callback({ status : "success" });
                         return;
@@ -613,7 +613,7 @@ describe("Model", function() {
                 octocat = new Octocat(2);
                 octocat.setService(mockedDeleteService);
 
-                octocat.delete(function(err) {
+                octocat.destroy(function(err) {
                     expect(err).to.be(null);
                     done();
                 });

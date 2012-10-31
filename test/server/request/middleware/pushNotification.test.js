@@ -123,15 +123,15 @@ describe("pushNotification", function(){
             });
         });
 
-        it("should emit a broadcast for delete", function(done) {
+        it("should emit a broadcast for destroy", function(done) {
             function onBroadcast(eventName, path, ids, data) {
-                expect(eventName).to.be("remoteDelete");
+                expect(eventName).to.be("remoteDestroy");
                 expect(path).to.be("blogpost");
                 expect(ids).to.eql({ "blogpost" : 1 });
                 expect(data).to.be(undefined);
             }
 
-            req.setMethod("delete");
+            req.setMethod("destroy");
             req.setOriginatedRequest("websocket", getSocketMock(onBroadcast));
             res.setData({ da : "ta" });
 
