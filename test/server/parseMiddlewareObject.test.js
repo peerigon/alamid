@@ -20,7 +20,7 @@ describe("parseMiddlewareObject", function () {
      var mwDef =  {
      "read /blogPost/comments": blogPostCommentsG,
      "create update destroy /blogPost": blogPostCPD,
-     "delete /users" : usersD,
+     "destroy /users" : usersD,
      "create /users" : usersC,
      "create update /users/friends": [usersCommentsCU1, usersCommentsCU2],
      "create /users/friends/comments" : usersFriendsCommentsC
