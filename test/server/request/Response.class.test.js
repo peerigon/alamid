@@ -112,7 +112,7 @@ describe("Response", function() {
             expect(resBody.data).to.eql(testData);
         });
 
-        it("should return message and status if status = error", function() {
+        it("should return message and status and data if status = error", function() {
 
             var testData = { "baaanschi" : "the dog"};
 
@@ -122,7 +122,7 @@ describe("Response", function() {
 
             var resBody = myResponse.getResBody();
             expect(resBody.status).to.be("error");
-            expect(resBody.data).to.be(undefined);
+            expect(resBody.data).not.to.be(undefined);
             expect(resBody.message).to.be("Something might be wrong");
         });
     });
