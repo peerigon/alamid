@@ -57,13 +57,13 @@ describe("attachPushHandlers", function(){
     });
 
 
-    it("should receive remoteDeleteEvents", function(done) {
+    it("should receive remoteDestroyEvents", function(done) {
 
         var modelInstanceMock = {};
 
         var ModelClassMock = {
             emit : function(eventName, event) {
-                expect(eventName).to.be("remoteDelete");
+                expect(eventName).to.be("remoteDestroy");
                 expect(event.model).to.be(modelInstanceMock);
                 done();
             }
@@ -90,7 +90,7 @@ describe("attachPushHandlers", function(){
         attachPushHandlers.__set__("modelCache", modelCacheMock);
         attachPushHandlers(socketMock);
 
-        socketMock.emit("remoteDelete", "blogpost", { blogpost : 2 }, { da : "ta" });
+        socketMock.emit("remoteDestroy", "blogpost", { blogpost : 2 }, { da : "ta" });
     });
 
 
