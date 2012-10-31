@@ -46,7 +46,7 @@ describe("runService", function(){
                         create : function(ids, model) {
                             return { status : "success"};
                         },
-                        delete : function(ids, callback) {
+                        destroy : function(ids, callback) {
                             callback({ status : "success" });
                         }
                     };
