@@ -13,7 +13,8 @@ var underscore = require("underscore"),
 var Collection = require("../../lib/shared/Collection.class.js"),
     Model = require("../../lib/shared/Model.class.js"),
     ModelCollection = require("../../lib/shared/ModelCollection.class.js"),
-    Service = require("../../lib/shared/Service.class.js");
+    Service = require("../../lib/shared/Service.class.js"),
+    Server = require("../../lib/server/Server.class.js");
 
 var setSocketIOOptions = require("../../lib/server/transport/websocket/websocket.js").setSocketIOOptions,
     setConnectInstance = require("../../lib/server/transport/http/http.js").setConnectInstance;
@@ -52,17 +53,10 @@ describe("index.js", function () {
         expect(alamid.Service).to.equal(Service);
     });
 
-    it("should export setSocketIOOptions", function () {
-        expect(alamid.setSocketIOOptions).to.be(setSocketIOOptions);
+    it("should export Server", function () {
+        expect(alamid.Server).to.be(Server);
     });
 
-    it("should export setConnectInstance", function () {
-        expect(alamid.setConnectInstance).to.be(setConnectInstance);
-    });
-
-    it("should export startServer", function () {
-        expect(alamid.startServer).to.be.a("function");
-    });
 
     it("should export createBundle", function() {
         expect(alamid.createBundle).to.be.a("function");
