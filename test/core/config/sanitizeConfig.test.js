@@ -2,7 +2,16 @@
 
 var expect = require("expect.js"),
     path = require("path"),
-    sanitizeConfig = require("../../../lib/core/config/sanitizeConfig.js");
+    rewire = require("rewire"),
+    sanitizeConfig = rewire("../../../lib/core/config/sanitizeConfig.js");
+
+var processMock = Object.create(process);
+
+processMock.cwd = function () {
+    return __dirname + "/sanitizeConfig";
+};
+
+sanitizeConfig.__set__("process", processMock);
 
 describe("sanitizeConfig", function () {
     var config,
@@ -15,8 +24,8 @@ describe("sanitizeConfig", function () {
     beforeEach(function () {
         config = {
             "port" : 1223,
-            "appDir" : "/myDir",
-            "logDir" : "/logDir"
+            "appDir" :processMock.cwd(),
+            "logDir" :processMock.cwd() +  "/log"
         };
     });
 
@@ -49,13 +58,13 @@ describe("sanitizeConfig", function () {
         it("should take the folder if passed", function () {
             sanitizedConfig = sanitizeConfig(config);
 
-            expect(sanitizedConfig.appDir).to.contain('myDir');
+            expect(sanitizedConfig.appDir).to.be(config.appDir);
         });
 
         it("should take the CWD if dir is not set", function () {
             delete config.appDir;
             sanitizedConfig = sanitizeConfig(config);
-            expect(sanitizedConfig.appDir).to.contain(path.resolve(__dirname, "../../../"));
+            expect(sanitizedConfig.appDir).to.be(processMock.cwd());
         });
 
         it("should add paths as object for app-dir", function(){
@@ -67,13 +76,15 @@ describe("sanitizeConfig", function () {
 
         it("should take the folder if passed", function () {
             sanitizedConfig = sanitizeConfig(config);
-            expect(sanitizedConfig.logDir).to.contain('logDir');
+            expect(sanitizedConfig.logDir).to.be(config.logDir);
         });
 
         it("should take the APPDir/log if dir is not set", function () {
+            var appDir = config.appDir;
+
             delete config.appDir;
             sanitizedConfig = sanitizeConfig(config);
-            expect(sanitizedConfig.logDir).to.contain("log");
+            expect(sanitizedConfig.logDir).to.be(appDir + "/log");
         });
     });
 });
