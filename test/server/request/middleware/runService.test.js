@@ -27,7 +27,7 @@ describe("runService", function(){
             update : function(ids, model, callback){
                 callback();
             }
-            //delete is not here because we need a missing method for the test
+            //destroy is not here because we need a missing method for the test
         };
 
         var servicesMock = {
@@ -46,7 +46,7 @@ describe("runService", function(){
                         create : function(ids, model) {
                             return { status : "success"};
                         },
-                        delete : function(ids, callback) {
+                        destroy : function(ids, callback) {
                             callback({ status : "success" });
                         }
                     };
@@ -145,7 +145,7 @@ describe("runService", function(){
 
         it("should next with an error code if the service for the given method is not allowed", function (done) {
 
-            var method = "delete",
+            var method = "destroy",
                 path = "/services/test",
                 data = { "da" : "ta" };
 
@@ -161,7 +161,7 @@ describe("runService", function(){
 
         it("should next with error code 403 if no service is registered for a given path", function (done) {
 
-            var method = "delete",
+            var method = "destroy",
                 path = "/services/test2",
                 data = { "da" : "ta" };
 
@@ -177,7 +177,7 @@ describe("runService", function(){
 
         it("should next with an err if path is not defined", function (done) {
 
-            var method = "delete",
+            var method = "destroy",
                 path = "/services/nonExistingPath",
                 data = { "da" : "ta" };
 
@@ -211,7 +211,7 @@ describe("runService", function(){
         });
 
         it("should accept asynchronous functions as services", function(done) {
-            var method = "delete",
+            var method = "destroy",
                 path = "/services/syncasynctest",
                 data = { "da" : "ta" };
 
@@ -291,7 +291,7 @@ describe("runService", function(){
 
         it("should accept services with deeper paths", function(done) {
 
-            var method = "delete",
+            var method = "destroy",
                 path = "/services/blogpost/123/comments/1245",
                 data = {};
 

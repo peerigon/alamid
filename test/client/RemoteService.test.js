@@ -32,7 +32,7 @@ describe("remoteService", function() {
         expect(serviceAdapter.read).to.be.a("function");
         expect(serviceAdapter.create).to.be.a("function");
         expect(serviceAdapter.update).to.be.a("function");
-        expect(serviceAdapter.delete).to.be.a("function");
+        expect(serviceAdapter.destroy).to.be.a("function");
     });
 
     it("should pass the right data to the dom-adapter request", function(done) {

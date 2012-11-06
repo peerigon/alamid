@@ -19,7 +19,7 @@ var ServiceA = new Class("ServiceA", {
     update : function(ids, model, callback){
         callback({ status : "success", data : { da : "ta" }});
     },
-    delete : function(ids, callback) {
+    destroy : function(ids, callback) {
         callback({ status : "success" });
     }
 });

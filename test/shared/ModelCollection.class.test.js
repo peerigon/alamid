@@ -376,42 +376,42 @@ describe("ModelCollection", function () {
                 throw new Error("remove-listener shall be removed, but it wasn't!");
             });
             octocatModels[0].emit("change");
-            octocatModels[1].emit("delete");
+            octocatModels[1].emit("destroy");
             done();
         });
 
     });
 
-    describe("on Model.delete()", function () {
+    describe("on Model.destroy()", function () {
 
         beforeEach(function () {
              modelCollection.push(octocatModels);
         });
 
-        it("should emit 'remove'-Event if a Model was deleted and pass the Model", function (done) {
+        it("should emit 'remove'-Event if a Model was destroy and pass the Model", function (done) {
 
             modelCollection.once("remove", function checkPassedParam(models) {
                 expect(octocatModel).to.equal(models[0]);
             });
 
-            octocatModel.emit("delete");    // faking delete, we just emit the event.
+            octocatModel.emit("destroy");    // faking delete, we just emit the event.
 
             modelCollection.once("remove", function checkPassedParam(models) {
                 expect(octocatModels[1]).to.equal(models[0]);
                 done();
             });
 
-            octocatModels[1].emit("delete");    // faking delete, we just emit the event.
+            octocatModels[1].emit("destroy");    // faking delete, we just emit the event.
 
         });
 
-        it("it should remove the Model from Collection if it was deleted", function () {
+        it("it should remove the Model from Collection if it was destroy", function () {
 
-            octocatModels[0].emit("delete");    // faking delete, we just emit the event.
+            octocatModels[0].emit("destroy");    // faking delete, we just emit the event.
             expect(modelCollection.toArray()).to.eql([octocatModels[1], octocatModels[2]]);
-            octocatModels[1].emit("delete");
+            octocatModels[1].emit("destroy");
             expect(modelCollection.toArray()).to.eql([octocatModels[2]]);
-            octocatModels[2].emit("delete");
+            octocatModels[2].emit("destroy");
             expect(modelCollection.toArray()).to.eql([]);
 
         });

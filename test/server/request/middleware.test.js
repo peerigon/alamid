@@ -14,7 +14,7 @@ describe("Middleware", function () {
             middleware.setMiddleware("services", {
                 "myPath" : {
                     "create" : [serviceFunction1],
-                    "delete" : [serviceFunction1, serviceFunction2]
+                    "destroy" : [serviceFunction1, serviceFunction2]
                 }
             });
 
@@ -22,7 +22,7 @@ describe("Middleware", function () {
                 myPathDelete;
 
             myPathCreate = middleware.getMiddleware("services", "myPath", "create");
-            myPathDelete = middleware.getMiddleware("services", "myPath", "delete");
+            myPathDelete = middleware.getMiddleware("services", "myPath", "destroy");
 
             expect(myPathCreate[0]).to.be(serviceFunction1);
 
@@ -40,7 +40,7 @@ describe("Middleware", function () {
         middleware.middleware.validators = {
             "myPath" : {
                 "create" : [validatorsFunction1],
-                "delete" : [validatorsFunction1, validatorsFunction2]
+                "destroy" : [validatorsFunction1, validatorsFunction2]
             }
         };
 
@@ -48,7 +48,7 @@ describe("Middleware", function () {
             middleware.setMiddleware("validators", {
                 "myPath" : {
                     "create" : [validatorsFunction1],
-                    "delete" : [validatorsFunction1, validatorsFunction2]
+                    "destroy" : [validatorsFunction1, validatorsFunction2]
                 }
             });
 
@@ -56,7 +56,7 @@ describe("Middleware", function () {
                 myPathDelete;
 
             myPathCreate = middleware.getMiddleware("validators", "myPath", "create");
-            myPathDelete = middleware.getMiddleware("validators", "myPath", "delete");
+            myPathDelete = middleware.getMiddleware("validators", "myPath", "destroy");
 
             expect(myPathCreate[0]).to.be(validatorsFunction1);
 

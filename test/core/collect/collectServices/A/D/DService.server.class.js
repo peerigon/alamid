@@ -16,7 +16,7 @@ var ServiceD = new Class("ServiceD", {
     "update" : function(model, callback) {
         callback();
     },
-    "delete" : function(model, callback) {
+    "destroy" : function(model, callback) {
         callback();
     }
 });

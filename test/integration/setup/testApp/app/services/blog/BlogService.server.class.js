@@ -21,7 +21,7 @@ var BlogService = new Class("BlogService", {
     update : function(ids, model, callback) {
         callback({ status : "success", data : {} });
     },
-    delete : function(ids, callback) {
+    destroy : function(ids, callback) {
         callback({ status : "success" });
     }
 });

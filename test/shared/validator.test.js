@@ -73,6 +73,40 @@ describe("validator", function () {
         });
     });
 
+    describe("Reference Passing", function() {
+
+        var testModel,
+            userSchema = require("./Model/schemas/User3Schema.js");
+
+        beforeEach(function() {
+            testModel = {
+                loginName : "pandaa",
+                email : "panda@bamboo.de",
+                password : "ultrasecure"
+            };
+        });
+
+        it("should pass if loginName and password is set", function (done) {
+
+            localValidation(userSchema, testModel, function(result) {
+                expect(result.result).to.be(true);
+                done();
+            });
+        });
+
+        it("should fail because password has to be set, if loginName is set", function (done) {
+
+            delete testModel.password;
+
+            localValidation(userSchema, testModel, function(result) {
+                expect(result.result).to.be(false);
+                expect(result.fields.loginName).to.be("password-required");
+                done();
+            });
+        });
+
+    });
+
     describe("localValidation", function() {
 
         var sharedSchema = require("./Model/schemas/OctocatSchema.js");

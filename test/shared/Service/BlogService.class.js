@@ -18,7 +18,7 @@ var BlogPostService = Service.define("BlogPostService", {
     update : function() {
 
     },
-    delete : function() {
+    destroy : function() {
 
     }
 });

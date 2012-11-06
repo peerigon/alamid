@@ -19,8 +19,8 @@ describe("parseMiddlewareObject", function () {
 
      var mwDef =  {
      "read /blogPost/comments": blogPostCommentsG,
-     "create update delete /blogPost": blogPostCPD,
-     "delete /users" : usersD,
+     "create update destroy /blogPost": blogPostCPD,
+     "destroy /users" : usersD,
      "create /users" : usersC,
      "create update /users/friends": [usersCommentsCU1, usersCommentsCU2],
      "create /users/friends/comments" : usersFriendsCommentsC
@@ -31,22 +31,22 @@ describe("parseMiddlewareObject", function () {
      //BlogPost
      expect(mwObj.blogpost.create[0]).to.eql(blogPostCPD);
      expect(mwObj.blogpost.update[0]).to.eql(blogPostCPD);
-     expect(mwObj.blogpost.delete[0]).to.eql(blogPostCPD);
+     expect(mwObj.blogpost.destroy[0]).to.eql(blogPostCPD);
 
      //BlogPost-comments
      expect(mwObj["blogpost/comments"].create[0]).to.eql(blogPostCPD);
      expect(mwObj["blogpost/comments"].update[0]).to.eql(blogPostCPD);
-     expect(mwObj["blogpost/comments"].delete[0]).to.eql(blogPostCPD);
+     expect(mwObj["blogpost/comments"].destroy[0]).to.eql(blogPostCPD);
 
      expect(mwObj["blogpost/comments"].read[0]).to.be(blogPostCommentsG);
 
      //Users
      expect(mwObj.users.create[0]).to.be(usersC);
-     expect(mwObj.users.delete[0]).to.be(usersD);
+     expect(mwObj.users.destroy[0]).to.be(usersD);
 
      //Users-friends
      expect(mwObj["users/friends"].create[0]).to.be(usersC);
-     expect(mwObj["users/friends"].delete[0]).to.be(usersD);
+     expect(mwObj["users/friends"].destroy[0]).to.be(usersD);
 
      expect(mwObj["users/friends"].create[1]).to.be(usersCommentsCU1);
      expect(mwObj["users/friends"].create[2]).to.be(usersCommentsCU2);
@@ -56,7 +56,7 @@ describe("parseMiddlewareObject", function () {
 
      //Users-friends-comments
      expect(mwObj["users/friends/comments"].create[0]).to.be(usersC);
-     expect(mwObj["users/friends/comments"].delete[0]).to.be(usersD);
+     expect(mwObj["users/friends/comments"].destroy[0]).to.be(usersD);
 
      expect(mwObj["users/friends/comments"].create[1]).to.be(usersCommentsCU1);
      expect(mwObj["users/friends/comments"].create[2]).to.be(usersCommentsCU2);
@@ -71,7 +71,7 @@ describe("parseMiddlewareObject", function () {
 
      var mwDef =  {
      "read /blogPost/comments": blogPostCommentsG,
-     "create update delete /blogPost": blogPostCPD,
+     "create update destroy /blogPost": blogPostCPD,
      "* /blogPost" : blogPostAll
      };
 
@@ -81,21 +81,21 @@ describe("parseMiddlewareObject", function () {
      expect(mwObj.blogpost.create[0]).to.eql(blogPostAll);
      expect(mwObj.blogpost.read[0]).to.eql(blogPostAll);
      expect(mwObj.blogpost.update[0]).to.eql(blogPostAll);
-     expect(mwObj.blogpost.delete[0]).to.eql(blogPostAll);
+     expect(mwObj.blogpost.destroy[0]).to.eql(blogPostAll);
 
      expect(mwObj.blogpost.create[1]).to.eql(blogPostCPD);
      expect(mwObj.blogpost.update[1]).to.eql(blogPostCPD);
-     expect(mwObj.blogpost.delete[1]).to.eql(blogPostCPD);
+     expect(mwObj.blogpost.destroy[1]).to.eql(blogPostCPD);
 
      //BlogPost-comments
      expect(mwObj["blogpost/comments"].create[0]).to.eql(blogPostAll);
      expect(mwObj["blogpost/comments"].read[0]).to.eql(blogPostAll);
      expect(mwObj["blogpost/comments"].update[0]).to.eql(blogPostAll);
-     expect(mwObj["blogpost/comments"].delete[0]).to.eql(blogPostAll);
+     expect(mwObj["blogpost/comments"].destroy[0]).to.eql(blogPostAll);
 
      expect(mwObj["blogpost/comments"].create[1]).to.eql(blogPostCPD);
      expect(mwObj["blogpost/comments"].update[1]).to.eql(blogPostCPD);
-     expect(mwObj["blogpost/comments"].delete[1]).to.eql(blogPostCPD);
+     expect(mwObj["blogpost/comments"].destroy[1]).to.eql(blogPostCPD);
 
      expect(mwObj["blogpost/comments"].read[1]).to.be(blogPostCommentsG);
      });
@@ -110,7 +110,7 @@ describe("parseMiddlewareObject", function () {
      "read /": readGlobal,
      "update /*" : updateGlobal,
      "* /" : makeAllStuffAwesome,
-     "create update delete /blogPost": blogPostCPD
+     "create update destroy /blogPost": blogPostCPD
      };
 
      var mwObj = parseMiddlewareObject([], mwDef);
@@ -119,14 +119,14 @@ describe("parseMiddlewareObject", function () {
      expect(mwObj.blogpost.create[0]).to.eql(makeAllStuffAwesome);
      expect(mwObj.blogpost.read[0]).to.eql(makeAllStuffAwesome);
      expect(mwObj.blogpost.update[0]).to.eql(makeAllStuffAwesome);
-     expect(mwObj.blogpost.delete[0]).to.eql(makeAllStuffAwesome);
+     expect(mwObj.blogpost.destroy[0]).to.eql(makeAllStuffAwesome);
 
      expect(mwObj.blogpost.read[1]).to.eql(readGlobal);
      expect(mwObj.blogpost.update[1]).to.eql(updateGlobal);
 
      expect(mwObj.blogpost.create[1]).to.eql(blogPostCPD);
      expect(mwObj.blogpost.update[2]).to.eql(blogPostCPD);
-     expect(mwObj.blogpost.delete[1]).to.eql(blogPostCPD);
+     expect(mwObj.blogpost.destroy[1]).to.eql(blogPostCPD);
      });
 
      it("should keep the given order if there are more methods for the same path", function() {
@@ -169,7 +169,7 @@ describe("parseMiddlewareObject", function () {
      expect(mwObj["/"].create[0]).to.be.eql(blogPostCommentsG);
      expect(mwObj["/"].read[0]).to.be.eql(blogPostCommentsG);
      expect(mwObj["/"].update[0]).to.be.eql(blogPostCommentsG);
-     expect(mwObj["/"].delete[0]).to.be.eql(blogPostCommentsG);
+     expect(mwObj["/"].destroy[0]).to.be.eql(blogPostCommentsG);
      });
 
      it("should accept wildcard-only middleware and merge them with other paths", function () {
@@ -184,7 +184,7 @@ describe("parseMiddlewareObject", function () {
      expect(mwObj["/"].create[0]).to.be.eql(blogPostCommentsG);
      expect(mwObj["/"].read[0]).to.be.eql(blogPostCommentsG);
      expect(mwObj["/"].update[0]).to.be.eql(blogPostCommentsG);
-     expect(mwObj["/"].delete[0]).to.be.eql(blogPostCommentsG);
+     expect(mwObj["/"].destroy[0]).to.be.eql(blogPostCommentsG);
 
      expect(mwObj.blogpost.create[0]).to.be.eql(blogPostCommentsG);
      expect(mwObj.blogpost.create[1]).to.be.eql(blogPostCPD);
@@ -203,29 +203,29 @@ describe("parseMiddlewareObject", function () {
         expect(mwObj["/"].create[0]).to.be.eql(blogPostCommentsG);
         expect(mwObj["/"].read[0]).to.be.eql(blogPostCommentsG);
         expect(mwObj["/"].update[0]).to.be.eql(blogPostCommentsG);
-        expect(mwObj["/"].delete[0]).to.be.eql(blogPostCommentsG);
+        expect(mwObj["/"].destroy[0]).to.be.eql(blogPostCommentsG);
 
         expect(mwObj.blogpost.create[0]).to.be.eql(blogPostCommentsG);
         expect(mwObj.blogpost.read[0]).to.be.eql(blogPostCommentsG);
         expect(mwObj.blogpost.update[0]).to.be.eql(blogPostCommentsG);
-        expect(mwObj.blogpost.delete[0]).to.be.eql(blogPostCommentsG);
+        expect(mwObj.blogpost.destroy[0]).to.be.eql(blogPostCommentsG);
         expect(mwObj.blogpost.create[1]).to.be.eql(blogPostCPD);
 
 
         expect(mwObj.users.create[0]).to.be.eql(blogPostCommentsG);
         expect(mwObj.users.read[0]).to.be.eql(blogPostCommentsG);
         expect(mwObj.users.update[0]).to.be.eql(blogPostCommentsG);
-        expect(mwObj.users.delete[0]).to.be.eql(blogPostCommentsG);
+        expect(mwObj.users.destroy[0]).to.be.eql(blogPostCommentsG);
 
         expect(mwObj.friends.create[0]).to.be.eql(blogPostCommentsG);
         expect(mwObj.friends.read[0]).to.be.eql(blogPostCommentsG);
         expect(mwObj.friends.update[0]).to.be.eql(blogPostCommentsG);
-        expect(mwObj.friends.delete[0]).to.be.eql(blogPostCommentsG);
+        expect(mwObj.friends.destroy[0]).to.be.eql(blogPostCommentsG);
 
         expect(mwObj["blogpost/comment"].create[0]).to.be.eql(blogPostCommentsG);
         expect(mwObj["blogpost/comment"].read[0]).to.be.eql(blogPostCommentsG);
         expect(mwObj["blogpost/comment"].update[0]).to.be.eql(blogPostCommentsG);
-        expect(mwObj["blogpost/comment"].delete[0]).to.be.eql(blogPostCommentsG);
+        expect(mwObj["blogpost/comment"].destroy[0]).to.be.eql(blogPostCommentsG);
         expect(mwObj["blogpost/comment"].create[1]).to.be.eql(blogPostCPD);
         //console.log(mwObj);
     });
