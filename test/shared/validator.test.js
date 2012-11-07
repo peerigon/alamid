@@ -28,22 +28,19 @@ describe("validator", function () {
 
             localValidation(pandaSchema, testModel, function(result) {
                 expect(result.result).to.be(false);
-                expect(result.fields.name).to.be("required");
-                expect(result.fields.mood).to.be(true);
-                expect(result.fields.pooCount).to.be(true);
+                expect(result.failedFields.name).to.contain("required");
                 done();
             });
 
         });
 
         it("should check enum fields", function (done) {
+
             testModel.mood = "whatever";
 
             localValidation(pandaSchema, testModel, function(result) {
                 expect(result.result).to.be(false);
-                expect(result.fields.name).to.be(true);
-                expect(result.fields.mood).to.be("enum");
-                expect(result.fields.pooCount).to.be(true);
+                expect(result.failedFields.mood).to.contain("enum");
                 done();
             });
         });
@@ -53,9 +50,8 @@ describe("validator", function () {
 
             localValidation(pandaSchema, testModel, function(result) {
                 expect(result.result).to.be(false);
-                expect(result.fields.name).to.be(true);
-                expect(result.fields.mood).to.be(true);
-                expect(result.fields.pooCount).to.be("min");
+                expect(result.failedFields.pooCount).to.contain("min");
+                expect(result.failedFields).not.to.contain(["mood", "name"]);
                 done();
             });
         });
@@ -65,9 +61,8 @@ describe("validator", function () {
 
             localValidation(pandaSchema, testModel, function(result) {
                 expect(result.result).to.be(false);
-                expect(result.fields.name).to.be(true);
-                expect(result.fields.mood).to.be(true);
-                expect(result.fields.pooCount).to.be("max");
+                expect(result.failedFields.pooCount).to.contain("max");
+                expect(result.failedFields).not.to.contain(["mood", "name"]);
                 done();
             });
         });
@@ -100,11 +95,56 @@ describe("validator", function () {
 
             localValidation(userSchema, testModel, function(result) {
                 expect(result.result).to.be(false);
-                expect(result.fields.loginName).to.be("password-required");
+                expect(result.failedFields.loginName).to.contain("password-required");
                 done();
             });
         });
 
+    });
+
+    describe("Sync and Async Validators", function() {
+
+        var testModel,
+            surfSchema = require("./Model/schemas/SurfSchema.js");
+
+        beforeEach(function() {
+            testModel = {
+                name : "nameWithManyChars",
+                fun : true
+            };
+        });
+
+        it("should pass sync and async validator", function (done) {
+
+            localValidation(surfSchema, testModel, function(result) {
+                expect(result.result).to.be(true);
+                done();
+            });
+        });
+
+        it("should fail the sync validator if name is to short", function (done) {
+
+            testModel.name = "sh";
+
+            localValidation(surfSchema, testModel, function(result) {
+                expect(result.result).to.be(false);
+                expect(result.failedFields.name).to.contain(false);
+                done();
+            });
+        });
+
+        it("should fail the async validator if surf was no fun", function (done) {
+
+            testModel.name = "loooooong";
+            testModel.fun = false;
+
+            localValidation(surfSchema, testModel, function(result) {
+                console.log(result);
+                expect(result.result).to.be(false);
+                expect(result.failedFields.fun).to.contain(false);
+                done();
+            });
+        });
     });
 
     describe("localValidation", function() {
@@ -124,8 +164,7 @@ describe("validator", function () {
         it("should apply the validators and succeed with the default model data", function (done) {
             localValidation(sharedSchema, testModel, function(result) {
                 expect(result.result).to.be(true);
-                expect(result.fields.name).to.be(true);
-                expect(result.fields.age).to.be(true);
+                expect(result.failedFields).not.to.contain(["name", "age"]);
                 done();
             });
         });
@@ -135,8 +174,8 @@ describe("validator", function () {
 
             localValidation(sharedSchema, testModel, function(result) {
                 expect(result.result).to.be(false);
-                expect(result.fields.name).to.be(true);
-                expect(result.fields.age).to.be("tooOld-shared");
+                expect(result.failedFields).not.to.contain(["name"]);
+                expect(result.failedFields.age).to.contain("tooOld-shared");
                 done();
             });
         });
@@ -146,8 +185,7 @@ describe("validator", function () {
 
             localValidation(sharedSchema, testModel, function(result) {
                 expect(result.result).to.be(false);
-                //expect(result.fields.name).to.be(false);
-                expect(result.fields.age).to.be(true);
+                expect(result.failedFields).not.to.contain(["age"]);
                 done();
             });
         });
@@ -158,8 +196,8 @@ describe("validator", function () {
 
             localValidation(sharedSchema, testModel, function(result) {
                 expect(result.result).to.be(false);
-                expect(result.fields.name).to.be("required");
-                expect(result.fields.age).to.be(true);
+                expect(result.failedFields).not.to.contain(["age"]);
+                expect(result.failedFields.name).to.contain("required");
                 done();
             });
         });
@@ -220,7 +258,8 @@ describe("validator", function () {
                     expect(result.result).to.be(false);
                     expect(result.shared.result).to.be(true);
                     expect(result.local.result).to.be(false);
-                    expect(result.local.fields.age).to.contain("tooOld");
+                    expect(result.local.failedFields.age[0]).to.contain("tooOld");
+                    expect(result.failedFields.age[0]).to.contain("tooOld");
                     done();
                 });
             });
@@ -231,8 +270,8 @@ describe("validator", function () {
                     expect(result.result).to.be(false);
                     expect(result.shared.result).to.be(false);
                     expect(result.local.result).to.be(true);
-                    expect(result.shared.fields.location).to.be(false);
-                    expect(result.local.fields.location).to.be(true);
+                    expect(result.shared.failedFields.location).to.contain(false);
+                    expect(result.local.failedFields).not.to.contain("location");
                     done();
                 });
             });
@@ -244,13 +283,12 @@ describe("validator", function () {
 
                     expect(result.result).to.be(false);
                     expect(result.shared.failedFields.age[0]).to.be("tooOld-shared");
-                    expect(result.shared.fields.age).to.be("tooOld-shared");
                     expect(result.shared.result).to.be(false);
 
                     //TODO resolve strange bug with server-schema being replace with client schema in browser
                     //add check for tooOld-server
                     expect(result.local.failedFields.age[0]).to.contain("tooOld");
-                    expect(result.local.fields.age).to.contain("tooOld");
+
                     //also check for "tooOld-server" if bug above is fixed
                     expect(result.failedFields.age).to.contain("tooOld-shared");
 
@@ -264,7 +302,6 @@ describe("validator", function () {
 
                     expect(result.result).to.be(false);
                     expect(result.shared.failedFields.age[0]).to.be("tooOld-shared");
-                    expect(result.shared.fields.age).to.be("tooOld-shared");
                     expect(result.shared.result).to.be(false);
                     expect(result.local).to.be(undefined);
 

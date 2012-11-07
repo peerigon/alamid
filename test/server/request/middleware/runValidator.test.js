@@ -94,7 +94,7 @@ describe("runValidator", function(){
                 expect(response.getStatusCode()).to.be(400);
                 expect(response.getData()).to.be.an("object");
                 expect(resultObj.result).to.be(false);
-                expect(resultObj.shared.fields.title).to.be("toShort");
+                expect(resultObj.shared.failedFields.title).to.contain("toShort");
                 done();
             });
         });
