@@ -258,8 +258,8 @@ describe("validator", function () {
                     expect(result.result).to.be(false);
                     expect(result.shared.result).to.be(true);
                     expect(result.local.result).to.be(false);
-                    expect(result.local.failedFields.age).to.contain("tooOld-server");
-                    expect(result.failedFields.age).to.contain("tooOld-server");
+                    expect(result.local.failedFields.age[0]).to.contain("tooOld");
+                    expect(result.failedFields.age[0]).to.contain("tooOld");
                     done();
                 });
             });
