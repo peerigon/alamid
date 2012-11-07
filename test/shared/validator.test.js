@@ -27,6 +27,7 @@ describe("validator", function () {
             delete testModel.name;
 
             localValidation(pandaSchema, testModel, function(result) {
+                console.log(result);
                 expect(result.result).to.be(false);
                 expect(result.fields.name).to.be("required");
                 expect(result.fields.mood).to.be(true);
@@ -105,6 +106,52 @@ describe("validator", function () {
             });
         });
 
+    });
+
+    describe("Sync and Async Validators", function() {
+
+        var testModel,
+            surfSchema = require("./Model/schemas/SurfSchema.js");
+
+        beforeEach(function() {
+            testModel = {
+                name : "nameWithManyChars",
+                fun : true
+            };
+        });
+
+        it("should pass sync and async validator", function (done) {
+
+            localValidation(surfSchema, testModel, function(result) {
+                expect(result.result).to.be(true);
+                done();
+            });
+        });
+
+        it("should fail the sync validator if name is to short", function (done) {
+
+            testModel.name = "sh";
+
+            localValidation(surfSchema, testModel, function(result) {
+                expect(result.result).to.be(false);
+                expect(result.fields.name).to.be(false);
+                expect(result.fields.fun).to.be(true);
+                done();
+            });
+        });
+
+        it("should fail the async validator if surf was no fun", function (done) {
+
+            testModel.name = "loooooong";
+            testModel.fun = false;
+
+            localValidation(surfSchema, testModel, function(result) {
+                expect(result.result).to.be(false);
+                expect(result.fields.name).to.be(true);
+                expect(result.fields.fun).to.be(false);
+                done();
+            });
+        });
     });
 
     describe("localValidation", function() {
