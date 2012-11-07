@@ -6,11 +6,11 @@ var Model = require('../../../lib/shared/Model.class.js');
 var schema = {
     name: {
         type : String,
-        default : "John Wayne"
+        "default": "John Wayne"
     },
     age: {
         type : Number,
-        default : 45
+        "default": 45
     },
     kills: Number
 };

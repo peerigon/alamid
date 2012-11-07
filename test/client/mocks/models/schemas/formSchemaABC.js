@@ -4,17 +4,17 @@ var formSchemaABC = {
     "input-a": {
         type: String,
         required: true,
-        default: "a"
+        "default": "a"
     },
     "input-b": {
         type: String,
         required: true,
-        default: "b"
+        "default": "b"
     },
     "input-c": {
         type: String,
         required: true,
-        default: "c"
+        "default": "c"
     }
 };
 

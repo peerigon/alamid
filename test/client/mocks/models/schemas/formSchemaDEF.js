@@ -8,17 +8,17 @@ var formSchemaDEF = {
     "input-a": {
         type: String,
         required: true,
-        default: "d"
+        "default": "d"
     },
     "input-b": {
         type: String,
         required: true,
-        default: "e"
+        "default": "e"
     },
     "input-c": {
         type: String,
         required: true,
-        default: "f"
+        "default": "f"
     }
 };
 

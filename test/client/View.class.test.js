@@ -69,7 +69,7 @@ describe("View", function () {
 
         it("should return a reference to itself", function () {
             expect(view.render({
-                "input-a": formSchemaABC["input-a"].default,
+                "input-a": formSchemaABC["input-a"]["default"],
             })).to.be.equal(view);
         });
 
@@ -80,14 +80,14 @@ describe("View", function () {
                 $inputC = $form.find("[data-node='input-c']");
 
             view.render({
-                "input-a": formSchemaABC["input-a"].default,
-                "input-b": formSchemaABC["input-b"].default,
-                "input-c": formSchemaABC["input-c"].default
+                "input-a": formSchemaABC["input-a"]["default"],
+                "input-b": formSchemaABC["input-b"]["default"],
+                "input-c": formSchemaABC["input-c"]["default"]
             });
 
-            expect($inputA.val()).to.be.equal(formSchemaABC["input-a"].default);
-            expect($inputB.val()).to.be.equal(formSchemaABC["input-b"].default);
-            expect($inputC.val()).to.be.equal(formSchemaABC["input-c"].default);
+            expect($inputA.val()).to.be.equal(formSchemaABC["input-a"]["default"]);
+            expect($inputB.val()).to.be.equal(formSchemaABC["input-b"]["default"]);
+            expect($inputC.val()).to.be.equal(formSchemaABC["input-c"]["default"]);
         });
 
         it("should emit an 'beforeRender'-Event", function (done) {
@@ -128,9 +128,9 @@ describe("View", function () {
 
             view.bind(formModelABC);
 
-            expect($inputA.val()).to.be.equal(formSchemaABC["input-a"].default);
-            expect($inputB.val()).to.be.equal(formSchemaABC["input-b"].default);
-            expect($inputC.val()).to.be.equal(formSchemaABC["input-c"].default);
+            expect($inputA.val()).to.be.equal(formSchemaABC["input-a"]["default"]);
+            expect($inputB.val()).to.be.equal(formSchemaABC["input-b"]["default"]);
+            expect($inputC.val()).to.be.equal(formSchemaABC["input-c"]["default"]);
         });
 
         it("should be possible to bind another model", function (done) {
@@ -147,9 +147,9 @@ describe("View", function () {
             view.bind(formModelABC);
             view.bind(formModelDEF);
 
-            expect($inputD.val()).to.be.equal(formSchemaDEF["input-a"].default);
-            expect($inputE.val()).to.be.equal(formSchemaDEF["input-b"].default);
-            expect($inputF.val()).to.be.equal(formSchemaDEF["input-c"].default);
+            expect($inputD.val()).to.be.equal(formSchemaDEF["input-a"]["default"]);
+            expect($inputE.val()).to.be.equal(formSchemaDEF["input-b"]["default"]);
+            expect($inputF.val()).to.be.equal(formSchemaDEF["input-c"]["default"]);
         });
 
         it("should be re-rendered after a bound model has emitted 'change'-Event", function () {
@@ -188,7 +188,7 @@ describe("View", function () {
 
             formModelABC.set("input-a", "d");
 
-            expect($inputA.val()).to.be.equal(formSchemaABC["input-a"].default);
+            expect($inputA.val()).to.be.equal(formSchemaABC["input-a"]["default"]);
         });
 
     });
@@ -213,7 +213,7 @@ describe("View", function () {
 
             formModelABC.set("input-a", "d");
 
-            expect($inputA.val()).to.be.equal(formSchemaABC["input-a"].default);
+            expect($inputA.val()).to.be.equal(formSchemaABC["input-a"]["default"]);
         });
 
         it("should call Super's dispose()", function (done) {

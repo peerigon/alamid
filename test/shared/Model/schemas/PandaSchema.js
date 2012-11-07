@@ -5,7 +5,7 @@ var PandaSchema = {
         type: String,
         required: true
     },
-    mood : { type : String, enum: ["happy", "hungry", "crazy"] },
+    mood : { type : String, "enum": ["happy", "hungry", "crazy"] },
     pooCount : { type : Number, min: 10, max : 100 }
 };
 
