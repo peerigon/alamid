@@ -274,7 +274,7 @@ describe("App", function () {
     describe(".getCurrentPages()", function () {
 
         beforeEach(function () {
-            app.start();
+            app.start(); // Initializes the MainPage
             pages.main = app.getMainPage();
             pages.main.setSubPage(pages.home);
             pages.home.setSubPage(pages.about);
@@ -290,6 +290,35 @@ describe("App", function () {
 
         it("should return an array with the current page hierarchy", function () {
             expect(app.getCurrentPages()).to.eql([pages.main, pages.home, pages.about]);
+        });
+
+    });
+
+    describe(".getParentPage()", function () {
+
+        beforeEach(function () {
+            app.start(); // Initializes the MainPage
+        });
+
+        afterEach(function () {
+            pageJS.stop();
+        });
+
+        it("should return MainPage as Parent-Page", function () {
+
+            pages.main = app.getMainPage();
+            pages.main.setSubPage(pages.home);
+
+            expect(app.getParentPage()).to.equal(pages.main);
+
+        });
+
+        it("should return null for Parent-Page", function () {
+
+            pages.main = app.getMainPage();
+
+            expect(app.getParentPage()).to.equal(null);
+
         });
 
     });
