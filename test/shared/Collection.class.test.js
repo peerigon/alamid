@@ -531,6 +531,26 @@ describe("Collection", function () {
 
     });
 
+    describe(".find()", function () {
+
+        beforeEach(function () {
+
+            collection.push(octocatModels);
+
+        });
+
+        it("should find searched Model", function () {
+
+            function findIterator(model, index) {
+                return model === octocatModels[2];
+            }
+
+            expect(collection.find(findIterator)).to.equal(octocatModels[2]);
+
+       });
+
+    });
+
     describe(".setMuted()", function () {
 
         it("should not emit 'change'-Event after true was passed", function (done) {
