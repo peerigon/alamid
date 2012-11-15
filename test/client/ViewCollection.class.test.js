@@ -563,7 +563,7 @@ describe("ViewCollection", function () {
 
             viewCollection.bind(carCollection);
 
-            liElements = $viewCollectioNode.find("li");
+            liElements = $viewCollectioNode.find("li").not(".hide");
 
             expect(liElements.length).to.equal(2);
             _(liElements).each(function liElementsIterator(liElement) {
@@ -583,7 +583,7 @@ describe("ViewCollection", function () {
 
             viewCollection.setFilter(null);
 
-            liElements = $viewCollectioNode.find("li");
+            liElements = $viewCollectioNode.find("li").not(".hide");
 
             expect(liElements.length).to.equal(3);
             _(liElements).each(function liElementsIterator(liElement, index) {
@@ -602,7 +602,7 @@ describe("ViewCollection", function () {
 
             carCollection.unshift([fiat, porsche]);
 
-            liElements = $viewCollectioNode.find("li");
+            liElements = $viewCollectioNode.find("li").not(".hide");
 
             expect(liElements.length).to.be.equal(4);
             expect(jQuery(liElements[0]).find("[data-node='manufactor']").text()).to.equal(porsche.get("manufactor"));
@@ -620,7 +620,7 @@ describe("ViewCollection", function () {
 
             carCollection.push([fiat, porsche]);
 
-            liElements = $viewCollectioNode.find("li");
+            liElements = $viewCollectioNode.find("li").not(".hide");
 
             expect(liElements.length).to.be.equal(1);
             expect(jQuery(liElements[0]).find("[data-node='manufactor']").text()).to.equal(porsche.get("manufactor"));
@@ -639,7 +639,7 @@ describe("ViewCollection", function () {
             carCollection.set(0, fiat);
             carCollection.set(1, porsche);
 
-            liElements = $viewCollectioNode.find("li");
+            liElements = $viewCollectioNode.find("li").not(".hide");
 
             expect(jQuery(liElements[0]).find("[data-node='manufactor']").text()).to.equal(porsche.get("manufactor"));
         });
@@ -657,7 +657,7 @@ describe("ViewCollection", function () {
 
             viewCollection.setFilter(null);
 
-            liElements = $viewCollectioNode.find("li");
+            liElements = $viewCollectioNode.find("li").not(".hide");
 
             expect(liElements.length).to.be.equal(5);
             expect(jQuery(liElements[0]).find("[data-node='manufactor']").text()).to.equal(fiat.get("manufactor"));
