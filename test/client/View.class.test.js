@@ -69,7 +69,7 @@ describe("View", function () {
 
         it("should return a reference to itself", function () {
             expect(view.render({
-                "input-a": formSchemaABC["input-a"]["default"],
+                "input-a": formSchemaABC["input-a"]["default"]
             })).to.be.equal(view);
         });
 
