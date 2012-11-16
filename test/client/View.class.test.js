@@ -3,54 +3,49 @@
 var expect = require("expect.js");
 
 var value = require("value"),
-    formSchemaABC = require("./mocks/models/schemas/formSchemaABC.js"),
-    formSchemaDEF = require("./mocks/models/schemas/formSchemaDEF.js"),
-    FormModelABC = require("./mocks/models/FormModelABC.class.js"),
-    FormModelDEF = require("./mocks/models/FormModelDEF.class.js"),
+
     DisplayObject = require("../../lib/client/DisplayObject.class.js"),
     View = require("../../lib/client/View.class.js"),
-    ViewExample = require("./mocks/ViewExample.class.js"),
-    ViewExampleWithTemplate = require("./mocks/ViewExampleWithTemplate.class.js"),
+
     ViewDefineExample = require("./mocks/ViewDefineExample.class.js"),
-    DOMNodeMocks = require("./mocks/DOMNodeMocks.js");
+
+    formSchema = require("./mocks/models/schemas/formSchema.js"),
+    FormModel = require("./mocks/models/FormModel.class.js"),
+
+    FormView = require("./mocks/FormView.class.js");
 
 
 describe("View", function () {
 
-    var formTemplate = DOMNodeMocks.getFormString()
-            .replace("value='a'", '') //Remove values as they should be rendered on bind()
-            .replace("value='b'", '')
-            .replace("value='c'", ''),
-        view,
-        formModelABC,
-        formModelDEF;
+    var formView,
+        template,
+        formModel,
+        schema;
 
     beforeEach(function () {
-        formModelABC = new FormModelABC();
-        formModelDEF = new FormModelDEF();
-        view = new ViewExample(formTemplate);
+
+        formView = new FormView();
+        template = formView.getTemplate();
+        formModel = new FormModel();
+        schema = formSchema;
+
     });
 
     describe(".construct()", function () {
 
         it("should be kind of DisplayObject", function () {
-            expect(value(view).instanceOf(DisplayObject));
-        });
-
-        it("should be possible to construct an extended View if it has a template declared", function (done) {
-            view = new ViewExampleWithTemplate();
-            done();
+            expect(value(formView).instanceOf(DisplayObject));
         });
 
     });
 
     describe(".define()", function () {
 
-        it("should return an instance of Page", function () {
+        it("should return an instance of View", function () {
             expect(value(new ViewDefineExample()).instanceOf(View)).to.equal(true);
         });
 
-        it("should provide .executeDone() defined in descriptor", function (done) {
+        it("should provide .executeDone() which was defined in descriptor", function (done) {
 
             var definedView = new ViewDefineExample(done);
 
@@ -61,106 +56,284 @@ describe("View", function () {
 
     describe(".render()", function () {
 
-        it("should throw an error if no Model was bound or data as argument provided", function () {
-            expect(function () {
-                view.render();
-            }).to.throwError();
+        var $formView;
+
+        beforeEach(function () {
+
+            $formView = jQuery(formView.getNode());
+
         });
+
+        it("should throw an error if no Model was bound or an data object as argument provided", function () {
+
+            expect(function () {
+                formView.render();
+            }).to.throwError();
+
+        });
+
 
         it("should return a reference to itself", function () {
-            expect(view.render({
-                "input-a": formSchemaABC["input-a"]["default"]
-            })).to.be.equal(view);
+
+            expect(formView.render({
+
+                "range": 5
+
+            })).to.be.equal(formView);
+
         });
 
-        it("should render the data which was given as argument", function () {
-            var $form = jQuery(view.getNode()),
-                $inputA = $form.find("[data-node='input-a']"),
-                $inputB = $form.find("[data-node='input-b']"),
-                $inputC = $form.find("[data-node='input-c']");
+        it("should apply data as value to a text-input-field", function () {
 
-            view.render({
-                "input-a": formSchemaABC["input-a"]["default"],
-                "input-b": formSchemaABC["input-b"]["default"],
-                "input-c": formSchemaABC["input-c"]["default"]
-            });
+            var $text = $formView.find("[data-node='text']");
 
-            expect($inputA.val()).to.be.equal(formSchemaABC["input-a"]["default"]);
-            expect($inputB.val()).to.be.equal(formSchemaABC["input-b"]["default"]);
-            expect($inputC.val()).to.be.equal(formSchemaABC["input-c"]["default"]);
+            formView.render( { "text": formSchema.text.default } );
+
+            expect($text[0].value).to.equal(formSchema.text.default);
+
+        });
+
+        it("should apply data as value to a textarea", function () {
+
+            var $textarea = $formView.find("[data-node='textarea']");
+
+            formView.render( { "textarea": formSchema.textarea.default } );
+
+            expect($textarea[0].value).to.equal(formSchema.textarea.default);
+
+        });
+
+        it("should apply data as value to a range-input-field", function () {
+
+            var $range = $formView.find("[data-node='range']");
+
+            formView.render( { "range": formSchema.range.default } );
+
+            expect($range[0].value).to.eql(formSchema.range.default);
+
+        });
+
+        it("should apply Boolean to checked attribute to a checkbox-input-field", function () {
+
+            var $checkbox = $formView.find("[data-node='checkbox']");
+
+            formView.render( { "checkbox": formSchema.checkbox.default } );
+
+            expect($checkbox[0].attributes.checked).to.equal(formSchema.checkbox.default);
+        });
+
+        it("should apply Boolean to checked attribute to a checkbox-input-field", function () {
+
+            var $radio = $formView.find("[data-node='radio']");
+
+            formView.render( { "radio": formSchema.radio.default } );
+
+            expect($radio[0].attributes.checked).to.equal(formSchema.radio.default);
+        });
+
+        it("should apply String as value to a button-input-field", function () {
+
+            var $button = $formView.find("[data-node='button']");
+
+            formView.render( { "button": formSchema.button.default } );
+
+            expect($button[0].value).to.eql(formSchema.button.default);
+
+        });
+
+        it("should apply String as value to a submit-input-field", function () {
+
+            var $submit = $formView.find("[data-node='submit']");
+
+            formView.render( { "submit": formSchema.submit.default } );
+
+            expect($submit[0].value).to.eql(formSchema.submit.default);
+
+        });
+
+        /*
+        it("should apply a Date as value to date-input-field", function () {
+
+            var $date = $formView.find("[data-node='date']");
+
+            formView.render( { "date": formSchema.date.default } );
+
+            expect($date[0].value).to.equal(formSchema.date.default.toString());
+
+        });
+        */
+
+        /*
+        it("should apply a Date as value to time-input-field", function () {
+
+            var $time = $formView.find("[data-node='time']");
+
+            formView.render( { "time": formSchema.time.default } );
+
+            expect($time[0].value).to.equal(formSchema.time.default.toString());
+
+        });
+        */
+
+        /*
+        it("should apply a Date as value to a datetime-input-field", function () {
+
+            var $datetime = $formView.find("[data-node='datetime']");
+
+            formView.render( { "datetime": formSchema.datetime.default } );
+
+            expect($datetime[0].value).to.equal(formSchema.time.default.toString());
+
+        });
+        */
+
+        it("should apply Data as src-attribute to an image", function () {
+
+            var $img = $formView.find("[data-node='img']");
+
+            formView.render( { "img": formSchema.img.default } );
+
+            expect($img[0].attributes.src).to.equal(formSchema.img.default);
+
+        });
+
+        it("should apply Data as innerText of any other Tag", function () {
+
+            var $h1 = $formView.find("[data-node='heading']");
+
+            formView.render( { "heading": "heading" } );
+
+            expect($h1[0].innerText).to.equal("heading");
+
         });
 
         it("should emit an 'beforeRender'-Event", function (done) {
-            view.bind(formModelABC);
-            view.on("beforeRender", function onBeforeRender() {
+
+            formView.on("beforeRender", function onBeforeRender() {
                 done();
             });
-            view.render();
+
+            formView.render( { } );
         });
 
         it("should emit an 'render'-Event", function (done) {
-            view.bind(formModelABC);
-            view.on("render", function onRender() {
+
+            formView.on("render", function onRender() {
                 done();
             });
-            view.render();
+            formView.render( { } );
         });
+
 
     });
 
     describe(".bind()", function () {
 
+        var $formView;
+
+        beforeEach(function () {
+
+            $formView = jQuery(formView.getNode());
+
+        });
+
         it("should throw an Error if you try to bind an Object not kind of Model", function () {
+
             expect(function () {
-                view.bind({});
+                formView.bind({});
             }).to.throwError();
+
         });
 
         it("should return a reference to itself", function () {
-           expect(view.bind(formModelABC)).to.be.equal(view);
+
+            expect(formView.bind(formModel)).to.equal(formView);
+
         });
 
         it("should render the view according to data from given model", function () {
-            var $form = jQuery(view.getNode()),
-                $inputA = $form.find("[data-node='input-a']"),
-                $inputB = $form.find("[data-node='input-b']"),
-                $inputC = $form.find("[data-node='input-c']");
 
-            view.bind(formModelABC);
+            var $text = $formView.find("[data-node='text']"),
+                $textarea = $formView.find("[data-node='textarea']"),
+                $range = $formView.find("[data-node='range']"),
+                $checkbox = $formView.find("[data-node='checkbox']"),
+                $radio = $formView.find("[data-node='radio']"),
+                $button = $formView.find("[data-node='button']"),
+                $submit = $formView.find("[data-node='submit']"),
+                $img = $formView.find("[data-node='img']");
 
-            expect($inputA.val()).to.be.equal(formSchemaABC["input-a"]["default"]);
-            expect($inputB.val()).to.be.equal(formSchemaABC["input-b"]["default"]);
-            expect($inputC.val()).to.be.equal(formSchemaABC["input-c"]["default"]);
+            formView.bind(formModel);
+
+            expect($text.val()).to.equal(formSchema.text.default);
+            expect($textarea.val()).to.equal(formSchema.textarea.default);
+            expect(parseInt($range.val())).to.equal(formSchema.range.default);
+            //@TODO
+            //expect($checkbox[0].attributes.checked).to.equal(formSchema.checkbox.default);
+            //expect($radio[0].attributes.checked).to.equal(formSchema.radio.default);
+            expect($button.val()).to.equal(formSchema.button.default);
+            expect($submit.val()).to.equal(formSchema.submit.default);
+            expect($img[0].attributes.src).to.equal(formSchema.img.default);
+
         });
 
-        it("should be possible to bind another model", function (done) {
-            view.bind(formModelDEF);
-            done();
-        });
+        it("should be re-rendered after a new model was bound", function () {
 
-        it("should be re-rendered after a new model was binded", function () {
-            var $form = jQuery(view.getNode()),
-                $inputD = $form.find("[data-node='input-a']"),
-                $inputE = $form.find("[data-node='input-b']"),
-                $inputF = $form.find("[data-node='input-c']");
+            var newFormModel = new FormModel(),
 
-            view.bind(formModelABC);
-            view.bind(formModelDEF);
+                $text = $formView.find("[data-node='text']"),
+                $textarea = $formView.find("[data-node='textarea']"),
+                $range = $formView.find("[data-node='range']"),
+                $checkbox = $formView.find("[data-node='checkbox']"),
+                $radio = $formView.find("[data-node='radio']"),
+                $button = $formView.find("[data-node='button']"),
+                $submit = $formView.find("[data-node='submit']"),
+                $img = $formView.find("[data-node='img']");
 
-            expect($inputD.val()).to.be.equal(formSchemaDEF["input-a"]["default"]);
-            expect($inputE.val()).to.be.equal(formSchemaDEF["input-b"]["default"]);
-            expect($inputF.val()).to.be.equal(formSchemaDEF["input-c"]["default"]);
+            newFormModel.set("text", "newText");
+
+            formView.bind(formModel);
+            formView.bind(newFormModel);
+
+            expect($text.val()).to.equal("newText");
+            expect($textarea.val()).to.equal(formSchema.textarea.default);
+            expect(parseInt($range.val())).to.equal(formSchema.range.default);
+            //@TODO
+            //expect($checkbox[0].attributes.checked).to.equal(formSchema.checkbox.default);
+            //expect($radio[0].attributes.checked).to.equal(formSchema.radio.default);
+            expect($button.val()).to.equal(formSchema.button.default);
+            expect($submit.val()).to.equal(formSchema.submit.default);
+            expect($img[0].attributes.src).to.equal(formSchema.img.default);
+
         });
 
         it("should be re-rendered after a bound model has emitted 'change'-Event", function () {
-            var $form = jQuery(view.getNode()),
-                $inputA = $form.find("[data-node='input-a']");
 
-            view.bind(formModelABC);
+            var $text = $formView.find("[data-node='text']"),
+                $textarea = $formView.find("[data-node='textarea']"),
+                $range = $formView.find("[data-node='range']"),
+                $checkbox = $formView.find("[data-node='checkbox']"),
+                $radio = $formView.find("[data-node='radio']"),
+                $button = $formView.find("[data-node='button']"),
+                $submit = $formView.find("[data-node='submit']"),
+                $img = $formView.find("[data-node='img']");
 
-            formModelABC.set("input-a", "d"); //set will emit 'change'-Event
+            formView.bind(formModel);
 
-            expect($inputA.val()).to.be.equal("d");
+            formModel.set({
+                "text": "newText",
+                "textarea": "newTextArea"
+            });
+
+            expect($text.val()).to.equal("newText");
+            expect($textarea.val()).to.equal("newTextArea");
+            expect(parseInt($range.val())).to.equal(formSchema.range.default);
+            //@TODO
+            //expect($checkbox.attr("checked")).to.equal(formSchema.checkbox.default);
+            //expect($radio.attr("checked")).to.equal(formSchema.radio.default);
+            expect($button.val()).to.equal(formSchema.button.default);
+            expect($submit.val()).to.equal(formSchema.submit.default);
+            expect($img[0].attributes.src).to.equal(formSchema.img.default);
+
         });
 
     });
@@ -168,27 +341,33 @@ describe("View", function () {
     describe(".unbind()", function () {
 
         it("should throw an Error if a Model was unbound and no data was given to .render() as argument", function () {
-            view.bind(formModelABC);
-            view.unbind();
+
+            formView.bind(formModel);
+
+            formView.unbind();
+
             expect(function () {
-                view.render();
+
+                formView.render();
+
             }).to.throwError();
         });
 
         it("should return a reference to itself", function () {
-            expect(view.unbind()).to.be.equal(view);
+            expect(formView.unbind()).to.be.equal(formView);
         });
 
         it("should NOT be re-rendered after an unbound Model has emitted 'change'-Event", function () {
-            var $form = jQuery(view.getNode()),
-                $inputA = $form.find("[data-node='input-a']");
 
-            view.bind(formModelABC);
-            view.unbind();
+            var $formView = jQuery(formView.getNode()),
+                $text = $formView.find("[data-node='text']");
 
-            formModelABC.set("input-a", "d");
+            formView.bind(formModel);
+            formView.unbind();
 
-            expect($inputA.val()).to.be.equal(formSchemaABC["input-a"]["default"]);
+            formModel.set("text", "newText");
+
+            expect($text.val()).to.equal(formSchema.text.default);
         });
 
     });
@@ -196,8 +375,11 @@ describe("View", function () {
     describe(".getModel()", function () {
 
         it("should return the bound Model", function () {
-            view.bind(formModelABC);
-            expect(view.getModel()).to.equal(formModelABC);
+
+            formView.bind(formModel);
+
+            expect(formView.getModel()).to.equal(formModel);
+
         });
 
     });
@@ -205,51 +387,57 @@ describe("View", function () {
     describe(".dispose()", function () {
 
         it("should unbind a bound Model", function () {
-            var $form = jQuery(view.getNode()),
-                $inputA = $form.find("[data-node='input-a']");
 
-            view.bind(formModelABC);
-            view.dispose();
+            var $formView = jQuery(formView.getNode()),
+                $text = $formView.find("[data-node='text']");
 
-            formModelABC.set("input-a", "d");
+            formView.bind(formModel);
+            formView.unbind();
 
-            expect($inputA.val()).to.be.equal(formSchemaABC["input-a"]["default"]);
+            formModel.set("text", "newText");
+
+            expect($text.val()).to.equal(formSchema.text.default);
+
         });
 
         it("should call Super's dispose()", function (done) {
-            view.on("beforeDispose", function () {
+
+            formView.on("beforeDispose", function () {
+
                 done();
+
             });
 
-            view.dispose();
+            formView.dispose();
         });
 
     });
 
     describe("on Model.destroy()", function () {
 
-        var formModelABCService;
-
-        before(function () {
-           formModelABCService = {
-               destroy: function (remote, ids, onDestroy) {
-                   onDestroy({ status: "success" });
-               }
-           }
-        });
+        var formModelService;
 
         beforeEach(function () {
-            formModelABC.setService(formModelABCService);
-            view.bind(formModelABC);
+
+
+            formModelService = {
+
+                destroy: function (remote, ids, onDestroy) {
+                    onDestroy({ status: "success" });
+                }
+            }
+            formModel.setService(formModelService);
+            formView.bind(formModel);
+
         });
 
         it ("should dispose View if bound Model was deleted", function (done) {
 
-            view.on("dispose", function () {
+            formView.on("dispose", function () {
                 done();
             });
 
-            formModelABC.destroy(function onDestroy(err) {
+            formModel.destroy(function onDestroy(err) {
                 if (err) throw err;
             });
 
@@ -257,16 +445,19 @@ describe("View", function () {
 
         it("should not dispose View if bound Model was unbound and then destroyed", function (done) {
 
-            view.on("dispose", function () {
+            formView.on("dispose", function () {
                 // should not be called otherwise mocha will display an Error
                 done();
             });
 
-            view.unbind();
+            formView.unbind();
 
-            formModelABC.destroy(function onDestroyed(err) {
+            formModel.destroy(function onDestroyed(err) {
+
                 if (err) throw err;
+
                 done();
+
             });
 
         });
