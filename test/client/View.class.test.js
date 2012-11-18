@@ -119,7 +119,7 @@ describe("View", function () {
 
             formView.render( { "checkbox": formSchema.checkbox.default } );
 
-            expect($checkbox[0].attributes.checked).to.equal(formSchema.checkbox.default);
+            expect($checkbox[0].checked).to.equal(formSchema.checkbox.default);
         });
 
         it("should apply Boolean to checked attribute to a checkbox-input-field", function () {
@@ -128,7 +128,7 @@ describe("View", function () {
 
             formView.render( { "radio": formSchema.radio.default } );
 
-            expect($radio[0].attributes.checked).to.equal(formSchema.radio.default);
+            expect($radio[0].checked).to.equal(formSchema.radio.default);
         });
 
         it("should apply String as value to a button-input-field", function () {
@@ -267,9 +267,8 @@ describe("View", function () {
             expect($text.val()).to.equal(formSchema.text.default);
             expect($textarea.val()).to.equal(formSchema.textarea.default);
             expect(parseInt($range.val())).to.equal(formSchema.range.default);
-            //@TODO
-            //expect($checkbox[0].attributes.checked).to.equal(formSchema.checkbox.default);
-            //expect($radio[0].attributes.checked).to.equal(formSchema.radio.default);
+            expect($checkbox[0].checked).to.equal(formSchema.checkbox.default);
+            expect($radio[0].checked).to.equal(formSchema.radio.default);
             expect($button.val()).to.equal(formSchema.button.default);
             expect($submit.val()).to.equal(formSchema.submit.default);
             expect($img[0].attributes.src).to.equal(formSchema.img.default);
@@ -297,9 +296,8 @@ describe("View", function () {
             expect($text.val()).to.equal("newText");
             expect($textarea.val()).to.equal(formSchema.textarea.default);
             expect(parseInt($range.val())).to.equal(formSchema.range.default);
-            //@TODO
-            //expect($checkbox[0].attributes.checked).to.equal(formSchema.checkbox.default);
-            //expect($radio[0].attributes.checked).to.equal(formSchema.radio.default);
+            expect($checkbox[0].checked).to.equal(formSchema.checkbox.default);
+            expect($radio[0].checked).to.equal(formSchema.radio.default);
             expect($button.val()).to.equal(formSchema.button.default);
             expect($submit.val()).to.equal(formSchema.submit.default);
             expect($img[0].attributes.src).to.equal(formSchema.img.default);
@@ -327,9 +325,8 @@ describe("View", function () {
             expect($text.val()).to.equal("newText");
             expect($textarea.val()).to.equal("newTextArea");
             expect(parseInt($range.val())).to.equal(formSchema.range.default);
-            //@TODO
-            //expect($checkbox.attr("checked")).to.equal(formSchema.checkbox.default);
-            //expect($radio.attr("checked")).to.equal(formSchema.radio.default);
+            expect($checkbox[0].checked).to.equal(formSchema.checkbox.default);
+            expect($radio[0].checked).to.equal(formSchema.radio.default);
             expect($button.val()).to.equal(formSchema.button.default);
             expect($submit.val()).to.equal(formSchema.submit.default);
             expect($img[0].attributes.src).to.equal(formSchema.img.default);
