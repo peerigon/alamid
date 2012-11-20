@@ -3,11 +3,18 @@
     "use strict";
 
     var nof5 = window.nof5,
-        mocha = window.mocha;
+        mocha = window.mocha,
+        reconnect = false;
 
     jQuery(function onReady() {
 
         nof5.connect(function onConnect(socket) {
+
+            if (reconnect === true) {
+                location.reload();
+            }
+
+            reconnect = true;
 
             var runner;
 
