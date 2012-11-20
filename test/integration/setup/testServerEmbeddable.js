@@ -5,10 +5,12 @@ var _ = require("underscore");
 function runTestServer(config) {
 
     process.env = _.extend(process.env, config);
-    var alamid = require("alamid");
+    var alamid = require("alamid"),
+        Server = alamid.Server;
 
     //start the server
-    return alamid.startServer();
+    var server = new Server();
+    return server.start();
 
 }
 

@@ -1,8 +1,10 @@
 "use strict";
 
-var alamid = require("alamid");
+var alamid = require("alamid"),
+    Server = alamid.Server;
 
 //start the server
-alamid.startServer();
+var server = new Server();
+server.start();
 
 

@@ -17,7 +17,7 @@ function runTestServer(configEnv, callback) {
 
     testSrv.stdout.on("data", function(data) {
         console.log(data);
-        if(data.indexOf("alamid-server running") !== -1){
+        if(data.indexOf("Alamid-Server running") !== -1){
             callback(testSrv);
         }
     });
