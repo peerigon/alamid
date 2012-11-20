@@ -46,12 +46,13 @@ describe("readConfig", function () {
     });
 
 
-    it("should read a custom config if passed via args", function (done) {
+    it("should read a custom config if passed via args and accept additional attributes (other than the default config)", function (done) {
 
         var relativePathToTestConf = path.relative(process.cwd(), __dirname + "/readConfig/customConfig.json");
 
         checkConfigViaSubprocess("--config " + relativePathToTestConf, {}, function(parsedConf) {
             expect(parsedConf.port).to.equal(1234);
+            expect(parsedConf.customConfigAttribute).to.be(true);
             done();
         });
     });
@@ -62,6 +63,7 @@ describe("readConfig", function () {
 
         checkConfigViaSubprocess("", { "config" : relativePathToTestConf } , function(parsedConf) {
             expect(parsedConf.port).to.equal(1234);
+            expect(parsedConf.customConfigAttribute).to.be(true);
             done();
         });
     });
