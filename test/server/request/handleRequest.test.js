@@ -3,16 +3,33 @@
 var expect = require("expect.js"),
     rewire = require("rewire"),
     path = require("path"),
+    middler = require("middler"),
     Request = require("../../../lib/server/request/Request.class.js"),
     config = require("../../../lib/shared/config"),
-    collectMiddleware = require("../../../lib/server/collectMiddleware.js"),
+    router = require("../../../lib/server/router.js"),
     middleware = require("../../../lib/server/request/middleware.js");
 
 describe("handleRequest", function() {
 
-    describe("#Services Request", function() {
+    var handleRequest,
+        routeHandler;
 
-        var handleRequest;
+    beforeEach(function() {
+
+        router.set(middler());
+
+        routeHandler = router.get();
+
+        routeHandler.on("error", function(err, req, res) {
+
+            res.end({ status : "error", message : err.message, data : {} });
+        });
+
+        handleRequest = require("../../../lib/server/request/handleRequest.js");
+
+    });
+
+    describe("#Services Request", function() {
 
         function runServiceMock(req, res, next) {
             next();
@@ -34,16 +51,10 @@ describe("handleRequest", function() {
             ];
         }
 
-        beforeEach(function() {
-
-            handleRequest = rewire("../../../lib/server/request/handleRequest.js");
-
-            handleRequest.__set__("getMiddleware", getMiddlewareMock);
-            handleRequest.__set__("runService", runServiceMock);
-            handleRequest.__set__("sanitizeData", sanitizeDataMock);
-        });
-
         it("should handle the request and return without an error if all middleware worked fine", function(done) {
+
+            routeHandler.add(["post", "put", "delete", "get"], "/services/*", runServiceMock);
+
             var req = new Request("create", "/services/blogPost", { da : "ta" });
 
             handleRequest(req, function(err, resReq, resRes) {
@@ -56,22 +67,23 @@ describe("handleRequest", function() {
 
         it("should handle the request and return without an error if all middleware worked fine", function(done) {
 
-            function getMiddlewareMock() {
-                return [
-                    function a(req, res, next) {
-                        next(new Error("middleware a failed"));
-                    },
-                    function b(req, res,  next) {
-                        next(null);
-                    }
-                ];
-            }
+            var middlewareMock = [
+                function a(req, res, next) {
+                    next(new Error("middleware a failed"));
+                },
+                function b(req, res,  next) {
+                    next(null);
+                }
+            ];
 
-            handleRequest.__set__("getMiddleware", getMiddlewareMock);
+            routeHandler.add(["post", "put", "delete", "get"], "/services/*", middlewareMock);
+            routeHandler.add(["post", "put", "delete", "get"], "/services/*", runServiceMock);
+
             var req = new Request("create", "/services/blogPost", {});
 
-            handleRequest(req, function(err, resReq) {
-                expect(err.message).to.contain("middleware a failed");
+            handleRequest(req, function(err, resReq, res) {
+                expect(res.getStatus()).to.be("error");
+                expect(res.getErrorMessage()).to.contain("middleware a failed");
                 expect(resReq).to.eql(req);
                 done();
             });
@@ -87,46 +99,18 @@ describe("handleRequest", function() {
         });
 
         it("should end the request if the type is not allowed", function(done) {
-            var req = new Request("create", "/services/blogPost", {});
+
+            var req = new Request("create", "/whatever/blogPost", {});
+
             req.getType = function() {
                 return "unsupportedType";
             };
 
-            handleRequest(req, function(err) {
-                expect(err).not.to.be(null);
+            handleRequest(req, function(err, resReq, resRes) {
+                expect(err).to.be.an(Error);
                 done();
             });
         });
     });
 
-    /*
-    //crazy module interference chaos!
-    describe("#Request with Middleware", function() {
-
-        var handleRequest;
-
-        beforeEach(function() {
-            handleRequest = rewire("../../../lib/server/request/handleRequest.js");
-        });
-
-        it("should run the defined middleware", function(done) {
-            var mwPath = path.resolve(__dirname, "../../exampleApp/app/services/servicesMiddleware.js");
-
-            var servicesMiddleware = collectMiddleware([], mwPath);
-
-            middleware.setMiddleware("services", servicesMiddleware);
-
-            handleRequest.__set__("getMiddleware", middleware.getMiddleware);
-            handleRequest.__set__("sanitizeData", function(req, res, next) { next(); });
-
-            var req = new Request("create", "/services/blog", {});
-
-            handleRequest(req, function(err) {
-                expect(req.getData()).to.eql({ fancy : true });
-                expect(err).not.to.be(null);
-                done();
-            });
-        });
-    });
-    */
 });
