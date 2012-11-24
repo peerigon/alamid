@@ -49,7 +49,7 @@ describe("handleRequest", function() {
         ];
 
 
-        it.only("should handle the request and return without an error if all middleware worked fine", function(done) {
+        it("should handle the request and return without an error if all middleware worked fine", function(done) {
 
             routeHandler.add("post", "/services/*", middlewareMock);
             routeHandler.add(["post", "put", "delete", "get"], "/services/*", runServiceMock);
