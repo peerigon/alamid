@@ -39,20 +39,19 @@ describe("handleRequest", function() {
             next();
         }
 
-        function getMiddlewareMock() {
+        var middlewareMock = [
+            function a(req, res, next) {
+                next();
+            },
+            function b(req, res,  next) {
+                next();
+            }
+        ];
 
-            return [
-                function a(req, res, next) {
-                    next();
-                },
-                function b(req, res,  next) {
-                    next();
-                }
-            ];
-        }
 
-        it("should handle the request and return without an error if all middleware worked fine", function(done) {
+        it.only("should handle the request and return without an error if all middleware worked fine", function(done) {
 
+            routeHandler.add("post", "/services/*", middlewareMock);
             routeHandler.add(["post", "put", "delete", "get"], "/services/*", runServiceMock);
 
             var req = new Request("create", "/services/blogPost", { da : "ta" });
