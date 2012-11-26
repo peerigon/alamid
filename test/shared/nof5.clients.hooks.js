@@ -28,10 +28,6 @@ exports.use = function useClientHook() {
 
         {
             "family": "Chrome",
-            "os": "Ubuntu",
-            "major": 23
-        }, {
-            "family": "Chrome",
             "os": "Windows 7",
             "major": 23
         }, {
@@ -43,10 +39,6 @@ exports.use = function useClientHook() {
     // Mozilla Firefox
 
         {
-            "family": "Firefox",
-            "os": "Ubuntu",
-            "major": 17
-        }, {
             "family": "Windows",
             "os": "Windows 7",
             "major": 17

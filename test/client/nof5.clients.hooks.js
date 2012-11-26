@@ -8,7 +8,7 @@ exports.use = function useClientHook() {
 
     var clients = [
 
-    // Android
+// Android
 
         {
             "family": "Android",
@@ -16,7 +16,7 @@ exports.use = function useClientHook() {
             "major": 4
         },
 
-    // iOS
+        // iOS
 
         {
             "family": "iPhone",
@@ -24,13 +24,9 @@ exports.use = function useClientHook() {
             "major": 6
         },
 
-    // Google Chrome
+        // Google Chrome
 
         {
-            "family": "Chrome",
-            "os": "Ubuntu",
-            "major": 23
-        }, {
             "family": "Chrome",
             "os": "Windows 7",
             "major": 23
@@ -40,13 +36,9 @@ exports.use = function useClientHook() {
             "major": 23
         },
 
-    // Mozilla Firefox
+        // Mozilla Firefox
 
         {
-            "family": "Firefox",
-            "os": "Ubuntu",
-            "major": 17
-        }, {
             "family": "Windows",
             "os": "Windows 7",
             "major": 17
@@ -56,7 +48,7 @@ exports.use = function useClientHook() {
             "major": 17
         },
 
-    // Internet Explorer
+        // Internet Explorer
 
         {
             "family": "IE",
@@ -65,7 +57,7 @@ exports.use = function useClientHook() {
         },
 
 
-    // Safari
+        // Safari
 
         {
             "family": "Safari",
