@@ -3,8 +3,10 @@
 var expect = require("expect.js"),
     historyAdapter = require("../../../lib/client/helpers/historyAdapter.js");
 
+// Tests are displayed cause we try to avoid use of historyAdapter
 describe("historyAdapter", function () {
 
+    /*
     //@see https://developer.mozilla.org/en-US/docs/DOM/window.history
     it("should provide the same API as specified on MDN", function () {
 
@@ -16,5 +18,6 @@ describe("historyAdapter", function () {
         expect(historyAdapter.state).to.not.be(undefined);
 
     });
+    */
 
 });
