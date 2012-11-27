@@ -6,7 +6,8 @@ var child_process = require('child_process'),
     path = require("path"),
     os = require("os");
 
-var tests = path.resolve("./test"),
+var nof5 = path.resolve("./node_modules/nof5/bin/nof5"),
+    tests = path.resolve("./test"),
     clientTests = tests + "/client",
     sharedTests = tests + "/shared",
     testAssets = tests + "/assets";
@@ -111,7 +112,7 @@ module.exports = function(grunt) {
                                          */
     grunt.registerHelper("simpleNof5", function simpleNof5(testPath, assetsPath, nof5Port) {
 
-        var nof5Cmd = "cd " + path.resolve(testPath) + "&& nof5 -p " + nof5Port,
+        var nof5Cmd = "cd " + path.resolve(testPath) + " && node " + nof5 + " -p " + nof5Port,
             nof5Process,
 
             openBrowserURL = "http://localhost:" + nof5Port,
