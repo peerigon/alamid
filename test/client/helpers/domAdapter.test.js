@@ -16,17 +16,20 @@ describe("domAdapter", function () {
 
         describe("# request()", function () {
 
+            var jqXHR;
+
             it("should return a jqXHR-Object", function () {
-                var jqXHR = domAdapter.request("post", "", {}, function () {});
+                jqXHR = domAdapter.request("post", "", {}, function () {});
                 expect(jqXHR.abort).to.be.a(Function); //Detect jqXHR-Object by duck-typing
                 jqXHR.abort();
             });
 
             it("should throw an Error with 'lkafskglfshg' as url", function (done) {
-                domAdapter.request("post", "lkafskglfshg", {}, function (err, data) {
+                jqXHR = domAdapter.request("post", "lkafskglfshg", {}, function (err, data) {
                     expect(err).to.be.an(Error);
                     done();
                 });
+                jqXHR.abort();
             });
 
         });
@@ -49,14 +52,8 @@ describe("domAdapter", function () {
                 //expect.js seems to be not able to equal references of DOMElements.
                 //This Error will be thrown: TypeError: Accessing selectionDirection on an input element that cannot have a selection.
                 expect(foundNodes[0].toString() === nodeReference[0].toString()).to.be.ok();
-                expect(foundNodes[1].toString() === nodeReference[1].toString()).to.be.ok();
-                expect(foundNodes[2].toString() === nodeReference[2].toString()).to.be.ok();
-                expect(foundNodes[3].toString() === nodeReference[3].toString()).to.be.ok();
-
                 expect(jQuery(foundNodes[0]).attr("method") === jQuery(nodeReference[0]).attr("method")).to.be.ok();
-                expect(jQuery(foundNodes[1]).val() === jQuery(nodeReference[1]).val()).to.be.ok();
-                expect(jQuery(foundNodes[2]).val() === jQuery(nodeReference[2]).val()).to.be.ok();
-                expect(jQuery(foundNodes[3]).val() === jQuery(nodeReference[3]).val()).to.be.ok();
+                expect(nodeReference.length).to.equal(foundNodes.length);
             });
 
         });
