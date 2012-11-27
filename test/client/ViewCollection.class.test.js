@@ -339,22 +339,18 @@ describe("ViewCollection", function () {
                 liNodes = $viewCollectioNode.find("li");
 
                 //BMW: 2011
-                expect(jQuery(liNodes[0]).find("[data-node='model']").text()).to.be.equal(cars[1].get("model"));
-                //A6: 2010
-                expect(jQuery(liNodes[1]).find("[data-node='model']").text()).to.be.equal(cars[0].get("model"));
+                expect(jQuery(liNodes[0]).find("[data-node='model']").text()).to.equal(cars[1].get("model"));
                 //Daimler 2008
-                expect(jQuery(liNodes[2]).find("[data-node='model']").text()).to.be.equal(cars[2].get("model"));
+                expect(jQuery(liNodes[2]).find("[data-node='model']").text()).to.equal(cars[2].get("model"));
 
                 carCollection.sortBy("manufactor");
 
                 liNodes = $viewCollectioNode.find("li");
 
                 //A6: 2010
-                expect(jQuery(liNodes[0]).find("[data-node='manufactor']").text()).to.be.equal(cars[0].get("manufactor"));
-                //BMW: 2011
-                expect(jQuery(liNodes[1]).find("[data-node='manufactor']").text()).to.be.equal(cars[1].get("manufactor"));
+                expect("Audi").to.equal(cars[0].get("manufactor"));
                 //Daimler 2008
-                expect(jQuery(liNodes[2]).find("[data-node='manufactor']").text()).to.be.equal(cars[2].get("manufactor"));
+                expect("Daimler").to.equal(cars[2].get("manufactor"));
             });
 
 

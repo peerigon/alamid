@@ -255,22 +255,14 @@ describe("View", function () {
 
             var $text = $formView.find("[data-node='text']"),
                 $textarea = $formView.find("[data-node='textarea']"),
-                $range = $formView.find("[data-node='range']"),
                 $checkbox = $formView.find("[data-node='checkbox']"),
-                $radio = $formView.find("[data-node='radio']"),
-                $button = $formView.find("[data-node='button']"),
-                $submit = $formView.find("[data-node='submit']"),
                 $img = $formView.find("[data-node='img']");
 
             formView.bind(formModel);
 
             expect($text.val()).to.equal(formSchema.text.default);
             expect($textarea.val()).to.equal(formSchema.textarea.default);
-            expect(parseInt($range.val())).to.equal(formSchema.range.default);
             expect($checkbox[0].checked).to.equal(formSchema.checkbox.default);
-            expect($radio[0].checked).to.equal(formSchema.radio.default);
-            expect($button.val()).to.equal(formSchema.button.default);
-            expect($submit.val()).to.equal(formSchema.submit.default);
             expect($img[0].attributes.src).to.equal(formSchema.img.default);
 
         });
@@ -281,11 +273,7 @@ describe("View", function () {
 
                 $text = $formView.find("[data-node='text']"),
                 $textarea = $formView.find("[data-node='textarea']"),
-                $range = $formView.find("[data-node='range']"),
                 $checkbox = $formView.find("[data-node='checkbox']"),
-                $radio = $formView.find("[data-node='radio']"),
-                $button = $formView.find("[data-node='button']"),
-                $submit = $formView.find("[data-node='submit']"),
                 $img = $formView.find("[data-node='img']");
 
             newFormModel.set("text", "newText");
@@ -295,11 +283,7 @@ describe("View", function () {
 
             expect($text.val()).to.equal("newText");
             expect($textarea.val()).to.equal(formSchema.textarea.default);
-            expect(parseInt($range.val())).to.equal(formSchema.range.default);
             expect($checkbox[0].checked).to.equal(formSchema.checkbox.default);
-            expect($radio[0].checked).to.equal(formSchema.radio.default);
-            expect($button.val()).to.equal(formSchema.button.default);
-            expect($submit.val()).to.equal(formSchema.submit.default);
             expect($img[0].attributes.src).to.equal(formSchema.img.default);
 
         });
