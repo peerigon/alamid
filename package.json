@@ -27,7 +27,7 @@
         "middler" : "0.x"
     },
     "devDependencies": {
-        "nof5": "2.x.x",
+        "nof5": "0.2.x",
         "expect.js": "0.x",
         "mocha": "1.x",
         "xunit-file" : "*",
