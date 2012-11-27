@@ -3,7 +3,13 @@
 var child_process = require('child_process'),
     exec = child_process.exec,
     spawn = child_process.spawn,
-    path = require("path");
+    path = require("path"),
+    os = require("os");
+
+var tests = path.resolve("./test"),
+    clientTests = tests + "/client",
+    sharedTests = tests + "/shared",
+    testAssets = tests + "/assets";
 
 module.exports = function(grunt) {
 
@@ -98,30 +104,78 @@ module.exports = function(grunt) {
         env.mode = "testing"; //logger be quiet!
     });
 
-    grunt.registerHelper('nof5Test', function(testPath, callback) {
+                                        /**
+                                         * @param {string} testPath
+                                         * @param {string} assetsPath
+                                         * @param {number} nof5Port
+                                         */
+    grunt.registerHelper("simpleNof5", function simpleNof5(testPath, assetsPath, nof5Port) {
 
-        var nof5Command = 'cd ' + testPath + " ; nof5";
+        var nof5Cmd = "cd " + path.resolve(testPath) + "&& nof5 -p " + nof5Port,
+            nof5Process,
 
-        var nof5Process = exec(nof5Command,
-            function (error, stdout, stderr) {
-                if (error !== null) {
-                    console.log('exec error: ' + error);
+            openBrowserURL = "http://localhost:" + nof5Port,
+            openBrowserCmd,
+            openBrowserProcess;
+
+        testPath = testPath || process.cwd();
+
+        if (assetsPath) {
+
+            nof5Cmd = nof5Cmd + " -a " + path.resolve(assetsPath);
+
+        }
+
+        nof5Process = exec(nof5Cmd, function execNof5Cmd(error, stdout, stderr) {
+
+            if (error) {
+
+                console.error("(alamid) Error running nof5: " + error);
+
+            }
+
+        });
+
+        switch (os.platform()) {
+
+            case "linux":
+
+                openBrowserCmd = "sensible-browser " + openBrowserURL;
+                break;
+
+            case "osx":
+
+                openBrowserCmd = "open " + openBrowserURL;
+                break;
+
+        }
+
+        // as we can't determine when nof5 is up an running we're just wait for a second
+        setTimeout(function openBrowser() {
+
+            openBrowserProcess = exec(openBrowserCmd, function execOpenBrowserCmd(error, stdout, stderr) {
+
+                if (error) {
+
+                    console.error("alamid Error opening default browser: " + error);
+
                 }
+
+                openBrowserProcess.stdout.pipe(openBrowserProcess.stdout);
+                openBrowserProcess.stderr.pipe(openBrowserProcess.stderr);
+
             });
 
-        nof5Process.stdout.pipe(process.stdout);
-        nof5Process.stderr.pipe(process.stderr);
 
-        //give nof5 some time to initialize
-        setTimeout(function() {
-            var openBrowserCmd = "open http://localhost:11234";
-            var openBrowserProcess = exec(openBrowserCmd, function(error){
-                if (error !== null) {
-                    console.log('exec error: ' + error);
-                }
-                callback(error);
-            });
         }, 1000);
+
+        // pipe nof5'S output to terminal
+        nof5Process.stdout.pipe(nof5Process.stdout);
+        nof5Process.stderr.pipe(nof5Process.stderr);
+
+        // increment nof5's port so that it wouldn't clash with existing nof5 instances
+        ++nof5Port;
+
     });
 
     grunt.registerTask("freshNpmInstall","deletes the node_modules folder and does npm install afterwards", function() {
@@ -154,22 +208,28 @@ module.exports = function(grunt) {
     });
 
 
-    grunt.registerTask("test-client", "tests with nof5", function() {
+    grunt.registerTask("test-client", "Browser tests with nof5", function testClient() {
 
         var done = this.async();
 
-        grunt.helper("nof5Test", path.resolve(__dirname, "./test/client"), function() {
-            //do nothing, kill it manually
-        });
+        grunt.helper("simpleNof5", clientTests, testAssets, 11234);
     });
 
-    grunt.registerTask("test-shared-browser", "tests with nof5", function() {
+    grunt.registerTask("test-shared-browser", "Shared browser-tests with nof5", function testSharedBrowser() {
 
         var done = this.async();
 
-        grunt.helper("nof5Test", path.resolve(__dirname, "./test/shared"), function() {
-            //do nothing, kill it manually
-        });
+        grunt.helper("simpleNof5", sharedTests, testAssets, 11235);
+
+    });
+
+    grunt.registerTask("test-client-shared", "Browsers tests for client- and shared-lib with nof5", function TestClientShared() {
+
+        var done = this.async();
+
+        grunt.helper("simpleNof5", clientTests, testAssets, 11234);
+        grunt.helper("simpleNof5", sharedTests, testAssets, 11235);
+
     });
 
     //mocha server tests
