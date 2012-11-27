@@ -49,13 +49,13 @@ exports.use = function useClientHook() {
         },
 
         // Internet Explorer
-
+        /*
         {
             "family": "IE",
             "os": "Windows 7",
             "major": 9
         },
-
+        */
 
         // Safari
 
