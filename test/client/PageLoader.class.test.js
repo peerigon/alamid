@@ -19,25 +19,7 @@ describe("PageLoader", function () {
     describe(".init()", function () {
         it("should throw an exception if the passed argument is not an array", function () {
             expect(function () {
-                instance = new PageLoader();
-            }).to.throwException(expectTypeError);
-            expect(function () {
-                instance = new PageLoader(null);
-            }).to.throwException(expectTypeError);
-            expect(function () {
-                instance = new PageLoader(true);
-            }).to.throwException(expectTypeError);
-            expect(function () {
-                instance = new PageLoader(1);
-            }).to.throwException(expectTypeError);
-            expect(function () {
-                instance = new PageLoader("bla");
-            }).to.throwException(expectTypeError);
-            expect(function () {
-                instance = new PageLoader({});
-            }).to.throwException(expectTypeError);
-            expect(function () {
-                instance = new PageLoader(function () {});
+                instance = new PageLoader(undefined);
             }).to.throwException(expectTypeError);
         });
         it("should throw an exception if the passed argument is an array with no strings only", function () {
@@ -91,10 +73,10 @@ describe("PageLoader", function () {
                 postsPage = pages[1];
                 expect(blogPage).to.be.a(PageLoaderExamplePage);
                 expect(postsPage).to.be.a(PageLoaderExamplePage);
-                expect(blogPage.getParams()).to.be(params);
-                expect(postsPage.getParams()).to.be(params);
-                expect(blogPage.getEmitted()).to.be.eql([]);
-                expect(postsPage.getEmitted()).to.be.eql([]);
+                expect(blogPage.getParams() === params).to.equal(true);
+                expect(postsPage.getParams() === params).to.equal(true);
+                expect(blogPage.getEmitted()).to.eql([]);
+                expect(postsPage.getEmitted()).to.eql([]);
                 done();
             });
         });
