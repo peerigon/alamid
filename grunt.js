@@ -6,8 +6,8 @@ var child_process = require('child_process'),
     path = require("path"),
     os = require("os");
 
-var nof5 = path.resolve("./node_modules/nof5/bin/nof5"),
-    tests = path.resolve("./test"),
+var nof5 = __dirname  + "/node_modules/nof5/bin/nof5",
+    tests = __dirname  + "/test",
     clientTests = tests + "/client",
     sharedTests = tests + "/shared",
     testAssets = tests + "/assets";
@@ -122,17 +122,13 @@ module.exports = function(grunt) {
         testPath = testPath || process.cwd();
 
         if (assetsPath) {
-
             nof5Cmd = nof5Cmd + " -a " + path.resolve(assetsPath);
-
         }
 
         nof5Process = exec(nof5Cmd, function execNof5Cmd(error, stdout, stderr) {
 
             if (error) {
-
                 console.error("(alamid) Error running nof5: " + error);
-
             }
 
         });
@@ -140,15 +136,12 @@ module.exports = function(grunt) {
         switch (os.platform()) {
 
             case "linux":
-
                 openBrowserCmd = "sensible-browser " + openBrowserURL;
                 break;
 
             case "osx":
-
                 openBrowserCmd = "open " + openBrowserURL;
                 break;
-
         }
 
         // as we can't determine when nof5 is up an running we're just wait for a second
@@ -157,26 +150,21 @@ module.exports = function(grunt) {
             openBrowserProcess = exec(openBrowserCmd, function execOpenBrowserCmd(error, stdout, stderr) {
 
                 if (error) {
-
                     console.error("alamid Error opening default browser: " + error);
-
                 }
 
-                openBrowserProcess.stdout.pipe(openBrowserProcess.stdout);
-                openBrowserProcess.stderr.pipe(openBrowserProcess.stderr);
-
+                openBrowserProcess.stdout.pipe(process.stdout);
+                openBrowserProcess.stderr.pipe(process.stderr);
             });
-
 
         }, 1000);
 
-        // pipe nof5'S output to terminal
-        nof5Process.stdout.pipe(nof5Process.stdout);
-        nof5Process.stderr.pipe(nof5Process.stderr);
+        // awesome piping
+        nof5Process.stdout.pipe(process.stdout);
+        nof5Process.stderr.pipe(process.stderr);
 
         // increment nof5's port so that it wouldn't clash with existing nof5 instances
         ++nof5Port;
-
     });
 
     grunt.registerTask("freshNpmInstall","deletes the node_modules folder and does npm install afterwards", function() {
