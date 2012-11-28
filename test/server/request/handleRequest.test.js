@@ -6,8 +6,7 @@ var expect = require("expect.js"),
     middler = require("middler"),
     Request = require("../../../lib/server/request/Request.class.js"),
     config = require("../../../lib/shared/config"),
-    router = require("../../../lib/server/router.js"),
-    middleware = require("../../../lib/server/request/middleware.js");
+    router = require("../../../lib/server/router.js");
 
 describe("handleRequest", function() {
 

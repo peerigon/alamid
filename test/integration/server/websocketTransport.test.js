@@ -59,7 +59,7 @@ describe("WebsocketTransport", function() {
             var self = this;
             var pommes = self.browser.evaluate("wsRequestTest('read', '/services/whatever', {});");
             pommes.success = function(res) {
-                expect(JSON.stringify(res)).to.contain('{"status":"error","message":"(alamid) Request failed for path \'whatever\' with Error: \'No service found for \'read\'');
+                expect(JSON.stringify(res)).to.contain('{"status":"error","data":{"error":"request-error"},"message":"(alamid) Request failed on path \'whatever\' with Error: \'No service found for \'read\', \'whatever\'\'"}');
                 done();
             };
         });
