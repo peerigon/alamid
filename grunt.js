@@ -139,7 +139,7 @@ module.exports = function(grunt) {
                 openBrowserCmd = "sensible-browser " + openBrowserURL;
                 break;
 
-            case "osx":
+            case "darwin":
                 openBrowserCmd = "open " + openBrowserURL;
                 break;
         }
@@ -157,7 +157,7 @@ module.exports = function(grunt) {
                 openBrowserProcess.stderr.pipe(process.stderr);
             });
 
-        }, 1000);
+        }, 2000);
 
         // awesome piping
         nof5Process.stdout.pipe(process.stdout);
