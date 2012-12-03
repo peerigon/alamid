@@ -6,7 +6,7 @@ var expect = require("expect.js"),
 
 var Request = require("../../../../lib/server/request/Request.class.js"),
     Response = require("../../../../lib/server/request/Response.class.js"),
-    pushNotification = require("../../../../lib/server/request/middleware/pushNotification.js");
+    publishModel = require("../../../../lib/server/request/middleware/publishModel.js");
 
 function getSocketMock(callback) {
     return {
@@ -22,12 +22,17 @@ function getSocketMock(callback) {
     };
 }
 
-describe("pushNotification", function(){
+describe("publishModel", function(){
 
     var req, res;
 
     beforeEach(function() {
         req = new Request("update", "/services/blogpost/1", { da : "ta" });
+        req.setModel({
+           getUrl : function(){ return "blogpost"; },
+           getParentIds : function() { return { "blogpost" : 1 }; },
+           toObject : function() { return { da : "ta" }; }
+        });
         res = new Response();
         res.setData({ da : "ta" });
     });
@@ -39,9 +44,9 @@ describe("pushNotification", function(){
                 done(new Error("Should not be called for HTTP"));
             }
 
-            req.setOriginatedRequest("http", getSocketMock(onBroadcast));
+            req.setTransport("http", getSocketMock(onBroadcast));
 
-            pushNotification(req, res, function() {
+            publishModel(req, res, function() {
                 done();
             });
         });
@@ -60,9 +65,9 @@ describe("pushNotification", function(){
                 expect(room).to.be("");
             }
 
-            req.setOriginatedRequest("websocket", getSocketMock(onBroadcast));
+            req.setTransport("websocket", getSocketMock(onBroadcast));
 
-            pushNotification(req, res, function() {
+            publishModel(req, res, function() {
                 done();
             });
         });
@@ -80,9 +85,9 @@ describe("pushNotification", function(){
             }
 
             req.setSession({ activeRoomID : "awesomeRoom" });
-            req.setOriginatedRequest("websocket", getSocketMock(onBroadcast));
+            req.setTransport("websocket", getSocketMock(onBroadcast));
 
-            pushNotification(req, res, function() {
+            publishModel(req, res, function() {
                 done();
             });
         });
@@ -100,9 +105,9 @@ describe("pushNotification", function(){
                 expect(data).to.eql({ da : "ta" });
             }
 
-            req.setOriginatedRequest("websocket", getSocketMock(onBroadcast));
+            req.setTransport("websocket", getSocketMock(onBroadcast));
 
-            pushNotification(req, res, function() {
+            publishModel(req, res, function() {
                 done();
             });
         });
@@ -116,9 +121,9 @@ describe("pushNotification", function(){
             }
 
             req.setMethod("create");
-            req.setOriginatedRequest("websocket", getSocketMock(onBroadcast));
+            req.setTransport("websocket", getSocketMock(onBroadcast));
 
-            pushNotification(req, res, function() {
+            publishModel(req, res, function() {
                 done();
             });
         });
@@ -132,10 +137,10 @@ describe("pushNotification", function(){
             }
 
             req.setMethod("destroy");
-            req.setOriginatedRequest("websocket", getSocketMock(onBroadcast));
+            req.setTransport("websocket", getSocketMock(onBroadcast));
             res.setData({ da : "ta" });
 
-            pushNotification(req, res, function() {
+            publishModel(req, res, function() {
                 done();
             });
         });

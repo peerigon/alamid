@@ -7,14 +7,14 @@ var nodeclass = require("nodeclass"),
 var expect = require("expect.js"),
     rewire = require("rewire");
 
-describe("attachPushHandlers", function(){
+describe("subscribeModelHandler", function(){
 
     var socketMock,
         attachPushHandlers;
 
     beforeEach(function() {
         socketMock = new Socket();
-        attachPushHandlers = rewire("../../lib/client/attachPushHandlers.js");
+        attachPushHandlers = rewire("../../lib/client/subscribeModelHandler.js");
     });
 
     it("should receive remoteUpdateEvents", function(done) {
@@ -26,6 +26,9 @@ describe("attachPushHandlers", function(){
         };
 
         var ModelClassMock = {
+            set : function() {
+
+            },
             emit : function(eventName, event) {
                 expect(eventName).to.be("remoteUpdate");
                 expect(event.parentIds).to.eql({ blogpost : 1 });
@@ -90,7 +93,7 @@ describe("attachPushHandlers", function(){
         attachPushHandlers.__set__("modelCache", modelCacheMock);
         attachPushHandlers(socketMock);
 
-        socketMock.emit("remoteDestroy", "blogpost", { blogpost : 2 }, { da : "ta" });
+        socketMock.emit("remoteDestroy", "blogpost", { blogpost : 2 });
     });
 
 
