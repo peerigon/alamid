@@ -201,16 +201,16 @@ describe("App", function () {
                     next();
                 })
                 .addRoute(
-                    "blog/posts",
-                    function (ctx, next) {
-                        called.push("/blog/posts");
-                        next();
-                    },
-                    function (ctx, next) {
-                        called.push("/blog/posts2");
-                        next();
-                    }
-                )
+                "blog/posts",
+                function (ctx, next) {
+                    called.push("/blog/posts");
+                    next();
+                },
+                function (ctx, next) {
+                    called.push("/blog/posts2");
+                    next();
+                }
+            )
                 .addRoute("*", function (ctx) {
                     called.push("*2");
                 });
@@ -269,6 +269,7 @@ describe("App", function () {
                 .addRoute("blog/posts/:id", "blog/posts")
                 .addRoute("blog/posts/author=:authorId", "blog/posts");
         });
+
     });
 
     describe(".getCurrentPages()", function () {
@@ -372,6 +373,8 @@ describe("App", function () {
         });
 
         it("should be possible to change current page to MainPage with '' as route", function (done) {
+
+
 
             app.on("pageChange", function onPageChange() {
                 //MainPage is always on index 0.
@@ -524,5 +527,19 @@ describe("App", function () {
             expect(pages.posts.getSubPage()).to.be(null);
             expect(emitted).to.eql(["blog", "posts", "app"]);
         });
+    });
+
+    describe(".getContext()", function (done) {
+
+        it("should eql page.js's context object", function () {
+
+            var ctx = app.getContext();
+
+            expect(ctx.path).to.equal(location.pathname);
+            expect(ctx.title).to.equal(document.title);
+
+
+        });
+
     });
 });
