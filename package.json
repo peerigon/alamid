@@ -13,6 +13,7 @@
         "underscore": "1.x",
         "async": "0.x",
         "connect": "2.x",
+        "spdy" : "1.x",
         "winston": "0.x",
         "fshelpers": "https://github.com/peerigon/fshelpers/tarball/v0.2.1",
         "toSrc": "0.x",
