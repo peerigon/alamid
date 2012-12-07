@@ -8,7 +8,11 @@ var sessionTest= require("./middleware/sessionTest.js");
 //start the server
 var server = new Server();
 
-server.addRoute(["create", "update", "read", "destroy"], "/services/session*", sessionTest);
+server.addRoute(["create", "read", "update", "destroy"], "/services/session*", sessionTest);
+
+var router = server.getRouter();
+
+console.log(router);
 
 server.bootstrap();
 
