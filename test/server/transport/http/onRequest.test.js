@@ -6,7 +6,7 @@ var expect = require("expect.js"),
 
 describe("onRequest", function(){
 
-    it("should parse the url and set the ajax flag", function (done) {
+    it("should parse the url", function (done) {
 
         var onRequest = rewire("../../../../lib/server/transport/http/onRequest.js", false);
         var mockedConnect = {};
@@ -22,7 +22,6 @@ describe("onRequest", function(){
 
         iterateMiddleware(onRequest, req, res, function(){
             expect(req.parsedURL).to.be.an("object");
-            expect(req.ajax).to.be(true);
             done();
         });
     });
