@@ -1,7 +1,7 @@
 {
     "name": "alamid",
     "description": "Framework for realtime JavaScript web applications that run both on the server- and clientside.",
-    "version": "0.9.0",
+    "version": "0.9.1",
     "repository": "git://github.com/peerigon/alamid",
     "author": "peerigon <developers@peerigon.com>",
     "main": "./lib/index.js",
