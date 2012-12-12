@@ -109,7 +109,7 @@ describe("loadModel", function () {
                 function next(err, req) {
                     expect(req.getIds()).to.eql({});
                     expect(req.getModel()).to.be(null);
-                    expect(err.message).to.contain("'update' : Missing IDs");
+                    expect(err.message).to.contain("'update' needs IDs");
                     done();
                 }
                 loadModelTestHelper("update", "services/blogpost", next);
