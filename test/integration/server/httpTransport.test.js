@@ -130,8 +130,7 @@ describe("httpTransport", function() {
                     .put("/validators/myNonExistentValidator/")
                     .set('Content-Type', 'application/json')
                     .send({ da : "ta" })
-                    .expect(500,/Invalid Request: validator/, done);
-
+                    .expect(500,/Validator Requests have to called with method/, done);
             });
         });
 
