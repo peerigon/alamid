@@ -23,7 +23,7 @@
         "connect": "2.x",
         "spdy" : "1.x",
         "winston": "0.x",
-        "fshelpers": "https://github.com/peerigon/fshelpers/tarball/v0.2.1",
+        "fshelpers": "0.2.x",
         "toSrc": "0.x",
         "nodeclass": "0.4.x",
         "value": "0.x",
