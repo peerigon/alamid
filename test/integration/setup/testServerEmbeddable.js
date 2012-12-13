@@ -1,17 +1,15 @@
 "use strict";
 
-var _ = require("underscore");
+var _ = require("underscore"),
+    path = require("path");
 
 function runTestServer(config) {
 
     process.env = _.extend(process.env, config);
-    var alamid = require("alamid"),
-        Server = alamid.Server;
 
-    //start the server
-    var server = new Server();
-    return server.start();
+    var initServer = require("./testApp/app/initServer.js");
 
+    return initServer();
 }
 
 module.exports = runTestServer;
