@@ -18,6 +18,7 @@
         "node": "< 0.9"
     },
     "dependencies": {
+        "grunt" : "0.x",
         "underscore": "1.x",
         "async": "0.x",
         "connect": "2.x",
