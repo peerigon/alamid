@@ -37,6 +37,11 @@ describe("readConfig", function () {
         readConfig.log = function () { /* do nothing. we don't want to spill the console when testing */ };
     });
 
+    //skip on travis, cause exec with nvm doesn't work
+    if(process.env.TRAVIS === "true") {
+        return;
+    }
+
     it("should read the default config if nothing was passed", function () {
         result = readConfig();
         //we can't check for mode, because we need it for testing
