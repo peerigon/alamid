@@ -63,7 +63,7 @@ describe("handleRequest", function() {
             });
         });
 
-        it("should handle the request and return without an error if all middleware worked fine", function(done) {
+        it("should end the request and return an error if a middleware failed", function(done) {
 
             var middlewareMock = [
                 function a(req, res, next) {
