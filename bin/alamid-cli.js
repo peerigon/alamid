@@ -6,19 +6,33 @@ var path = require("path"),
     ejs = require("ejs"),
     program = require('commander');
 
+var appDir = path.join(process.cwd(), "./app");
+
 program
     .version('0.0.1')
     .option('-i, --init', 'Create structure')
-    .option('-s, --service', 'Add service')
+    //.option('-s, --service', 'Add service')
     //.option('-v, --view', 'Add view')
     //.option('-p, --page', 'Add page')
     .option('-m, --model', 'Add model')
     .parse(process.argv);
 
+function appDirExists(expected) {
+
+    if(fs.existsSync(appDir) !== expected) {
+        console.log("App-Dir already exists");
+        process.exit(1);
+    }
+}
+
 function createStructure() {
-    wrench.copyDirSyncRecursive(path.join(__dirname, "structure/app"), "./app");
-    fs.createReadStream(path.join(__dirname, "structure/init.server.js")).pipe(fs.createWriteStream("./app/init.server.js"));
-    fs.createReadStream(path.join(__dirname, "structure/init.client.js")).pipe(fs.createWriteStream("./app/init.client.js"));
+
+    //we don't want it to exist
+    appDirExists(false);
+
+    wrench.copyDirSyncRecursive(path.join(__dirname, "structure/app"), appDir);
+    fs.createReadStream(path.join(__dirname, "structure/init.server.js")).pipe(fs.createWriteStream(appDir + "/init.server.js"));
+    fs.createReadStream(path.join(__dirname, "structure/init.client.js")).pipe(fs.createWriteStream(appDir + "/init.client.js"));
 }
 
 function addModel(modelName) {
@@ -79,9 +93,13 @@ if(program.init) {
     createStructure();
     process.exit(0);
 }
-
-if(program.model) {
-    program.prompt('name: ', function(name){
+else if(program.model) {
+    program.prompt('Model-Name: ', function(name){
         addModel(name);
     });
 }
+else {
+    program.help();
+}
+
+
