@@ -5,7 +5,7 @@ var alamid = require("alamid"),
 
 var <%= name %>Model = Model.define("<%= name %>Model", {
 
-    $url: "<%= name %>"
+    $url: "<%- name.toLowerCase() %>"
 
 });
 
