@@ -8,15 +8,6 @@ var path = require("path"),
 
 var appDir = path.join(process.cwd(), "./app");
 
-program
-    .version('0.0.1')
-    .option('-i, --init', 'Create structure')
-    //.option('-s, --service', 'Add service')
-    //.option('-v, --view', 'Add view')
-    //.option('-p, --page', 'Add page')
-    .option('-m, --model', 'Add model')
-    .parse(process.argv);
-
 function appDirExists(expected) {
 
     if(fs.existsSync(appDir) !== expected) {
@@ -30,7 +21,11 @@ function createStructure() {
     //we don't want it to exist
     appDirExists(false);
 
+    //folders
     wrench.copyDirSyncRecursive(path.join(__dirname, "structure/app"), appDir);
+    wrench.copyDirSyncRecursive(path.join(__dirname, "structure/bundle"), path.join(process.cwd, "./bundle"));
+
+    //init-files
     fs.createReadStream(path.join(__dirname, "structure/init.server.js")).pipe(fs.createWriteStream(appDir + "/init.server.js"));
     fs.createReadStream(path.join(__dirname, "structure/init.client.js")).pipe(fs.createWriteStream(appDir + "/init.client.js"));
 }
@@ -89,17 +84,30 @@ function addService(serviceName, type) {
     fs.writeFileSync(servicePath + "/" + serviceName + "Service."+ type +".class.js", renderedService, "utf-8");
 }
 
-if(program.init) {
-    createStructure();
-    process.exit(0);
-}
-else if(program.model) {
-    program.prompt('Model-Name: ', function(name){
-        addModel(name);
-    });
-}
-else {
-    program.help();
+function cli() {
+
+    program
+        .version('0.0.1')
+        .option('-i, --init', 'Create structure')
+        //.option('-s, --service', 'Add service')
+        //.option('-v, --view', 'Add view')
+        //.option('-p, --page', 'Add page')
+        .option('-m, --model', 'Add model')
+        .parse(process.argv);
+
+    if(program.init) {
+        createStructure();
+        process.exit(0);
+    }
+    else if(program.model) {
+        program.prompt('Model-Name: ', function(name){
+            addModel(name);
+        });
+    }
+    else {
+        program.help();
+    }
 }
 
-
+exports.cli = cli;
+exports.createStructure = createStructure;
