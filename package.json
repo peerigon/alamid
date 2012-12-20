@@ -5,7 +5,6 @@
     "repository": "git://github.com/peerigon/alamid",
     "author": "peerigon <developers@peerigon.com>",
     "main": "./lib/index.js",
-    "bin" : "./bin/alamid-cli.js",
     "keywords": [
         "client",
         "server",
