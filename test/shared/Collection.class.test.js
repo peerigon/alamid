@@ -4,10 +4,7 @@ var expect = require("expect.js"),
     value = require("value"),
     _ = require("underscore"),
     Collection = require("../../lib/shared/Collection.class.js"),
-    CollectionExample = require("./Collection/CollectionExample.class.js"),
-    DefinedCollectionExample = require("./Collection/DefinedCollectionExample.class.js"),
-    EventEmitter  = require("../../lib/shared/EventEmitter.class.js"),
-    OctocatModel = require("./Model/Octocat.class.js");
+    EventEmitter  = require("../../lib/shared/EventEmitter.class.js");
 
 describe("Collection", function () {
 
@@ -15,53 +12,51 @@ describe("Collection", function () {
         octocatModel,
         octocatModels;
 
+    function OctocatModel() {}
+
     beforeEach(function () {
         collection = new Collection(OctocatModel);
         octocatModel = new OctocatModel();
         octocatModels = [octocatModel, new OctocatModel(), new OctocatModel()];
     });
 
-    describe(".construct()", function () {
+    describe(".constructor()", function () {
 
         it("should be instance of EventEmitter", function () {
             expect(value(collection).instanceOf(EventEmitter)).to.be.ok();
         });
 
-        it("should throw an Error if no Class was given as", function () {
-            expect(function () {
-                collection = new Collection();
-            }).to.throwError();
+        it("should default to 'Object' as Collection-Class when no Class was passed", function () {
+            expect(new Collection().getClass()).to.be(Object);
         });
 
-        it("should be possible to pass as second argument model(s)", function () {
-            collection = new CollectionExample(OctocatModel, octocatModels);
-            expect(collection.getElements()).to.be.eql(octocatModels);
+        it("should be possible to pass model(s) as second argument", function () {
+            collection = new Collection(OctocatModel, octocatModels);
+            expect(collection.toArray()).to.eql(octocatModels);
         });
 
         it("should throw an Error if as second argument not a model or an array of models was passed", function () {
             expect(function () {
-                collection = new CollectionExample(OctocatModel, [{}]);
+                collection = new Collection(OctocatModel, [{}]);
             }).to.throwError();
         });
 
     });
 
-    describe(".define()", function describeDefine() {
+    describe("muted", function () {
 
-        it("should create a new instance of Collection", function () {
-            var collection = new DefinedCollectionExample(OctocatModel);
-
-            expect(value(collection).instanceOf(Collection)).to.be(true);
-        });
-
-        it("should provide described method ", function (done) {
-            collection = new DefinedCollectionExample(OctocatModel);
-            collection.executeDone(done);
+        it("should not emit events when it's muted", function () {
+            //collection.muted = true;
+            collection.on("change", function () {
+                console.log("test");
+                throw new Error("Event has been emitted");
+            });
+            collection.push(octocatModel);
         });
 
     });
 
-    describe(".toArray", function () {
+    describe(".toArray()", function () {
 
         it("should return an array", function () {
             expect(collection.toArray()).to.be.an("array");
@@ -499,7 +494,7 @@ describe("Collection", function () {
             collection.reverse();
             octocatModels.reverse();
             collection.each(function modelCollectionIterator(model, index) {
-                expect(model).to.be.equal(octocatModels[index]);
+                expect(model).to.equal(octocatModels[index]);
             });
         });
 
@@ -507,25 +502,17 @@ describe("Collection", function () {
 
     describe(".filter()", function () {
 
-        beforeEach(function () {
-            octocatModels[0].set("name", "a 3");
-            octocatModels[1].set("name", "a 1");
-            octocatModels[2].set("name", "b 9999 c");
-        });
-
         it("should return an Array", function () {
             expect(collection.filter(function () {})).to.be.an(Array);
         });
 
         it("should return an Array filtered by given filter", function () {
-
             function filterIterator(model, index) {
-                return model.get("name") !== octocatModels[2].get("name");
+                return model !== octocatModels[2];
             }
 
             collection.push(octocatModels);
-
-            expect(collection.filter(filterIterator)).to.be.eql(_(octocatModels).filter(filterIterator));
+            expect(collection.filter(filterIterator)).to.eql(_(octocatModels).filter(filterIterator));
 
         });
 
@@ -534,42 +521,16 @@ describe("Collection", function () {
     describe(".find()", function () {
 
         beforeEach(function () {
-
             collection.push(octocatModels);
-
         });
 
         it("should find searched Model", function () {
-
             function findIterator(model, index) {
                 return model === octocatModels[2];
             }
 
             expect(collection.find(findIterator)).to.equal(octocatModels[2]);
-
        });
-
-    });
-
-    describe(".setMuted()", function () {
-
-        it("should not emit 'change'-Event after true was passed", function (done) {
-            collection.setMuted(true);
-            collection.on("change", function () {
-                done();
-            });
-            collection.push(octocatModel);
-            done();
-        });
-
-        it("should emit 'push'-Event after false was re-passed", function (done) {
-            collection.setMuted(true);
-            collection.on("add", function onChangeOnce() {
-                done();
-            });
-            collection.setMuted(false);
-            collection.push(octocatModel);
-        });
 
     });
 
