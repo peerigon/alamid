@@ -1,17 +1,15 @@
 "use strict";
 
-var Class = require("nodeclass").Class;
 var Model = require('../../../lib/shared/Model.class.js'),
     schema = require("./schemas/OctocatSchema.js");
 
-var Octocat = Model.define("Octocat", {
-    $url : "Octocat",
-    "init": function(id) {
-        this.Super(id);
-        this.Super.setSchema(schema, "shared");
-        this.Super.setSchema(schema);
+var Octocat = Model.extend("Octocat", {
+    url: "Octocat",
+    constructor: function(id) {
+        this._super(id);
+        this.setSchema(schema, "shared");
+        this.setSchema(schema);
     }
 });
-
 
 module.exports = Octocat;

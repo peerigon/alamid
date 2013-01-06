@@ -1,6 +1,5 @@
 "use strict";
 
-var Class = require("nodeclass").Class;
 var Model = require('../../../lib/shared/Model.class.js');
 
 var schema = {
@@ -15,20 +14,20 @@ var schema = {
     kills: Number
 };
 
-var User1 = Model.define("User1", {
-    $url : "User1",
-    init: function(id) {
-        this.Super(id);
-        this.Super.setSchema(schema);
+var User1 = Model.extend("User1", {
+    url : "User1",
+    constructor: function(id) {
+        this._super(id);
+        this.setSchema(schema);
     },
     getService: function() {
         return null;
     },
-    "getValidator": function() {
+    getValidator: function() {
         return null;
     },
-    "accept": function() {
-        this.Super.acceptCurrentState();
+    accept: function() {
+        this.acceptCurrentState();
     }
 });
 

@@ -1,6 +1,5 @@
 "use strict";
 
-var Class = require("nodeclass").Class;
 var Model = require('../../../lib/shared/Model.class.js'),
     schema = require("./schemas/OctocatSchema.js"),
     serverSchema = require("./schemas/OctocatSchema.server.js");
@@ -14,13 +13,13 @@ var mockedService = {
     }
 };
 
-var OctoDuck = Model.define("OctoDuck", {
-    $url : "octoduck",
-    init: function(id) {
-        this.Super(id);
-        this.Super.setSchema(schema, "shared");
-        this.Super.setSchema(serverSchema);
-        this.Super.setService(mockedService);
+var OctoDuck = Model.extend("OctoDuck", {
+    url: "octoduck",
+    constructor: function(id) {
+        this._super(id);
+        this.setSchema(schema, "shared");
+        this.setSchema(serverSchema);
+        this.setService(mockedService);
     }
 });
 

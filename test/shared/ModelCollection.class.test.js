@@ -1,19 +1,14 @@
 "use strict";
 
 var expect = require("expect.js"),
-    value = require("value"),
     _ = require("underscore"),
     Collection = require("../../lib/shared/Collection.class.js"),
     ModelCollection = require("../../lib/shared/ModelCollection.class.js"),
     Model = require("../../lib/shared/Model.class.js"),
     OctocatModel = require("./Model/Octocat.client.class.js"),
-    DefinedModelCollection = require("./ModelCollection/DefinedModelCollectionExample.class.js"),
     environment = require("../../lib/shared/environment.js");
 
-
-
 describe("ModelCollection", function () {
-
     var modelCollection,
         octocatModel,
         octocatModels;
@@ -24,16 +19,10 @@ describe("ModelCollection", function () {
         octocatModels = [octocatModel, new OctocatModel(2), new OctocatModel(3)];
     });
 
-    describe(".construct()", function () {
+    describe(".constructor()", function () {
 
         it("should be instance of Collection", function () {
-            expect(value(modelCollection).instanceOf(Collection)).to.be.ok();
-        });
-
-        it("should throw an Error if Model-Class was given", function () {
-            expect(function() {
-                modelCollection = new ModelCollection();
-            }).to.throwError();
+            expect(modelCollection).to.be.an(Collection);
         });
 
         it("should proxy 'change'-Event for each Model given on construction", function (done) {
@@ -51,21 +40,6 @@ describe("ModelCollection", function () {
 
             expect(changeEventCount).to.be.equal(octocatModels.length);
             done();
-        });
-
-    });
-
-    describe(".define()", function () {
-
-        it("should create a new instance of ModeCollection", function () {
-            var modelCollection = new DefinedModelCollection(OctocatModel);
-
-           expect(value(modelCollection).instanceOf(ModelCollection)).to.be(true);
-        });
-
-        it("should execute described method", function (done) {
-            modelCollection = new DefinedModelCollection(OctocatModel);
-            modelCollection.executeDone(done);
         });
 
     });
@@ -279,13 +253,6 @@ describe("ModelCollection", function () {
 
             octocatModelsSortedByName = [octocatModels[1], octocatModels[0], octocatModels[2]];
             octocatModelsSortedByDate = [octocatModels[2], octocatModels[1], octocatModels[0]];
-        });
-
-        it("should throw an Error if a none existing attribute was given", function () {
-            modelCollection.push(octocatModels);
-            expect(function () {
-                modelCollection.sortBy("");
-            }).to.throwError();
         });
 
         it("should return a reference to itself", function () {

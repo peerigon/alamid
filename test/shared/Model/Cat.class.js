@@ -1,12 +1,10 @@
 "use strict";
 
-var Model = require("../../../lib/shared/Model.class.js"),
-    Animal = require("./Animal.class.js");
+var Animal = require("./Animal.class.js");
 
-var Cat = Model.define("Cat", {
-    Extends : Animal,
-    $url : "cat",
-    init : function() {
+var Cat = Animal.extend("Cat", {
+    url : "cat",
+    constructor : function() {
 
     }
 });

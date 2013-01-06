@@ -2,34 +2,28 @@
 
 var expect = require("expect.js");
 
-var User1 = require("./Model/User1.class.js"),
+var Animal = require("./Model/Animal.class.js"),
+    User1 = require("./Model/User1.class.js"),
     User2 = require("./Model/User2.class.js"),
     Octocat = require("./Model/Octocat.class.js");
 
-describe("Model", function() {
+describe("Model", function () {
 
-    describe("$define", function() {
-        var Dog;
-        before(function() {
-            Dog = require("./Model/Dog.class.js");
-        });
-
-        it("should define a model and add all methods of event emitter", function() {
-            expect(Dog.on).to.be.a("function");
-            expect(Dog.find).to.be.a("function");
+    describe("Extending", function () {
+        it("should define a model and add all methods of event emitter", function () {
+            expect(Animal.on).to.be.a(Function);
+            expect(Animal.find).to.be.a(Function);
         });
     });
 
-    describe("Schema", function(){
-
+    describe("Schema", function () {
         var octocat;
 
-        beforeEach(function() {
+        beforeEach(function () {
             octocat = new Octocat();
         });
 
-        it("should have all keys and default values", function() {
-
+        it("should have all keys and default values", function () {
             expect(octocat.get("age")).to.be(5);
             octocat.set("name", "hugo");
             octocat.set("age", 12);
@@ -41,31 +35,33 @@ describe("Model", function() {
         });
     });
 
-    describe("Model-Features", function() {
+    describe("Model-Features", function () {
 
         var user;
 
-        beforeEach(function() {
+        beforeEach(function () {
             user = new User1();
         });
 
-        describe("#Setter & Getter", function() {
+        describe("Setter & Getter", function () {
 
-            it("should return single attributes", function() {
+            it("should return single attributes", function () {
                 expect(user.get("name")).to.eql("John Wayne");
                 expect(user.get("age")).to.eql(45);
             });
 
-            it("should return multiple attributes at once", function() {
+            it("should return multiple attributes at once", function () {
                 expect(user.get("name", "age")).to.eql({
                     name : "John Wayne",
                     age : 45
                 });
             });
 
-            it("should fail if setting an unknown attribute", function() {
-                expect(function() { user.set("what", "ever"); }).to.throwError();
-                expect(function() {
+            it("should fail if setting an unknown attribute", function () {
+                expect(function () {
+                    user.set("what", "ever");
+                }).to.throwError();
+                expect(function () {
                     user.set({
                         name : "hans",
                         what : "ever"
@@ -77,29 +73,28 @@ describe("Model", function() {
             });
         });
 
-        describe("#Url", function() {
+        describe("url", function () {
 
             var user;
-            beforeEach(function() {
+            beforeEach(function () {
                 user = new User1();
             });
 
-            it("should set and get urls", function() {
+            it("should set and get urls", function () {
                 expect(user.getUrl()).to.eql("user1");
                 user.setUrl("user/likes");
                 expect(user.getUrl()).to.eql("user/likes");
             });
         });
 
-        describe("parentIds", function() {
+        describe("parentIds", function () {
 
             var user;
-            beforeEach(function() {
+            beforeEach(function () {
                 user = new User1();
             });
 
-            it("#setParentID", function() {
-                expect(user.getUrl()).to.eql("user1");
+            it("should set and get parentIds", function () {
                 user.setParentId("user", 2);
                 user.setParentId("comment", 3);
                 expect(user.getParentId("user")).to.eql(2);
@@ -107,43 +102,42 @@ describe("Model", function() {
             });
         });
 
-        describe("#Casting", function() {
+        describe("Casting", function () {
 
             var user2;
 
-            beforeEach(function() {
+            beforeEach(function () {
                 user2 = new User2();
             });
 
-            //casting disabled
-            describe("String Fields", function() {
-                it("should accept Numbers", function() {
+            describe("String Fields", function () {
+                it("should accept Numbers", function () {
                     user2.set('name', "1234");
                     expect(user2.get("name")).to.eql("1234");
                 });
 
-                it("should accept Dates", function() {
+                it("should accept Dates", function () {
                     var date = new Date();
                     user2.set('name', date);
                     expect(user2.get("name")).to.eql(date.toString());
                 });
             });
 
-            describe("Number Fields", function() {
-                it("should accept String", function() {
+            describe("Number Fields", function () {
+                it("should accept String", function () {
                     user2.set('age', "1234");
                     expect(user2.get("age")).to.eql(1234);
                 });
 
-                it("should accept Dates", function() {
+                it("should accept Dates", function () {
                     var date = new Date();
                     user2.set('age', date);
                     expect(user2.get("age")).to.eql(date.getTime());
                 });
             });
 
-            describe("Date Fields", function() {
-                it("should accept Strings", function() {
+            describe("Date Fields", function () {
+                it("should accept Strings", function () {
                     var nowDate = new Date();
                     user2.set('birthday', nowDate.toString());
                     expect(user2.get("birthday")).to.be.a(Date);
@@ -154,7 +148,7 @@ describe("Model", function() {
                     expect(user2.get("birthday")).to.be(null);
                 });
 
-                it("should accept Numbers (Integers)", function() {
+                it("should accept Numbers (Integers)", function () {
                     var date = new Date();
                     user2.set("birthday", date.getTime());
                     expect(user2.get("birthday")).to.be.a(Date);
@@ -167,17 +161,17 @@ describe("Model", function() {
             });
         });
 
-        describe("#Escaping", function() {
+        describe("Escaping", function () {
 
-            it("should escape all values on set", function() {
+            it("should escape all values on set", function () {
                 user.set('name', '<script>alert("PWNED");</script>');
                 expect(user.escape("name")).to.eql("&lt;script&gt;alert(&quot;PWNED&quot;);&lt;&#47;script&gt;");
             });
         });
 
-        describe("#Removing", function() {
+        describe("Removing", function () {
 
-            it("should restore previous value", function() {
+            it("should restore previous value", function () {
                 user.set('name', 'Octocat');
                 expect(user.get("name")).to.eql("Octocat");
                 user.remove('name');
@@ -185,7 +179,7 @@ describe("Model", function() {
                 user.remove('name');
             });
 
-            it("should restores previous values for multiple value", function() {
+            it("should restores previous values for multiple value", function () {
 
                 expect(user.get("name")).to.eql("John Wayne");
                 user.set({
@@ -198,7 +192,7 @@ describe("Model", function() {
                 expect(user.get("age")).to.eql(45);
             });
 
-            it("should remove many properties at once", function() {
+            it("should remove many properties at once", function () {
                 user.set({
                     name: 'Octocat',
                     age: 5,
@@ -214,9 +208,9 @@ describe("Model", function() {
             });
         });
 
-        describe("#Unset", function() {
+        describe("Unset", function () {
 
-            it("should set values and accept current state", function() {
+            it("should set values and accept current state", function () {
                 user.set('name', 'Octocat');
                 expect(user.get('name')).to.eql('Octocat');
                 user.unset('name');
@@ -238,7 +232,7 @@ describe("Model", function() {
                 });
             });
 
-            it("should unset values for multiple keys", function() {
+            it("should unset values for multiple keys", function () {
                 user.set('name', 'Octocat');
                 user.accept();
                 user.set('age', 5);
@@ -252,8 +246,8 @@ describe("Model", function() {
             });
         });
 
-        describe("#hasChanged", function() {
-            it("should return the status of changed attributes", function() {
+        describe("hasChanged", function () {
+            it("should return the status of changed attributes", function () {
                 expect(user.hasChanged()).to.be(false);
                 expect(user.hasChanged(true)).to.be(false);
                 user.set('name', 'Octocat');
@@ -271,8 +265,8 @@ describe("Model", function() {
             });
         });
 
-        describe("#isDefault", function() {
-            it("should check if applied values are the default values", function() {
+        describe("isDefault", function () {
+            it("should check if applied values are the default values", function () {
                 expect(user.isDefault()).to.be(true);
                 expect(user.isDefault(true)).to.be(true);
                 user.set('name', 'Octocat');
@@ -290,8 +284,8 @@ describe("Model", function() {
             });
         });
 
-        describe("#toObject", function() {
-            it("should return an object containing id & ids", function() {
+        describe("toObject", function () {
+            it("should return an object containing id & ids", function () {
                 user.set('name', 'Octocat');
                 user.set({
                     age: 5,
@@ -313,17 +307,12 @@ describe("Model", function() {
             });
         });
 
-        describe("#toJSON (alias for toObject)", function() {
-            it("should return an object to be used with JSON-Stringify", function() {
+        describe("toJSON (alias for toObject)", function () {
+            it("should return an object to be used with JSON-Stringify", function () {
                 user.set('name', 'Octocat');
                 user.set({
                     age: 5,
                     kills: 1
-                });
-                expect(user.getDefaults()).to.eql({
-                    name: 'John Wayne',
-                    age: 45,
-                    kills: null
                 });
 
                 expect(JSON.parse(JSON.stringify(user))).to.eql({
@@ -336,8 +325,8 @@ describe("Model", function() {
             });
         });
 
-        describe("#Change", function() {
-            it("should determine if values have changed", function() {
+        describe("Change", function () {
+            it("should determine if values have changed", function () {
                 user.set('name', 'Octocat');
                 expect(user.hasChanged('name')).to.be(true);
                 user.accept();
@@ -346,11 +335,11 @@ describe("Model", function() {
             });
         });
 
-        describe("Events", function() {
-            it("should call all events", function() {
+        describe("Events", function () {
+            it("should call all events", function () {
                 var changeTimes = 0;
 
-                user.on('change', function() {
+                user.on('change', function () {
                     changeTimes++;
                 });
 
@@ -377,11 +366,11 @@ describe("Model", function() {
                 expect(changeTimes).to.be(8);
             });
 
-            it("should not call the events if muted", function() {
+            it("should not call the events if muted", function () {
                 var changeTimes = 0;
 
-                user.setMuted(true);
-                user.on('change', function() {
+                user.muted = true;
+                user.on('change', function () {
                     changeTimes++;
                 });
 
@@ -417,18 +406,17 @@ describe("Model", function() {
 
         var environment = require("../../lib/shared/environment.js");
 
-        before(function() {
-
-            environment.isServer = function() {
+        before(function () {
+            environment.isServer = function () {
                 return true;
             };
 
-            environment.isClient = function() {
+            environment.isClient = function () {
                 return false;
             };
         });
 
-        beforeEach(function() {
+        beforeEach(function () {
             octocat = new Octocat();
         });
 
@@ -436,7 +424,7 @@ describe("Model", function() {
             octocat.set('name', 'Octocat');
             octocat.set('age', 8);
 
-            octocat.validate(function(result) {
+            octocat.validate(function (result) {
                 expect(result.result).to.be(true);
                 expect(result.shared).to.be.an("object");
                 expect(result.local).to.be.an("object");
@@ -448,7 +436,7 @@ describe("Model", function() {
             octocat.set('name', 'Octocat');
             octocat.set('age', 8);
 
-            octocat.validate(false, function(result) {
+            octocat.validate(false, function (result) {
                 expect(result.result).to.be(true);
                 expect(result.shared).to.be.an("object");
                 expect(result.remote).to.be(undefined);
@@ -460,7 +448,7 @@ describe("Model", function() {
             octocat.set('name', 'Octocat');
             octocat.set('age', 99);
 
-            octocat.validate(function(result) {
+            octocat.validate(function (result) {
                 expect(result.result).to.be(false);
                 expect(result.shared.result).to.be(true);
                 expect(result.local.result).to.be(false);
@@ -474,29 +462,29 @@ describe("Model", function() {
         var octocat, testService;
         var environment = require("../../lib/shared/environment.js");
 
-        before(function() {
+        before(function () {
 
-            environment.isServer = function() {
+            environment.isServer = function () {
                 return false;
             };
 
-            environment.isClient = function() {
+            environment.isClient = function () {
                 return true;
             };
         });
 
-        after(function() {
+        after(function () {
 
-            environment.isServer = function() {
+            environment.isServer = function () {
                 return true;
             };
 
-            environment.isClient = function() {
+            environment.isClient = function () {
                 return false;
             };
         });
 
-        beforeEach(function() {
+        beforeEach(function () {
             octocat = new Octocat();
             testService = {
                 create : function(remote, ids, model, callback) {
@@ -511,7 +499,7 @@ describe("Model", function() {
             };
         });
 
-        describe("Error handling and format parsing (__processResponse)", function() {
+        describe("Error handling and format parsing (__processResponse)", function () {
             it("should fail if response is no valid object", function(done) {
 
                 testService.create = function(remote, ids, model, callback) {
@@ -549,7 +537,7 @@ describe("Model", function() {
             });
         });
 
-        describe("#save", function() {
+        describe("#save", function () {
             it("call the update service if ID is set and return successfully", function(done) {
                 octocat = new Octocat(2);
                 octocat.setService(testService);
@@ -597,7 +585,7 @@ describe("Model", function() {
             });
         });
 
-        describe("#destroy", function() {
+        describe("#destroy", function () {
 
             var mockedDeleteService = {
                 destroy : function(remote, ids, callback) {
@@ -633,13 +621,13 @@ describe("Model", function() {
 
         describe("Statics", function(){
 
-            before(function() {
+            before(function () {
                 var config = require("../../lib/shared/config");
                 //we simulate client-services
                 config.isServer = false;
             });
 
-            describe("#findById", function() {
+            describe("#findById", function () {
 
                 var environment = require("../../lib/shared/environment.js");
 
@@ -647,29 +635,29 @@ describe("Model", function() {
                     services,
                     mockedOctocats;
 
-                before(function() {
+                before(function () {
 
-                    environment.isServer = function() {
+                    environment.isServer = function () {
                         return false;
                     };
 
-                    environment.isClient = function() {
+                    environment.isClient = function () {
                         return true;
                     };
                 });
 
-                after(function() {
+                after(function () {
 
-                    environment.isServer = function() {
+                    environment.isServer = function () {
                         return true;
                     };
 
-                    environment.isClient = function() {
+                    environment.isClient = function () {
                         return false;
                     };
                 });
 
-                beforeEach(function() {
+                beforeEach(function () {
 
                     mockedOctocats = [
                         {
@@ -695,7 +683,7 @@ describe("Model", function() {
                         }
                     };
                     services = require("../../lib/shared/registries/serviceRegistry.js");
-                    services.getService =  function() {
+                    services.getService =  function () {
                         return testService;
                     };
                     Octocat = require("./Model/Octocat.class.js");
@@ -743,36 +731,36 @@ describe("Model", function() {
                 });
             });
 
-            describe("#find", function() {
+            describe("#find", function () {
                 var Model,
                     services,
                     mockedOctocats;
 
-                describe("on the client", function() {
+                describe("on the client", function () {
 
-                    before(function() {
+                    before(function () {
 
-                        environment.isServer = function() {
+                        environment.isServer = function () {
                             return false;
                         };
 
-                        environment.isClient = function() {
+                        environment.isClient = function () {
                             return true;
                         };
                     });
 
-                    after(function() {
+                    after(function () {
 
-                        environment.isServer = function() {
+                        environment.isServer = function () {
                             return true;
                         };
 
-                        environment.isClient = function() {
+                        environment.isClient = function () {
                             return false;
                         };
                     });
 
-                    beforeEach(function() {
+                    beforeEach(function () {
 
                         mockedOctocats = [
                             {
@@ -793,7 +781,7 @@ describe("Model", function() {
                             }
                         };
                         services = require("../../lib/shared/registries/serviceRegistry.js");
-                        services.getService =  function() {
+                        services.getService =  function () {
                             return testService;
                         };
                         Octocat = require("./Model/Octocat.class.js");
@@ -848,7 +836,7 @@ describe("Model", function() {
 
         var environment = require("../../lib/shared/environment.js");
 
-        before(function() {
+        before(function () {
             var modelCache = require("../../lib/shared/modelCache.js"),
                 clientModelCache = require("../../lib/client/modelCache.client.js");
 
@@ -859,34 +847,34 @@ describe("Model", function() {
             Model = require("../../lib/shared/Model.class.js");
         });
 
-        before(function() {
+        before(function () {
 
-            environment.isServer = function() {
+            environment.isServer = function () {
                 return false;
             };
 
-            environment.isClient = function() {
+            environment.isClient = function () {
                 return true;
             };
         });
 
-        after(function() {
+        after(function () {
 
-            environment.isServer = function() {
+            environment.isServer = function () {
                 return true;
             };
 
-            environment.isClient = function() {
+            environment.isClient = function () {
                 return false;
             };
         });
 
 
-        describe("#find", function() {
+        describe("#find", function () {
 
             var Octoduck;
 
-            before(function() {
+            before(function () {
                 Octoduck = require("./Model/OctoDuck.class.js");
             });
 
@@ -921,11 +909,11 @@ describe("Model", function() {
             });
         });
 
-        describe("#save", function() {
+        describe("#save", function () {
 
             var Octoduck;
 
-            before(function() {
+            before(function () {
                 Octoduck = require("./Model/OctoDuck.class.js");
             });
 

@@ -2,9 +2,9 @@
 
 var Model = require("../../../lib/shared/Model.class.js");
 
-var Animal = Model.define("Animal", {
-    $url : "animal",
-    init : function() {
+var Animal = Model.extend("Animal", {
+    url : "animal",
+    constructor : function() {
 
     }
 });
