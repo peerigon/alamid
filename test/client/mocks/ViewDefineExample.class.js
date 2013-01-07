@@ -2,7 +2,7 @@
 
 var View = require("../../../lib/client/View.class.js");
 
-var ViewDefineExample = View.define("ViewDefineExample", {
+var ViewDefineExample = View.extend("ViewDefineExample", {
 
     /**
      * @type {Function}
@@ -12,12 +12,10 @@ var ViewDefineExample = View.define("ViewDefineExample", {
     /**
      * @param {Function} done
      */
-    init: function (done) {
-
+    constructor: function (done) {
         var template = "<div data-role='page'></div>";
 
-        this.Super(template);
-
+        this._super(template);
         this.__done = done;
     },
 

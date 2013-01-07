@@ -1,16 +1,13 @@
 "use strict";
 
-var Class = require("nodeclass").Class,
-    DisplayObject = require("../../../lib/client/DisplayObject.class.js");
+var DisplayObject = require("../../../lib/client/DisplayObject.class.js");
 
 /**
  * This is a mock for testing DisplayObject's append() by making it a public method.
  */
-var DisplayObjectExample = new Class("DisplayObjectExample", {
+var DisplayObjectExample = DisplayObject.extend("DisplayObjectExample", {
 
-    Extends: DisplayObject,
-
-    $template: "<div></div>",
+    template: "<div></div>",
 
     /**
      *
@@ -21,7 +18,7 @@ var DisplayObjectExample = new Class("DisplayObjectExample", {
      * @protected
      */
     append: function (displayObject) {
-        return this.Super._append(displayObject);
+        return this._append(displayObject);
     },
 
     /**
@@ -33,7 +30,7 @@ var DisplayObjectExample = new Class("DisplayObjectExample", {
      * @protected
      */
     prepend: function (displayObject) {
-        return this.Super._prepend(displayObject);
+        return this._prepend(displayObject);
     },
 
     /**
@@ -42,14 +39,14 @@ var DisplayObjectExample = new Class("DisplayObjectExample", {
      * @param nodeEvents
      */
     addNodeEvents: function (nodeEvents) {
-        this.Super._addNodeEvents(nodeEvents);
+        this._addNodeEvents(nodeEvents);
     },
 
     /**
      * @return {Object.<string, node>}
      */
     getNodeMap: function () {
-        return this.Super._getNodeMap();
+        return this._nodeMap;
     }
 
 });

@@ -1,7 +1,5 @@
 "use strict";
 
-var Class = require("nodeclass").Class;
-
 var User3Schema = {
     loginName: {
         type : String,

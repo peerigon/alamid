@@ -2,10 +2,6 @@
 
 var Page = require("alamid").Page;
 
-var PostsPage = Page.define("PostsPage", {
-    init : function () {
-        //nothing to do here
-    }
-});
+var PostsPage = Page.extend("PostsPage", {});
 
 module.exports = PostsPage;

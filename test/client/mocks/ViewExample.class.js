@@ -1,11 +1,8 @@
 "use strict";
 
-var Class = require("nodeclass").Class,
-    View = require("../../../lib/client/View.class.js");
+var View = require("../../../lib/client/View.class.js");
 
-var ViewExample = new Class("ViewExample", {
-
-    Extends: View,
+var ViewExample = View.extend("ViewExample", {
 
     /**
      * Exposes append
@@ -14,7 +11,7 @@ var ViewExample = new Class("ViewExample", {
      * @return {Object.<string, function(string): DisplayObject>}
      */
     append: function(displayObject) {
-        return this.Super._append(displayObject);
+        return this._append(displayObject);
     },
 
     /**
@@ -24,7 +21,7 @@ var ViewExample = new Class("ViewExample", {
      * @return {Object.<string, function(string): DisplayObject>}
      */
     prepend: function(displayObject) {
-        return this.Super._prepend(displayObject);
+        return this._prepend(displayObject);
     }
 
 });

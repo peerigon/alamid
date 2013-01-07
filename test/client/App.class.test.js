@@ -61,7 +61,7 @@ describe("App", function () {
         jQuery("[data-node='page']").remove();
     });
 
-    describe(".init()", function () {
+    describe(".constructor()", function () {
 
         it("should fail with an TypeError when calling without a Page class", function () {
             expect(function () {
@@ -74,6 +74,8 @@ describe("App", function () {
         });
 
     });
+
+
 
     describe(".start()", function () {
 
@@ -231,12 +233,12 @@ describe("App", function () {
             app.dispatchRoute(route);
 
             pageLoader = PageLoaderMock.instance;
-            pageURLs = pageLoader.getPageURLs();
+            pageURLs = pageLoader.pageURLs;
             expect(pageURLs).to.eql(["blog", "blog/about"]);
         });
 
         it("should pass the params from route", function () {
-            var pageCtx,
+            var context,
                 pageLoader;
 
             app.addRoute("blog/:author/posts/:postId", function (ctx, next) {
@@ -251,9 +253,9 @@ describe("App", function () {
             app.dispatchRoute("blog/spook/posts/123");
 
             pageLoader = PageLoaderMock.instance;
-            pageCtx = pageLoader.getParams();
-            expect(pageCtx.params.author).to.be("spook");
-            expect(pageCtx.params.postId).to.be("123");
+            context = pageLoader.context;
+            expect(context.params.author).to.be("spook");
+            expect(context.params.postId).to.be("123");
         });
 
         it("should display Default404Page if App is in 'development' mode and no handler for given route was added", function () {
@@ -261,7 +263,7 @@ describe("App", function () {
 
             app.dispatchRoute("404");
 
-            expect(value(app.getMainPage().getSubPage()).instanceOf(Default404Page)).to.equal(true);
+            expect(value(app.getMainPage().getSubPage()).typeOf(Default404Page)).to.equal(true);
         });
 
         it("should be chainable", function () {
@@ -356,7 +358,7 @@ describe("App", function () {
 
             app.changePage(toPageUrl, pageParams);
 
-            PageLoaderMock.instance.getCallback()(null, [pages.blog]);
+            PageLoaderMock.instance.callback(null, [pages.blog]);
         });
 
         it("should be possible to change current page to MainPage with '/' as route", function (done) {
@@ -369,7 +371,7 @@ describe("App", function () {
 
             app.changePage("/", {});
 
-            PageLoaderMock.instance.getCallback()();
+            PageLoaderMock.instance.callback();
         });
 
         it("should be possible to change current page to MainPage with '' as route", function (done) {
@@ -384,7 +386,7 @@ describe("App", function () {
 
             app.changePage("", {});
 
-            PageLoaderMock.instance.getCallback()();
+            PageLoaderMock.instance.callback();
         });
 
         it("should emit 'beforePageChange' first and than 'beforeLeave' on every Sub-Ppage that will be changed from bottom to top", function () {
@@ -490,7 +492,7 @@ describe("App", function () {
             app.changePage("blog", {});
             pageLoader = PageLoaderMock.instance;
             app.changePage("blog", {});
-            expect(pageLoader.getCancelled()).to.be(true);
+            expect(pageLoader.cancelled).to.be(true);
         });
 
         it("should not call cancel() on the previous pageLoader that finished", function () {
@@ -498,9 +500,9 @@ describe("App", function () {
 
             app.changePage("blog", {});
             pageLoader = PageLoaderMock.instance;
-            pageLoader.getCallback()(null, [pages.blog]);
+            pageLoader.callback(null, [pages.blog]);
             app.changePage("blog", {});
-            expect(pageLoader.getCancelled()).to.be(false);
+            expect(pageLoader.cancelled).to.be(false);
         });
 
         it("should append all loaded pages from top to bottom and emit 'pageChange' after that", function () {
@@ -521,7 +523,7 @@ describe("App", function () {
             });
             app.changePage("blog/posts", {});
             pageLoader = PageLoaderMock.instance;
-            pageLoader.getCallback()(null, [pages.blog, pages.posts]);
+            pageLoader.callback(null, [pages.blog, pages.posts]);
             expect(pages.main.getSubPage()).to.be(pages.blog);
             expect(pages.blog.getSubPage()).to.be(pages.posts);
             expect(pages.posts.getSubPage()).to.be(null);

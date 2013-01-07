@@ -20,7 +20,10 @@ describe("runCreateBundle()", function () {
 
     before(function (done) {
         fshelpers.makeDirSync(__dirname + "/node_modules");
-        fs.symlinkSync(pathUtil.resolve(__dirname, "../../../"), __dirname + "/node_modules/alamid");
+        try {
+            fs.symlinkSync(pathUtil.resolve(__dirname, "../../../"), __dirname + "/node_modules/alamid");
+        } catch (err) { /* ignore err */ }
+
 
         browser = new Browser();
         var app = connect()

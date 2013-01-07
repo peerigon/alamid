@@ -1,18 +1,17 @@
 "use strict";
 
-var Class = require("nodeclass").Class,
-    Page = require("../../../lib/client/Page.class.js");
+var Page = require("../../../lib/client/Page.class.js");
 
-var PageExample = new Class("PageExample", {
+var PageExample = Page.extend("PageExample", {
 
-    Extends: Page,
+    template: "<div data-node='page'></div>",
 
     /**
      * Exposes protected ._getParams()
      * @return {object}
      */
     getParams: function () {
-        return this.Super._getParams();
+        return this._params;
     },
 
     /**
@@ -20,10 +19,8 @@ var PageExample = new Class("PageExample", {
      * @return {boolean}
      */
     isDisposed: function () {
-        return this.Super._getIsDisposed();
-    },
-
-    $template: "<div data-node='page'></div>"
+        return this._isDisposed;
+    }
 
 });
 

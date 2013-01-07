@@ -21,27 +21,12 @@ describe("Page", function () {
         pageExample = new PageExample(params);
     });
 
-    describe(".define()", function () {
-
-        it("should return an instance of Page", function () {
-            expect(value(new PageDefineExample()).instanceOf(Page)).to.equal(true);
-        });
-
-        it("should provide .executeDone() defined in descriptor", function (done) {
-
-            var definedPage = new PageDefineExample(done);
-
-            definedPage.executeDone();
-        });
-
-    });
-
-    describe(".construct()", function () {
+    describe(".constructor()", function () {
 
         it("should be possible to overwrite the template with second argument", function () {
             pageExample = new PageExample({}, "<div></div>");
 
-            expect(jQuery(pageExample.getNode()).find("[data-node='page']").length).to.equal(0);
+            expect(jQuery(pageExample.node).find("[data-node='page']").length).to.equal(0);
         });
 
     });
@@ -80,7 +65,7 @@ describe("Page", function () {
         });
 
         it("should append the SubPage", function () {
-            var $node = jQuery(pageExample.getNode());
+            var $node = jQuery(pageExample.node);
 
             expect($node.find("#" + subPageId).length).to.equal(1);
         });

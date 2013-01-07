@@ -15,7 +15,7 @@ describe("Default404Page", function () {
 
     beforeEach(function () {
         default404Page = new Default404Page();
-        pageNode = default404Page.getNode();
+        pageNode = default404Page.node;
         $pageNode = jQuery(pageNode);
     });
 

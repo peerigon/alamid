@@ -1,7 +1,6 @@
 "use strict";
 
 var resolveFilename = require("../../lib/core/bundle/resolveFilename.js"),
-    nodeclassLoader = require("nodeclass").bundlers.webpack,
     rewireWebpackExtension = require("rewire").bundlers.webpack,
     path = require("path");
 
@@ -12,9 +11,6 @@ exports.use = function () {
         includeFilenames: true,
         debug: true,
         extensions: ["", ".client.js", ".js"],
-        preLoaders: [
-            nodeclassLoader
-        ],
         resolve: {
             loaders: [
                 { test: /\.html$/i, loader: "raw" }

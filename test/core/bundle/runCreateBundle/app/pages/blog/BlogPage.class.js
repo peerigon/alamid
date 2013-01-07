@@ -2,11 +2,8 @@
 
 var Page = require("alamid").Page;
 
-var BlogPage = Page.define("BlogPage", {
-    $template: require("./BlogPage.html"),
-    init : function () {
-        //nothing to do here
-    }
+var BlogPage = Page.extend("BlogPage", {
+    template: require("./BlogPage.html")
 });
 
 module.exports = BlogPage;

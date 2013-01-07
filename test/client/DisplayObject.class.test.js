@@ -4,7 +4,6 @@ var expect = require("expect.js"),
     value = require("value"),
     CONSTANTS = require("../../lib/client/CONSTANTS.js"),
     path = require("path"),
-    compile = require("nodeclass").compile,
     DisplayObject = require("../../lib/client/DisplayObject.class.js"),
     DisplayObjectExample = require("./mocks/DisplayObjectExample.class.js"),
     DisplayObjectDefineExample = require("./mocks/DisplayObjectDefineExample.class.js"),
@@ -37,22 +36,7 @@ describe("DisplayObject", function () {
         formDisplayObject = new DisplayObjectExample(formTemplate);
     });
 
-    describe(".define()", function () {
-
-        it("should return an instance of Page", function () {
-            expect(value(new DisplayObjectDefineExample()).instanceOf(DisplayObject)).to.equal(true);
-        });
-
-        it("should provide .executeDone() defined in descriptor", function (done) {
-
-            var definedDisplayObject = new DisplayObjectDefineExample(done);
-
-            definedDisplayObject.executeDone();
-        });
-
-    });
-
-    describe(".construct()", function () {
+    describe(".constructor()", function () {
 
         it("should throw an error if no template is given", function () {
             expect(function () { var dO = new DisplayObject(); }).to.throwError();
@@ -71,10 +55,10 @@ describe("DisplayObject", function () {
 
     });
 
-    describe(".getNode()", function () {
+    describe(".node", function () {
 
         it("should return an node according to given template", function () {
-            expect(displayObject.getNode().toString()).to.be.equal("[object HTMLFormElement]");
+            expect(displayObject.node.toString()).to.be.equal("[object HTMLFormElement]");
         });
 
     });
@@ -137,11 +121,11 @@ describe("DisplayObject", function () {
         it("should append submit-button to form", function () {
             formDisplayObject.append(submitButtonDisplayObject).at("form");
 
-            var $lastChild = jQuery(formDisplayObject.getNode()).find(":last-child"),
+            var $lastChild = jQuery(formDisplayObject.node).find(":last-child"),
                 lastChild = $lastChild[0];
 
-            expect(lastChild.toString()).to.be.equal(submitButtonDisplayObject.getNode().toString());
-            expect($lastChild.val()).to.be.equal(submitButtonDisplayObject.getNode().value);
+            expect(lastChild.toString()).to.be.equal(submitButtonDisplayObject.node.toString());
+            expect($lastChild.val()).to.be.equal(submitButtonDisplayObject.node.value);
         });
 
     });
@@ -186,11 +170,11 @@ describe("DisplayObject", function () {
         it("should prepend submit-button to form", function () {
             formDisplayObject.prepend(submitButtonDisplayObject).at("form");
 
-            var $firstChild = jQuery(formDisplayObject.getNode()).find(":first-child"),
+            var $firstChild = jQuery(formDisplayObject.node).find(":first-child"),
                 firstChild = $firstChild[0];
 
-            expect(firstChild.toString()).to.be.equal(submitButtonDisplayObject.getNode().toString());
-            expect($firstChild.val()).to.be.equal(submitButtonDisplayObject.getNode().value);
+            expect(firstChild.toString()).to.be.equal(submitButtonDisplayObject.node.toString());
+            expect($firstChild.val()).to.be.equal(submitButtonDisplayObject.node.value);
         });
 
     });
@@ -213,8 +197,8 @@ describe("DisplayObject", function () {
             var focusEvent = "untriggered",
                 blurEvent = "untriggered",
             //alamid's jQuery must be used here, cause node is not in the DOM.
-                $inputA = alamidjQuery(formDisplayObject.getNode()).find("[data-node='input-a']"),
-                $inputB = alamidjQuery(formDisplayObject.getNode()).find("[data-node='input-b']");
+                $inputA = alamidjQuery(formDisplayObject.node).find("[data-node='input-a']"),
+                $inputB = alamidjQuery(formDisplayObject.node).find("[data-node='input-b']");
 
             formDisplayObject.addNodeEvents({
                 "input-a": {
@@ -263,7 +247,7 @@ describe("DisplayObject", function () {
         it("should remove itself from parent node", function () {
             formDisplayObject.append(submitButtonDisplayObject).at("form");
             submitButtonDisplayObject.destroy();
-            expect(jQuery(formDisplayObject.getNode()).find("[type='submit']").length).to.be.equal(0);
+            expect(jQuery(formDisplayObject.node).find("[type='submit']").length).to.be.equal(0);
         });
 
         it("should be still possible to trigger attached events after .destroy()", function (done) {
@@ -279,7 +263,7 @@ describe("DisplayObject", function () {
 
             submitButtonDisplayObject.destroy();
 
-            jQuery(submitButtonDisplayObject.getNode()).click();
+            jQuery(submitButtonDisplayObject.node).click();
         });
 
         it("should be possible to re-append a destroyed DisplayObject", function () {
@@ -288,8 +272,8 @@ describe("DisplayObject", function () {
             formDisplayObject.append(submitButtonDisplayObject).at("form");
 
             expect(
-                jQuery(formDisplayObject.getNode()).find("[type='submit']")[0].toString()
-            ).to.be.equal(submitButtonDisplayObject.getNode().toString());
+                jQuery(formDisplayObject.node).find("[type='submit']")[0].toString()
+            ).to.be.equal(submitButtonDisplayObject.node.toString());
         });
 
     });
@@ -334,12 +318,12 @@ describe("DisplayObject", function () {
 
         it("should remove itself from parent node", function () {
             submitButtonDisplayObject.dispose();
-            expect(jQuery(formDisplayObject.getNode()).find("[type='submit']").length).to.be.equal(0);
+            expect(jQuery(formDisplayObject.node).find("[type='submit']").length).to.be.equal(0);
         });
 
         it("should be NOT possible to get a node", function () {
             submitButtonDisplayObject.dispose();
-            expect(submitButtonDisplayObject.getNode()).to.not.be.ok();
+            expect(submitButtonDisplayObject.node).to.not.be.ok();
         });
 
         it("should be NOT possible to get a map of nodes", function () {
@@ -358,7 +342,7 @@ describe("DisplayObject", function () {
 
             submitButtonDisplayObject.dispose();
 
-            jQuery(submitButtonDisplayObject.getNode()).click();
+            jQuery(submitButtonDisplayObject.node).click();
 
             done();
         });
@@ -432,7 +416,7 @@ describe("DisplayObject", function () {
 
             formDisplayObject.dispose();
 
-            expect(jQuery(tmpDisplayObject.getNode()).children().length).to.equal(0);
+            expect(jQuery(tmpDisplayObject.node).children().length).to.equal(0);
         });
 
     });
@@ -441,7 +425,7 @@ describe("DisplayObject", function () {
 
         it("node should have the attribute class with at least " + CONSTANTS.HIDE_CLASS + " as value", function () {
             displayObject.hide();
-            expect(jQuery(displayObject.getNode()).hasClass(CONSTANTS.HIDE_CLASS)).to.be(true);
+            expect(jQuery(displayObject.node).hasClass(CONSTANTS.HIDE_CLASS)).to.be(true);
         });
     });
 
@@ -449,7 +433,7 @@ describe("DisplayObject", function () {
 
         it("node should NOT have the attribute class with " + CONSTANTS.HIDE_CLASS + " as value", function () {
             displayObject.display();
-            expect(jQuery(displayObject.getNode()).hasClass(CONSTANTS.HIDE_CLASS)).to.be(false);
+            expect(jQuery(displayObject.node).hasClass(CONSTANTS.HIDE_CLASS)).to.be(false);
         });
 
     });

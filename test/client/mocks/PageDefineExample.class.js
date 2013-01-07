@@ -2,7 +2,7 @@
 
 var Page = require("../../../lib/client/Page.class.js");
 
-var PageDefineExample = Page.define("PageDefineExample", {
+var PageDefineExample = Page.extend("PageDefineExample", {
 
     /**
      * @type {Function}
@@ -12,12 +12,11 @@ var PageDefineExample = Page.define("PageDefineExample", {
     /**
      * @param {Function} done
      */
-    init: function (done) {
-
+    constructor: function (done) {
         var params = {},
             template = "<div data-role='page'></div>";
 
-        this.Super(params, template);
+        this._super(params, template);
 
         this.__done = done;
     },

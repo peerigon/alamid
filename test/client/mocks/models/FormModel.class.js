@@ -3,15 +3,13 @@
 var Model = require('../../../../lib/shared/Model.class.js'),
     schema = require("./schemas/formSchema");
 
-var FormModelABC = Model.define("FormModel", {
+var FormModelABC = Model.extend("FormModel", {
 
-    $url : "FormModel",
+    url : "FormModel",
 
-    init: function() {
-
-        this.Super(__filename, schema);
-        this.Super.setSchema(schema);
-
+    constructor: function() {
+        this._super(__filename, schema);
+        this.setSchema(schema);
     }
 });
 

@@ -1,14 +1,9 @@
 "use strict"; // run code in ES5 strict mode
 
-var Class = require("nodeclass").Class,
-    Page = require("alamid").Page;
+var Page = require("alamid").Page;
 
-var BlogPage = new Class("BlogPage", {
-    Extends: Page,
-    $template : require("./BlogPage.html"),
-    init : function () {
-
-    }
+var BlogPage = Page.extend("BlogPage", {
+    template : require("./BlogPage.html")
 });
 
 module.exports = BlogPage;

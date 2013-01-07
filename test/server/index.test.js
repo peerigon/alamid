@@ -7,7 +7,7 @@ var alamid = require("../../lib/index.js");
 //util
 var underscore = require("underscore"),
     logger = require("../../lib/core/logger.server.js"),
-    Class = require("nodeclass").Class,
+    Class = require("alamid-class"),
     value = require("value");
 
 var Collection = require("../../lib/shared/Collection.class.js"),
@@ -29,7 +29,7 @@ describe("index.js", function () {
         expect(alamid.util.logger).to.equal(logger);
     });
 
-    it("should export nodeclass.Class", function () {
+    it("should export Class", function () {
         expect(alamid.util.Class).to.equal(Class);
     });
 

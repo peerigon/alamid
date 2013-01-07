@@ -3,7 +3,7 @@
 var ViewExampleWithTemplate = require("./ViewExampleWithTemplate.class.js"),
     ViewCollection = require("../../../lib/client/ViewCollection.class.js");
 
-var ViewCollectionDefineExample = ViewCollection.define("ViewCollectionDefineExample", {
+var ViewCollectionDefineExample = ViewCollection.extend("ViewCollectionDefineExample", {
 
     /**
      * @type {Function}
@@ -13,12 +13,10 @@ var ViewCollectionDefineExample = ViewCollection.define("ViewCollectionDefineExa
     /**
      * @param {Function} done
      */
-    init: function (done) {
-
+    constructor: function (done) {
         var collectionTemplate = "<ul data-node='views'></ul>";
 
-        this.Super(ViewExampleWithTemplate, collectionTemplate);
-
+        this._super(ViewExampleWithTemplate, collectionTemplate);
         this.__done = done;
     },
 

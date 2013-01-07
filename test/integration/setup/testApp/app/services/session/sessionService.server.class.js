@@ -1,7 +1,6 @@
 "use strict";
 
-var nodeclass = require("nodeclass"),
-    Class = nodeclass.Class;
+var Class = require("alamid-class");
 
 //the session data is processed by the middleware!
 

@@ -1,13 +1,7 @@
 "use strict";
 
-var nodeclass = require("nodeclass"),
-    Class = nodeclass.Class;
+var EventEmitter = require('../../../lib/shared/EventEmitter.class.js');
 
-var Socket = new Class("Socket", {
-    Extends: require('../../../lib/shared/EventEmitter.class.js'),
-    init : function() {
-
-    }
-});
+var Socket = EventEmitter.extend("Socket", {});
 
 module.exports = Socket;

@@ -1,14 +1,8 @@
 "use strict"; // run code in ES5 strict mode
 
-"use strict";
-
-var Class = require("nodeclass").Class;
+var Class = require("alamid-class");
 
 var ServiceA = new Class("ServiceA", {
-
-    "init" : function () {
-        //nothing to do here
-    },
     "create" : function(model, callback) {
         callback();
     },

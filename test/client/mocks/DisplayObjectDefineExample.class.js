@@ -2,7 +2,7 @@
 
 var DisplayObject = require("../../../lib/client/DisplayObject.class.js");
 
-var DisplayObjectDefineExample = DisplayObject.define("DisplayObjectDefineExample", {
+var DisplayObjectDefineExample = DisplayObject.extend("DisplayObjectDefineExample", {
 
     /**
      * @type {Function}
@@ -12,12 +12,10 @@ var DisplayObjectDefineExample = DisplayObject.define("DisplayObjectDefineExampl
     /**
      * @param {Function} done
      */
-    init: function (done) {
-
+    constructor: function (done) {
         var template = "<div data-role='page'></div>";
 
-        this.Super(template);
-
+        this._super(template);
         this.__done = done;
     },
 

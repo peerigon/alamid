@@ -1,13 +1,10 @@
 "use strict"; // run code in ES5 strict mode
 
-var Class = require("nodeclass").Class,
-    Page = require("../../../lib/client/Page.class.js");
+var Page = require("../../../lib/client/Page.class.js");
 
-var PageMock = new Class("PageMock", {
+var PageMock = Page.extend("PageMock", {
 
-    Extends: Page,
-
-    $template: "<div data-node='page'></div>",
+    template: "<div data-node='page'></div>",
 
     subPage: null,
 
@@ -15,21 +12,21 @@ var PageMock = new Class("PageMock", {
 
     emitted: null,
 
-    init: function (params) {
+    constructor: function (params) {
         this.emitted = [];
         this.params = params;
-        this.Super("<div data-node='page'></div>");
+        this._super("<div data-node='page'></div>");
     },
 
     emit: function () {
         this.emitted.push(arguments);
-        this.Super.emit.apply(this.Super, arguments);
+        this._super.apply(this, arguments);
     },
 
     setSubPage: function (subPage) {
-        this.Super.setSubPage(subPage);
+        this._super(subPage);
         this.subPage = subPage;
-        return this.Instance;
+        return this;
     }
 
 });

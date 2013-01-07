@@ -1,13 +1,9 @@
 "use strict";
 
-var Class = require("nodeclass").Class,
-    View = require("../../../lib/client/View.class.js");
+var View = require("../../../lib/client/View.class.js");
 
-var CarLiElementView = new Class("CarLiElementView", {
-
-    Extends: View,
-
-    $template: "<li data-node='listElement'>" +
+var CarLiElementView = View.extend("CarLiElementView", {
+    template: "<li data-node='listElement'>" +
         "<p>" +
         "<span data-node='manufactor'></span>" +
         "<span data-node='model'></span>" +

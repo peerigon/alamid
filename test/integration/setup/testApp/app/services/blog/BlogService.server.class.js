@@ -1,12 +1,8 @@
 "use strict";
 
-var nodeclass = require("nodeclass"),
-    Class = nodeclass.Class;
+var Class = require("alamid-class");
 
 var BlogService = new Class("BlogService", {
-    init : function() {
-
-    },
     create : function(ids, data, callback) {
         data.id = 1;
         console.log("create called");

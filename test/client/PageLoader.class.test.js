@@ -73,10 +73,10 @@ describe("PageLoader", function () {
                 postsPage = pages[1];
                 expect(blogPage).to.be.a(PageLoaderExamplePage);
                 expect(postsPage).to.be.a(PageLoaderExamplePage);
-                expect(blogPage.getParams() === params).to.equal(true);
-                expect(postsPage.getParams() === params).to.equal(true);
-                expect(blogPage.getEmitted()).to.eql([]);
-                expect(postsPage.getEmitted()).to.eql([]);
+                expect(blogPage.params === params).to.equal(true);
+                expect(postsPage.params === params).to.equal(true);
+                expect(blogPage.emitted).to.eql([]);
+                expect(postsPage.emitted).to.eql([]);
                 done();
             });
         });
@@ -116,12 +116,12 @@ describe("PageLoader", function () {
                 postsPage = pages[1];
                 expect(blogPage).to.be.a(PageLoaderExamplePage);
                 expect(postsPage).to.be.a(PageLoaderExamplePage);
-                expect(blogPage.getParams()).to.be(params);
-                expect(postsPage.getParams()).to.be(params);
-                expect(blogPage.getEmitted()).to.have.length(1);
-                expect(postsPage.getEmitted()).to.have.length(1);
-                expect(blogPage.getEmitted()[0]).to.eql(["data", blogData]);
-                expect(postsPage.getEmitted()[0]).to.eql(["data", postsData]);
+                expect(blogPage.params).to.be(params);
+                expect(postsPage.params).to.be(params);
+                expect(blogPage.emitted).to.have.length(1);
+                expect(postsPage.emitted).to.have.length(1);
+                expect(blogPage.emitted[0]).to.eql(["data", blogData]);
+                expect(postsPage.emitted[0]).to.eql(["data", postsData]);
                 done();
             });
         });
@@ -158,8 +158,8 @@ describe("PageLoader", function () {
                                          // to dataLoader errors of pages
                 blogPage = pages[0];
                 postsPage = pages[1];
-                expect(blogPage.getEmitted()[0]).to.eql(["dataError", blogError]);
-                expect(postsPage.getEmitted()[0]).to.eql(["dataError", postsError]);
+                expect(blogPage.emitted[0]).to.eql(["dataError", blogError]);
+                expect(postsPage.emitted[0]).to.eql(["dataError", postsError]);
                 done();
             });
         });

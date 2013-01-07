@@ -1,12 +1,8 @@
 "use strict";
 
-var nodeclass = require("nodeclass"),
-    Class = nodeclass.Class;
+var Class = require("alamid-class");
 
 var PushService = new Class("PushService", {
-    init : function() {
-
-    },
     update : function(model, callback) {
         callback({ status : "success", data : { name : "pusher"} });
     }

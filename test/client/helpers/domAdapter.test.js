@@ -84,15 +84,12 @@ describe("domAdapter", function () {
 
         describe(".once()", function () {
 
-            it("should execute listener only once", function () {
-
+            it("should execute listener only once", function (done) {
                 domAdapter(button).once("click", function onClick() {
                     done();
                 });
-
                 $button.trigger("click");
                 $button.trigger("click");
-
             });
 
         });

@@ -1,8 +1,6 @@
 "use strict";
 
-var nodeclass = require("nodeclass"),
-    Class = nodeclass.Class,
-    Socket = require("./mocks/Socket.class.js");
+var Socket = require("./mocks/Socket.class.js");
 
 var expect = require("expect.js"),
     rewire = require("rewire");

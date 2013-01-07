@@ -2,10 +2,8 @@
 
 var View = require("../../../lib/client/View.class.js");
 
-var FormView = View.define("FormView", {
-
-    $template:
-
+var FormView = View.extend("FormView", {
+    template:
         '<div data-node="formView">' +
 
             '<h1 data-node="heading"></h1>' +
@@ -45,9 +43,7 @@ var FormView = View.define("FormView", {
      * @return {string}
      */
     getTemplate: function () {
-
-        return this.Instance.Class.template;
-
+        return this.template;
     }
 
 });

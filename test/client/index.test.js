@@ -6,12 +6,11 @@ var alamid = require("../../lib/index.js");
 
 //util
 var underscore = require("underscore"),
+    Class = require("alamid-class"),
     jQuery = require("../../lib/client/helpers/jQuery.js"),
     history = require("../../lib/client/helpers/historyAdapter.js"),
     logger = require("../../lib/client/logger.client.js"),
-    Class = require("nodeclass").Class,
     value = require("value");
-
 
 var config = require("../../lib/client/config.client.js");
 
@@ -19,7 +18,6 @@ var DisplayObject = require("../../lib/client/DisplayObject.class.js"),
     View = require("../../lib/client/View.class.js"),
     ViewCollection = require("../../lib/client/ViewCollection.class.js"),
     Page = require("../../lib/client/Page.class.js");
-
 
 var Collection = require("../../lib/shared/Collection.class.js"),
     Model = require("../../lib/shared/Model.class.js"),

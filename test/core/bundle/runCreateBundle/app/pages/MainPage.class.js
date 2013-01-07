@@ -2,11 +2,8 @@
 
 var Page = require("alamid").Page;
 
-var MainPage = Page.define("MainPage", {
-    $template : require("./MainPage.html"),
-    init : function () {
-
-    }
+var MainPage = Page.extend("MainPage", {
+    template : require("./MainPage.html")
 });
 
 module.exports = MainPage;

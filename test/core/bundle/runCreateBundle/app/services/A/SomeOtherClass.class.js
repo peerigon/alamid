@@ -1,15 +1,8 @@
 "use strict"; // run code in ES5 strict mode
 
-"use strict";
+var Class = require("alamid-class");
 
-var Class = require("nodeclass").Class;
-
-var SomeOtherClass = new Class("SomeOtherClass", {
-
-    "init" : function () {
-        //nothing to do here
-    }
-});
+var SomeOtherClass = new Class("SomeOtherClass", {});
 
 module.exports = SomeOtherClass;
 

@@ -1,13 +1,8 @@
 "use strict"; // run code in ES5 strict mode
 
-var Class = require("nodeclass").Class;
+var Class = require("alamid-class");
 
 var PageLoaderMock = new Class("PageLoaderMock", {
-
-    /**
-     * @type {Function}
-     */
-    $instance: null,
 
     /**
      * @type {Function}
@@ -22,7 +17,7 @@ var PageLoaderMock = new Class("PageLoaderMock", {
     /**
      * @type {Object}
      */
-    params: null,
+    context: null,
 
     /**
      * @type {Boolean}
@@ -32,17 +27,17 @@ var PageLoaderMock = new Class("PageLoaderMock", {
     /**
      * @param {Array} pageURLs
      */
-    init: function (pageURLs) {
+    constructor: function (pageURLs) {
         this.pageURLs = pageURLs;
-        PageLoaderMock.instance = this.Instance;
+        PageLoaderMock.instance = this;
     },
 
     /**
-     * @param {Object} params
+     * @param {Object} context
      * @param {Function} callback
      */
-    load: function (params, callback) {
-        this.params = params;
+    load: function (context, callback) {
+        this.context = context;
         this.callback = callback;
     },
 

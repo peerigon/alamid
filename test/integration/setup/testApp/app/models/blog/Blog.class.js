@@ -2,11 +2,8 @@
 
 var Model = require('../../../../../../../lib/shared/Model.class.js');
 
-var Blog = Model.define("Blog",{
-    $url : "blog",
-    init : function() {
-
-    }
+var Blog = Model.extend("Blog",{
+    url : "blog"
 });
 
 module.exports = Blog;
