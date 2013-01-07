@@ -2,8 +2,8 @@
 
 var Service = require("../../../lib/shared/Service.class.js");
 
-var BlogPostService = Service.define("BlogPostService", {
-    init : function() {
+var BlogPostService = Service.extend("BlogPostService", {
+    constructor : function() {
 
     },
     create : function () {

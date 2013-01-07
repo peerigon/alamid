@@ -15,14 +15,4 @@ describe("Service", function() {
         BlogService = require("./Service/BlogService.class.js");
     });
 
-    describe("$define", function() {
-
-        it("should define a Service and return the instance", function() {
-
-            blogServiceInstance = new BlogService();
-
-            expect(BlogService).not.to.be(undefined);
-            expect(value(blogServiceInstance).instanceOf(Service)).to.be(true);
-        });
-    });
 });

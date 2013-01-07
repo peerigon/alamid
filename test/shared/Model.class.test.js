@@ -14,6 +14,9 @@ describe("Model", function () {
             expect(Animal.on).to.be.a(Function);
             expect(Animal.find).to.be.a(Function);
         });
+        it("should make the url lowercase", function () {
+            expect(Octocat.prototype.url).to.be("octocat");
+        });
     });
 
     describe("Schema", function () {

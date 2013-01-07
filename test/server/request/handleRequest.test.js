@@ -20,7 +20,6 @@ describe("handleRequest", function() {
         routeHandler = router.get();
 
         routeHandler.on("error", function(err, req, res) {
-
             res.end({ status : "error", message : err.message, data : {} });
         });
 
@@ -47,9 +46,7 @@ describe("handleRequest", function() {
             }
         ];
 
-
         it("should handle the request and return without an error if all middleware worked fine", function(done) {
-
             routeHandler.add("post", "/services/*", middlewareMock);
             routeHandler.add(["post", "put", "delete", "get"], "/services/*", runServiceMock);
 

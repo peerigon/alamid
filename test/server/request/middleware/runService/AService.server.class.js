@@ -1,12 +1,8 @@
 "use strict";
 
-var Class = require("nodeclass").Class;
+var Service = require("../../../../../lib/shared/Service.class.js");
 
-var ServiceA = new Class("ServiceA", {
-
-    "init" : function () {
-        //nothing to do here
-    },
+var ServiceA = Service.extend("ServiceA", {
     create : function(ids, model, callback){
         callback({ "status" : "success" });
     },

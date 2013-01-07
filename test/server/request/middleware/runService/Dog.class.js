@@ -1,6 +1,5 @@
 "use strict";
 
-var Class = require("nodeclass").Class;
 var Model = require('../../../../../lib/shared/Model.class.js');
 
  var DogSchema = {
@@ -9,15 +8,15 @@ var Model = require('../../../../../lib/shared/Model.class.js');
         }
     };
 
-var Dog = Model.define("Dog", {
-    $url : "dog",
-    "init": function(id) {
-        this.Super(id);
-        this.Super.setSchema(DogSchema, "shared");
-        this.Super.setSchema(DogSchema);
+var Dog = Model.extend("Dog", {
+    url : "dog",
+    constructor: function(id) {
+        this._super(id);
+        this.setSchema(DogSchema, "shared");
+        this.setSchema(DogSchema);
     },
-    "accept": function() {
-        this.Super.acceptCurrentState();
+    accept: function() {
+        this.acceptCurrentState();
     }
 });
 
