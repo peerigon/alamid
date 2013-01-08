@@ -921,10 +921,14 @@ describe("Model", function () {
             });
 
             it("should add an instance to the registry after successful saving", function(done) {
+
                 var octo = new Octoduck();
-                octo.save(function(err) {
+
+                //id gets set internally after .save
+                octo.save(function(err, res) {
+
                     Octoduck.findById(2, function(err, octo2) {
-                        expect(octo2).to.eql(octo);
+                        expect(octo).to.eql(octo2);
                         done();
                     });
                 });
