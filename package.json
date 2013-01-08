@@ -18,7 +18,6 @@
         "node": "< 0.9"
     },
     "dependencies": {
-        "grunt" : "0.x",
         "underscore": "1.4.x",
         "async": "0.1.x",
         "connect": "2.x",
@@ -40,6 +39,7 @@
         "ejs" : "0.8.x"
     },
     "devDependencies": {
+        "grunt" : "0.x",
         "nof5": "0.2.x",
         "expect.js": "0.x",
         "mocha": "1.x",
