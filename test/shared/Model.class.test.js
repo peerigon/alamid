@@ -90,18 +90,18 @@ describe("Model", function () {
             });
         });
 
-        describe("parentIds", function () {
+        describe("ids", function () {
 
             var user;
             beforeEach(function () {
                 user = new User1();
             });
 
-            it("should set and get parentIds", function () {
-                user.setParentId("user", 2);
-                user.setParentId("comment", 3);
-                expect(user.getParentId("user")).to.eql(2);
-                expect(user.getParentId("comment")).to.eql(3);
+            it("should set and get ids", function () {
+                user.setId("user", 2);
+                user.setId("comment", 3);
+                expect(user.getId("user")).to.eql(2);
+                expect(user.getId("comment")).to.eql(3);
             });
         });
 
@@ -724,11 +724,11 @@ describe("Model", function () {
                     });
                 });
 
-                it("should append the parent ids to the octocat ", function(done) {
+                it("should append the ids to the octocat ", function(done) {
                     Octocat.findById({ "group" : 2}, 1, function(err, model) {
                         expect(err).to.be(null);
                         expect(model.get("name")).to.eql("Octo 1");
-                        expect(model.getParentId("group")).to.eql(2);
+                        expect(model.getId("group")).to.eql(2);
                         done();
                     });
                 });

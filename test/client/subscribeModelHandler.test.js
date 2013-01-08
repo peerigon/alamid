@@ -18,7 +18,7 @@ describe("subscribeModelHandler", function(){
     it("should receive remoteUpdateEvents", function(done) {
 
         var modelInstanceMock = {
-            setParentIds : function(ids) {
+            setIds : function(ids) {
                 expect(ids).to.eql({ blogpost : 1 });
             }
         };
@@ -105,7 +105,7 @@ describe("subscribeModelHandler", function(){
                 expect(data).to.eql({ da : "ta" });
             };
 
-            this.setParentIds = function(parentIds) {
+            this.setIds = function(parentIds) {
                 expect(parentIds).to.eql({ blogpost : 3 });
             };
 

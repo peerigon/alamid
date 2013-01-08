@@ -30,7 +30,7 @@ describe("publishModel", function(){
         req = new Request("update", "/services/blogpost/1", { da : "ta" });
         req.setModel({
            getUrl : function(){ return "blogpost"; },
-           getParentIds : function() { return { "blogpost" : 1 }; },
+           getIds : function() { return { "blogpost" : 1 }; },
            toObject : function() { return { da : "ta" }; }
         });
         res = new Response();

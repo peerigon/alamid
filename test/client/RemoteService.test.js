@@ -16,7 +16,7 @@ describe("remoteService", function() {
         getUrl : function() {
             return "blogpost";
         },
-        getParentIds : function() {
+        getIds : function() {
             return null;
         },
         toJSON : function() {
