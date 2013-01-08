@@ -68,34 +68,86 @@ describe("validator", function () {
         });
     });
 
-    describe("Reference Passing", function() {
+    describe("Custom validators with many validators per field as array", function() {
 
         var testModel,
-            userSchema = require("./Model/schemas/User3Schema.js");
+            pandaSchema = require("./Model/schemas/PandaSchema.js");
 
         beforeEach(function() {
             testModel = {
-                loginName : "pandaa",
-                email : "panda@bamboo.de",
-                password : "ultrasecure"
+                name : "pandaaaaaa",
+                password : "thatsmypassdude",
+                pooCount : 12,
+                mood : "crazy"
             };
         });
 
-        it("should pass if loginName and password is set", function (done) {
+        it("should pass if name and password are set", function (done) {
 
-            localValidation(userSchema, testModel, function(result) {
+            pandaSchema.name.validate = [
+                function validator1(name) {
+                    return "val1Failed";
+                },
+                function validator2(name) {
+                    return "val2Failed";
+                }
+            ];
+
+            localValidation(pandaSchema, testModel, function(result) {
+                expect(result.result).to.be(false);
+                expect(result.failedFields.name).to.contain("val1Failed");
+                expect(result.failedFields.name).to.contain("val2Failed");
+                done();
+            });
+        });
+    });
+
+    describe("Custom validators with references", function() {
+
+        var testModel,
+            pandaSchema = require("./Model/schemas/PandaSchema.js");
+
+        beforeEach(function() {
+            testModel = {
+                name : "pandaaaaaa",
+                password : "thatsmypassdude",
+                pooCount : 12,
+                mood : "crazy"
+            };
+        });
+
+        before(function() {
+
+            pandaSchema.name.validate = function(name) {
+
+                if(!name) {
+                    return "required";
+                }
+
+                //you also need a password if name is set
+                if(this.password === undefined) {
+                    return "password-required";
+                }
+
+                return true;
+            };
+        });
+
+        it("should pass if name and password are set", function (done) {
+
+            localValidation(pandaSchema, testModel, function(result) {
                 expect(result.result).to.be(true);
                 done();
             });
         });
 
-        it("should fail because password has to be set, if loginName is set", function (done) {
+        it("should fail because password has to be set, if name is set", function (done) {
 
             delete testModel.password;
 
-            localValidation(userSchema, testModel, function(result) {
+            localValidation(pandaSchema, testModel, function(result) {
                 expect(result.result).to.be(false);
-                expect(result.failedFields.loginName).to.contain("password-required");
+                expect(result.failedFields.name).to.contain("password-required");
                 done();
             });
         });
@@ -139,7 +191,6 @@ describe("validator", function () {
             testModel.fun = false;
 
             localValidation(surfSchema, testModel, function(result) {
-                console.log(result);
                 expect(result.result).to.be(false);
                 expect(result.failedFields.fun).to.contain(false);
                 done();
