@@ -76,10 +76,10 @@ describe("runCreateBundle()", function () {
         expect(browser.text("#headline2")).to.be("I'm the HomePage, baby!");
     });
     it("should load the BlogPage.html on link click", function (done) {
-        browser.window.app.once("pageChange", function () {
+        browser.window.client.once("pageChange", function () {
             expect(browser.text("#headline2")).to.be("I'm the BlogPage, baby!");
             done();
         });
-        browser.window.app.changePage("blog");
+        browser.window.client.changePage("blog");
     });
 });

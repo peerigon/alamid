@@ -1,15 +1,15 @@
 "use strict"; // run code in ES5 strict mode
 
 var alamid = require("alamid"),
-    app = alamid.app,
+    client = alamid.client,
     jQuery = alamid.util.jQuery;
 
-app
+client
     .addRoute("blog", "blog")
     .addRoute("*", "home");
 
 jQuery(document).ready(function onDOMReady() {
-    app.start();
+    client.start();
 });
 
-window.app = app;
+window.client = client;

@@ -7,21 +7,21 @@ var expect = require("expect.js"),
 
     pageJS = require("page"),
     config = require("../../lib/client/config.client.js"),
-    App = rewire("../../lib/client/App.class.js"),
+    Client = rewire("../../lib/client/Client.class.js"),
 
     PageMock = require("./mocks/PageMock.class.js"),
     PageLoaderMock = require("./mocks/PageLoaderMock.class.js"),
     Default404Page = require("../../lib/client/defaults/Default404Page.class.js");
 
-describe("App", function () {
+describe("Client", function () {
 
-    var app,
+    var client,
         pages,
         checkForTypeError;
 
     before(function () {
 
-        App.__set__({
+        Client.__set__({
             PageLoader: PageLoaderMock
         });
 
@@ -51,7 +51,7 @@ describe("App", function () {
         pages.about = new PageMock();
         pages.about.name = "About";
 
-        app = new App(PageMock);
+        client = new Client(PageMock);
 
         pageJS.callbacks = [];  // removes previous routes
     });
@@ -65,12 +65,12 @@ describe("App", function () {
 
         it("should fail with an TypeError when calling without a Page class", function () {
             expect(function () {
-                app = new App({});
+                client = new Client({});
             }).to.throwException(checkForTypeError);
         });
 
         it("should throw no exception when calling with a page", function () {
-            app = new App(PageMock);
+            client = new Client(PageMock);
         });
 
     });
@@ -82,7 +82,7 @@ describe("App", function () {
         it("should append MainPage to document's body", function () {
             var mainPageDiv;
 
-            app.start();
+            client.start();
 
             mainPageDiv = jQuery("body").find("[data-node='page']");
 
@@ -111,11 +111,11 @@ describe("App", function () {
 
         it("should modify the history state", function () {
             // This route handler is needed so pageJS doesn't change the window.location
-            app.addRoute("*", function () {
+            client.addRoute("*", function () {
                 //do nothing
             });
 
-            app.dispatchRoute("/blog/posts");
+            client.dispatchRoute("/blog/posts");
 
             expect(window.location.pathname).to.be("/blog/posts");
         });
@@ -133,11 +133,11 @@ describe("App", function () {
                 startParams = params;
             };
 
-            app.addRoute("blog", function () {
+            client.addRoute("blog", function () {
                 //do nothing
             });
 
-            app.dispatchRoute("blog");
+            client.dispatchRoute("blog");
 
             expect(isStartCalled).to.be(true);
             expect(startParams.dispatch).to.be(false);
@@ -186,7 +186,7 @@ describe("App", function () {
         it("should execute the added route handlers in the given order", function () {
             var called = [];
 
-            app
+            client
                 .addRoute("*", function (ctx, next) {
                     called.push("*1");
                     next();
@@ -217,7 +217,7 @@ describe("App", function () {
                     called.push("*2");
                 });
 
-            app.dispatchRoute("blog/posts");
+            client.dispatchRoute("blog/posts");
 
             expect(called).to.eql(["*1", "/bl", "/blog/*", "/blog/posts", "/blog/posts2", "*2"]);
         });
@@ -228,9 +228,9 @@ describe("App", function () {
                 route = "blog/about",
                 handler = "blog/about";
 
-            app.addRoute(route, handler);
+            client.addRoute(route, handler);
 
-            app.dispatchRoute(route);
+            client.dispatchRoute(route);
 
             pageLoader = PageLoaderMock.instance;
             pageURLs = pageLoader.pageURLs;
@@ -241,16 +241,16 @@ describe("App", function () {
             var context,
                 pageLoader;
 
-            app.addRoute("blog/:author/posts/:postId", function (ctx, next) {
+            client.addRoute("blog/:author/posts/:postId", function (ctx, next) {
                 expect(ctx.params.author).to.be("spook");
                 expect(ctx.params.postId).to.be("123");
                 next();
             });
-            app.addRoute("blog/:author/posts/:postId", "blog/posts");
+            client.addRoute("blog/:author/posts/:postId", "blog/posts");
 
-            app.start();
+            client.start();
 
-            app.dispatchRoute("blog/spook/posts/123");
+            client.dispatchRoute("blog/spook/posts/123");
 
             pageLoader = PageLoaderMock.instance;
             context = pageLoader.context;
@@ -261,13 +261,13 @@ describe("App", function () {
         it("should display Default404Page if App is in 'development' mode and no handler for given route was added", function () {
             config.mode = "development";
 
-            app.dispatchRoute("404");
+            client.dispatchRoute("404");
 
-            expect(value(app.getMainPage().getSubPage()).typeOf(Default404Page)).to.equal(true);
+            expect(value(client.getMainPage().getSubPage()).typeOf(Default404Page)).to.equal(true);
         });
 
         it("should be chainable", function () {
-            app
+            client
                 .addRoute("blog/posts/:id", "blog/posts")
                 .addRoute("blog/posts/author=:authorId", "blog/posts");
         });
@@ -277,8 +277,8 @@ describe("App", function () {
     describe(".getCurrentPages()", function () {
 
         beforeEach(function () {
-            app.start(); // Initializes the MainPage
-            pages.main = app.getMainPage();
+            client.start(); // Initializes the MainPage
+            pages.main = client.getMainPage();
             pages.main.setSubPage(pages.home);
             pages.home.setSubPage(pages.about);
         });
@@ -288,11 +288,11 @@ describe("App", function () {
         });
 
         it("should return an array with the main page at the beginning", function () {
-            expect(app.getCurrentPages()[0]).to.eql(pages.main);
+            expect(client.getCurrentPages()[0]).to.eql(pages.main);
         });
 
         it("should return an array with the current page hierarchy", function () {
-            expect(app.getCurrentPages()).to.eql([pages.main, pages.home, pages.about]);
+            expect(client.getCurrentPages()).to.eql([pages.main, pages.home, pages.about]);
         });
 
     });
@@ -300,7 +300,7 @@ describe("App", function () {
     describe(".getParentPage()", function () {
 
         beforeEach(function () {
-            app.start(); // Initializes the MainPage
+            client.start(); // Initializes the MainPage
         });
 
         afterEach(function () {
@@ -309,18 +309,18 @@ describe("App", function () {
 
         it("should return MainPage as Parent-Page", function () {
 
-            pages.main = app.getMainPage();
+            pages.main = client.getMainPage();
             pages.main.setSubPage(pages.home);
 
-            expect(app.getParentPage()).to.equal(pages.main);
+            expect(client.getParentPage()).to.equal(pages.main);
 
         });
 
         it("should return null for Parent-Page", function () {
 
-            pages.main = app.getMainPage();
+            pages.main = client.getMainPage();
 
-            expect(app.getParentPage()).to.equal(null);
+            expect(client.getParentPage()).to.equal(null);
 
         });
 
@@ -329,8 +329,8 @@ describe("App", function () {
     describe(".changePage()", function () {
 
         beforeEach(function () {
-            app.start();
-            pages.main = app.getMainPage();
+            client.start();
+            pages.main = client.getMainPage();
             pages.main.setSubPage(pages.home);
             pages.home.setSubPage(pages.about);
         });
@@ -344,7 +344,7 @@ describe("App", function () {
             var toPageUrl = "blog",
                 pageParams = {};
 
-            app.on("pageChange", function onPageChange(event) {
+            client.on("pageChange", function onPageChange(event) {
 
                 expect(event.toPageURL).to.equal(toPageUrl);
                 expect(event.pageParams).to.equal(pageParams);
@@ -356,20 +356,20 @@ describe("App", function () {
 
             });
 
-            app.changePage(toPageUrl, pageParams);
+            client.changePage(toPageUrl, pageParams);
 
             PageLoaderMock.instance.callback(null, [pages.blog]);
         });
 
         it("should be possible to change current page to MainPage with '/' as route", function (done) {
 
-            app.on("pageChange", function onPageChange() {
+            client.on("pageChange", function onPageChange() {
                 //MainPage is always on index 0.
-                expect(app.getCurrentPages().length).to.equal(1);
+                expect(client.getCurrentPages().length).to.equal(1);
                 done();
             });
 
-            app.changePage("/", {});
+            client.changePage("/", {});
 
             PageLoaderMock.instance.callback();
         });
@@ -378,13 +378,13 @@ describe("App", function () {
 
 
 
-            app.on("pageChange", function onPageChange() {
+            client.on("pageChange", function onPageChange() {
                 //MainPage is always on index 0.
-                expect(app.getCurrentPages().length).to.equal(1);
+                expect(client.getCurrentPages().length).to.equal(1);
                 done();
             });
 
-            app.changePage("", {});
+            client.changePage("", {});
 
             PageLoaderMock.instance.callback();
         });
@@ -401,13 +401,13 @@ describe("App", function () {
             pages.main.on("beforeLeave", function beforeLeaveMain() {
                 throw new Error("This event should never be emitted because the main page can't be left");
             });
-            app.on("beforePageChange", function beforeChangePage() {
-                emitted.push("app");
+            client.on("beforePageChange", function beforeChangePage() {
+                emitted.push("client");
             });
 
-            app.changePage("blog", {});
+            client.changePage("blog", {});
 
-            expect(emitted).to.eql(["app", "about", "home"]);
+            expect(emitted).to.eql(["client", "about", "home"]);
         });
 
         it("should pass an Object on 'beforePageChange' including .preventDefault(), .toPageURL and .pageParams", function (done) {
@@ -415,14 +415,14 @@ describe("App", function () {
             var toPageURL = "blog/posts",
                 pageParams = { "key": "value" };
 
-            app.on("beforePageChange", function beforePageChange(event) {
+            client.on("beforePageChange", function beforePageChange(event) {
                 expect(event.preventDefault).to.be.a(Function);
                 expect(event.toPageURL).to.equal(toPageURL);
                 expect(event.pageParams).to.equal(pageParams);
                 done();
             });
 
-            app.changePage(toPageURL, pageParams);
+            client.changePage(toPageURL, pageParams);
 
         });
 
@@ -442,7 +442,7 @@ describe("App", function () {
                 expect(event.pageParams).to.equal(pageParams);
             });
 
-            app.changePage("/", pageParams);
+            client.changePage("/", pageParams);
 
         });
 
@@ -462,46 +462,46 @@ describe("App", function () {
                     e.preventDefault();
                 }
             });
-            app.on("beforePageChange", function (e) {
-                emitted.push("app");
-                if (callsPreventDefault === "app") {
+            client.on("beforePageChange", function (e) {
+                emitted.push("client");
+                if (callsPreventDefault === "client") {
                     e.preventDefault();
                 }
             });
 
-            callsPreventDefault = "app";
-            app.changePage("blog", {});
-            expect(emitted).to.eql(["app"]);
+            callsPreventDefault = "client";
+            client.changePage("blog", {});
+            expect(emitted).to.eql(["client"]);
 
             emitted = [];
 
             callsPreventDefault = "about";
-            app.changePage("blog", {});
-            expect(emitted).to.eql(["app", "about"]);
+            client.changePage("blog", {});
+            expect(emitted).to.eql(["client", "about"]);
 
             emitted = [];
 
             callsPreventDefault = "home";
-            app.changePage("blog", {});
-            expect(emitted).to.eql(["app", "about", "home"]);
+            client.changePage("blog", {});
+            expect(emitted).to.eql(["client", "about", "home"]);
         });
 
         it("should call cancel() on the previous pageLoader that is still running", function () {
             var pageLoader;
 
-            app.changePage("blog", {});
+            client.changePage("blog", {});
             pageLoader = PageLoaderMock.instance;
-            app.changePage("blog", {});
+            client.changePage("blog", {});
             expect(pageLoader.cancelled).to.be(true);
         });
 
         it("should not call cancel() on the previous pageLoader that finished", function () {
             var pageLoader;
 
-            app.changePage("blog", {});
+            client.changePage("blog", {});
             pageLoader = PageLoaderMock.instance;
             pageLoader.callback(null, [pages.blog]);
-            app.changePage("blog", {});
+            client.changePage("blog", {});
             expect(pageLoader.cancelled).to.be(false);
         });
 
@@ -518,16 +518,16 @@ describe("App", function () {
             pages.posts.on("add", function () {
                 emitted.push("posts");
             });
-            app.on("pageChange", function () {
-                emitted.push("app");
+            client.on("pageChange", function () {
+                emitted.push("client");
             });
-            app.changePage("blog/posts", {});
+            client.changePage("blog/posts", {});
             pageLoader = PageLoaderMock.instance;
             pageLoader.callback(null, [pages.blog, pages.posts]);
             expect(pages.main.getSubPage()).to.be(pages.blog);
             expect(pages.blog.getSubPage()).to.be(pages.posts);
             expect(pages.posts.getSubPage()).to.be(null);
-            expect(emitted).to.eql(["blog", "posts", "app"]);
+            expect(emitted).to.eql(["blog", "posts", "client"]);
         });
     });
 
@@ -535,7 +535,7 @@ describe("App", function () {
 
         it("should eql page.js's context object", function () {
 
-            var ctx = app.getContext();
+            var ctx = client.getContext();
 
             expect(ctx.path).to.equal(location.pathname);
             expect(ctx.title).to.equal(document.title);

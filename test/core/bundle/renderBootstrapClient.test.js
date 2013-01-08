@@ -30,8 +30,8 @@ describe("renderBootstrapClient", function () {
                 }
 
                 // Alamid mocks
-                if (path.indexOf("alamid/lib/client/App.class.js") !== -1) {
-                    return App;
+                if (path.indexOf("alamid/lib/client/Client.class.js") !== -1) {
+                    return Client;
                 }
                 else if (path.indexOf("alamid/lib/index.js") !== -1) {
                     return index;
@@ -45,7 +45,7 @@ describe("renderBootstrapClient", function () {
         },
         MainPage = require(appPath + "/app/pages/MainPage.class.js");
 
-    function App(MainPage) {
+    function Client(MainPage) {
         this.MainPage = MainPage;
     }
 
@@ -73,8 +73,8 @@ describe("renderBootstrapClient", function () {
         });
     });
     it("should initialize the app", function () {
-        expect(index.app).to.be.a(App);
-        expect(index.app.MainPage).to.be(MainPage);
+        expect(index.client).to.be.a(Client);
+        expect(index.client.MainPage).to.be(MainPage);
     });
     it("should call fillPageRegistry.js", function () {
         expect(require.cache[appPath + "/bundle/tmp/fillPageRegistry.js"]).to.be.an(Object);
