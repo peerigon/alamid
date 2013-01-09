@@ -19,9 +19,6 @@ var Collection = require("../../lib/shared/Collection.class.js"),
     Service = require("../../lib/shared/Service.class.js"),
     Server = require("../../lib/server/Server.class.js");
 
-var setSocketIOOptions = require("../../lib/server/transport/websocket/websocket.js").setSocketIOOptions,
-    setConnectInstance = require("../../lib/server/transport/http/http.js").setConnectInstance;
-
 describe("index.js", function () {
     it("should export underscore", function () {
         expect(alamid.util.underscore).to.be(underscore);
