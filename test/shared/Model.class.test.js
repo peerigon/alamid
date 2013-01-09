@@ -407,7 +407,7 @@ describe("Model", function () {
     describe("Validation", function(){
         var octocat;
 
-        var environment = require("../../lib/shared/environment.js");
+        var environment = require("../../lib/shared/env.js");
 
         before(function () {
             environment.isServer = function () {
@@ -463,7 +463,7 @@ describe("Model", function () {
     describe("Services", function(){
 
         var octocat, testService;
-        var environment = require("../../lib/shared/environment.js");
+        var environment = require("../../lib/shared/env.js");
 
         before(function () {
 
@@ -624,15 +624,9 @@ describe("Model", function () {
 
         describe("Statics", function(){
 
-            before(function () {
-                var config = require("../../lib/shared/config");
-                //we simulate client-services
-                config.isServer = false;
-            });
-
             describe("#findById", function () {
 
-                var environment = require("../../lib/shared/environment.js");
+                var environment = require("../../lib/shared/env.js");
 
                 var Model,
                     services,
@@ -837,7 +831,7 @@ describe("Model", function () {
 
         var Model;
 
-        var environment = require("../../lib/shared/environment.js");
+        var environment = require("../../lib/shared/env.js");
 
         before(function () {
             var modelCache = require("../../lib/shared/modelCache.js"),

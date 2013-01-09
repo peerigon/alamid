@@ -1,6 +1,5 @@
 {
     "port": 9000,
-    "isServer" : true,
     "mode": "development",
     "appDir": null,
     "logDir": null,

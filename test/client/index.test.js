@@ -12,7 +12,8 @@ var underscore = require("underscore"),
     logger = require("../../lib/client/logger.client.js"),
     value = require("value");
 
-var config = require("../../lib/client/config.client.js");
+var config = require("../../lib/client/config.client.js"),
+    env = require("../../lib/client/env.client.js");
 
 var DisplayObject = require("../../lib/client/DisplayObject.class.js"),
     View = require("../../lib/client/View.class.js"),
@@ -28,52 +29,53 @@ var Service = require("../../lib/shared/Service.class.js");
 describe("index.js", function () {
 
     it("should export underscore", function () {
-        expect(alamid.util.underscore).to.equal(underscore);
+        expect(alamid.util.underscore).to.be(underscore);
     });
     it("should export jQuery", function () {
-        expect(alamid.util.jQuery).to.equal(jQuery);
+        expect(alamid.util.jQuery).to.be(jQuery);
     });
     /*
     it("should export historyAdapter as history", function () {
-        expect(alamid.util.history).to.equal(history);
+        expect(alamid.util.history).to.be(history);
     });
     */
     it("should export logger", function () {
-        expect(alamid.util.logger).to.equal(logger);
+        expect(alamid.util.logger).to.be(logger);
     });
     it("should export nodeclass.Class", function () {
-        expect(alamid.util.Class).to.equal(Class);
+        expect(alamid.util.Class).to.be(Class);
     });
-
     it("should export config", function () {
-        expect(alamid.config).to.equal(config);
+        expect(alamid.config).to.be(config);
     });
-
+    it("should export env", function () {
+        expect(alamid.env).to.be(env);
+    });
     it("should export DisplayObject", function () {
-        expect(alamid.DisplayObject).to.equal(DisplayObject);
+        expect(alamid.DisplayObject).to.be(DisplayObject);
     });
     it("should export View", function () {
-        expect(alamid.View).to.equal(View);
+        expect(alamid.View).to.be(View);
     });
     it("should export ViewCollection", function () {
-        expect(alamid.ViewCollection).to.equal(ViewCollection);
+        expect(alamid.ViewCollection).to.be(ViewCollection);
     });
     it("should export Page", function () {
-        expect(alamid.Page).to.equal(Page);
+        expect(alamid.Page).to.be(Page);
     });
 
     it("should export Collection", function () {
-        expect(alamid.Collection).to.equal(Collection);
+        expect(alamid.Collection).to.be(Collection);
     });
     it("should export Model", function () {
-        expect(alamid.Model).to.equal(Model);
+        expect(alamid.Model).to.be(Model);
     });
     it("should export ModelCollection", function () {
-        expect(alamid.ModelCollection).to.equal(ModelCollection);
+        expect(alamid.ModelCollection).to.be(ModelCollection);
     });
 
     it("should export Service", function () {
-        expect(alamid.Service).to.equal(Service);
+        expect(alamid.Service).to.be(Service);
     });
 
 });

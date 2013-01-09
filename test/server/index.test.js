@@ -10,6 +10,9 @@ var underscore = require("underscore"),
     Class = require("alamid-class"),
     value = require("value");
 
+var config = require("../../lib/core/config.server.js"),
+    env = require("../../lib/server/env.server.js");
+
 var Collection = require("../../lib/shared/Collection.class.js"),
     Model = require("../../lib/shared/Model.class.js"),
     ModelCollection = require("../../lib/shared/ModelCollection.class.js"),
@@ -20,46 +23,40 @@ var setSocketIOOptions = require("../../lib/server/transport/websocket/websocket
     setConnectInstance = require("../../lib/server/transport/http/http.js").setConnectInstance;
 
 describe("index.js", function () {
-
     it("should export underscore", function () {
-        expect(alamid.util.underscore).to.equal(underscore);
+        expect(alamid.util.underscore).to.be(underscore);
     });
-
     it("should export the logger", function () {
-        expect(alamid.util.logger).to.equal(logger);
+        expect(alamid.util.logger).to.be(logger);
     });
-
+    it("should export config", function () {
+        expect(alamid.config).to.be(config);
+    });
+    it("should export env", function () {
+        expect(alamid.env).to.be(env);
+    });
     it("should export Class", function () {
-        expect(alamid.util.Class).to.equal(Class);
+        expect(alamid.util.Class).to.be(Class);
     });
-
     it("should export the config", function () {
-        expect(alamid.config).to.be.an("object");
+        expect(alamid.config).to.be(config);
     });
-
     it("should export Collection", function () {
-        expect(alamid.Collection).to.equal(Collection);
+        expect(alamid.Collection).to.be(Collection);
     });
-
     it("should export Model", function () {
-        expect(alamid.Model).to.equal(Model);
+        expect(alamid.Model).to.be(Model);
     });
-
     it("should export ModelCollection", function () {
-        expect(alamid.ModelCollection).to.equal(ModelCollection);
+        expect(alamid.ModelCollection).to.be(ModelCollection);
     });
-
     it("should export Service", function () {
-        expect(alamid.Service).to.equal(Service);
+        expect(alamid.Service).to.be(Service);
     });
-
     it("should export Server", function () {
         expect(alamid.Server).to.be(Server);
     });
-
-
     it("should export createBundle", function() {
         expect(alamid.createBundle).to.be.a("function");
     });
-
 });
