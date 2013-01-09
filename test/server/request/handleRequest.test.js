@@ -24,7 +24,6 @@ describe("handleRequest", function() {
         });
 
         handleRequest = require("../../../lib/server/request/handleRequest.js");
-
     });
 
     describe("#Services Request", function() {
@@ -60,7 +59,7 @@ describe("handleRequest", function() {
             });
         });
 
-        it("should end the request and return an error if a middleware failed", function(done) {
+        it("should end the request and return an error if a middleware failed by nexting an err", function(done) {
 
             var middlewareMock = [
                 function a(req, res, next) {
@@ -84,34 +83,4 @@ describe("handleRequest", function() {
             });
         });
     });
-
-    /*
-    //check this test
-    //invalid request should not pass thru but happens if they do?
-    //default should be an error i guess..
-    describe("#Invalid Requests", function() {
-
-        var handleRequest;
-
-        beforeEach(function() {
-            handleRequest = rewire("../../../lib/server/request/handleRequest.js");
-        });
-
-        it("should end the request if the type is not allowed", function(done) {
-
-            var req = new Request("create", "/whatever/blogPost", {});
-
-            req.getType = function() {
-                return "unsupportedType";
-            };
-
-            handleRequest(req, function(err, resReq, resRes) {
-                console.log(resRes.getResBody());
-                expect(err).to.be.an(Error);
-                done();
-            });
-        });
-    });
-    //*/
-
 });
