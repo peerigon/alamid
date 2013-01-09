@@ -8,7 +8,7 @@ describe("remoteService", function() {
     var RemoteService;
 
     beforeEach(function() {
-        RemoteService = rewire("../../lib/client/RemoteService.js");
+        RemoteService = rewire("../../lib/client/RemoteService.class.js");
     });
 
     var model = {
