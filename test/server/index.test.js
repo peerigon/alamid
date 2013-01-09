@@ -53,7 +53,4 @@ describe("index.js", function () {
     it("should export Server", function () {
         expect(alamid.Server).to.be(Server);
     });
-    it("should export createBundle", function() {
-        expect(alamid.createBundle).to.be.a("function");
-    });
 });
