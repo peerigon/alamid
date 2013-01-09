@@ -2,25 +2,38 @@
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
-    iterateMiddleware = require("../../../../lib/server/applyMiddleware.js");
+    middler = require("middler");
 
 describe("onRequest", function(){
 
     it("should parse the url", function (done) {
 
-        var onRequest = rewire("../../../../lib/server/transport/http/onRequest.js", false);
-        var mockedConnect = {};
-        mockedConnect.bodyParser = function () {
-            return function(req, res, next) { next(); };
+        var httpMiddleware = rewire("../../../../lib/server/transport/http/httpMiddleware.js");
+
+        var mockedConnect = {
+            bodyParser : function () {
+                return function(req, res, next) {
+                    next();
+                }
+            }
         };
 
-        onRequest.__set__("connect", mockedConnect);
+        httpMiddleware.__set__("connect", mockedConnect);
 
-        var req = { "url" : "http://mydomain.com/myPath", headers : [] };
+        var req = { url : "http://mydomain.com/myPath", headers : [] };
         req.headers["x-requested-with"] = "XMLHttpRequest";
-        var res = { headers : [] };
 
-        iterateMiddleware(onRequest, req, res, function(){
+        var res = {
+            headers : [],
+            removeListener : function() {},
+            once : function() {}
+        };
+
+        var router = middler()
+            //applied on every request
+            .add(httpMiddleware.request);
+
+        router.handler(req, res, function(err){
             expect(req.parsedURL).to.be.an("object");
             done();
         });
