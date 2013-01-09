@@ -10,7 +10,7 @@ describe("request", function () {
         var remoteRequest;
 
         beforeEach(function(){
-            remoteRequest = rewire("../../lib/client/request.js");
+            remoteRequest = rewire("../../../lib/client/helpers/request.js");
         });
 
         describe("HTTP-Transport", function() {

@@ -1,6 +1,6 @@
 "use strict";
 
-var Socket = require("./mocks/Socket.class.js");
+var Socket = require("./../mocks/Socket.class.js");
 
 var expect = require("expect.js"),
     rewire = require("rewire");
@@ -12,7 +12,7 @@ describe("subscribeModelHandler", function(){
 
     beforeEach(function() {
         socketMock = new Socket();
-        attachPushHandlers = rewire("../../lib/client/subscribeModelHandler.js");
+        attachPushHandlers = rewire("../../../lib/client/helpers/subscribeModelHandler.js");
     });
 
     it("should receive remoteUpdateEvents", function(done) {

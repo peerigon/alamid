@@ -5,8 +5,7 @@ var expect = require("expect.js"),
 
 describe("remoteService", function() {
 
-    var RemoteService,
-        request = require("../../lib/client/request.js");
+    var RemoteService;
 
     beforeEach(function() {
         RemoteService = rewire("../../lib/client/RemoteService.js");
