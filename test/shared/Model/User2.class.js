@@ -20,15 +20,6 @@ var User2 = Model.extend("User2", {
     constructor: function(id) {
         this._super(id);
         this.setSchema(schema);
-    },
-    getService: function() {
-        return null;
-    },
-    getValidator: function() {
-        return null;
-    },
-    accept: function() {
-        this.acceptCurrentState();
     }
 });
 
