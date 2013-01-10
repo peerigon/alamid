@@ -25,9 +25,6 @@ var User1 = Model.extend("User1", {
     },
     getValidator: function() {
         return null;
-    },
-    accept: function() {
-        this.acceptCurrentState();
     }
 });
 
