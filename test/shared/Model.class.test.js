@@ -215,12 +215,14 @@ describe("Model", function () {
         });
 
         describe("toObject", function () {
-            it("should return an object containing id & ids", function () {
+
+            it("should return an object containing id & ids on default", function () {
                 user.set('name', 'Octocat');
                 user.set({
                     age: 5,
                     kills: 1
                 });
+
                 expect(user.getDefaults()).to.eql({
                     name: 'John Wayne',
                     age: 45,
@@ -233,6 +235,31 @@ describe("Model", function () {
                     name: 'Octocat',
                     age: 5,
                     kills: 1
+                });
+            });
+
+            it("should return name the ID as defined in options.idAttribute", function () {
+                user.set('name', 'Octocat');
+                user.set({
+                    age: 5,
+                    kills: 1
+                });
+
+                expect(user.toObject({ idAttribute : "_id" })).to.eql({
+                    _id : null,
+                    ids : {},
+                    name: 'Octocat',
+                    age: 5,
+                    kills: 1
+                });
+            });
+
+            it("should exclude the attributes defined in options.exclude", function () {
+                user.set('name', 'Octocat');
+
+                expect(user.toObject({ exclude : ["id", "age", "kills"] })).to.eql({
+                    ids : {},
+                    name: 'Octocat'
                 });
             });
         });
