@@ -38,15 +38,15 @@ describe("renderFillPageRegistry", function () {
     });
     it("should register the page bundles", function () {
         registry["blog"].bundle(function (path) {
-            expect(path).to.be("bundle/lazy!" + pagesPath + "/blog/BlogPage.class.js");
+            expect(path).to.be("bundle?lazy!" + pagesPath + "/blog/BlogPage.class.js");
         });
         registry["blog/posts"].bundle(function (path) {
-            expect(path).to.be("bundle/lazy!" + pagesPath + "/blog/posts/PostsPage.class.js");
+            expect(path).to.be("bundle?lazy!" + pagesPath + "/blog/posts/PostsPage.class.js");
         });
         // We have to test "home" differently because we don't have a HomePage.class.js
         // The HomePage is not bundled lazily because it is wrapped by loadTemplate()
         registry["home"].bundle(function (path) {
-            expect(path).to.be("bundle/lazy!raw!" + pagesPath + "/home/HomePage.html");
+            expect(path).to.be("bundle?lazy!raw!" + pagesPath + "/home/HomePage.html");
         });
     });
     it("should register the data loader of 'blog'", function () {
