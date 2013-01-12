@@ -27,7 +27,7 @@ describe("renderFillSchemaRegistry", function () {
                         schemas : registry
                     };
                 }
-                else if(path === "alamid/lib/core/helpers/extendSchemas.js") {
+                else if(path.indexOf("alamid/lib/core/helpers/extendSchemas.js") !== -1) {
                     return require("../../../../lib/core/helpers/extendSchemas.js");
                 }
                 return require(path); // returning the path for testing purposes
