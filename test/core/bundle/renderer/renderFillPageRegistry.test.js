@@ -1,16 +1,18 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
-    renderFillPageRegistry = require("../../../lib/core/bundle/renderFillPageRegistry.js"),
+    renderFillPageRegistry = require("../../../../lib/core/bundle/renderer/renderFillPageRegistry.js"),
     vm = require("vm");
 
-var pagesPath = __dirname + "/renderFillPageRegistry";
+var pagesPath = __dirname + "/renderFillPageRegistry",
+    rootPath = pagesPath;
+
 
 describe("renderFillPageRegistry", function () {
     var registry = {},
         sandbox = {
             require: function (path) {
-                if (path === "alamid/lib/client/registries/pageRegistry.js") {
+                if (path.indexOf("alamid/lib/client/registries/pageRegistry.js") !== -1) {
                     return {
                         setPage: function setPage(pageURL, pageBundle, pageDataLoader) {
                             registry[pageURL] = {
@@ -29,7 +31,7 @@ describe("renderFillPageRegistry", function () {
         };
 
     it("should throw no error", function () {
-        var src = renderFillPageRegistry(pagesPath);
+        var src = renderFillPageRegistry(rootPath, pagesPath);
 
         vm.runInNewContext(src, sandbox);
     });

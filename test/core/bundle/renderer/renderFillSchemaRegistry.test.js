@@ -2,16 +2,18 @@
 
 var expect = require("expect.js"),
     path = require("path"),
-    renderFillSchemaRegistry = require("../../../lib/core/bundle/renderFillSchemaRegistry.js"),
+    renderFillSchemaRegistry = require("../../../../lib/core/bundle/renderer/renderFillSchemaRegistry.js"),
     vm = require("vm");
 
-var schemasPath = path.resolve(__dirname, "../collect/collectModels");
+var schemasPath = path.resolve(__dirname, "../../collect/collectModels"),
+    rootPath = schemasPath;
+
 
 describe("renderFillSchemaRegistry", function () {
     var registry = {},
         sandbox = {
             require: function (path) {
-                if (path === "alamid/lib/shared/registries/schemaRegistry.js") {
+                if (path.indexOf("alamid/lib/shared/registries/schemaRegistry.js") !== -1) {
                     return {
                         setSchema: function setSchema(pageURL, pageBundle, pageDataLoader) {
                             registry[pageURL] = {
@@ -26,7 +28,7 @@ describe("renderFillSchemaRegistry", function () {
                     };
                 }
                 else if(path === "alamid/lib/core/helpers/extendSchemas.js") {
-                    return require("../../../lib/core/helpers/extendSchemas.js");
+                    return require("../../../../lib/core/helpers/extendSchemas.js");
                 }
                 return require(path); // returning the path for testing purposes
 
@@ -35,7 +37,7 @@ describe("renderFillSchemaRegistry", function () {
         };
 
     it("should throw no error", function () {
-        var src = renderFillSchemaRegistry(schemasPath);
+        var src = renderFillSchemaRegistry(rootPath, schemasPath);
         vm.runInNewContext(src, sandbox);
     });
 

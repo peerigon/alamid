@@ -2,16 +2,17 @@
 
 var expect = require("expect.js"),
     path = require("path"),
-    renderFillServiceRegistry = require("../../../lib/core/bundle/renderFillServiceRegistry.js"),
+    renderFillServiceRegistry = require("../../../../lib/core/bundle/renderer/renderFillServiceRegistry.js"),
     vm = require("vm");
 
-var servicesPath = path.resolve(__dirname, "../collect/collectServices");
+var servicesPath = path.resolve(__dirname, "../../collect/collectServices"),
+    rootPath = servicesPath;
 
 describe("renderFillServiceRegistry", function () {
     var registry = {},
         sandbox = {
             require: function (path) {
-                if (path === "alamid/lib/shared/registries/serviceRegistry.js") {
+                if (path.indexOf("alamid/lib/shared/registries/serviceRegistry.js") !== -1) {
                     return {
                         setService: function setPage(serviceUrl, serviceClass) {
                             registry[serviceUrl] = serviceClass;
@@ -25,7 +26,7 @@ describe("renderFillServiceRegistry", function () {
         };
 
     it("should throw no error", function () {
-        var src = renderFillServiceRegistry(servicesPath);
+        var src = renderFillServiceRegistry(rootPath, servicesPath);
         vm.runInNewContext(src, sandbox);
     });
 

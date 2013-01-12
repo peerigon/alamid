@@ -2,14 +2,14 @@
 
 var expect = require("expect.js"),
     pathUtil = require("path"),
-    renderBootstrapClient = require("../../../lib/core/bundle/renderBootstrapClient.js"),
+    renderBootstrapClient = require("../../../../lib/core/bundle/renderer/renderBootstrapClient.js"),
     vm = require("vm"),
     fs = require("fs"),
     makeDirSync = require("fshelpers").makeDirSync,
-    alamidIndex = require("../../../lib/index.js"),
-    alamidClientIndex = require("../../../lib/index.client.js"),
-    clientConfig = require("../../../lib/client/config.client.js"),
-    config = require("../../../lib/core/config"),
+    alamidIndex = require("../../../../lib/index.js"),
+    alamidClientIndex = require("../../../../lib/index.client.js"),
+    clientConfig = require("../../../../lib/client/config.client.js"),
+    config = require("../../../../lib/shared/config"),
     _ = require("underscore");
 
 var appPath = __dirname + "/renderBootstrapClient",
@@ -29,6 +29,11 @@ describe("renderBootstrapClient", function () {
                     path = pathUtil.resolve(bootstrapPath, path);
                 }
 
+                //webpack mocks
+                if (path.indexOf("val!") !== -1) {
+                    return {};
+                }
+
                 // Alamid mocks
                 if (path.indexOf("alamid/lib/client/Client.class.js") !== -1) {
                     return Client;
@@ -37,7 +42,7 @@ describe("renderBootstrapClient", function () {
                     return index;
                 }
                 else if(path.indexOf("alamid/lib/shared/config.js") !== -1){
-                    return require("../../../lib/client/config.client.js");
+                    return require("../../../../lib/client/config.client.js");
                 }
 
                 return require(path);
@@ -75,20 +80,5 @@ describe("renderBootstrapClient", function () {
     it("should initialize the app", function () {
         expect(index.client).to.be.a(Client);
         expect(index.client.MainPage).to.be(MainPage);
-    });
-    it("should call fillPageRegistry.js", function () {
-        expect(require.cache[appPath + "/bundle/tmp/fillPageRegistry.js"]).to.be.an(Object);
-    });
-    it("should call fillServiceRegistry.js", function () {
-        expect(require.cache[appPath + "/bundle/tmp/fillServiceRegistry.js"]).to.be.an(Object);
-    });
-    it("should call fillSchemaRegistry.js", function () {
-        expect(require.cache[appPath + "/bundle/tmp/fillSchemaRegistry.js"]).to.be.an(Object);
-    });
-    it("should call fillModelRegistry.js", function () {
-        expect(require.cache[appPath + "/bundle/tmp/fillModelRegistry.js"]).to.be.an(Object);
-    });
-    it("should call /app/init.client.js", function () {
-        expect(require.cache[appPath + "/app/init.client.js"]).to.be.an(Object);
     });
 });

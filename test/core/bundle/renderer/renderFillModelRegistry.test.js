@@ -2,16 +2,17 @@
 
 var expect = require("expect.js"),
     path = require("path"),
-    renderFillModelRegistry = require("../../../lib/core/bundle/renderFillModelRegistry.js"),
+    renderFillModelRegistry = require("../../../../lib/core/bundle/renderer/renderFillModelRegistry.js"),
     vm = require("vm");
 
-var modelsPath = path.resolve(__dirname, "../collect/collectModels");
+var rootPath = path.resolve(__dirname, "../../collect/collectModels"),
+modelsPath = path.resolve(__dirname, "../../collect/collectModels");
 
 describe("renderFillModelRegistry", function () {
     var registry = {},
         sandbox = {
             require: function (path) {
-                if (path === "alamid/lib/shared/registries/modelRegistry.js") {
+                if (path.indexOf("alamid/lib/shared/registries/modelRegistry.js") !== -1) {
                     return {
                         setModel: function setPage(modelUrl, modelClass) {
                             registry[modelUrl] = modelClass;
@@ -27,7 +28,7 @@ describe("renderFillModelRegistry", function () {
         };
 
     it("should throw no error", function () {
-        var src = renderFillModelRegistry(modelsPath);
+        var src = renderFillModelRegistry(rootPath, modelsPath);
 
         vm.runInNewContext(src, sandbox);
     });

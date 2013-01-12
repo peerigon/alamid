@@ -19,9 +19,12 @@ describe("runCreateBundle()", function () {
         browser;
 
     before(function (done) {
-        fshelpers.makeDirSync(__dirname + "/node_modules");
+
+        process.chdir(__dirname + "/runCreateBundle");
+
+        fshelpers.makeDirSync(__dirname + "/runCreateBundle/node_modules");
         try {
-            fs.symlinkSync(pathUtil.resolve(__dirname, "../../../"), __dirname + "/node_modules/alamid");
+            fs.symlinkSync(pathUtil.resolve(__dirname, "../../../"), __dirname + "/runCreateBundle/node_modules/alamid");
         } catch (err) { /* ignore err */ }
 
 
@@ -29,12 +32,10 @@ describe("runCreateBundle()", function () {
         var app = connect()
             .use(connect.static(paths.bundle))
          .listen(3000, done);
-
-
     });
     after(function () {
-        fs.unlinkSync(__dirname + "/node_modules/alamid");
-        fs.rmdirSync(__dirname + "/node_modules");
+        fs.unlinkSync(__dirname + "/runCreateBundle/node_modules/alamid");
+        fs.rmdirSync(__dirname + "/runCreateBundle/node_modules");
     });
     it("should return no errors nor warnings", function (done) {
         this.timeout(10000);    // we need to expand mocha's default timeout
