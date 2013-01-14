@@ -13,7 +13,7 @@ var expect = require("expect.js"),
     _ = require("underscore");
 
 var appPath = __dirname + "/renderBootstrapClient",
-    bootstrapPath = appPath + "/bundle/tmp";
+    bootstrapPath = appPath + "/bundle/";
 
 describe("renderBootstrapClient", function () {
     var config = {
