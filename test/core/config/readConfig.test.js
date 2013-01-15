@@ -18,8 +18,11 @@ var expect = require("expect.js"),
  */
 function checkConfigViaSubprocess(argv, env, done) {
 
-    exec("node " + __dirname + "/readConfig/readConfigWrapper.js "+ argv,
-        { "env" : env },
+    var readConfigWrapper = exec("node " + __dirname + "/readConfig/readConfigWrapper.js "+ argv,
+        {
+            env : env,
+            cwd : __dirname
+        },
         function (error, stdout) {
             if (error) throw error;
             var configJson = stdout.match(/\{(.*)\}/gi)[0];
@@ -50,10 +53,18 @@ describe("readConfig", function () {
         expect(result).to.eql(defaultConfig);
     });
 
+    it("should respect the env set via process.env.NODE_ENV", function(done) {
+
+        checkConfigViaSubprocess("", { NODE_ENV : "production"} , function(parsedConf) {
+            expect(parsedConf.env).to.eql("production");
+            done();
+        });
+
+    });
 
     it("should read a custom config if passed via args and accept additional attributes (other than the default config)", function (done) {
 
-        var relativePathToTestConf = path.relative(process.cwd(), __dirname + "/readConfig/customConfig.json");
+        var relativePathToTestConf = "readConfig/customConfig.json";
 
         checkConfigViaSubprocess("--config " + relativePathToTestConf, {}, function(parsedConf) {
             expect(parsedConf.port).to.equal(1234);
@@ -64,7 +75,7 @@ describe("readConfig", function () {
 
     it("should read a custom config if passed via env", function (done) {
 
-        var relativePathToTestConf = path.relative(process.cwd(), __dirname + "/readConfig/customConfig.json");
+        var relativePathToTestConf = "readConfig/customConfig.json";
 
         checkConfigViaSubprocess("", { "config" : relativePathToTestConf } , function(parsedConf) {
             expect(parsedConf.port).to.equal(1234);
@@ -73,6 +84,14 @@ describe("readConfig", function () {
         });
     });
 
+    it("should read the suitable config if env is set from subdir (config)", function (done) {
+
+        checkConfigViaSubprocess("--env testing", {}, function(parsedConf) {
+            expect(parsedConf.port).to.equal(1223);
+            expect(parsedConf.isTestingConfig).to.be(true);
+            done();
+        });
+    });
 
     it("should set attributes if passed via argv", function (done) {
         checkConfigViaSubprocess("--port 9099", {} , function(parsedConf) {
@@ -83,7 +102,7 @@ describe("readConfig", function () {
 
     it("should respect the hierachy and prefer command given via argv", function (done) {
 
-        var relativePathToTestConf = path.relative(process.cwd(), __dirname + "/readConfig/customConfig.json");
+        var relativePathToTestConf = "readConfig/customConfig.json";
 
         checkConfigViaSubprocess("--port 9099", { "config" : relativePathToTestConf }, function(parsedConf) {
             expect(parsedConf.port).to.equal(9099);
@@ -93,8 +112,8 @@ describe("readConfig", function () {
 
     it("should respect the hierachy and prefer command given via env before argv", function (done) {
 
-        var relativePathToTestConf = path.relative(process.cwd(), __dirname + "/readConfig/customConfig.json");
-        var relativePathToTestConf2 = path.relative(process.cwd(), __dirname + "/readConfig/customConfig2.json");
+        var relativePathToTestConf = "readConfig/customConfig.json";
+        var relativePathToTestConf2 = "readConfig/customConfig2.json";
 
         checkConfigViaSubprocess("--config " + relativePathToTestConf2, { "config" : relativePathToTestConf }, function(parsedConf) {
             expect(parsedConf.port).to.equal(5555);
