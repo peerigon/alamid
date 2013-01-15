@@ -30,7 +30,7 @@ describe("renderBootstrapClient", function () {
                 }
 
                 //webpack mocks
-                if (path.indexOf("val!") !== -1) {
+                if (path.indexOf("!?") !== -1) {
                     return {};
                 }
 
