@@ -20,8 +20,6 @@ describe("runCreateBundle()", function () {
 
     before(function (done) {
 
-        process.chdir(__dirname + "/runCreateBundle");
-
         fshelpers.makeDirSync(__dirname + "/runCreateBundle/node_modules");
         try {
             fs.symlinkSync(pathUtil.resolve(__dirname, "../../../"), __dirname + "/runCreateBundle/node_modules/alamid");
