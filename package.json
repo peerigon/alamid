@@ -36,7 +36,8 @@
         "eventemitter2" : "0.4.x",
         "wrench" : "1.4.x",
         "commander" : "0.1.x",
-        "ejs" : "0.8.x"
+        "ejs" : "0.8.x",
+        "webpack-dev-middleware" : "git://github.com/webpack/webpack-dev-middleware.git"
     },
     "devDependencies": {
         "grunt" : "0.x",
