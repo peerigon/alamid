@@ -259,7 +259,8 @@ describe("Client", function () {
         });
 
         it("should display Default404Page if App is in 'development' mode and no handler for given route was added", function () {
-            config.mode = "development";
+
+            config.env = "development";
 
             client.dispatchRoute("404");
 

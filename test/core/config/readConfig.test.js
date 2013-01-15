@@ -44,9 +44,9 @@ describe("readConfig", function () {
 
     it("should read the default config if nothing was passed", function () {
         result = readConfig();
-        //we can't check for mode, because we need it for testing
-        defaultConfig.mode = "";
-        result.mode = "";
+        //we can't check for env, because we need it for testing
+        defaultConfig.env = "";
+        result.env = "";
         expect(result).to.eql(defaultConfig);
     });
 

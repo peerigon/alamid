@@ -1,6 +1,6 @@
 {
     "port": 9000,
-    "mode": "development",
+    "env": "development",
     "appDir": null,
     "logDir": null,
     "useBundling" : true,

@@ -102,14 +102,14 @@ module.exports = function(grunt) {
 
     grunt.registerTask("enable-testing-mode", "sets env to testing to keep the console quiet", function() {
         var env = process.env;
-        env.mode = "testing"; //logger be quiet!
+        env.env = "testing"; //logger be quiet!
     });
 
-                                        /**
-                                         * @param {string} testPath
-                                         * @param {string} assetsPath
-                                         * @param {number} nof5Port
-                                         */
+    /**
+     * @param {string} testPath
+     * @param {string} assetsPath
+     * @param {number} nof5Port
+     */
     grunt.registerHelper("simpleNof5", function simpleNof5(testPath, assetsPath, nof5Port) {
 
         var nof5Cmd = "cd " + path.resolve(testPath) + " && node " + nof5 + " -p " + nof5Port,
