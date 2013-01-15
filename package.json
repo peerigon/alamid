@@ -4,6 +4,9 @@
     "version": "0.10.0",
     "repository": "git://github.com/peerigon/alamid",
     "author": "peerigon <developers@peerigon.com>",
+    "contributors" : [
+        "Tobias Koppers @sokra"
+    ],
     "main": "./lib/index.js",
     "keywords": [
         "client",
