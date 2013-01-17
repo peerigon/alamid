@@ -268,7 +268,7 @@ describe("validator", function () {
 
             before(function() {
                 validator = rewire("../../lib/shared/validator.js");
-                validator.__set__("environment", {
+                validator.__set__("env", {
                     isClient : function() { return false; },
                     isServer : function() { return true; }
                 });
@@ -371,7 +371,7 @@ describe("validator", function () {
 
             before(function() {
                 validator = rewire("../../lib/shared/validator.js");
-                validator.__set__("environment", {
+                validator.__set__("env", {
                     isClient : function() { return true; },
                     isServer : function() { return false; }
                 });
