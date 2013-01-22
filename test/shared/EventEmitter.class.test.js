@@ -3,7 +3,7 @@
 var expect = require("expect.js"),
     rewire = require("rewire");
 
-var EventEmitter = require("../../lib/shared/EventEmitter.class.js");
+var ScopedEventEmitter = require("../../lib/shared/ScopedEventEmitter.class.js");
 
 describe("EventEmitter", function () {
 
@@ -11,7 +11,7 @@ describe("EventEmitter", function () {
         event = "snacktime";
 
     beforeEach(function () {
-        e = new EventEmitter();
+        e = new ScopedEventEmitter();
     });
 
     describe("emit(), on()", function () {
@@ -199,35 +199,35 @@ describe("EventEmitter", function () {
     describe("setMaxListeners()", function () {
         //NOT WORKING WITH REWIRE ATM
         /*
-        it("console.error() and console.trace() shuold be executed if max listeners limit was exceeded", function (done) {
-            var RewiredEventEmitter = rewire("../../lib/shared/EventEmitter.class.js", false),
-                isErrorExecuted = false;
+         it("console.error() and console.trace() shuold be executed if max listeners limit was exceeded", function (done) {
+         var RewiredEventEmitter = rewire("../../lib/shared/EventEmitter.class.js", false),
+         isErrorExecuted = false;
 
-            RewiredEventEmitter.__set__({
-                console: {
-                    error: function () {
-                        isErrorExecuted = true;
-                    },
-                    trace: function () {
-                        if (isErrorExecuted) {
-                            done();
-                        }
-                    }
-                }
-            });
+         RewiredEventEmitter.__set__({
+         console: {
+         error: function () {
+         isErrorExecuted = true;
+         },
+         trace: function () {
+         if (isErrorExecuted) {
+         done();
+         }
+         }
+         }
+         });
 
-            e = new RewiredEventEmitter();
+         e = new RewiredEventEmitter();
 
-            e.setMaxListeners(1);
+         e.setMaxListeners(1);
 
-            e.on(event, function () {
-                //do nothing
-            });
-            e.on(event, function () {
-            //do nothing
-            });
-        });
-        */
+         e.on(event, function () {
+         //do nothing
+         });
+         e.on(event, function () {
+         //do nothing
+         });
+         });
+         */
     });
 
     describe("listeners", function () {
@@ -245,4 +245,53 @@ describe("EventEmitter", function () {
 
     });
 
+    describe("scoping", function () {
+
+        it("should bind the event-handler to the given scope", function(done) {
+
+            var lunchOptions = {
+                sandwiches : [
+                    "ham",
+                    "tonno"
+                ]
+            };
+
+            function showLunchOptions() {
+                expect(this.sandwiches).to.contain("ham", "tonno");
+                done();
+            }
+
+            e.on("snacktime", showLunchOptions, lunchOptions);
+
+            e.emit("snacktime");
+        });
+
+        it("should not trigger onSnacktime-handler after it was removed, but 'lunchtime'-handler shall be executed", function () {
+
+            var isSnacktimeExecuted = false,
+                isLunchtimeExecuted = false;
+
+            var scope = {
+                scoped : true
+            };
+
+            function onSnacktime() {
+                isSnacktimeExecuted = true;
+            }
+
+            function onLunchtime() {
+                isLunchtimeExecuted = true;
+            }
+
+            e.on(event, onSnacktime, scope);
+            e.on(event, onLunchtime, scope);
+
+            e.removeListener(event, onSnacktime);
+
+            e.emit(event);
+
+            expect(isSnacktimeExecuted).to.be.equal(false);
+            expect(isLunchtimeExecuted).to.be.equal(true);
+        });
+    });
 });
