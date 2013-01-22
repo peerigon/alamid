@@ -472,6 +472,30 @@ describe("DisplayObject", function () {
 
     });
 
+    describe(".toggle()", function () {
+
+        it("node should hide if already shown", function () {
+            displayObject.display();
+            expect(jQuery(displayObject.node).hasClass(cssClassHide)).to.be(false);
+            displayObject.toggle();
+            expect(jQuery(displayObject.node).hasClass(cssClassHide)).to.be(true);
+        });
+
+        it("node should show if been hidden", function () {
+            displayObject.hide();
+            expect(jQuery(displayObject.node).hasClass(cssClassHide)).to.be(true);
+            displayObject.toggle();
+            expect(jQuery(displayObject.node).hasClass(cssClassHide)).to.be(false);
+        });
+
+        it("node should force show if called with (true)", function () {
+            displayObject.display();
+            expect(jQuery(displayObject.node).hasClass(cssClassHide)).to.be(false);
+            displayObject.toggle(true);
+            expect(jQuery(displayObject.node).hasClass(cssClassHide)).to.be(false);
+        });
+    });
+
     describe(".isDisplayed()", function () {
 
         it("should be true by default value", function () {
