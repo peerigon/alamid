@@ -2,12 +2,12 @@
 
 var expect = require("expect.js"),
     value = require("value"),
-    CONSTANTS = require("../../lib/client/CONSTANTS.js"),
     path = require("path"),
     DisplayObject = require("../../lib/client/DisplayObject.class.js"),
     DisplayObjectExample = require("./mocks/DisplayObjectExample.class.js"),
     DisplayObjectDefineExample = require("./mocks/DisplayObjectDefineExample.class.js"),
     DOMNodeMocks = require("./mocks/DOMNodeMocks.js"),
+    cssClassHide = DisplayObject.prototype.cssClassHide,
     alamidjQuery = require("../../lib/client/helpers/jQuery.js");
 
 describe("DisplayObject", function () {
@@ -423,17 +423,17 @@ describe("DisplayObject", function () {
 
     describe(".hide()", function () {
 
-        it("node should have the attribute class with at least " + CONSTANTS.HIDE_CLASS + " as value", function () {
+        it("node should have the attribute class with at least " + cssClassHide + " as value", function () {
             displayObject.hide();
-            expect(jQuery(displayObject.node).hasClass(CONSTANTS.HIDE_CLASS)).to.be(true);
+            expect(jQuery(displayObject.node).hasClass(cssClassHide)).to.be(true);
         });
     });
 
     describe(".display()", function () {
 
-        it("node should NOT have the attribute class with " + CONSTANTS.HIDE_CLASS + " as value", function () {
+        it("node should NOT have the attribute class with " + cssClassHide + " as value", function () {
             displayObject.display();
-            expect(jQuery(displayObject.node).hasClass(CONSTANTS.HIDE_CLASS)).to.be(false);
+            expect(jQuery(displayObject.node).hasClass(cssClassHide)).to.be(false);
         });
 
     });
