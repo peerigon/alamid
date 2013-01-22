@@ -104,10 +104,10 @@ describe("DisplayObject", function () {
 
         it("should emit an 'beforeAdd'-Event", function (done) {
             submitButtonDisplayObject.on("beforeAdd", function () {
-               done();
-           });
+                done();
+            });
 
-           formDisplayObject.append(submitButtonDisplayObject).at("form");
+            formDisplayObject.append(submitButtonDisplayObject).at("form");
         });
 
         it("should emit an 'add'-Event", function (done) {
@@ -218,6 +218,25 @@ describe("DisplayObject", function () {
 
             expect(focusEvent).to.be.equal("triggered");
             expect(blurEvent).to.be.equal("triggered");
+        });
+
+        it("should call the handlers bound to the view if defined as string", function(done) {
+
+            var $inputA = alamidjQuery(formDisplayObject.node).find("[data-node='input-a']");
+
+            formDisplayObject._onInputAFocus = function(event) {
+                expect(this.constructor).to.equal(DisplayObjectExample);
+                expect(alamidjQuery(event.target).attr("data-node")).to.equal($inputA.attr("data-node"));
+                done();
+            };
+
+            formDisplayObject._addNodeEvents({
+                "input-a": {
+                    focus : "_onInputAFocus"
+                }
+            });
+
+            $inputA.focus();
         });
 
     });
