@@ -239,6 +239,21 @@ describe("DisplayObject", function () {
             $inputA.focus();
         });
 
+        it("should call _addNodeEvents automatically if a events-attribute is defined", function(done) {
+
+            var MyDisplayObject = DisplayObject.extend({
+                events : {
+                    "input-a": {
+                        focus : "_onInputAFocus"
+                    }
+                },
+                _addNodeEvents : function() {
+                    done();
+                }
+            });
+
+            var myDisplayObject = new MyDisplayObject(formTemplate);
+        });
     });
 
     describe(".destroy()", function () {
