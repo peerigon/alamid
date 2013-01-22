@@ -3,7 +3,7 @@
 var expect = require("expect.js"),
     rewire = require("rewire");
 
-var ScopedEventEmitter = require("../../lib/shared/ScopedEventEmitter.class.js");
+var EventEmitter = require("../../lib/shared/EventEmitter.class.js");
 
 describe("EventEmitter", function () {
 
@@ -11,7 +11,7 @@ describe("EventEmitter", function () {
         event = "snacktime";
 
     beforeEach(function () {
-        e = new ScopedEventEmitter();
+        e = new EventEmitter();
     });
 
     describe("emit(), on()", function () {
