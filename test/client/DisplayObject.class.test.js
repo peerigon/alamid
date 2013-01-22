@@ -461,6 +461,7 @@ describe("DisplayObject", function () {
             displayObject.hide();
             expect(jQuery(displayObject.node).hasClass(cssClassHide)).to.be(true);
         });
+
     });
 
     describe(".display()", function () {
@@ -493,6 +494,23 @@ describe("DisplayObject", function () {
             expect(jQuery(displayObject.node).hasClass(cssClassHide)).to.be(false);
             displayObject.toggle(true);
             expect(jQuery(displayObject.node).hasClass(cssClassHide)).to.be(false);
+        });
+
+        it("should not emit an event if the state hasn't changed", function() {
+
+            var eventCnt = 0;
+
+            displayObject.hide();
+
+            displayObject.on("display", function() {
+                eventCnt++;
+            });
+
+            displayObject.display();
+            displayObject.display();
+            displayObject.display();
+
+            expect(eventCnt).to.be(1);
         });
     });
 
