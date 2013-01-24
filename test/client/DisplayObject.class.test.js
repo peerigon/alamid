@@ -464,10 +464,10 @@ describe("DisplayObject", function () {
 
     });
 
-    describe(".display()", function () {
+    describe(".show()", function () {
 
         it("node should NOT have the attribute class with " + cssClassHide + " as value", function () {
-            displayObject.display();
+            displayObject.show();
             expect(jQuery(displayObject.node).hasClass(cssClassHide)).to.be(false);
         });
 
@@ -476,7 +476,7 @@ describe("DisplayObject", function () {
     describe(".toggle()", function () {
 
         it("node should hide if already shown", function () {
-            displayObject.display();
+            displayObject.show();
             expect(jQuery(displayObject.node).hasClass(cssClassHide)).to.be(false);
             displayObject.toggle();
             expect(jQuery(displayObject.node).hasClass(cssClassHide)).to.be(true);
@@ -490,7 +490,7 @@ describe("DisplayObject", function () {
         });
 
         it("node should force show if called with (true)", function () {
-            displayObject.display();
+            displayObject.show();
             expect(jQuery(displayObject.node).hasClass(cssClassHide)).to.be(false);
             displayObject.toggle(true);
             expect(jQuery(displayObject.node).hasClass(cssClassHide)).to.be(false);
@@ -502,13 +502,13 @@ describe("DisplayObject", function () {
 
             displayObject.hide();
 
-            displayObject.on("display", function() {
+            displayObject.on("show", function() {
                 eventCnt++;
             });
 
-            displayObject.display();
-            displayObject.display();
-            displayObject.display();
+            displayObject.show();
+            displayObject.show();
+            displayObject.show();
 
             expect(eventCnt).to.be(1);
         });
@@ -525,9 +525,9 @@ describe("DisplayObject", function () {
             expect(displayObject.isDisplayed()).to.be(false);
         });
 
-        it("should be true after .hide() and then .display()", function () {
+        it("should be true after .hide() and then .show()", function () {
             displayObject.hide();
-            displayObject.display();
+            displayObject.show();
             expect(displayObject.isDisplayed()).to.be(true);
         });
 
