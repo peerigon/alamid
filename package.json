@@ -40,7 +40,7 @@
         "wrench" : "1.4.x",
         "commander" : "0.1.x",
         "ejs" : "0.8.x",
-        "webpack-dev-middleware" : "git://github.com/webpack/webpack-dev-middleware.git"
+        "webpack-dev-middleware" : "0.8.x"
     },
     "devDependencies": {
         "grunt" : "0.x",
