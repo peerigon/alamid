@@ -1,11 +1,16 @@
 {
-    "port": 9000,
     "env": "development",
-    "appDir": null,
-    "logDir": null,
-    "useBundling" : true,
-    "useCasting" : true,
-    "useSession" : true,
     "useWebsockets" : true,
-    "useStaticFileServer" : true
+    "useCasting" : true,
+    "server" : {
+        "port": 9000,
+        "logDir": null,
+        "appDir": null,
+        "useBundling" : true,
+        "useSession" : true,
+        "useStaticFileServer" : true
+    },
+    "client" : {
+
+    }
 }
