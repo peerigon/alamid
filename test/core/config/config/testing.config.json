@@ -1,4 +1,6 @@
 {
-    "port" : 1223,
+    "server" : {
+        "port" : 1223
+    },
     "isTestingConfig" : true
 }

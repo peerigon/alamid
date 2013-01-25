@@ -1,4 +1,6 @@
 {
-    "port" : 1234,
+    "server" : {
+        "port" : 1234
+    },
     "customConfigAttribute" : true
 }

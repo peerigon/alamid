@@ -4,6 +4,7 @@ var expect = require("expect.js"),
     path = require("path"),
     exec = require('child_process').exec,
     readConfig = require("../../../lib/core/config/readConfig.js"),
+    extractConfig = require("../../../lib/core/config/extractConfig.js"),
     defaultConfig = require("../../../lib/core/defaults/defaultConfig.json");
 
 /**
@@ -46,9 +47,11 @@ describe("readConfig", function () {
     }
 
     it("should read the default config if nothing was passed", function () {
-        result = readConfig();
+        result = readConfig("server");
         //we can't check for env, because we need it for testing
+        defaultConfig = extractConfig(defaultConfig, "server");
         defaultConfig.env = "";
+        delete defaultConfig.type;
         result.env = "";
         expect(result).to.eql(defaultConfig);
     });
@@ -66,7 +69,7 @@ describe("readConfig", function () {
 
         var relativePathToTestConf = "readConfig/customConfig.json";
 
-        checkConfigViaSubprocess("--config " + relativePathToTestConf, {}, function(parsedConf) {
+        checkConfigViaSubprocess("--server:config " + relativePathToTestConf, {}, function(parsedConf) {
             expect(parsedConf.port).to.equal(1234);
             expect(parsedConf.customConfigAttribute).to.be(true);
             done();
@@ -77,7 +80,7 @@ describe("readConfig", function () {
 
         var relativePathToTestConf = "readConfig/customConfig.json";
 
-        checkConfigViaSubprocess("", { "config" : relativePathToTestConf } , function(parsedConf) {
+        checkConfigViaSubprocess("", { "server:config" : relativePathToTestConf } , function(parsedConf) {
             expect(parsedConf.port).to.equal(1234);
             expect(parsedConf.customConfigAttribute).to.be(true);
             done();
@@ -94,7 +97,7 @@ describe("readConfig", function () {
     });
 
     it("should set attributes if passed via argv", function (done) {
-        checkConfigViaSubprocess("--port 9099", {} , function(parsedConf) {
+        checkConfigViaSubprocess("--server:port 9099", {} , function(parsedConf) {
             expect(parsedConf.port).to.equal(9099);
             done();
         });
@@ -104,7 +107,7 @@ describe("readConfig", function () {
 
         var relativePathToTestConf = "readConfig/customConfig.json";
 
-        checkConfigViaSubprocess("--port 9099", { "config" : relativePathToTestConf }, function(parsedConf) {
+        checkConfigViaSubprocess("--server:port 9099", { "server:config" : relativePathToTestConf }, function(parsedConf) {
             expect(parsedConf.port).to.equal(9099);
             done();
         });
@@ -115,7 +118,7 @@ describe("readConfig", function () {
         var relativePathToTestConf = "readConfig/customConfig.json";
         var relativePathToTestConf2 = "readConfig/customConfig2.json";
 
-        checkConfigViaSubprocess("--config " + relativePathToTestConf2, { "config" : relativePathToTestConf }, function(parsedConf) {
+        checkConfigViaSubprocess("--server:config " + relativePathToTestConf2, { "server:config" : relativePathToTestConf }, function(parsedConf) {
             expect(parsedConf.port).to.equal(5555);
             done();
         });

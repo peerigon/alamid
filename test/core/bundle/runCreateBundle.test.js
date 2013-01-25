@@ -6,16 +6,19 @@ var expect = require("expect.js"),
     pathUtil = require("path"),
     getAppPaths = require("../../../lib/shared/helpers/resolvePaths.js").getAppPaths,
     runCreateBundle = require("../../../lib/core/bundle/runCreateBundle.js"),
+    sanitizeConfig = require("../../../lib/core/config/sanitizeConfig.js"),
     _ = require("underscore"),
     connect = require("connect"),
     Browser = require("zombie");
 
 describe("runCreateBundle()", function () {
     var paths = getAppPaths(__dirname + "/runCreateBundle"),
-        devConfig = {
+        //this is only the server config in this case
+        devConfig = sanitizeConfig({
             appDir: __dirname + "/runCreateBundle",
+            port : 9000,
             useWebsockets: false
-        },
+        }),
         browser;
 
     before(function (done) {
@@ -29,7 +32,7 @@ describe("runCreateBundle()", function () {
         browser = new Browser();
         var app = connect()
             .use(connect.static(paths.bundle))
-         .listen(3000, done);
+            .listen(3000, done);
     });
     after(function () {
         fs.unlinkSync(__dirname + "/runCreateBundle/node_modules/alamid");
