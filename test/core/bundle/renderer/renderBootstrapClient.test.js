@@ -6,7 +6,7 @@ var expect = require("expect.js"),
     vm = require("vm"),
     fs = require("fs"),
     makeDirSync = require("fshelpers").makeDirSync,
-    alamidClientIndex = require("../../../../lib/index.client.js"),
+    alamidClientIndex = require("../../../../lib/index.js"),
     extractConfig = require("../../../../lib/core/config/extractConfig.js"),
     _ = require("underscore");
 
