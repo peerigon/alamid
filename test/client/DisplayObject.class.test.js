@@ -514,21 +514,21 @@ describe("DisplayObject", function () {
         });
     });
 
-    describe(".isDisplayed()", function () {
+    describe(".isVisible()", function () {
 
         it("should be true by default value", function () {
-            expect(displayObject.isDisplayed()).to.be(true);
+            expect(displayObject.isVisible()).to.be(true);
         });
 
         it("should be false after .hide()", function () {
             displayObject.hide();
-            expect(displayObject.isDisplayed()).to.be(false);
+            expect(displayObject.isVisible()).to.be(false);
         });
 
         it("should be true after .hide() and then .show()", function () {
             displayObject.hide();
             displayObject.show();
-            expect(displayObject.isDisplayed()).to.be(true);
+            expect(displayObject.isVisible()).to.be(true);
         });
 
     });
