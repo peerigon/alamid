@@ -45,6 +45,21 @@ describe("handleRequest", function() {
             }
         ];
 
+        it("should append the params as passed via url", function(done) {
+
+            routeHandler.add("post", "/services/:country/*", middlewareMock);
+
+            var req = new Request("create", "/services/de/blogPost", { da : "ta" });
+
+            handleRequest(req, function(err, resReq, resRes) {
+                expect(resReq.getParams().country).to.be("de");
+                expect(err).to.be(null);
+                expect(resReq).to.eql(req);
+                expect(resRes).not.to.be("undefined");
+                done();
+            });
+        });
+
         it("should handle the request and return without an error if all middleware worked fine", function(done) {
             routeHandler.add("post", "/services/*", middlewareMock);
             routeHandler.add(["post", "put", "delete", "get"], "/services/*", runServiceMock);
