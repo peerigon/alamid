@@ -56,14 +56,10 @@ describe("Response", function() {
             //check default
             myResponse.setHeader("headerKey", "headerValue");
             headers = myResponse.getHeaders();
-            expect(headers.http.headerKey).to.be("headerValue");
+            expect(headers.headerKey).to.be("headerValue");
             myResponse.setHeader("anotherHeaderKey", "anotherHeaderValue");
             headers = myResponse.getHeaders();
-            expect(headers.http.anotherHeaderKey).to.be("anotherHeaderValue");
-            //check spdy
-            myResponse.setHeader("headerKey2", "headerValue2", "spdy");
-            headers = myResponse.getHeaders();
-            expect(headers.spdy.headerKey2).to.be("headerValue2");
+            expect(headers.anotherHeaderKey).to.be("anotherHeaderValue");
         });
 
         it("#setErrorMessage", function() {
@@ -79,7 +75,7 @@ describe("Response", function() {
         });
     });
 
-    describe("getResBody", function() {
+    describe("toJSendBody", function() {
 
         var myResponse;
 
@@ -94,7 +90,7 @@ describe("Response", function() {
             myResponse.setStatus("success");
             myResponse.setData(testData);
 
-            var resBody = myResponse.getResBody();
+            var resBody = myResponse.toJSendBody();
             expect(resBody.status).to.be("success");
             expect(resBody.data).to.eql(testData);
             expect(resBody.message).to.be(undefined);
@@ -107,7 +103,7 @@ describe("Response", function() {
             myResponse.setStatus("fail");
             myResponse.setData(testData);
 
-            var resBody = myResponse.getResBody();
+            var resBody = myResponse.toJSendBody();
             expect(resBody.status).to.be("fail");
             expect(resBody.data).to.eql(testData);
         });
@@ -120,7 +116,7 @@ describe("Response", function() {
             myResponse.setData(testData);
             myResponse.setErrorMessage("Something might be wrong");
 
-            var resBody = myResponse.getResBody();
+            var resBody = myResponse.toJSendBody();
             expect(resBody.status).to.be("error");
             expect(resBody.data).not.to.be(undefined);
             expect(resBody.message).to.be("Something might be wrong");
