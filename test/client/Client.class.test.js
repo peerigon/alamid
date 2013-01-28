@@ -72,10 +72,7 @@ describe("Client", function () {
         it("should throw no exception when calling with a page", function () {
             client = new Client(PageMock);
         });
-
     });
-
-
 
     describe(".start()", function () {
 
@@ -90,7 +87,6 @@ describe("Client", function () {
             expect(mainPageDiv[0].toString().search("Div") !== -1).to.be(true);
 
         });
-
     });
 
     describe(".dispatchRoute()", function () {
@@ -145,7 +141,6 @@ describe("Client", function () {
             //Revert monkey patch .start()
             pageJS.start = pageJSStart;
         });
-
     });
 
     describe(".addRoute()", function () {
@@ -377,8 +372,6 @@ describe("Client", function () {
 
         it("should be possible to change current page to MainPage with '' as route", function (done) {
 
-
-
             client.on("pageChange", function onPageChange() {
                 //MainPage is always on index 0.
                 expect(client.getCurrentPages().length).to.equal(1);
@@ -532,7 +525,7 @@ describe("Client", function () {
         });
     });
 
-    describe(".getContext()", function (done) {
+    describe(".getContext()", function () {
 
         it("should eql page.js's context object", function () {
 
@@ -540,9 +533,39 @@ describe("Client", function () {
 
             expect(ctx.path).to.equal(location.pathname);
             expect(ctx.title).to.equal(document.title);
-
-
         });
 
+    });
+
+    describe("on unload", function() {
+
+        beforeEach(function () {
+            client.start(); // Initializes the MainPage
+            pages.main = client.getMainPage();
+            pages.main.setSubPage(pages.home);
+            pages.home.setSubPage(pages.about);
+        });
+
+        afterEach(function () {
+            pageJS.stop();
+        });
+
+        it("should emit a page-change event on all currentPages", function(done) {
+
+            var currentPages = client.getCurrentPages(),
+                cbCnt = 0;
+
+            function cbCalled() {
+                if(++cbCnt === currentPages.length) {
+                    done();
+                }
+            }
+
+            _(currentPages).each(function(currentPage) {
+                currentPage.on("beforeLeave", cbCalled);
+            });
+
+            jQuery(window).trigger('unload');
+        });
     });
 });
