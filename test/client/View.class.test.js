@@ -152,11 +152,11 @@ describe("View", function () {
             expect($img[0].attributes.src).to.equal(formSchema.img.default);
         });
 
-        it("should apply Data as innerText of any other Tag", function () {
+        it("should apply Data as text of any other Tag", function () {
             var $h1 = $formView.find("[data-node='heading']");
 
             formView.render( { "heading": "heading" } );
-            expect($h1[0].innerText).to.equal("heading");
+            expect($h1.text()).to.equal("heading");
         });
 
         it("should emit an 'beforeRender'-Event", function (done) {
