@@ -36,7 +36,6 @@
         "webpack": "0.8.x",
         "page": "1.3.x",
         "middler" : "0.6.x",
-        "eventemitter2" : "0.4.x",
         "wrench" : "1.4.x",
         "commander" : "0.1.x",
         "ejs" : "0.8.x",
