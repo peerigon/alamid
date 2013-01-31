@@ -7,6 +7,8 @@ var expect = require("expect.js"),
     getAppPaths = require("../../../lib/shared/helpers/resolvePaths.js").getAppPaths,
     runCreateBundle = require("../../../lib/core/bundle/runCreateBundle.js"),
     sanitizeConfig = require("../../../lib/core/config/sanitizeConfig.js"),
+    extractConfig = require("../../../lib/core/config/extractConfig.js"),
+    clientConfig = require(__dirname + "/runCreateBundle/config.json"),
     _ = require("underscore"),
     connect = require("connect"),
     Browser = require("zombie");
@@ -83,5 +85,9 @@ describe("runCreateBundle()", function () {
             done();
         });
         browser.window.client.changePage("blog");
+    });
+
+    it("should be able to access the client config via alamid.config", function() {
+        expect(browser.window.alamidClientConfig).to.eql(extractConfig(clientConfig, "client"));
     });
 });

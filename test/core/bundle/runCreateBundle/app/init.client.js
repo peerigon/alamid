@@ -10,6 +10,7 @@ client
 
 jQuery(document).ready(function onDOMReady() {
     client.start();
+    window.alamidClientConfig = alamid.config;
 });
 
 window.client = client;
