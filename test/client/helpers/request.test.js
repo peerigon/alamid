@@ -38,7 +38,7 @@ describe("request", function () {
                     useWebsockets : true
                 };
 
-                var appMock = {
+                var clientMock = {
                     getSocket : function() {
                         return socketMock;
                     }
@@ -64,7 +64,7 @@ describe("request", function () {
                 remoteRequest.__set__("httpRequest", httpRequestMock);
                 remoteRequest.__set__("config", configMock);
                 //overwrite predefined mock!
-                remoteRequest.__set__("app", appMock);
+                remoteRequest.__set__("client", clientMock);
 
                 remoteRequest("create", "services/blog", { da : "ta" }, function(response){
                     done();
