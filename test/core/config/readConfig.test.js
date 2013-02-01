@@ -57,12 +57,10 @@ describe("readConfig", function () {
     });
 
     it("should respect the env set via process.env.NODE_ENV", function(done) {
-
         checkConfigViaSubprocess("", { NODE_ENV : "production"} , function(parsedConf) {
             expect(parsedConf.env).to.eql("production");
             done();
         });
-
     });
 
     it("should read a custom config if passed via args and accept additional attributes (other than the default config)", function (done) {
@@ -87,7 +85,7 @@ describe("readConfig", function () {
         });
     });
 
-    it("should read the suitable config if env is set from subdir (config)", function (done) {
+    it("should read the env-specific config if env is set from subdir (config)", function (done) {
 
         checkConfigViaSubprocess("--env testing", {}, function(parsedConf) {
             expect(parsedConf.port).to.equal(1223);
@@ -95,6 +93,13 @@ describe("readConfig", function () {
             done();
         });
     });
+
+    it("should fall back to the normal config if env-specific config file doesn't exist", function (done) {
+           checkConfigViaSubprocess("--env production", {}, function(parsedConf) {
+               expect(parsedConf.port).to.equal(defaultConfig.port);
+               done();
+           });
+       });
 
     it("should set attributes if passed via argv", function (done) {
         checkConfigViaSubprocess("--server:port 9099", {} , function(parsedConf) {
@@ -113,7 +118,7 @@ describe("readConfig", function () {
         });
     });
 
-    it("should respect the hierachy and prefer command given via env before argv", function (done) {
+    it("should respect the hierachy and prefer command given via env over argv", function (done) {
 
         var relativePathToTestConf = "readConfig/customConfig.json";
         var relativePathToTestConf2 = "readConfig/customConfig2.json";
