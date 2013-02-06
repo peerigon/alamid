@@ -304,7 +304,9 @@ describe("View", function () {
         });
 
         it("should call Super's dispose()", function (done) {
-            formView.on("beforeDispose", done);
+            formView.on("beforeDispose", function () {
+                done();
+            });
             formView.dispose();
         });
 
@@ -324,7 +326,9 @@ describe("View", function () {
         });
 
         it ("should dispose View if bound Model was deleted", function (done) {
-            formView.on("dispose", done);
+            formView.on("dispose", function () {
+                done();
+            });
             formModel.destroy(function onDestroy(err) {
                 if (err) throw err;
             });

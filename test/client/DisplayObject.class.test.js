@@ -4,11 +4,9 @@ var expect = require("expect.js"),
     value = require("value"),
     path = require("path"),
     DisplayObject = require("../../lib/client/DisplayObject.class.js"),
-    DisplayObjectExample = require("./mocks/DisplayObjectExample.class.js"),
-    DisplayObjectDefineExample = require("./mocks/DisplayObjectDefineExample.class.js"),
     DOMNodeMocks = require("./mocks/DOMNodeMocks.js"),
     cssClassHide = DisplayObject.prototype.cssClassHide,
-    alamidjQuery = require("../../lib/client/helpers/jQuery.js");
+    jQuery = require("../../lib/client/helpers/jQuery.js");
 
 describe("DisplayObject", function () {
 
@@ -31,46 +29,55 @@ describe("DisplayObject", function () {
         submitButton = DOMNodeMocks.getSubmitButton();
         $submitButton = jQuery(submitButton);
 
-        displayObject = new DisplayObjectExample(formTemplate);
-        submitButtonDisplayObject = new DisplayObjectExample(submitButtonTemplate);
-        formDisplayObject = new DisplayObjectExample(formTemplate);
+        displayObject = new DisplayObject(formTemplate);
+        submitButtonDisplayObject = new DisplayObject(submitButtonTemplate);
+        formDisplayObject = new DisplayObject(formTemplate);
     });
 
     describe(".constructor()", function () {
+        var MyDisplayObject = DisplayObject.extend({
+                template: "<p></p>"
+            });
 
-        it("should throw an error if no template is given", function () {
-            expect(function () { var dO = new DisplayObject(); }).to.throwError();
-        });
-
-        it("should throw an error if a template woth more than one parent node is given", function () {
+        it("should throw an error if a template with more than one parent node is given", function () {
             expect(function () {
                 var dO = new DisplayObject("<p></p><div></div>");
             }).to.throwError();
         });
 
-        it("should be possible to declare template in a Class which inherits from DisplayObject", function (done) {
-            displayObject = new DisplayObjectExample(); //Declares template via $template
-            done();
+        it("should apply the passed template in favor of the DisplayObject's template", function () {
+            var myDisplayObject = new MyDisplayObject("<em></em>");
+
+            expect(myDisplayObject.template).to.be("<em></em>");
         });
 
+        it("should apply the DisplayObject's template if no template was passed", function () {
+            var myDisplayObject = new MyDisplayObject();
+
+            expect(myDisplayObject.template).to.be(MyDisplayObject.prototype.template);
+        });
+
+        it("should apply '<div></div>' as default template if nothing has been passed", function () {
+            var myDisplayObject = new DisplayObject();
+
+            expect(myDisplayObject.template).to.be(DisplayObject.prototype.template);
+        });
     });
 
     describe(".node", function () {
-
         it("should return an node according to given template", function () {
             expect(displayObject.node.toString()).to.be.equal("[object HTMLFormElement]");
         });
-
     });
 
-    describe(".getNodeMap()", function () {
+    describe("._nodeMap", function () {
 
         it("should return an object", function () {
-            expect(typeof displayObject.getNodeMap()).to.be.equal("object");
+            expect(displayObject._nodeMap).to.be.an(Object);
         });
 
         it("should return a map of nodes including a 'form'-, 'input-a'-, 'input-b'-, 'input-c'- node ", function () {
-            var nodeMap = displayObject.getNodeMap();
+            var nodeMap = displayObject._nodeMap;
 
             expect(nodeMap.form.toString()).to.be.equal("[object HTMLFormElement]");
             expect(nodeMap["input-a"].toString()).to.be.equal("[object HTMLInputElement]");
@@ -84,7 +91,7 @@ describe("DisplayObject", function () {
 
         it("should throw an Error if an object not kind of DisplayObject is given", function () {
             expect(function () {
-                formDisplayObject.append({});
+                formDisplayObject._append({});
             }).to.throwError();
         });
 
@@ -94,12 +101,12 @@ describe("DisplayObject", function () {
 
         it("should throw an Error if a not existent node name was passed to # at()", function () {
             expect(function () {
-                formDisplayObject.append(submitButtonDisplayObject).at("not_existing_node");
+                formDisplayObject._append(submitButtonDisplayObject).at("not_existing_node");
             }).to.throwError();
         });
 
         it("should return a reference to itself", function () {
-            expect(formDisplayObject.append(submitButtonDisplayObject).at("form")).to.be.equal(formDisplayObject);
+            expect(formDisplayObject._append(submitButtonDisplayObject).at("form")).to.be.equal(formDisplayObject);
         });
 
         it("should emit an 'beforeAdd'-Event", function (done) {
@@ -107,7 +114,7 @@ describe("DisplayObject", function () {
                 done();
             });
 
-            formDisplayObject.append(submitButtonDisplayObject).at("form");
+            formDisplayObject._append(submitButtonDisplayObject).at("form");
         });
 
         it("should emit an 'add'-Event", function (done) {
@@ -115,11 +122,11 @@ describe("DisplayObject", function () {
                 done();
             });
 
-            formDisplayObject.append(submitButtonDisplayObject).at("form");
+            formDisplayObject._append(submitButtonDisplayObject).at("form");
         });
 
         it("should append submit-button to form", function () {
-            formDisplayObject.append(submitButtonDisplayObject).at("form");
+            formDisplayObject._append(submitButtonDisplayObject).at("form");
 
             var $lastChild = jQuery(formDisplayObject.node).find(":last-child"),
                 lastChild = $lastChild[0];
@@ -133,22 +140,21 @@ describe("DisplayObject", function () {
     describe("._prepend()", function () {
         it("should throw an Error if a not existent node name was passed to # at()", function () {
             expect(function () {
-                formDisplayObject.prepend(submitButtonDisplayObject).at("not_existing_node");
+                formDisplayObject._prepend(submitButtonDisplayObject).at("not_existing_node");
             }).to.throwError();
         });
     });
 
     describe("._prepend().at()", function () {
 
-
         it("should throw an Error if a not existent node name was passed to # at()", function () {
             expect(function () {
-                formDisplayObject.prepend(submitButtonDisplayObject).at("not_existing_node");
+                formDisplayObject._prepend(submitButtonDisplayObject).at("not_existing_node");
             }).to.throwError();
         });
 
         it("should return a reference to itself", function () {
-            expect(formDisplayObject.prepend(submitButtonDisplayObject).at("form")).to.be.equal(formDisplayObject);
+            expect(formDisplayObject._prepend(submitButtonDisplayObject).at("form")).to.be.equal(formDisplayObject);
         });
 
         it("should emit an 'beforeAdd'-Event", function (done) {
@@ -156,7 +162,7 @@ describe("DisplayObject", function () {
                 done();
             });
 
-            formDisplayObject.prepend(submitButtonDisplayObject).at("form");
+            formDisplayObject._prepend(submitButtonDisplayObject).at("form");
         });
 
         it("should emit an 'add'-Event", function (done) {
@@ -164,11 +170,11 @@ describe("DisplayObject", function () {
                 done();
             });
 
-            formDisplayObject.prepend(submitButtonDisplayObject).at("form");
+            formDisplayObject._prepend(submitButtonDisplayObject).at("form");
         });
 
         it("should prepend submit-button to form", function () {
-            formDisplayObject.prepend(submitButtonDisplayObject).at("form");
+            formDisplayObject._prepend(submitButtonDisplayObject).at("form");
 
             var $firstChild = jQuery(formDisplayObject.node).find(":first-child"),
                 firstChild = $firstChild[0];
@@ -183,7 +189,7 @@ describe("DisplayObject", function () {
 
         it("should throw an Error if you try to attach events to a not existing node", function () {
             expect(function () {
-                displayObject.addNodeEvents({
+                displayObject._addNodeEvents({
                     "not_existing_node": {
                         "click": function () {
                             //do nothing
@@ -196,11 +202,10 @@ describe("DisplayObject", function () {
         it("should attach Events to nodes", function () {
             var focusEvent = "untriggered",
                 blurEvent = "untriggered",
-            //alamid's jQuery must be used here, cause node is not in the DOM.
-                $inputA = alamidjQuery(formDisplayObject.node).find("[data-node='input-a']"),
-                $inputB = alamidjQuery(formDisplayObject.node).find("[data-node='input-b']");
+                $inputA = jQuery(formDisplayObject.node).find("[data-node='input-a']"),
+                $inputB = jQuery(formDisplayObject.node).find("[data-node='input-b']");
 
-            formDisplayObject.addNodeEvents({
+            formDisplayObject._addNodeEvents({
                 "input-a": {
                     "focus": function () {
                         focusEvent = "triggered";
@@ -221,12 +226,11 @@ describe("DisplayObject", function () {
         });
 
         it("should call the handlers bound to the view if defined as string", function(done) {
-
-            var $inputA = alamidjQuery(formDisplayObject.node).find("[data-node='input-a']");
+            var $inputA = jQuery(formDisplayObject.node).find("[data-node='input-a']");
 
             formDisplayObject._onInputAFocus = function(event) {
-                expect(this.constructor).to.equal(DisplayObjectExample);
-                expect(alamidjQuery(event.target).attr("data-node")).to.equal($inputA.attr("data-node"));
+                expect(this).to.be(formDisplayObject);
+                expect(jQuery(event.target).attr("data-node")).to.equal($inputA.attr("data-node"));
                 done();
             };
 
@@ -239,8 +243,7 @@ describe("DisplayObject", function () {
             $inputA.focus();
         });
 
-        it("should call _addNodeEvents automatically if a events-attribute is defined", function(done) {
-
+        it("should call _addNodeEvents automatically if an events-attribute is defined", function(done) {
             var MyDisplayObject = DisplayObject.extend({
                 events : {
                     "input-a": {
@@ -279,13 +282,13 @@ describe("DisplayObject", function () {
         });
 
         it("should remove itself from parent node", function () {
-            formDisplayObject.append(submitButtonDisplayObject).at("form");
+            formDisplayObject._append(submitButtonDisplayObject).at("form");
             submitButtonDisplayObject.destroy();
             expect(jQuery(formDisplayObject.node).find("[type='submit']").length).to.be.equal(0);
         });
 
         it("should be still possible to trigger attached events after .destroy()", function (done) {
-            submitButtonDisplayObject.addNodeEvents({
+            submitButtonDisplayObject._addNodeEvents({
                 "submit-button": {
                     "click": function () {
                         done();
@@ -293,17 +296,15 @@ describe("DisplayObject", function () {
                 }
             });
 
-            formDisplayObject.append(submitButtonDisplayObject).at("form");
-
+            formDisplayObject._append(submitButtonDisplayObject).at("form");
             submitButtonDisplayObject.destroy();
-
             jQuery(submitButtonDisplayObject.node).click();
         });
 
         it("should be possible to re-append a destroyed DisplayObject", function () {
-            formDisplayObject.append(submitButtonDisplayObject).at("form");
+            formDisplayObject._append(submitButtonDisplayObject).at("form");
             submitButtonDisplayObject.destroy();
-            formDisplayObject.append(submitButtonDisplayObject).at("form");
+            formDisplayObject._append(submitButtonDisplayObject).at("form");
 
             expect(
                 jQuery(formDisplayObject.node).find("[type='submit']")[0].toString()
@@ -315,7 +316,7 @@ describe("DisplayObject", function () {
     describe(".dispose()", function () {
 
         beforeEach(function () {
-            formDisplayObject.append(submitButtonDisplayObject).at("form");
+            formDisplayObject._append(submitButtonDisplayObject).at("form");
         });
 
         it("should NOT return a reference to itself", function () {
@@ -355,18 +356,18 @@ describe("DisplayObject", function () {
             expect(jQuery(formDisplayObject.node).find("[type='submit']").length).to.be.equal(0);
         });
 
-        it("should be NOT possible to get a node", function () {
+        it("should NOT be possible to get a node", function () {
             submitButtonDisplayObject.dispose();
             expect(submitButtonDisplayObject.node).to.not.be.ok();
         });
 
-        it("should be NOT possible to get a map of nodes", function () {
+        it("should NOT be possible to get a map of nodes", function () {
             submitButtonDisplayObject.dispose();
-            expect(submitButtonDisplayObject.getNodeMap()).to.not.be.ok();
+            expect(submitButtonDisplayObject._nodeMap).to.not.be.ok();
         });
 
-        it("should be NOT possible to trigger before attached events after .dispose()", function (done) {
-            submitButtonDisplayObject.addNodeEvents({
+        it("should NOT be possible to trigger before attached events after .dispose()", function (done) {
+            submitButtonDisplayObject._addNodeEvents({
                 "submit-button": {
                     "click": function () {
                         done(); //Should not be executed
@@ -375,24 +376,21 @@ describe("DisplayObject", function () {
             });
 
             submitButtonDisplayObject.dispose();
-
             jQuery(submitButtonDisplayObject.node).click();
-
             done();
         });
 
-        it("should be NOT possible to re-append a disposed DisplayObject", function () {
+        it("should NOT be possible to re-append a disposed DisplayObject", function () {
             submitButtonDisplayObject.dispose();
 
             expect(function () {
-                formDisplayObject.append(submitButtonDisplayObject).at("form");
+                formDisplayObject._append(submitButtonDisplayObject).at("form");
             }).to.be.throwError();
         });
 
-        it("should be callable multiple times", function (done) {
+        it("should be callable multiple times", function () {
             submitButtonDisplayObject.dispose();
             submitButtonDisplayObject.dispose();
-            done();
         });
 
         it("should emit 'beforeDestroy'-Event if .dispose() is called only on first call", function (done) {
@@ -444,9 +442,9 @@ describe("DisplayObject", function () {
         });
 
         it("should dispose form and child DisplayObjects", function () {
-            var tmpDisplayObject = new DisplayObjectExample("<div data-node='child'></div>");
+            var tmpDisplayObject = new DisplayObject("<div data-node='child'></div>");
 
-            tmpDisplayObject.append(formDisplayObject);
+            tmpDisplayObject._append(formDisplayObject);
 
             formDisplayObject.dispose();
 
@@ -497,7 +495,6 @@ describe("DisplayObject", function () {
         });
 
         it("should not emit an event if the state hasn't changed", function() {
-
             var eventCnt = 0;
 
             displayObject.hide();
@@ -539,10 +536,10 @@ describe("DisplayObject", function () {
             submitButtonDisplayObject;
 
         beforeEach(function () {
-            formDisplayObject = new DisplayObjectExample(formTemplate);
-            submitButtonDisplayObject = new DisplayObjectExample(submitButtonTemplate);
+            formDisplayObject = new DisplayObject(formTemplate);
+            submitButtonDisplayObject = new DisplayObject(submitButtonTemplate);
 
-            formDisplayObject.append(submitButtonDisplayObject).at("form");
+            formDisplayObject._append(submitButtonDisplayObject).at("form");
         });
 
         it("should be false by default (=just created and not appended anywhere)", function () {
