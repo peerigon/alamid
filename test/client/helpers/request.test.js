@@ -35,7 +35,9 @@ describe("request", function () {
             it("should pass all data to the websocket-transport", function(done) {
 
                 var configMock = {
-                    useWebsockets : true
+                    use : {
+                        websockets : true
+                    }
                 };
 
                 var clientMock = {

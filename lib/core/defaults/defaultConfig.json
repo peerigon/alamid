@@ -2,11 +2,7 @@
     "env": "development",
     "use" : {
         "http" : true,
-        "spdy" : false,
         "websockets" : true,
-        "bundle" : true,
-        "session" : true,
-        "staticFileServer" : true,
         "casting" : true,
         "services" : true,
         "validators" : true
@@ -14,7 +10,15 @@
     "server" : {
         "port": 9000,
         "logDir": null,
-        "appDir": null
+        "appDir": null,
+        "use" : {
+            "spdy" : false,
+            "bundle" : true,
+            "session" : true,
+            "staticFileServer" : true
+        }
     },
-    "client" : { }
+    "client" : {
+        "use" : { }
+    }
 }

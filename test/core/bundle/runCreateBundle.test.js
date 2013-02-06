@@ -99,8 +99,6 @@ describe("runCreateBundle()", function () {
         //we can't test for env, because it depends how the test was ran
         expectedClientConf.env = browser.window.alamidClientConfig.env;
 
-        console.log(browser.window.alamidClientConfig);
-
         expect(browser.window.alamidClientConfig.use.websockets).to.eql(expectedClientConf.use.websockets);
     });
 });
