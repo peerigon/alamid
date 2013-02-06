@@ -2,6 +2,7 @@
     "env": "development",
     "use" : {
         "http" : true,
+        "spdy" : false,
         "websockets" : true,
         "bundle" : true,
         "session" : true,
