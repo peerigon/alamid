@@ -142,6 +142,10 @@ module.exports = function(grunt) {
             case "darwin":
                 openBrowserCmd = "open " + openBrowserURL;
                 break;
+
+            case "win32":
+                openBrowserCmd = "start " + openBrowserURL;
+                break;
         }
 
         // as we can't determine when nof5 is up an running we're just wait for a second
