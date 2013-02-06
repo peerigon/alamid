@@ -9,8 +9,10 @@ client
     .addRoute("*", "home");
 
 jQuery(document).ready(function onDOMReady() {
-    client.start();
     window.alamidClientConfig = alamid.config;
+    //we don't have socket.io included in this test
+    window.alamidClientConfig.use.websockets = false;
+    client.start();
 });
 
 window.client = client;

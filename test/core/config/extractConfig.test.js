@@ -45,7 +45,6 @@ describe("extractConfig", function () {
 
     it("should overwrite and merge the values from shared to local", function () {
 
-
         config = {
             "use" : {
                 "websockets" : true
@@ -59,17 +58,12 @@ describe("extractConfig", function () {
             }
         };
 
-
         var clientConf = extractConfig(config, "client");
         var serverConf = extractConfig(config, "server");
-
-        console.log(clientConf, serverConf);
 
         expect(clientConf.use.websockets).to.be(true);
         expect(clientConf.use.client).to.be(true);
         expect(serverConf.use.websockets).to.be(true);
         expect(serverConf.use.client).to.be(undefined);
-
     });
-
 });

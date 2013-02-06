@@ -1,10 +1,14 @@
 {
     "env": "development",
-    "useWebsockets" : false,
-    "useCasting" : true,
+    "use" : {
+        "websockets" : false,
+        "casting" : true
+    },
     "server" : {
         "port": 9023,
-        "useBundling" : true
+        "use" : {
+            "bundle" : true
+        }
     },
     "client" : { }
 }
