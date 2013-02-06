@@ -43,7 +43,7 @@
     },
     "devDependencies": {
         "grunt" : "0.x",
-        "nof5": "0.2.x",
+        "nof5": "0.x",
         "expect.js": "0.x",
         "mocha": "1.x",
         "xunit-file" : "*",
