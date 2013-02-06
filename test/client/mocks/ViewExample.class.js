@@ -7,21 +7,21 @@ var ViewExample = View.extend("ViewExample", {
     /**
      * Exposes append
      *
-     * @param {DisplayObject} displayObject
-     * @return {Object.<string, function(string): DisplayObject>}
+     * @param {Displayable} displayable
+     * @return {Object.<string, function(string): Displayable>}
      */
-    append: function(displayObject) {
-        return this._append(displayObject);
+    append: function(displayable) {
+        return this._append(displayable);
     },
 
     /**
      * Exposes prepend
      *
-     * @param {DisplayObject} displayObject
-     * @return {Object.<string, function(string): DisplayObject>}
+     * @param {Displayable} displayable
+     * @return {Object.<string, function(string): Displayable>}
      */
-    prepend: function(displayObject) {
-        return this._prepend(displayObject);
+    prepend: function(displayable) {
+        return this._prepend(displayable);
     }
 
 });

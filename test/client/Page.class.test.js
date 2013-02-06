@@ -2,7 +2,7 @@
 
 var expect = require("expect.js"),
     value = require("value"),
-    DisplayObject = require("../../lib/client/DisplayObject.class.js"),
+    Displayable = require("../../lib/client/Displayable.class.js"),
     Page = require("../../lib/client/Page.class.js"),
     PageExample = require("./mocks/PageExample.class.js"),
     PageDefineExample = require("./mocks/PageDefineExample.class.js");
