@@ -17,11 +17,14 @@ describe("runCreateBundle()", function () {
     var runCreateBundle = require("../../../lib/core/bundle/runCreateBundle.js");
 
     var paths = getAppPaths(__dirname + "/runCreateBundle"),
-        //this is only the server config in this case
+    //this is only the server config in this case
         devConfig = sanitizeConfig({
-            appDir: __dirname + "/runCreateBundle",
+            appDir: __dirname + "/runCreateBundle/",
             port : 9000,
-            useWebsockets: false
+            use : {
+                websockets : false
+            },
+            config : "config.json"
         }),
         browser;
 
@@ -46,7 +49,6 @@ describe("runCreateBundle()", function () {
         this.timeout(10000);    // we need to expand mocha's default timeout
         runCreateBundle(devConfig, function onCreateBundleFinished(err) {
             expect(err).to.be(null);
-
             done();
         });
     });
@@ -89,13 +91,14 @@ describe("runCreateBundle()", function () {
         browser.window.client.changePage("blog");
     });
 
-
     it("should be able to access the client config via alamid.config", function() {
+
+        //not merged with default config
         var expectedClientConf = extractConfig(clientConfig, "client");
 
         //we can't test for env, because it depends how the test was ran
         expectedClientConf.env = browser.window.alamidClientConfig.env;
 
-        expect(browser.window.alamidClientConfig).to.eql(expectedClientConf);
+        expect(browser.window.alamidClientConfig.use.websockets).to.eql(expectedClientConf.use.websockets);
     });
 });

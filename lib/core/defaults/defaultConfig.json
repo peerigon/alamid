@@ -1,14 +1,24 @@
 {
     "env": "development",
-    "useWebsockets" : true,
-    "useCasting" : true,
+    "use" : {
+        "http" : true,
+        "websockets" : true,
+        "casting" : true,
+        "services" : true,
+        "validators" : true
+    },
     "server" : {
         "port": 9000,
         "logDir": null,
         "appDir": null,
-        "useBundling" : true,
-        "useSession" : true,
-        "useStaticFileServer" : true
+        "use" : {
+            "spdy" : false,
+            "bundle" : true,
+            "session" : true,
+            "staticFileServer" : true
+        }
     },
-    "client" : { }
+    "client" : {
+        "use" : { }
+    }
 }
