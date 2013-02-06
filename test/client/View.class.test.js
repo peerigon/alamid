@@ -4,7 +4,7 @@ var expect = require("expect.js");
 
 var value = require("value"),
 
-    DisplayObject = require("../../lib/client/DisplayObject.class.js"),
+    Displayable = require("../../lib/client/Displayable.class.js"),
     View = require("../../lib/client/View.class.js"),
 
     ViewDefineExample = require("./mocks/ViewDefineExample.class.js"),
@@ -33,8 +33,8 @@ describe("View", function () {
 
     describe(".constructor()", function () {
 
-        it("should be kind of DisplayObject", function () {
-            expect(value(formView).instanceOf(DisplayObject));
+        it("should be kind of Displayable", function () {
+            expect(value(formView).instanceOf(Displayable));
         });
 
     });

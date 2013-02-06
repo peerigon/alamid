@@ -2,7 +2,7 @@
 
 var expect = require("expect.js"),
     value = require("value"),
-    DisplayObject = require("../../lib/client/DisplayObject.class.js"),
+    Displayable = require("../../lib/client/Displayable.class.js"),
     View = require("../../lib/client/View.class.js"),
     ViewExample = require("./mocks/ViewExample.class.js"),
     ViewCollection = require("../../lib/client/ViewCollection.class.js"),
@@ -68,8 +68,8 @@ describe("ViewCollection", function () {
 
     describe(".constructor()", function () {
 
-        it("should be an DisplayObject", function () {
-           expect(value(viewCollection).instanceOf(DisplayObject)).to.be.ok();
+        it("should be an Displayable", function () {
+           expect(value(viewCollection).instanceOf(Displayable)).to.be.ok();
         });
 
         it("should be possible to set a template", function (done) {

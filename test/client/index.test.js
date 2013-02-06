@@ -15,7 +15,7 @@ var underscore = require("underscore"),
 var config = require("../../lib/client/config.client.js"),
     env = require("../../lib/client/env.client.js");
 
-var DisplayObject = require("../../lib/client/DisplayObject.class.js"),
+var Displayable = require("../../lib/client/Displayable.class.js"),
     View = require("../../lib/client/View.class.js"),
     ViewCollection = require("../../lib/client/ViewCollection.class.js"),
     Page = require("../../lib/client/Page.class.js");
@@ -51,8 +51,8 @@ describe("index.js", function () {
     it("should export env", function () {
         expect(alamid.env).to.be(env);
     });
-    it("should export DisplayObject", function () {
-        expect(alamid.DisplayObject).to.be(DisplayObject);
+    it("should export Displayable", function () {
+        expect(alamid.Displayable).to.be(Displayable);
     });
     it("should export View", function () {
         expect(alamid.View).to.be(View);
