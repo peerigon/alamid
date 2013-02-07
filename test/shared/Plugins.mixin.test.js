@@ -96,6 +96,17 @@ describe("Plugins", function () {
             plugins.runHook("b");
             expect(order).to.be("1a 2a 1b ");
         });
+        it("should run plugin-hooks in the plugin context", function (done) {
+            var myPlugin = {
+                    a: function () {
+                        expect(this).to.be(myPlugin);
+                        done();
+                    }
+                };
+
+            plugins.plugin(myPlugin);
+            plugins.runHook("a");
+        });
         it("should be chainable", function () {
             expect(plugins.plugin({})).to.be(plugins);
         });
