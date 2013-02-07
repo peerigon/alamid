@@ -84,7 +84,7 @@ describe("sanitizeConfig", function () {
 
             delete config.appDir;
             sanitizedConfig = sanitizeConfig(config);
-            expect(sanitizedConfig.logDir).to.be(appDir + "/log");
+            expect(sanitizedConfig.logDir).to.be(path.join(appDir, "log"));
         });
     });
 });
