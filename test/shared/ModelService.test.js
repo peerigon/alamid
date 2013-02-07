@@ -13,20 +13,24 @@ function setEnv (env, which) {
 
 var mockedOctocats = [
     {
-        id:1,
+        id:  1,
         name:"Octo 1",
-        age:12
+        age: 12
     },
     {
-        id:2,
+        id:  2,
         name:"Octo 2",
-        age:10
+        age: 10
     }
 ];
 
 describe("Model-Services", function () {
 
     describe("Server", function () {
+
+        if (typeof window !== undefined) {
+            return;
+        }
 
         var Octocat,
             testService,
@@ -114,7 +118,8 @@ describe("Model-Services", function () {
         var Octocat,
             testService,
             RemoteService,
-            env;
+            env,
+            services;
 
         before(function () {
 
@@ -127,22 +132,22 @@ describe("Model-Services", function () {
             setEnv(env, "client");
 
             Octocat = require("./Model/Octocat.class.js");
-            var services = require("../../lib/shared/registries/serviceRegistry.js");
+            services = require("../../lib/shared/registries/serviceRegistry.js");
             services.getService = function () {
                 return testService;
             };
 
-            var RemoteService = require("../../lib/client/RemoteService.class.js");
+            RemoteService = require("../../lib/client/RemoteService.class.js");
 
             RemoteService.prototype.readCollection = function (remote, ids, params, callback) {
 
                 callback({
                     status:"success",
-                    data:[
+                    data:  [
                         {
-                            id:1,
+                            id:  1,
                             name:"RemoteOcto",
-                            age:12
+                            age: 12
                         }
                     ]
                 });
@@ -152,10 +157,10 @@ describe("Model-Services", function () {
 
                 callback({
                     status:"success",
-                    data:{
-                        id:1,
+                    data:  {
+                        id:  1,
                         name:"RemoteOcto",
-                        age:12
+                        age: 12
                     }
                 });
             };
@@ -279,7 +284,7 @@ describe("Model-Services", function () {
             before(function () {
 
                 Octocat = require("./Model/Octocat.class.js");
-                var services = require("../../lib/shared/registries/serviceRegistry.js");
+                services = require("../../lib/shared/registries/serviceRegistry.js");
                 services.getService = function () {
                     return testService;
                 };
@@ -288,7 +293,9 @@ describe("Model-Services", function () {
             beforeEach(function () {
                 testService = {
                     read:function (remote, ids, callback) {
-                        callback({ status:"success", data:mockedOctocats[ids.octocat - 1] });
+                        var octocat = mockedOctocats[ids.octocat - 1];
+                        console.log(octocat);
+                        callback({ status:"success", data:octocat });
                     }
                 };
             });
@@ -364,8 +371,8 @@ describe("Model-Services", function () {
 
                         callback({
                             status:"success",
-                            data:{
-                                id:1,
+                            data:  {
+                                id:  1,
                                 name:"RemoteOcto"
                             }
                         });
