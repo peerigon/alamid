@@ -1,5 +1,11 @@
 "use strict"; // run code in ES5 strict mode
 
+try {
+    require("zombie");
+} catch (err) {
+    return;
+}
+
 var expect = require("expect.js"),
     fs = require("fs"),
     fshelpers = require("fshelpers"),

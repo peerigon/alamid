@@ -4,7 +4,6 @@ var expect = require("expect.js"),
     pathHelpers = require("../../../lib/shared/helpers/pathHelpers.js"),
     checkError = require("../../testHelpers/checkError.js"),
     filters = pathHelpers.filters,
-    checkForError = checkError(Error),
     checkForTypeError = checkError(TypeError);
 
 
@@ -127,56 +126,14 @@ describe("pathHelpers", function () {
             });
             it("should throw an exception if we don't pass a function", function () {
                 expect(function () {
-                    pathHelpers.chain.filter();
-                }).to.throwException(checkForError);    // in this case we expect only an error because nothing has been passed
-                expect(function () {
                     pathHelpers.chain.filter(undefined);
-                }).to.throwException(checkForTypeError);
-                expect(function () {
-                    pathHelpers.chain.filter(null);
-                }).to.throwException(checkForTypeError);
-                expect(function () {
-                    pathHelpers.chain.filter(true);
-                }).to.throwException(checkForTypeError);
-                expect(function () {
-                    pathHelpers.chain.filter(2);
-                }).to.throwException(checkForTypeError);
-                expect(function () {
-                    pathHelpers.chain.filter([]);
-                }).to.throwException(checkForTypeError);
-                expect(function () {
-                    pathHelpers.chain.filter({});
                 }).to.throwException(checkForTypeError);
             });
             it("should throw an exception if a filter doesn't return boolean results", function () {
-                function returnsNothing() {}
                 function returnsUndefined() { return undefined; }
-                function returnsNull() { return null; }
-                function returnsNumber() { return 2; }
-                function returnsString() { return "hello"; }
-                function returnsArray() { return []; }
-                function returnsObject() { return {}; }
 
                 expect(function () {
-                    pathHelpers.chain.filter(returnsNothing)();
-                }).to.throwException(checkForTypeError);
-                expect(function () {
                     pathHelpers.chain.filter(returnsUndefined)();
-                }).to.throwException(checkForTypeError);
-                expect(function () {
-                    pathHelpers.chain.filter(returnsNull)();
-                }).to.throwException(checkForTypeError);
-                expect(function () {
-                    pathHelpers.chain.filter(returnsNumber)();
-                }).to.throwException(checkForTypeError);
-                expect(function () {
-                    pathHelpers.chain.filter(returnsString)();
-                }).to.throwException(checkForTypeError);
-                expect(function () {
-                    pathHelpers.chain.filter(returnsArray)();
-                }).to.throwException(checkForTypeError);
-                expect(function () {
-                    pathHelpers.chain.filter(returnsObject)();
                 }).to.throwException(checkForTypeError);
             });
 

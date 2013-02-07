@@ -2,9 +2,10 @@
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
-    path = require("path"),
-    collectModels,
-    servicesFolder = __dirname + "/collectModels";
+    path = require("path");
+
+var dirname = __dirname.replace(/\\/g, "/"),
+    collectModels;
 
 describe("collectModels", function () {
 
@@ -21,12 +22,12 @@ describe("collectModels", function () {
         expectedModels.client["blogpost/comment"] = true;
 
         collectModels = rewire("../../../lib/core/collect/collectModels.js", false);
-        var models = collectModels(servicesFolder);
+        var models = collectModels(__dirname + "/collectModels");
 
         expect(models.server).to.only.have.keys(Object.keys(expectedModels.server));
         expect(models.client).to.only.have.keys(Object.keys(expectedModels.client));
-        expect(models.server.blogpost).to.eql(path.resolve(__dirname + "/collectModels/BlogPost/BlogPost.server.class.js"));
-        expect(models.server["blogpost/comment"]).to.eql(path.resolve(__dirname + "/collectModels/BlogPost/Comment/Comment.server.class.js"));
+        expect(models.server.blogpost).to.eql(dirname + "/collectModels/BlogPost/BlogPost.server.class.js");
+        expect(models.server["blogpost/comment"]).to.eql(dirname + "/collectModels/BlogPost/Comment/Comment.server.class.js");
     });
 
     it("should fail on non existing folders", function () {

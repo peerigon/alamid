@@ -2,9 +2,10 @@
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
-    path = require("path"),
-    collectSchemas,
-    modelsFolder = path.resolve(__dirname, "./collectModels");
+    path = require("path");
+
+var dirname = __dirname.replace(/\\/g, "/"),
+    collectSchemas;
 
 describe("collectSchemas", function () {
 
@@ -26,15 +27,15 @@ describe("collectSchemas", function () {
         expectedSchemas.shared["blogpost/comment"] = true;
 
         collectSchemas = rewire("../../../lib/core/collect/collectSchemas.js", false);
-        var schemas = collectSchemas (modelsFolder);
+        var schemas = collectSchemas(dirname + "/collectModels");
 
         expect(schemas.server).to.only.have.keys(Object.keys(expectedSchemas.server));
         expect(schemas.client).to.only.have.keys(Object.keys(expectedSchemas.client));
         expect(schemas.shared).to.only.have.keys(Object.keys(expectedSchemas.shared));
-        expect(schemas.server.blogpost).to.eql(path.resolve(__dirname, "./collectModels/BlogPost/BlogPostSchema.server.js"));
+        expect(schemas.server.blogpost).to.eql(dirname + "/collectModels/BlogPost/BlogPostSchema.server.js");
 
-        expect(schemas.server["blogpost/comment"]).to.eql(path.resolve(__dirname, "./collectModels/BlogPost/Comment/CommentSchema.js"));
-        expect(schemas.shared["blogpost/comment"]).to.be.eql(path.resolve(__dirname, "./collectModels/BlogPost/Comment/CommentSchema.js"));
+        expect(schemas.server["blogpost/comment"]).to.eql(dirname + "/collectModels/BlogPost/Comment/CommentSchema.js");
+        expect(schemas.shared["blogpost/comment"]).to.eql(dirname + "/collectModels/BlogPost/Comment/CommentSchema.js");
     });
 
     it("should fail on non existing folders", function () {
