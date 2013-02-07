@@ -17,13 +17,13 @@ var appPath = __dirname + "/renderBootstrapClient",
 
 describe("renderBootstrapClient", function () {
     var config = {
-            "env" : "development",
-            "useCasting" : true,
-            "useWebsockets": true
+            "env":"development",
+            "useCasting":true,
+            "useWebsockets":true
         },
         index = {},
         sandbox = {
-            require: function (path) {
+            require:function (path) {
                 if (path.charAt(0) === ".") {
                     path = pathUtil.resolve(bootstrapPath, path);
                 }
@@ -40,7 +40,7 @@ describe("renderBootstrapClient", function () {
                 else if (path.indexOf("alamid/lib/index.js") !== -1) {
                     return index;
                 }
-                else if(path.indexOf("alamid/lib/shared/config.js") !== -1){
+                else if (path.indexOf("alamid/lib/shared/config.js") !== -1) {
                     return require("../../../../lib/client/config.client.js");
                 }
 
@@ -49,12 +49,11 @@ describe("renderBootstrapClient", function () {
         },
         MainPage = require(appPath + "/app/pages/MainPage.class.js");
 
-    function Client(MainPage) {
+    function Client (MainPage) {
         this.MainPage = MainPage;
     }
 
     before(function () {
-        //index = _(index).extend(alamidIndex);
         index = _(index).extend(alamidClientIndex);
         makeDirSync(__dirname + "/node_modules");
         fs.symlinkSync(pathUtil.resolve(__dirname, "../../../"), __dirname + "/node_modules/alamid");
@@ -75,13 +74,13 @@ describe("renderBootstrapClient", function () {
     });
 
     it("should use the same values as in the server config", function () {
-        _(index.config).each(function eachConfigValue(value, key) {
+        _(index.config).each(function eachConfigValue (value, key) {
             expect(value).to.be(config[key]);
         });
     });
 
     it("should initialize the app", function () {
         expect(index.client).to.be.a(Client);
-        expect(index.client.MainPage).to.be(MainPage);
+        expect(index.client.MainPage.name).to.be(MainPage.name);
     });
 });
