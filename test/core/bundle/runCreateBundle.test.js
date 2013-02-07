@@ -1,5 +1,13 @@
 "use strict"; // run code in ES5 strict mode
 
+try {
+    // Check if zombie runs on this platform (there is currently an issue on windows)
+    //TODO This test should run on all platforms
+    require("zombie");
+} catch (err) {
+    return;
+}
+
 var expect = require("expect.js"),
     fs = require("fs"),
     fshelpers = require("fshelpers"),
