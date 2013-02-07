@@ -74,6 +74,42 @@ describe("Plugins", function () {
             });
             plugins.runHook("a");
         });
+        it("should call the hooks with the given parameters", function (done) {
+            plugins.hook("a", function () {
+                expect(arguments).to.eql([1, 2, 3]);
+                done();
+            });
+            plugins.runHook("a", 1, 2, 3);
+        });
+        /*it("should be possible to define asynchronous hooks by adding an additional parameter", function (done) {
+            var order;
+
+            plugins.hook("a", function a1(done) {
+                setTimeout(function () {
+                    order += "a1 ";
+                }, 50);
+            });
+            plugins.hook("a", function a2() {
+                order += "a2 ";
+            });
+
+            plugins.hook("b", function b1(arg1, arg2, arg3, done) {
+                setTimeout(function () {
+                    order += "a1 ";
+                }, 50);
+            });
+            plugins.hook("b", function b2(arg1, arg2, arg3) {
+                order += "a2 ";
+            });
+
+            order = "";
+            plugins.runHook("a");
+            expect(order).to.be("a1 a2 ");
+
+            order = "";
+            plugins.runHook("b", 1, 2, 3);
+            expect(order).to.be("b1 b2 ");
+        });*/
     });
     describe(".plugin()", function () {
         beforeEach(function () {
