@@ -64,19 +64,19 @@ describe("Displayable", function () {
         });
     });
 
-    describe("._nodeMap", function () {
+    describe(".nodes", function () {
 
         it("should return an object", function () {
-            expect(displayable._nodeMap).to.be.an(Object);
+            expect(displayable.nodes).to.be.an(Object);
         });
 
         it("should return a map of nodes including a 'form'-, 'input-a'-, 'input-b'-, 'input-c'- node ", function () {
-            var nodeMap = displayable._nodeMap;
+            var nodes = displayable.nodes;
 
-            expect(nodeMap.form).to.be.an(HTMLFormElement);
-            expect(nodeMap["input-a"]).to.be.an(HTMLInputElement);
-            expect(nodeMap["input-c"]).to.be.an(HTMLInputElement);
-            expect(nodeMap["input-c"]).to.be.an(HTMLInputElement);
+            expect(nodes.form).to.be.an(HTMLFormElement);
+            expect(nodes["input-a"]).to.be.an(HTMLInputElement);
+            expect(nodes["input-c"]).to.be.an(HTMLInputElement);
+            expect(nodes["input-c"]).to.be.an(HTMLInputElement);
         });
 
     });
@@ -294,7 +294,7 @@ describe("Displayable", function () {
 
         it("should NOT be possible to get a map of nodes", function () {
             submitButton.dispose();
-            expect(submitButton._nodeMap).to.not.be.ok();
+            expect(submitButton.nodes).to.not.be.ok();
         });
 
         it("should NOT be possible to trigger before attached events after .dispose()", function (done) {
@@ -541,14 +541,14 @@ describe("Displayable", function () {
             function beforeInit(self) {
                 beforeInitCalled = true;
                 expect(self).to.be(this);
-                expect(self._nodeMap).to.be(null);
+                expect(self.nodes).to.be(null);
                 expect(self._children).to.be(null);
             }
 
             function init(self) {
                 initCalled = true;
                 expect(self).to.be(this);
-                expect(self._nodeMap).to.be.an(Object);
+                expect(self.nodes).to.be.an(Object);
                 expect(self._children).to.be.an(Array);
                 expect(self.node).to.be.a(HTMLDivElement);
             }
