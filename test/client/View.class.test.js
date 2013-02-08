@@ -304,7 +304,7 @@ describe("View", function () {
         });
 
         it("should call Super's dispose()", function (done) {
-            formView.on("beforeDispose", function () {
+            formView.on("dispose", function () {
                 done();
             });
             formView.dispose();

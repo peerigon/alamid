@@ -4,8 +4,8 @@ var expect = require("expect.js"),
     value = require("value"),
     path = require("path"),
     Displayable = require("../../lib/client/Displayable.class.js"),
+    Plugins = require("../../lib/shared/Plugins.mixin.js"),
     DOMNodeMocks = require("./mocks/DOMNodeMocks.js"),
-    cssClassHide = Displayable.prototype.cssClassHide,
     jQuery = require("../../lib/client/helpers/jQuery.js");
 
 describe("Displayable", function () {
@@ -13,25 +13,19 @@ describe("Displayable", function () {
     var $form,
         form,
         formTemplate = DOMNodeMocks.getFormString(),
-
         $submitButton,
         submitButton,
-        submitButtonTemplate = DOMNodeMocks.getSubmitButtonString(),
-
         displayable,
-        formDisplayable,
-        submitButtonDisplayable;
+        cssClassHide = Displayable.prototype.cssClassHide;
 
     beforeEach(function () {
-        form = DOMNodeMocks.getForm();
-        $form = jQuery(form);
+        $form = jQuery(DOMNodeMocks.getForm());
 
-        submitButton = DOMNodeMocks.getSubmitButton();
-        $submitButton = jQuery(submitButton);
+        $submitButton = jQuery(DOMNodeMocks.getSubmitButton());
 
         displayable = new Displayable(formTemplate);
-        submitButtonDisplayable = new Displayable(submitButtonTemplate);
-        formDisplayable = new Displayable(formTemplate);
+        submitButton = new Displayable(DOMNodeMocks.getSubmitButtonString());
+        form = new Displayable(formTemplate);
     });
 
     describe(".constructor()", function () {
@@ -41,7 +35,7 @@ describe("Displayable", function () {
 
         it("should throw an error if a template with more than one parent node is given", function () {
             expect(function () {
-                var dO = new Displayable("<p></p><div></div>");
+                var displayable = new Displayable("<p></p><div></div>");
             }).to.throwError();
         });
 
@@ -79,60 +73,40 @@ describe("Displayable", function () {
         it("should return a map of nodes including a 'form'-, 'input-a'-, 'input-b'-, 'input-c'- node ", function () {
             var nodeMap = displayable._nodeMap;
 
-            expect(nodeMap.form.toString()).to.be.equal("[object HTMLFormElement]");
-            expect(nodeMap["input-a"].toString()).to.be.equal("[object HTMLInputElement]");
-            expect(nodeMap["input-c"].toString()).to.be.equal("[object HTMLInputElement]");
-            expect(nodeMap["input-c"].toString()).to.be.equal("[object HTMLInputElement]");
-        });
-
-    });
-
-    describe("._append()", function () {
-
-        it("should throw an Error if an object not kind of Displayable is given", function () {
-            expect(function () {
-                formDisplayable._append({});
-            }).to.throwError();
+            expect(nodeMap.form).to.be.an(HTMLFormElement);
+            expect(nodeMap["input-a"]).to.be.an(HTMLInputElement);
+            expect(nodeMap["input-c"]).to.be.an(HTMLInputElement);
+            expect(nodeMap["input-c"]).to.be.an(HTMLInputElement);
         });
 
     });
 
     describe("._append().at()", function () {
 
+        it("should throw an Error if an object not kind of Displayable is given", function () {
+            expect(function () {
+                form._append({}).at("form");
+            }).to.throwError();
+        });
+
         it("should throw an Error if a not existent node name was passed to # at()", function () {
             expect(function () {
-                formDisplayable._append(submitButtonDisplayable).at("not_existing_node");
+                form._append(submitButton).at("not_existing_node");
             }).to.throwError();
         });
 
         it("should return a reference to itself", function () {
-            expect(formDisplayable._append(submitButtonDisplayable).at("form")).to.be.equal(formDisplayable);
-        });
-
-        it("should emit an 'beforeAdd'-Event", function (done) {
-            submitButtonDisplayable.on("beforeAdd", function () {
-                done();
-            });
-
-            formDisplayable._append(submitButtonDisplayable).at("form");
-        });
-
-        it("should emit an 'add'-Event", function (done) {
-            submitButtonDisplayable.on("add", function () {
-                done();
-            });
-
-            formDisplayable._append(submitButtonDisplayable).at("form");
+            expect(form._append(submitButton).at("form")).to.be(form);
         });
 
         it("should append submit-button to form", function () {
-            formDisplayable._append(submitButtonDisplayable).at("form");
+            form._append(submitButton).at("form");
 
-            var $lastChild = jQuery(formDisplayable.node).find(":last-child"),
+            var $lastChild = jQuery(form.node).find(":last-child"),
                 lastChild = $lastChild[0];
 
-            expect(lastChild.toString()).to.be.equal(submitButtonDisplayable.node.toString());
-            expect($lastChild.val()).to.be.equal(submitButtonDisplayable.node.value);
+            expect(lastChild.toString()).to.be(submitButton.node.toString());
+            expect($lastChild.val()).to.be(submitButton.node.value);
         });
 
     });
@@ -140,7 +114,7 @@ describe("Displayable", function () {
     describe("._prepend()", function () {
         it("should throw an Error if a not existent node name was passed to # at()", function () {
             expect(function () {
-                formDisplayable._prepend(submitButtonDisplayable).at("not_existing_node");
+                form._prepend(submitButton).at("not_existing_node");
             }).to.throwError();
         });
     });
@@ -149,63 +123,35 @@ describe("Displayable", function () {
 
         it("should throw an Error if a not existent node name was passed to # at()", function () {
             expect(function () {
-                formDisplayable._prepend(submitButtonDisplayable).at("not_existing_node");
+                form._prepend(submitButton).at("not_existing_node");
             }).to.throwError();
         });
 
         it("should return a reference to itself", function () {
-            expect(formDisplayable._prepend(submitButtonDisplayable).at("form")).to.be.equal(formDisplayable);
-        });
-
-        it("should emit an 'beforeAdd'-Event", function (done) {
-            submitButtonDisplayable.on("beforeAdd", function () {
-                done();
-            });
-
-            formDisplayable._prepend(submitButtonDisplayable).at("form");
-        });
-
-        it("should emit an 'add'-Event", function (done) {
-            submitButtonDisplayable.on("add", function () {
-                done();
-            });
-
-            formDisplayable._prepend(submitButtonDisplayable).at("form");
+            expect(form._prepend(submitButton).at("form")).to.be.equal(form);
         });
 
         it("should prepend submit-button to form", function () {
-            formDisplayable._prepend(submitButtonDisplayable).at("form");
+            form._prepend(submitButton).at("form");
 
-            var $firstChild = jQuery(formDisplayable.node).find(":first-child"),
+            var $firstChild = jQuery(form.node).find(":first-child"),
                 firstChild = $firstChild[0];
 
-            expect(firstChild.toString()).to.be.equal(submitButtonDisplayable.node.toString());
-            expect($firstChild.val()).to.be.equal(submitButtonDisplayable.node.value);
+            expect(firstChild.toString()).to.be.equal(submitButton.node.toString());
+            expect($firstChild.val()).to.be.equal(submitButton.node.value);
         });
 
     });
 
     describe("._addNodeEvents()", function () {
 
-        it("should throw an Error if you try to attach events to a not existing node", function () {
-            expect(function () {
-                displayable._addNodeEvents({
-                    "not_existing_node": {
-                        "click": function () {
-                            //do nothing
-                        }
-                    }
-                });
-            }).to.throwError();
-        });
-
         it("should attach Events to nodes", function () {
             var focusEvent = "untriggered",
                 blurEvent = "untriggered",
-                $inputA = jQuery(formDisplayable.node).find("[data-node='input-a']"),
-                $inputB = jQuery(formDisplayable.node).find("[data-node='input-b']");
+                $inputA = jQuery(form.node).find("[data-node='input-a']"),
+                $inputB = jQuery(form.node).find("[data-node='input-b']");
 
-            formDisplayable._addNodeEvents({
+            form._addNodeEvents({
                 "input-a": {
                     "focus": function () {
                         focusEvent = "triggered";
@@ -226,15 +172,15 @@ describe("Displayable", function () {
         });
 
         it("should call the handlers bound to the view if defined as string", function(done) {
-            var $inputA = jQuery(formDisplayable.node).find("[data-node='input-a']");
+            var $inputA = jQuery(form.node).find("[data-node='input-a']");
 
-            formDisplayable._onInputAFocus = function(event) {
-                expect(this).to.be(formDisplayable);
+            form._onInputAFocus = function(event) {
+                expect(this).to.be(form);
                 expect(jQuery(event.target).attr("data-node")).to.equal($inputA.attr("data-node"));
                 done();
             };
 
-            formDisplayable._addNodeEvents({
+            form._addNodeEvents({
                 "input-a": {
                     focus : "_onInputAFocus"
                 }
@@ -259,36 +205,34 @@ describe("Displayable", function () {
         });
     });
 
-    describe(".destroy()", function () {
+    describe(".unhinge()", function () {
 
         it("should return a reference to itself", function () {
-            expect(submitButtonDisplayable.destroy()).to.be.equal(submitButtonDisplayable);
+            expect(submitButton.unhinge()).to.be.equal(submitButton);
         });
 
-        it("should emit a 'beforeDestroy'-Event", function (done) {
-            submitButtonDisplayable.on("beforeDestroy", function () {
+        it("should emit a 'unhinge'-Event", function (done) {
+            submitButton.on("unhinge", function () {
                 done();
             });
 
-            submitButtonDisplayable.destroy();
+            submitButton.unhinge();
         });
 
-        it("should emit a 'destroy'-Event", function (done) {
-            submitButtonDisplayable.on("destroy", function () {
-                done();
-            });
-
-            submitButtonDisplayable.destroy();
+        it("should be possible to call .unhinge() on an unhinged displayable without error", function () {
+            submitButton.unhinge();
+            submitButton.unhinge();
+            submitButton.unhinge();
         });
 
-        it("should remove itself from parent node", function () {
-            formDisplayable._append(submitButtonDisplayable).at("form");
-            submitButtonDisplayable.destroy();
-            expect(jQuery(formDisplayable.node).find("[type='submit']").length).to.be.equal(0);
+        it("should unhinge itself from parent node", function () {
+            form._append(submitButton).at("form");
+            submitButton.unhinge();
+            expect(jQuery(form.node).find("[type='submit']").length).to.be.equal(0);
         });
 
-        it("should be still possible to trigger attached events after .destroy()", function (done) {
-            submitButtonDisplayable._addNodeEvents({
+        it("should be still possible to trigger attached events after .unhinge()", function (done) {
+            submitButton._addNodeEvents({
                 "submit-button": {
                     "click": function () {
                         done();
@@ -296,19 +240,19 @@ describe("Displayable", function () {
                 }
             });
 
-            formDisplayable._append(submitButtonDisplayable).at("form");
-            submitButtonDisplayable.destroy();
-            jQuery(submitButtonDisplayable.node).click();
+            form._append(submitButton).at("form");
+            submitButton.unhinge();
+            jQuery(submitButton.node).click();
         });
 
         it("should be possible to re-append a destroyed Displayable", function () {
-            formDisplayable._append(submitButtonDisplayable).at("form");
-            submitButtonDisplayable.destroy();
-            formDisplayable._append(submitButtonDisplayable).at("form");
+            form._append(submitButton).at("form");
+            submitButton.unhinge();
+            form._append(submitButton).at("form");
 
             expect(
-                jQuery(formDisplayable.node).find("[type='submit']")[0].toString()
-            ).to.be.equal(submitButtonDisplayable.node.toString());
+                jQuery(form.node).find("[type='submit']")[0].toString()
+            ).to.be.equal(submitButton.node.toString());
         });
 
     });
@@ -316,58 +260,45 @@ describe("Displayable", function () {
     describe(".dispose()", function () {
 
         beforeEach(function () {
-            formDisplayable._append(submitButtonDisplayable).at("form");
+            form._append(submitButton).at("form");
         });
 
         it("should NOT return a reference to itself", function () {
-            expect(submitButtonDisplayable.dispose()).to.be(undefined);
+            expect(submitButton.dispose()).to.be(undefined);
         });
 
-        it("should emit 'beforeDestroy'-Event before it disposes itself", function (done) {
-            submitButtonDisplayable.on("beforeDestroy", function onBeforeDestroy() {
+        it("should emit an 'unhinge'-Event before it disposes itself when it's a child displayable", function (done) {
+            form._append(submitButton).at("form");
+            submitButton.on("unhinge", function onUnhinge() {
                 done();
             });
-            submitButtonDisplayable.dispose();
-        });
-
-        it("should emit 'destroy'-Event before it disposes itself", function (done) {
-            submitButtonDisplayable.on("destroy", function onDestroy() {
-                done();
-            });
-            submitButtonDisplayable.dispose();
-        });
-
-        it("should emit an 'beforeDispose'-Event", function (done) {
-            submitButtonDisplayable.on("beforeDispose", function () {
-                done();
-            });
-            submitButtonDisplayable.dispose();
+            submitButton.dispose();
         });
 
         it("should emit an 'dispose'-Event", function (done) {
-            submitButtonDisplayable.on("dispose", function () {
+            submitButton.on("dispose", function () {
                 done();
             });
-            submitButtonDisplayable.dispose();
+            submitButton.dispose();
         });
 
-        it("should remove itself from parent node", function () {
-            submitButtonDisplayable.dispose();
-            expect(jQuery(formDisplayable.node).find("[type='submit']").length).to.be.equal(0);
+        it("should unhinge itself from parent node", function () {
+            submitButton.dispose();
+            expect(jQuery(form.node).find("[type='submit']").length).to.be.equal(0);
         });
 
         it("should NOT be possible to get a node", function () {
-            submitButtonDisplayable.dispose();
-            expect(submitButtonDisplayable.node).to.not.be.ok();
+            submitButton.dispose();
+            expect(submitButton.node).to.not.be.ok();
         });
 
         it("should NOT be possible to get a map of nodes", function () {
-            submitButtonDisplayable.dispose();
-            expect(submitButtonDisplayable._nodeMap).to.not.be.ok();
+            submitButton.dispose();
+            expect(submitButton._nodeMap).to.not.be.ok();
         });
 
         it("should NOT be possible to trigger before attached events after .dispose()", function (done) {
-            submitButtonDisplayable._addNodeEvents({
+            submitButton._addNodeEvents({
                 "submit-button": {
                     "click": function () {
                         done(); //Should not be executed
@@ -375,80 +306,56 @@ describe("Displayable", function () {
                 }
             });
 
-            submitButtonDisplayable.dispose();
-            jQuery(submitButtonDisplayable.node).click();
+            submitButton.dispose();
+            jQuery(submitButton.node).click();
             done();
         });
 
         it("should NOT be possible to re-append a disposed Displayable", function () {
-            submitButtonDisplayable.dispose();
+            submitButton.dispose();
 
             expect(function () {
-                formDisplayable._append(submitButtonDisplayable).at("form");
+                form._append(submitButton).at("form");
             }).to.be.throwError();
         });
 
         it("should be callable multiple times", function () {
-            submitButtonDisplayable.dispose();
-            submitButtonDisplayable.dispose();
-        });
-
-        it("should emit 'beforeDestroy'-Event if .dispose() is called only on first call", function (done) {
-            submitButtonDisplayable.on("beforeDestroy", function beforeDispose() {
-                done();
-            });
-            submitButtonDisplayable.dispose();
-
-            submitButtonDisplayable.on("beforeDestroy", function beforeDispose() {
-                done(); //Should not be called
-            });
-            submitButtonDisplayable.dispose();
+            submitButton.dispose();
+            submitButton.dispose();
         });
 
         it("should emit 'destroy'-Event if .dispose() is called only on first call", function (done) {
-            submitButtonDisplayable.on("destroy", function beforeDispose() {
+            submitButton.on("unhinge", function beforeDispose() {
                 done();
             });
-            submitButtonDisplayable.dispose();
+            submitButton.dispose();
 
-            submitButtonDisplayable.on("destroy", function beforeDispose() {
+            submitButton.on("unhinge", function beforeDispose() {
                 done(); //Should not be called
             });
-            submitButtonDisplayable.dispose();
-        });
-
-        it("should emit 'beforeDispose'-Event if .dispose() is called only on first call", function (done) {
-            submitButtonDisplayable.on("beforeDispose", function beforeDispose() {
-                done();
-            });
-            submitButtonDisplayable.dispose();
-
-            submitButtonDisplayable.on("beforeDispose", function beforeDispose() {
-                done(); //Should not be called
-            });
-            submitButtonDisplayable.dispose();
+            submitButton.dispose();
         });
 
         it("should emit 'dispose'-Event if .dispose() is called only on first call", function (done) {
-            submitButtonDisplayable.on("dispose", function dispose() {
+            submitButton.on("dispose", function dispose() {
                 done();
             });
-            submitButtonDisplayable.dispose();
+            submitButton.dispose();
 
-            submitButtonDisplayable.on("dispose", function dispose() {
+            submitButton.on("dispose", function dispose() {
                 done(); //Should not be called
             });
-            submitButtonDisplayable.dispose();
+            submitButton.dispose();
         });
 
         it("should dispose form and child Displayables", function () {
             var tmpDisplayable = new Displayable("<div data-node='child'></div>");
 
-            tmpDisplayable._append(formDisplayable);
+            tmpDisplayable._append(form);
 
-            formDisplayable.dispose();
+            form.dispose();
 
-            expect(jQuery(tmpDisplayable.node).children().length).to.equal(0);
+            expect(jQuery(tmpDisplayable.node).children()).to.have.length(0);
         });
 
     });
@@ -532,32 +439,119 @@ describe("Displayable", function () {
 
     describe(".isChild()", function () {
 
-        var formDisplayable,
-            submitButtonDisplayable;
+        var form,
+            submitBtn;
 
         beforeEach(function () {
-            formDisplayable = new Displayable(formTemplate);
-            submitButtonDisplayable = new Displayable(submitButtonTemplate);
+            form = new Displayable(formTemplate);
+            submitBtn = new Displayable("<input data-node='submit-button' type='submit' value='submit'/>");
 
-            formDisplayable._append(submitButtonDisplayable).at("form");
+            form._append(submitBtn).at("form");
         });
 
         it("should be false by default (=just created and not appended anywhere)", function () {
-            expect(formDisplayable.isChild()).to.be(false);
+            expect(form.isChild()).to.be(false);
         });
 
         it("should be true after appending it anywhere", function () {
-            expect(submitButtonDisplayable.isChild()).to.be(true);
+            expect(submitBtn.isChild()).to.be(true);
         });
 
-        it("should be false after .destroy()", function () {
-            submitButtonDisplayable.destroy();
-            expect(submitButtonDisplayable.isChild()).to.be(false);
+        it("should be false after .unhinge()", function () {
+            submitBtn.unhinge();
+            expect(submitBtn.isChild()).to.be(false);
         });
 
         it("should be false after .dispose()", function () {
-            submitButtonDisplayable.dispose();
-            expect(submitButtonDisplayable.isChild()).to.be(false);
+            submitBtn.dispose();
+            expect(submitBtn.isChild()).to.be(false);
         });
     });
+
+    /*
+    describe("Plugins", function () {
+        it("should implement the Plugins-mixin", function () {
+            expect(Displayable.prototype.hook).to.be(Plugins.prototype.hook);
+            expect(Displayable.prototype.runHook).to.be(Plugins.prototype.runHook);
+            expect(Displayable.prototype.plugin).to.be(Plugins.prototype.plugin);
+        });
+        it("should be possible to define plugins via a plugins-array", function () {
+            var aCalled = false,
+                MyDisplayable = Displayable.extend({
+                    plugins: [{
+                        a: function () {
+                            aCalled = true;
+                        }
+                    }]
+                }),
+                myDisplayable;
+
+            myDisplayable = new MyDisplayable();
+            myDisplayable.runHook("a");
+            expect(aCalled).to.be(true);
+        });
+    });
+
+    describe("Hooks", function () {
+        var myDisplayable;
+
+        it("should run a hook on 'beforeInit' and on 'init'", function (done) {
+            var beforeInitCalled = false,
+                initCalled = false,
+                MyDisplayable = Displayable.extend({
+                    constructor: function () {
+                        this.hook("beforeInit", beforeInit);
+                        this.hook("init", init);
+                        this._super();
+                        expect(beforeInitCalled).to.be(true);
+                        expect(initCalled).to.be(true);
+                        done();
+                    }
+                });
+
+            function beforeInit(self) {
+                beforeInitCalled = true;
+                expect(self).to.be(this);
+                expect(self._nodeMap).to.be(null);
+                expect(self._children).to.be(null);
+            }
+
+            function init(self) {
+                initCalled = true;
+                expect(self).to.be(this);
+                expect(self._nodeMap).to.be.an(Object);
+                expect(self._children).to.be.an(Array);
+                expect(self.node).to.be.a(HTMLDivElement);
+            }
+
+            myDisplayable = new MyDisplayable();
+        });
+
+        it("should run a hook on 'beforeParent' and 'parent'", function () {
+            var beforeParentCalled = false,
+                parentCalled = false,
+                displayable = new Displayable('<div data-node="root"></div>'),
+                childDisplayable = new Displayable();
+
+            function beforeParent(self, parentDisplayable) {
+                beforeParentCalled = true;
+                expect(self).to.be(childDisplayable);
+                expect(parentDisplayable).to.be(displayable);
+            }
+
+            function parent(self, parentDisplayable) {
+                parentCalled = true;
+                expect(self).to.be(childDisplayable);
+                expect(parentDisplayable).to.be(displayable);
+            }
+
+            childDisplayable.hook("beforeParent", beforeParent);
+            childDisplayable.hook("parent", parent);
+            displayable._append(childDisplayable).at("root");
+
+            expect(beforeParentCalled).to.be(true);
+            expect(parentCalled).to.be(true);
+        });
+    });
+    */
 });
