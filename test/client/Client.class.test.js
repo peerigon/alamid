@@ -500,20 +500,11 @@ describe("Client", function () {
         });
 
         it("should append all loaded pages from top to bottom and emit 'pageChange' after that", function () {
-            var emitted = [],
-                pageLoader;
+            var pageLoader,
+                pageChangeCalled = false;
 
-            pages.main.on("add", function () {
-                throw new Error("The main page doesn't get re-appended");
-            });
-            pages.blog.on("add", function () {
-                emitted.push("blog");
-            });
-            pages.posts.on("add", function () {
-                emitted.push("posts");
-            });
             client.on("pageChange", function () {
-                emitted.push("client");
+                pageChangeCalled = true;
             });
             client.changePage("blog/posts", {});
             pageLoader = PageLoaderMock.instance;
@@ -521,7 +512,7 @@ describe("Client", function () {
             expect(pages.main.getSubPage()).to.be(pages.blog);
             expect(pages.blog.getSubPage()).to.be(pages.posts);
             expect(pages.posts.getSubPage()).to.be(null);
-            expect(emitted).to.eql(["blog", "posts", "client"]);
+            expect(pageChangeCalled).to.be(true);
         });
     });
 

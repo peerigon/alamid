@@ -479,7 +479,7 @@ describe("ViewCollection", function () {
 
         it("should remove only given listener from given event", function (done) {
 
-            viewCollection.delegate("beforeDestroy", function onAdd() {
+            viewCollection.delegate("unhinge", function onUnhinge() {
                 done();
             });
 

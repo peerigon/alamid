@@ -12,14 +12,18 @@ var PageMock = Page.extend("PageMock", {
 
     emitted: null,
 
+    emittedArgs: null,
+
     constructor: function (params) {
         this.emitted = [];
+        this.emittedArgs = [];
         this.params = params;
         this._super("<div data-node='page'></div>");
     },
 
-    emit: function () {
-        this.emitted.push(arguments);
+    emit: function (name, event) {
+        this.emitted.push(name);
+        this.emittedArgs.push(arguments);
         this._super.apply(this, arguments);
     },
 

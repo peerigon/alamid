@@ -5,6 +5,7 @@ var expect = require("expect.js"),
     PageLoader = require("../../lib/client/PageLoader.class.js"),
     PageLoaderExamplePage = require("./mocks/PageMock.class.js"),
     value = require("value"),
+    _ = require("underscore"),
     expectTypeError = expectError(TypeError);
 
 function expectError(Constructor) {
@@ -16,7 +17,7 @@ function expectError(Constructor) {
 describe("PageLoader", function () {
     var instance;
 
-    describe(".init()", function () {
+    describe(".constructor()", function () {
         it("should throw an exception if the passed argument is not an array", function () {
             expect(function () {
                 instance = new PageLoader(undefined);
@@ -75,8 +76,6 @@ describe("PageLoader", function () {
                 expect(postsPage).to.be.a(PageLoaderExamplePage);
                 expect(blogPage.params === params).to.equal(true);
                 expect(postsPage.params === params).to.equal(true);
-                expect(blogPage.emitted).to.eql([]);
-                expect(postsPage.emitted).to.eql([]);
                 done();
             });
         });
@@ -111,6 +110,8 @@ describe("PageLoader", function () {
 
             instance = new PageLoader(["blog", "blog/posts"]);
             instance.load(params, function onPagesLoaded(err, pages) {
+                var index;
+
                 expect(err).to.be(null);
                 blogPage = pages[0];
                 postsPage = pages[1];
@@ -118,10 +119,12 @@ describe("PageLoader", function () {
                 expect(postsPage).to.be.a(PageLoaderExamplePage);
                 expect(blogPage.params).to.be(params);
                 expect(postsPage.params).to.be(params);
-                expect(blogPage.emitted).to.have.length(1);
-                expect(postsPage.emitted).to.have.length(1);
-                expect(blogPage.emitted[0]).to.eql(["data", blogData]);
-                expect(postsPage.emitted[0]).to.eql(["data", postsData]);
+                expect(blogPage.emitted).to.contain("data");
+                expect(postsPage.emitted).to.contain("data");
+                index = _(blogPage.emitted).indexOf("data");
+                expect(blogPage.emittedArgs[index]).to.eql(["data", blogData]);
+                index = _(postsPage.emitted).indexOf("data");
+                expect(postsPage.emittedArgs[index]).to.eql(["data", postsData]);
                 done();
             });
         });
@@ -158,8 +161,8 @@ describe("PageLoader", function () {
                                          // to dataLoader errors of pages
                 blogPage = pages[0];
                 postsPage = pages[1];
-                expect(blogPage.emitted[0]).to.eql(["dataError", blogError]);
-                expect(postsPage.emitted[0]).to.eql(["dataError", postsError]);
+                expect(blogPage.emitted).to.contain("dataError");
+                expect(postsPage.emitted).to.contain("dataError");
                 done();
             });
         });

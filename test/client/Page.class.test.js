@@ -59,9 +59,13 @@ describe("Page", function () {
             done();
         });
 
-        it("should dispose a previously set Sub-Page", function () {
+        it("should dispose a previously set Sub-Page", function (done) {
+            var prevPage = pageExample.getSubPage();
+
+            prevPage.once("dispose", function () {
+                done();
+            });
             pageExample.setSubPage(new PageExample());
-            expect(subPageExample.isDisposed()).to.equal(true);
         });
 
         it("should append the SubPage", function () {
