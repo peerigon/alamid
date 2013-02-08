@@ -4,7 +4,6 @@ var expect = require("expect.js"),
     value = require("value"),
     Displayable = require("../../lib/client/Displayable.class.js"),
     View = require("../../lib/client/View.class.js"),
-    ViewExample = require("./mocks/ViewExample.class.js"),
     ViewCollection = require("../../lib/client/ViewCollection.class.js"),
     ViewCollectionDefineExample = require("./mocks/ViewCollectionDefineExample.class.js"),
     ViewCollectionExampleWithTemplate = require("./mocks/ViewCollectionExampleWithTemplate.class.js"),
@@ -479,7 +478,7 @@ describe("ViewCollection", function () {
 
         it("should remove only given listener from given event", function (done) {
 
-            viewCollection.delegate("unhinge", function onUnhinge() {
+            viewCollection.delegate("detach", function ondetach() {
                 done();
             });
 
@@ -649,7 +648,7 @@ describe("ViewCollection", function () {
     describe(".dispose()", function () {
 
         it("should remove ViewCollection from the node where it was appended", function () {
-            var parentView = new ViewExample("<div data-node='child'></div>");
+            var parentView = new View("<div data-node='child'></div>");
 
             viewCollection.bind(carCollection);
 
