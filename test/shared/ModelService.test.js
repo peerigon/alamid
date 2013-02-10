@@ -119,6 +119,7 @@ describe("Model-Services", function () {
     describe("Client", function () {
 
         var Octocat,
+            modelCache,
             testService,
             RemoteService,
             env,
@@ -136,7 +137,6 @@ describe("Model-Services", function () {
 
             services = require("../../lib/shared/registries/serviceRegistry.js");
             services.getService = function () {
-                console.log("getService");
                 return testService;
             };
 
@@ -144,7 +144,7 @@ describe("Model-Services", function () {
 
             RemoteService = require("../../lib/client/RemoteService.class.js");
 
-            RemoteService.prototype.readCollection = function (remote, ids, params, callback) {
+            RemoteService.prototype.readCollection = function RemoteReadCollection(remote, ids, params, callback) {
 
                 callback({
                     status : "success",
@@ -158,7 +158,7 @@ describe("Model-Services", function () {
                 });
             };
 
-            RemoteService.prototype.read = function (remote, ids, callback) {
+            RemoteService.prototype.read = function RemoteRead(remote, ids, callback) {
 
                 callback({
                     status : "success",
@@ -169,6 +169,13 @@ describe("Model-Services", function () {
                     }
                 });
             };
+
+            modelCache = require("../../lib/shared/modelCache.js");
+        });
+
+        beforeEach(function () {
+            //we have to reset the cache, because we want fresh instances
+            modelCache.reset();
         });
 
         describe("#find", function () {
@@ -284,22 +291,12 @@ describe("Model-Services", function () {
 
         describe("#findById", function () {
 
-//            var Octocat,
-            //testService;
-
             before(function () {
-
-                //Octocat = require("./Model/Octocat.class.js");
-
-                //services = require("../../lib/shared/registries/serviceRegistry.js");
-                services.getService = function () {
-                    console.log("getService bal", testService);
-                    return testService;
-                };
-
+                Octocat = require("./Model/Octocat.class.js");
             });
 
             beforeEach(function () {
+
                 testService = {
                     read : function mockedRead(remote, ids, callback) {
                         var octocat = mockedOctocats[ids.octocat - 1];
