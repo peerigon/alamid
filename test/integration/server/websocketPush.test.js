@@ -12,40 +12,40 @@ var createFakePackageJSON = require("../helpers/createFakePackageJSON.js"),
     removeFakePackageJSON = require("../helpers/removeFakePackageJSON.js");
 
 //compile classes if found
-describe("WebsocketTransport", function() {
+describe("WebsocketTransport", function () {
 
     var serverInstance;
 
-    before(function(done) {
-            createFakePackageJSON(function() {
-                runTestServer({
-                    "appDir" : path.resolve(__dirname, "../setup/testApp")
-                }, function(srvInstance) {
-                    serverInstance = srvInstance;
-                    done();
-                });
+    before(function (done) {
+        createFakePackageJSON(function () {
+            runTestServer({
+                "server:appDir" : path.resolve(__dirname, "../setup/testApp")
+            }, function (srvInstance) {
+                serverInstance = srvInstance;
+                done();
             });
         });
+    });
 
-    after(function(done) {
+    after(function (done) {
         removeFakePackageJSON(done);
     });
 
-    describe("#Websocket Requesting", function() {
-        before(function(done) {
+    describe("#Websocket Requesting", function () {
+        before(function (done) {
             this.browser = new Browser();
             this.browser
                 .visit("http://localhost:9000/statics/pushtest.html")
                 .then(done, done);
         });
 
-        it("should send push requests to other browser-instances", function(done) {
+        it("should send push requests to other browser-instances", function (done) {
 
             var self = this;
 
             var secondBrowser = new Browser({ debug : true })
                 .visit("http://localhost:9000/statics/pushtest.html")
-                .then(checkPush, function(err) {
+                .then(checkPush, function (err) {
                     console.log("err", err);
                     done(err);
                 });
@@ -53,14 +53,14 @@ describe("WebsocketTransport", function() {
             function checkPush() {
                 console.log("check PUSH called");
                 var pushPommes = secondBrowser.evaluate("wsPushHandler()");
-                pushPommes.success = function(url, id, data) {
+                pushPommes.success = function (url, id, data) {
                     console.log("PUSHED!");
                     //expect(JSON.stringify(res)).to.contain('{"status":"error","message":"(alamid) Request failed for path \'whatever\' with Error: \'No service found for \'read\'');
                     done();
                 };
 
                 var reqPommes = self.browser.evaluate("wsRequestTest('update', 'services/push/1', {});");
-                reqPommes.success = function(res) {
+                reqPommes.success = function (res) {
                     console.log("RESRESRESR", res);
                     expect(res.status).to.be("success");
                     //done();
@@ -69,7 +69,7 @@ describe("WebsocketTransport", function() {
         });
     });
 
-    after(function() {
+    after(function () {
         serverInstance.kill("SIGHUP");
     });
 });
