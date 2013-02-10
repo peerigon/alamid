@@ -195,59 +195,55 @@ describe("domAdapter", function () {
 
     });
 
-    describe("Destroy & Dispose", function () {
+    describe(".detach()", function () {
 
-        describe(".destroy()", function () {
+        it("should remove the element from DOMElement", function () {
+            var inputA = $form.find("[data-node='input-a']")[0];
 
-            it("should remove the element from DOMElement", function () {
-                var inputA = $form.find("[data-node='input-a']")[0];
-
-                domAdapter(inputA).destroy();
-                expect($form.find("[data-node='input-a']")[0] === undefined).to.be.ok();
-            });
-
-            //If you destroy an element from a DOMNode and you keep the reference to it, it should be still able to
-            //append it somewhere else with all its events.
-            it("should still listen to events if you trigger them explicitly on the removed element", function (done) {
-                var inputA = $form.find("[data-node='input-a']")[0];
-
-                domAdapter(inputA).on("click", function () {
-                    done();
-                });
-
-                domAdapter(inputA).destroy();
-
-                jQuery(inputA).trigger("click");
-            });
-
+            domAdapter(inputA).detach();
+            expect($form.find("[data-node='input-a']")[0] === undefined).to.be.ok();
         });
 
-        describe(".dispose()", function () {
+        //If you detach an element from a DOMNode and you keep the reference to it, it should be still able to
+        //append it somewhere else with all its events.
+        it("should still listen to events if you trigger them explicitly on the removed element", function (done) {
+            var inputA = $form.find("[data-node='input-a']")[0];
 
-            it("should remove the element form DOMElemet like # destroy()", function () {
-                var $inputA = $form.find("[data-node='input-a']"),
-                    inputA = $inputA[0];
-
-                domAdapter(inputA).dispose();
-                expect($form.find("[data-node='input-a']").length === 0).to.be.ok();
-            });
-
-            it("should not listen to any event anymore even if it is triggered explicitly", function (done) {
-                var $inputA = $form.find("[data-node='input-a']"),
-                    inputA = $inputA[0];
-
-                //Must be attached with domAdapter, cause if element is not part of the DOM it is not reachable by jQuery.
-                domAdapter(inputA).on("click", function () { done(); });
-                domAdapter(inputA).on("blur", function () { done(); });
-
-                domAdapter(inputA).dispose();
-
-                $inputA.trigger("click");
-                $inputA.trigger("blur");
-
+            domAdapter(inputA).on("click", function () {
                 done();
             });
 
+            domAdapter(inputA).detach();
+
+            jQuery(inputA).trigger("click");
+        });
+
+    });
+
+    describe(".dispose()", function () {
+
+        it("should remove the element form DOMElemet like # destroy()", function () {
+            var $inputA = $form.find("[data-node='input-a']"),
+                inputA = $inputA[0];
+
+            domAdapter(inputA).dispose();
+            expect($form.find("[data-node='input-a']").length === 0).to.be.ok();
+        });
+
+        it("should not listen to any event anymore even if it is triggered explicitly", function (done) {
+            var $inputA = $form.find("[data-node='input-a']"),
+                inputA = $inputA[0];
+
+            //Must be attached with domAdapter, cause if element is not part of the DOM it is not reachable by jQuery.
+            domAdapter(inputA).on("click", function () { done(); });
+            domAdapter(inputA).on("blur", function () { done(); });
+
+            domAdapter(inputA).dispose();
+
+            $inputA.trigger("click");
+            $inputA.trigger("blur");
+
+            done();
         });
 
     });
