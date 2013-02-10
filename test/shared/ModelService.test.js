@@ -2,7 +2,7 @@
 
 var expect = require("expect.js");
 
-function setEnv (env, which) {
+function setEnv(env, which) {
     env.isServer = function () {
         return which === "server";
     };
@@ -13,14 +13,14 @@ function setEnv (env, which) {
 
 var mockedOctocats = [
     {
-        id:  1,
-        name:"Octo 1",
-        age: 12
+        id : 1,
+        name : "Octo 1",
+        age : 12
     },
     {
-        id:  2,
-        name:"Octo 2",
-        age: 10
+        id : 2,
+        name : "Octo 2",
+        age : 10
     }
 ];
 
@@ -57,8 +57,11 @@ describe("Model-Services", function () {
 
             beforeEach(function () {
                 testService = {
-                    read:function (ids, callback) {
-                        callback({ status:"success", data:mockedOctocats[ids.octocat - 1] });
+                    read : function (ids, callback) {
+                        callback({ status : "success", data : mockedOctocats[ids.octocat - 1] });
+                    },
+                    readCollection : function (remote, ids, params, callback) {
+                        callback({ status : "success", data : mockedOctocats });
                     }
                 };
             });
@@ -86,14 +89,14 @@ describe("Model-Services", function () {
 
             beforeEach(function () {
                 testService = {
-                    readCollection:function (ids, params, callback) {
-                        callback({ status:"success", data:mockedOctocats });
+                    readCollection : function (ids, params, callback) {
+                        callback({ status : "success", data : mockedOctocats });
                     }
                 };
             });
 
             it("should work if called with ids and params", function (done) {
-                Octocat.find({}, { da:"ta" }, function (err, models) {
+                Octocat.find({}, { da : "ta" }, function (err, models) {
                     expect(err).to.be(null);
                     expect(models.get(0).get("name")).to.eql("Octo 1");
                     expect(models.get(1).get("name")).to.eql("Octo 2");
@@ -116,6 +119,7 @@ describe("Model-Services", function () {
     describe("Client", function () {
 
         var Octocat,
+            modelCache,
             testService,
             RemoteService,
             env,
@@ -131,53 +135,61 @@ describe("Model-Services", function () {
 
             setEnv(env, "client");
 
-            Octocat = require("./Model/Octocat.class.js");
             services = require("../../lib/shared/registries/serviceRegistry.js");
             services.getService = function () {
                 return testService;
             };
 
+            Octocat = require("./Model/Octocat.class.js");
+
             RemoteService = require("../../lib/client/RemoteService.class.js");
 
-            RemoteService.prototype.readCollection = function (remote, ids, params, callback) {
+            RemoteService.prototype.readCollection = function RemoteReadCollection(remote, ids, params, callback) {
 
                 callback({
-                    status:"success",
-                    data:  [
+                    status : "success",
+                    data : [
                         {
-                            id:  1,
-                            name:"RemoteOcto",
-                            age: 12
+                            id : 1,
+                            name : "RemoteOcto",
+                            age : 12
                         }
                     ]
                 });
             };
 
-            RemoteService.prototype.read = function (remote, ids, callback) {
+            RemoteService.prototype.read = function RemoteRead(remote, ids, callback) {
 
                 callback({
-                    status:"success",
-                    data:  {
-                        id:  1,
-                        name:"RemoteOcto",
-                        age: 12
+                    status : "success",
+                    data : {
+                        id : 1,
+                        name : "RemoteOcto",
+                        age : 12
                     }
                 });
             };
+
+            modelCache = require("../../lib/shared/modelCache.js");
+        });
+
+        beforeEach(function () {
+            //we have to reset the cache, because we want fresh instances
+            modelCache.reset();
         });
 
         describe("#find", function () {
 
             beforeEach(function () {
                 testService = {
-                    readCollection:function (remote, ids, params, callback) {
-                        callback({ status:"success", data:mockedOctocats });
+                    readCollection : function (remote, ids, params, callback) {
+                        callback({ status : "success", data : mockedOctocats });
                     }
                 };
             });
 
             it("should call the static method and run the mocked readCollection-service", function (done) {
-                Octocat.find({}, { da:"ta" }, function (err, models) {
+                Octocat.find({}, { da : "ta" }, function (err, models) {
                     expect(err).to.be(null);
                     expect(models.get(0).get("name")).to.eql("Octo 1");
                     expect(models.get(1).get("name")).to.eql("Octo 2");
@@ -186,7 +198,7 @@ describe("Model-Services", function () {
             });
 
             it("should accept remote as first argument", function (done) {
-                Octocat.find(true, { da:"ta" }, function (err, models) {
+                Octocat.find(true, { da : "ta" }, function (err, models) {
                     expect(err).to.be(null);
                     expect(models.get(0).get("name")).to.eql("Octo 1");
                     expect(models.get(1).get("name")).to.eql("Octo 2");
@@ -195,7 +207,7 @@ describe("Model-Services", function () {
             });
 
             it("should accept remote as first argument", function (done) {
-                Octocat.find(true, {}, { da:"ta" }, function (err, models) {
+                Octocat.find(true, {}, { da : "ta" }, function (err, models) {
                     expect(err).to.be(null);
                     expect(models.get(0).get("name")).to.eql("Octo 1");
                     expect(models.get(1).get("name")).to.eql("Octo 2");
@@ -204,7 +216,7 @@ describe("Model-Services", function () {
             });
 
             it("should accept remote as first argument when called with three arguments ", function (done) {
-                Octocat.find(false, { da:"ta" }, function (err, models) {
+                Octocat.find(false, { da : "ta" }, function (err, models) {
                     expect(err).to.be(null);
                     expect(models.get(0).get("name")).to.eql("Octo 1");
                     expect(models.get(1).get("name")).to.eql("Octo 2");
@@ -213,7 +225,7 @@ describe("Model-Services", function () {
             });
 
             it("should accept requests without ids and remote as arguments", function (done) {
-                Octocat.find({ da:"ta" }, function (err, models) {
+                Octocat.find({ da : "ta" }, function (err, models) {
                     expect(err).to.be(null);
                     expect(models.get(0).get("name")).to.eql("Octo 1");
                     expect(models.get(1).get("name")).to.eql("Octo 2");
@@ -225,7 +237,7 @@ describe("Model-Services", function () {
 
                 testService = null;
 
-                Octocat.find({ da:"ta" }, function (err, models) {
+                Octocat.find({ da : "ta" }, function (err, models) {
                     expect(err).to.be(null);
                     expect(models.get(0).get("name")).to.eql("RemoteOcto");
                     done();
@@ -236,7 +248,7 @@ describe("Model-Services", function () {
 
                 testService = null;
 
-                Octocat.find(false, { da:"ta" }, function (err, models) {
+                Octocat.find(false, { da : "ta" }, function (err, models) {
                     expect(err).not.to.be(null);
                     done();
                 });
@@ -245,13 +257,13 @@ describe("Model-Services", function () {
             it("should pass the remote service as 'remote' attribute if called with remote = true", function (done) {
 
                 testService = {
-                    readCollection:function (remote, ids, params, callback) {
+                    readCollection : function (remote, ids, params, callback) {
                         expect(remote).to.be.a("function");
-                        callback({ status:"success", data:mockedOctocats });
+                        callback({ status : "success", data : mockedOctocats });
                     }
                 };
 
-                Octocat.find(true, { da:"ta" }, function (err, models) {
+                Octocat.find(true, { da : "ta" }, function (err, models) {
                     expect(err).to.be(null);
                     expect(models.get(0).get("name")).to.eql("Octo 1");
                     expect(models.get(1).get("name")).to.eql("Octo 2");
@@ -262,13 +274,13 @@ describe("Model-Services", function () {
             it("should not pass the remote function if called with remote = false", function (done) {
 
                 testService = {
-                    readCollection:function (remote, ids, params, callback) {
+                    readCollection : function (remote, ids, params, callback) {
                         expect(remote).to.be(false);
-                        callback({ status:"success", data:mockedOctocats });
+                        callback({ status : "success", data : mockedOctocats });
                     }
                 };
 
-                Octocat.find(false, { da:"ta" }, function (err, models) {
+                Octocat.find(false, { da : "ta" }, function (err, models) {
                     expect(err).to.be(null);
                     expect(models.get(0).get("name")).to.eql("Octo 1");
                     expect(models.get(1).get("name")).to.eql("Octo 2");
@@ -278,24 +290,17 @@ describe("Model-Services", function () {
         });
 
         describe("#findById", function () {
-            var Octocat,
-                testService;
 
             before(function () {
-
                 Octocat = require("./Model/Octocat.class.js");
-                services = require("../../lib/shared/registries/serviceRegistry.js");
-                services.getService = function () {
-                    return testService;
-                };
             });
 
             beforeEach(function () {
+
                 testService = {
-                    read:function (remote, ids, callback) {
+                    read : function mockedRead(remote, ids, callback) {
                         var octocat = mockedOctocats[ids.octocat - 1];
-                        console.log(octocat);
-                        callback({ status:"success", data:octocat });
+                        callback({ status : "success", data : octocat });
                     }
                 };
             });
@@ -333,7 +338,7 @@ describe("Model-Services", function () {
             });
 
             it("should append the ids to the octocat ", function (done) {
-                Octocat.findById({ "group":2}, 1, function (err, model) {
+                Octocat.findById({ "group" : 2}, 1, function (err, model) {
                     expect(err).to.be(null);
                     expect(model.get("name")).to.eql("Octo 1");
                     expect(model.getId("group")).to.eql(2);
@@ -365,15 +370,15 @@ describe("Model-Services", function () {
             it("should pass the remote service as 'remote' attribute if called with remote = true", function (done) {
 
                 testService = {
-                    read:function (remote, id, callback) {
+                    read : function (remote, id, callback) {
 
                         expect(remote).to.be.a("function");
 
                         callback({
-                            status:"success",
-                            data:  {
-                                id:  1,
-                                name:"RemoteOcto"
+                            status : "success",
+                            data : {
+                                id : 1,
+                                name : "RemoteOcto"
                             }
                         });
                     }

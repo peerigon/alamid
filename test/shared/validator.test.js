@@ -4,18 +4,22 @@ var expect = require("expect.js"),
     rewire = require("rewire"),
     path = require("path");
 
-var validator = require("../../lib/shared/validator.js"),
-    validate = validator.validate,
-    localValidation = validator.localValidation;
+var validator, validate, localValidation;
 
 describe("validator", function () {
 
-    describe("Default Validators", function() {
+    before(function () {
+        validator = require("../../lib/shared/validator.js");
+        validate = validator.validate;
+        localValidation = validator.localValidation;
+    });
+
+    describe("Default Validators", function () {
 
         var testModel,
             pandaSchema = require("./Model/schemas/PandaSchema.js");
 
-        beforeEach(function() {
+        beforeEach(function () {
             testModel = {
                 name : "pandaa",
                 mood : "happy",
@@ -26,7 +30,7 @@ describe("validator", function () {
         it("should check required fields", function (done) {
             delete testModel.name;
 
-            localValidation(pandaSchema, testModel, function(result) {
+            localValidation(pandaSchema, testModel, function (result) {
                 expect(result.result).to.be(false);
                 expect(result.failedFields.name).to.contain("required");
                 done();
@@ -38,7 +42,7 @@ describe("validator", function () {
 
             testModel.mood = "whatever";
 
-            localValidation(pandaSchema, testModel, function(result) {
+            localValidation(pandaSchema, testModel, function (result) {
                 expect(result.result).to.be(false);
                 expect(result.failedFields.mood).to.contain("enum");
                 done();
@@ -48,7 +52,7 @@ describe("validator", function () {
         it("should check min fields", function (done) {
             testModel.pooCount = 1;
 
-            localValidation(pandaSchema, testModel, function(result) {
+            localValidation(pandaSchema, testModel, function (result) {
                 expect(result.result).to.be(false);
                 expect(result.failedFields.pooCount).to.contain("min");
                 expect(result.failedFields).not.to.contain(["mood", "name"]);
@@ -59,7 +63,7 @@ describe("validator", function () {
         it("should check max fields", function (done) {
             testModel.pooCount = 101;
 
-            localValidation(pandaSchema, testModel, function(result) {
+            localValidation(pandaSchema, testModel, function (result) {
                 expect(result.result).to.be(false);
                 expect(result.failedFields.pooCount).to.contain("max");
                 expect(result.failedFields).not.to.contain(["mood", "name"]);
@@ -68,12 +72,12 @@ describe("validator", function () {
         });
     });
 
-    describe("Custom validators with many validators per field as array", function() {
+    describe("Custom validators with many validators per field as array", function () {
 
         var testModel,
             pandaSchema = require("./Model/schemas/PandaSchema.js");
 
-        beforeEach(function() {
+        beforeEach(function () {
             testModel = {
                 name : "pandaaaaaa",
                 password : "thatsmypassdude",
@@ -93,7 +97,7 @@ describe("validator", function () {
                 }
             ];
 
-            localValidation(pandaSchema, testModel, function(result) {
+            localValidation(pandaSchema, testModel, function (result) {
                 expect(result.result).to.be(false);
                 expect(result.failedFields.name).to.contain("val1Failed");
                 expect(result.failedFields.name).to.contain("val2Failed");
@@ -102,12 +106,12 @@ describe("validator", function () {
         });
     });
 
-    describe("Custom validators with references", function() {
+    describe("Custom validators with references", function () {
 
         var testModel,
             pandaSchema = require("./Model/schemas/PandaSchema.js");
 
-        beforeEach(function() {
+        beforeEach(function () {
             testModel = {
                 name : "pandaaaaaa",
                 password : "thatsmypassdude",
@@ -116,16 +120,16 @@ describe("validator", function () {
             };
         });
 
-        before(function() {
+        before(function () {
 
-            pandaSchema.name.validate = function(name) {
+            pandaSchema.name.validate = function (name) {
 
-                if(!name) {
+                if (!name) {
                     return "required";
                 }
 
                 //you also need a password if name is set
-                if(this.password === undefined) {
+                if (this.password === undefined) {
                     return "password-required";
                 }
 
@@ -135,7 +139,7 @@ describe("validator", function () {
 
         it("should pass if name and password are set", function (done) {
 
-            localValidation(pandaSchema, testModel, function(result) {
+            localValidation(pandaSchema, testModel, function (result) {
                 expect(result.result).to.be(true);
                 done();
             });
@@ -145,7 +149,7 @@ describe("validator", function () {
 
             delete testModel.password;
 
-            localValidation(pandaSchema, testModel, function(result) {
+            localValidation(pandaSchema, testModel, function (result) {
                 expect(result.result).to.be(false);
                 expect(result.failedFields.name).to.contain("password-required");
                 done();
@@ -154,12 +158,12 @@ describe("validator", function () {
 
     });
 
-    describe("Sync and Async Validators", function() {
+    describe("Sync and Async Validators", function () {
 
         var testModel,
             surfSchema = require("./Model/schemas/SurfSchema.js");
 
-        beforeEach(function() {
+        beforeEach(function () {
             testModel = {
                 name : "nameWithManyChars",
                 fun : true
@@ -168,7 +172,7 @@ describe("validator", function () {
 
         it("should pass sync and async validator", function (done) {
 
-            localValidation(surfSchema, testModel, function(result) {
+            localValidation(surfSchema, testModel, function (result) {
                 expect(result.result).to.be(true);
                 done();
             });
@@ -178,7 +182,7 @@ describe("validator", function () {
 
             testModel.name = "sh";
 
-            localValidation(surfSchema, testModel, function(result) {
+            localValidation(surfSchema, testModel, function (result) {
                 expect(result.result).to.be(false);
                 expect(result.failedFields.name).to.contain(false);
                 done();
@@ -190,7 +194,7 @@ describe("validator", function () {
             testModel.name = "loooooong";
             testModel.fun = false;
 
-            localValidation(surfSchema, testModel, function(result) {
+            localValidation(surfSchema, testModel, function (result) {
                 expect(result.result).to.be(false);
                 expect(result.failedFields.fun).to.contain(false);
                 done();
@@ -198,13 +202,13 @@ describe("validator", function () {
         });
     });
 
-    describe("localValidation", function() {
+    describe("localValidation", function () {
 
         var sharedSchema = require("./Model/schemas/OctocatSchema.js");
 
         var testModel;
 
-        beforeEach(function() {
+        beforeEach(function () {
             testModel = {
                 name : "SuperCat",
                 age : 12,
@@ -213,17 +217,17 @@ describe("validator", function () {
         });
 
         it("should apply the validators and succeed with the default model data", function (done) {
-            localValidation(sharedSchema, testModel, function(result) {
+            localValidation(sharedSchema, testModel, function (result) {
                 expect(result.result).to.be(true);
                 expect(result.failedFields).not.to.contain(["name", "age"]);
                 done();
             });
         });
 
-        it("should fail if some fields are wrong", function(done) {
+        it("should fail if some fields are wrong", function (done) {
             testModel.age = 120;
 
-            localValidation(sharedSchema, testModel, function(result) {
+            localValidation(sharedSchema, testModel, function (result) {
                 expect(result.result).to.be(false);
                 expect(result.failedFields).not.to.contain(["name"]);
                 expect(result.failedFields.age).to.contain("tooOld-shared");
@@ -231,21 +235,21 @@ describe("validator", function () {
             });
         });
 
-        it("should fail if some fields are wrong", function(done) {
+        it("should fail if some fields are wrong", function (done) {
             testModel.name = null;
 
-            localValidation(sharedSchema, testModel, function(result) {
+            localValidation(sharedSchema, testModel, function (result) {
                 expect(result.result).to.be(false);
                 expect(result.failedFields).not.to.contain(["age"]);
                 done();
             });
         });
 
-        it("should validate the default validators (i.e. required)", function(done) {
+        it("should validate the default validators (i.e. required)", function (done) {
             delete testModel.name;
             delete testModel.age;
 
-            localValidation(sharedSchema, testModel, function(result) {
+            localValidation(sharedSchema, testModel, function (result) {
                 expect(result.result).to.be(false);
                 expect(result.failedFields).not.to.contain(["age"]);
                 expect(result.failedFields.name).to.contain("required");
@@ -254,28 +258,34 @@ describe("validator", function () {
         });
     });
 
-    describe("validate", function() {
+    describe("validate", function () {
 
         var sharedSchema = require("./Model/schemas/OctocatSchema.js");
 
-        describe("Server", function() {
+        describe("Server", function () {
 
             var testModel,
                 modelUrl,
-                validate;
+                validate,
+                validator;
 
             var serverSchema = require("./Model/schemas/OctocatSchema.server.js");
 
-            before(function() {
+            before(function () {
+                validator = require("../../lib/shared/validator.js");
                 validator = rewire("../../lib/shared/validator.js");
                 validator.__set__("env", {
-                    isClient : function() { return false; },
-                    isServer : function() { return true; }
+                    isClient : function () {
+                        return false;
+                    },
+                    isServer : function () {
+                        return true;
+                    }
                 });
                 validate = validator.validate;
             });
 
-            beforeEach(function() {
+            beforeEach(function () {
                 testModel = {
                     name : "SuperCat",
                     age : 12,
@@ -284,8 +294,8 @@ describe("validator", function () {
                 modelUrl = "test";
             });
 
-            it("should validate shared schema and localSchema if sharedSchema passed first", function(done) {
-                validate(sharedSchema, serverSchema, modelUrl, testModel, true, function(result) {
+            it("should validate shared schema and localSchema if sharedSchema passed first", function (done) {
+                validate(sharedSchema, serverSchema, modelUrl, testModel, true, function (result) {
                     expect(result.result).to.be(true);
                     expect(result.shared.result).to.be(true);
                     expect(result.local.result).to.be(true);
@@ -293,8 +303,8 @@ describe("validator", function () {
                 });
             });
 
-            it("should not call the remote validator on the server if sharedSchema passed first", function(done) {
-                validate(sharedSchema, serverSchema, modelUrl, testModel, true, function(result) {
+            it("should not call the remote validator on the server if sharedSchema passed first", function (done) {
+                validate(sharedSchema, serverSchema, modelUrl, testModel, true, function (result) {
                     expect(result.result).to.be(true);
                     expect(result.shared.result).to.be(true);
                     expect(result.local.result).to.be(true);
@@ -303,9 +313,9 @@ describe("validator", function () {
                 });
             });
 
-            it("should not pass the validator if local validation fails", function(done) {
+            it("should not pass the validator if local validation fails", function (done) {
                 testModel.age = 99;
-                validate(sharedSchema, serverSchema, modelUrl, testModel, true, function(result) {
+                validate(sharedSchema, serverSchema, modelUrl, testModel, true, function (result) {
                     expect(result.result).to.be(false);
                     expect(result.shared.result).to.be(true);
                     expect(result.local.result).to.be(false);
@@ -315,9 +325,9 @@ describe("validator", function () {
                 });
             });
 
-            it("should not pass the validator if shared validation fails", function(done) {
+            it("should not pass the validator if shared validation fails", function (done) {
                 testModel.location = "";
-                validate(sharedSchema, serverSchema, modelUrl, testModel, true, function(result) {
+                validate(sharedSchema, serverSchema, modelUrl, testModel, true, function (result) {
                     expect(result.result).to.be(false);
                     expect(result.shared.result).to.be(false);
                     expect(result.local.result).to.be(true);
@@ -327,10 +337,9 @@ describe("validator", function () {
                 });
             });
 
-
-            it("should return all failed fields at the top-level of result", function(done) {
+            it("should return all failed fields at the top-level of result", function (done) {
                 testModel.age = 102;
-                validate(sharedSchema, serverSchema, modelUrl, testModel, true, function(result) {
+                validate(sharedSchema, serverSchema, modelUrl, testModel, true, function (result) {
 
                     expect(result.result).to.be(false);
                     expect(result.shared.failedFields.age[0]).to.be("tooOld-shared");
@@ -347,9 +356,9 @@ describe("validator", function () {
                 });
             });
 
-            it("should not run local & shared validation if the schemas are identical", function(done) {
+            it("should not run local & shared validation if the schemas are identical", function (done) {
                 testModel.age = 102;
-                validate(sharedSchema, sharedSchema, modelUrl, testModel, true, function(result) {
+                validate(sharedSchema, sharedSchema, modelUrl, testModel, true, function (result) {
 
                     expect(result.result).to.be(false);
                     expect(result.shared.failedFields.age[0]).to.be("tooOld-shared");
@@ -361,7 +370,7 @@ describe("validator", function () {
             });
         });
 
-        describe("Client", function() {
+        describe("Client", function () {
 
             var validator,
                 testModel,
@@ -369,15 +378,19 @@ describe("validator", function () {
 
             var clientSchema = require("./Model/schemas/OctocatSchema.client.js");
 
-            before(function() {
+            before(function () {
                 validator = rewire("../../lib/shared/validator.js");
                 validator.__set__("env", {
-                    isClient : function() { return true; },
-                    isServer : function() { return false; }
+                    isClient : function () {
+                        return true;
+                    },
+                    isServer : function () {
+                        return false;
+                    }
                 });
             });
 
-            beforeEach(function(){
+            beforeEach(function () {
                 modelUrl = "test";
                 testModel = {
                     name : "Octocat",
@@ -386,8 +399,8 @@ describe("validator", function () {
                 };
             });
 
-            it("should call the remote validator on client if shared-validation and local validation worked out", function(done) {
-                var remoteValidationMock = function(schema, modelData, callback) {
+            it("should call the remote validator on client if shared-validation and local validation worked out", function (done) {
+                var remoteValidationMock = function (schema, modelData, callback) {
                     callback({
                         result : true,
                         failedFields : {
@@ -404,7 +417,7 @@ describe("validator", function () {
 
                 validator.__set__("remoteValidation", remoteValidationMock);
 
-                validator.validate(sharedSchema, clientSchema, modelUrl, testModel, true, function(result) {
+                validator.validate(sharedSchema, clientSchema, modelUrl, testModel, true, function (result) {
                     expect(result.result).to.be(true);
                     expect(result.shared.result).to.be(true);
                     expect(result.local.result).to.be(true);
@@ -413,8 +426,8 @@ describe("validator", function () {
                 });
             });
 
-            it("should not call the remote validator on client if remoteValidaton is disabled", function(done) {
-                var remoteValidationMock = function(schema, modelData, callback) {
+            it("should not call the remote validator on client if remoteValidaton is disabled", function (done) {
+                var remoteValidationMock = function (schema, modelData, callback) {
                     callback({
                         result : true,
                         shared : {
@@ -428,7 +441,7 @@ describe("validator", function () {
 
                 validator.__set__("remoteValidation", remoteValidationMock);
 
-                validator.validate(sharedSchema, clientSchema, modelUrl, testModel, false, function(result) {
+                validator.validate(sharedSchema, clientSchema, modelUrl, testModel, false, function (result) {
                     expect(result.result).to.be(true);
                     expect(result.shared.result).to.be(true);
                     expect(result.local.result).to.be(true);

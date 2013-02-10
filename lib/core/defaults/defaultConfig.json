@@ -1,5 +1,5 @@
 {
-    "env": "development",
+    "env" : "development",
     "use" : {
         "http" : true,
         "websockets" : true,
@@ -7,10 +7,15 @@
         "services" : true,
         "validators" : true
     },
+    "routes" : {
+        "services" : "/services",
+        "validators" : "/validators",
+        "bundle" : "/"
+    },
     "server" : {
-        "port": 9000,
-        "logDir": null,
-        "appDir": null,
+        "port" : 9000,
+        "logDir" : null,
+        "appDir" : null,
         "use" : {
             "spdy" : false,
             "bundle" : true,
