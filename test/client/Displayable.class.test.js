@@ -117,17 +117,25 @@ describe("Displayable", function () {
             expect($lastChild.val()).to.be(submitButton.root.value);
         });
 
+        it("should emit a 'child'-event", function (done) {
+            form.on("child", function (event) {
+                expect(event.target).to.be(form);
+                expect(event.child).to.be(submitButton);
+                done();
+            });
+
+            form.append(submitButton).at("form");
+        });
+
     });
 
-    describe(".prepend()", function () {
+    describe(".prepend().at()", function () {
+
         it("should throw an Error if a not existent node name was passed to # at()", function () {
             expect(function () {
                 form.prepend(submitButton).at("not_existing_node");
             }).to.throwError();
         });
-    });
-
-    describe(".prepend().at()", function () {
 
         it("should throw an Error if a not existent node name was passed to # at()", function () {
             expect(function () {
@@ -147,6 +155,16 @@ describe("Displayable", function () {
 
             expect(firstChild.toString()).to.be.equal(submitButton.root.toString());
             expect($firstChild.val()).to.be.equal(submitButton.root.value);
+        });
+
+        it("should emit a 'child'-event", function (done) {
+            form.on("child", function (event) {
+                expect(event.target).to.be(form);
+                expect(event.child).to.be(submitButton);
+                done();
+            });
+
+            form.prepend(submitButton).at("form");
         });
 
     });
