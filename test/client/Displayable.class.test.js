@@ -6,7 +6,8 @@ var expect = require("expect.js"),
     Displayable = require("../../lib/client/Displayable.class.js"),
     Plugins = require("../../lib/shared/Plugins.mixin.js"),
     DOMNodeMocks = require("./mocks/DOMNodeMocks.js"),
-    jQuery = require("../../lib/client/helpers/jQuery.js");
+    jQuery = require("../../lib/client/helpers/jQuery.js"),
+    _ = require("underscore");
 
 describe("Displayable", function () {
 
@@ -338,7 +339,7 @@ describe("Displayable", function () {
             submitButton.dispose();
         });
 
-        it("should emit 'destroy'-Event if .dispose() is called only on first call", function (done) {
+        it("should emit 'detach'-Event if .dispose() is called only on first call", function (done) {
             submitButton.on("detach", function beforeDispose() {
                 done();
             });
@@ -370,6 +371,13 @@ describe("Displayable", function () {
             form.dispose();
 
             expect(jQuery(tmpDisplayable.root).children()).to.have.length(0);
+        });
+
+        it("should empty the nodes-object", function () {
+            var nodes = form.nodes;
+
+            form.dispose();
+            expect(nodes).to.be.empty();
         });
 
     });
