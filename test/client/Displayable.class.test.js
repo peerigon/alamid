@@ -373,11 +373,27 @@ describe("Displayable", function () {
             expect(jQuery(tmpDisplayable.root).children()).to.have.length(0);
         });
 
-        it("should empty the nodes-object", function () {
-            var nodes = form.nodes;
+        it("should empty all objects and arrays to avoid memory leaks", function () {
+            var containers = [];
+
+            _(form).each(function addContainers(val, key) {
+                if (form.hasOwnProperty(key) === false ||
+                    key === "constructor" ||
+                    key === "_super" ||
+                    value(val).typeOf(Node)) {
+                    return;
+                }
+                if (value(val).typeOf(Array) || value(val).typeOf(Object)) {
+                    containers.push(val);
+                }
+            });
 
             form.dispose();
-            expect(nodes).to.be.empty();
+
+            console.log(containers);
+            _(containers).each(function checkContainers(container) {
+                expect(container).to.be.empty();
+            });
         });
 
     });
