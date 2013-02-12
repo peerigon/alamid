@@ -10,8 +10,7 @@ var expect = require("expect.js"),
     Client = rewire("../../lib/client/Client.class.js"),
 
     PageMock = require("./mocks/PageMock.class.js"),
-    PageLoaderMock = require("./mocks/PageLoaderMock.class.js"),
-    Default404Page = require("../../lib/client/defaults/Default404Page.class.js");
+    PageLoaderMock = require("./mocks/PageLoaderMock.class.js");
 
 describe("Client", function () {
 
@@ -253,13 +252,14 @@ describe("Client", function () {
             expect(context.params.postId).to.be("123");
         });
 
-        it("should display Default404Page if App is in 'development' mode and no handler for given route was added", function () {
+        it("should display a 404 page if App is in 'development' mode and no handler for given route was added", function () {
+            var displayedTemplate;
 
             config.env = "development";
-
             client.dispatchRoute("404");
+            displayedTemplate = client.getMainPage().getSubPage().getRoot().outerHTML;
 
-            expect(value(client.getMainPage().getSubPage()).typeOf(Default404Page)).to.equal(true);
+            expect(displayedTemplate).to.contain("404");
         });
 
         it("should be chainable", function () {
