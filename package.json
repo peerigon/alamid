@@ -27,7 +27,6 @@
         "spdy" : "1.x",
         "winston": "0.6.x",
         "fshelpers": "0.2.x",
-        "toSrc": "0.x",
         "alamid-class": "0.x",
         "value": "0.x",
         "nconf" : "0.6.x",
