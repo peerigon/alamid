@@ -34,7 +34,7 @@ describe("Page", function () {
     describe("._getParams()", function () {
 
         it("should provide passed params on .construct()", function () {
-            expect(pageExample.getParams()).to.be.equal(params);
+            expect(pageExample.getParams()).to.be(params);
         });
 
     });

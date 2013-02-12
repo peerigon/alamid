@@ -243,7 +243,7 @@ describe("Displayable", function () {
         });
 
         it("should return a reference to itself", function () {
-            expect(form.prepend(submitButton).at("form")).to.be.equal(form);
+            expect(form.prepend(submitButton).at("form")).to.be(form);
         });
 
         it("should prepend submit-button to form", function () {
@@ -252,8 +252,8 @@ describe("Displayable", function () {
             var $firstChild = jQuery(form.getRoot()).find(":first-child"),
                 firstChild = $firstChild[0];
 
-            expect(firstChild.toString()).to.be.equal(submitButton.getRoot().toString());
-            expect($firstChild.val()).to.be.equal(submitButton.getRoot().value);
+            expect(firstChild.toString()).to.be(submitButton.getRoot().toString());
+            expect($firstChild.val()).to.be(submitButton.getRoot().value);
         });
 
         it("should emit a 'child'-event", function (done) {
@@ -348,7 +348,7 @@ describe("Displayable", function () {
 
             expect(
                 jQuery(form.getRoot()).find("[type='submit']")[0].toString()
-            ).to.be.equal(submitButton.getRoot().toString());
+            ).to.be(submitButton.getRoot().toString());
         });
 
         it("should not leave any event listeners on a child", function () {
@@ -397,7 +397,7 @@ describe("Displayable", function () {
 
         it("should detach itself from parent node", function () {
             submitButton.dispose();
-            expect(jQuery(form.getRoot()).find("[type='submit']").length).to.be.equal(0);
+            expect(jQuery(form.getRoot()).find("[type='submit']").length).to.be(0);
         });
 
         it("should NOT be possible to get a node", function () {

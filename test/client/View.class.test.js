@@ -57,7 +57,7 @@ describe("View", function () {
         it("should return a reference to itself", function () {
             expect(formView.render({
                 "range": 5
-            })).to.be.equal(formView);
+            })).to.be(formView);
         });
 
         it("should apply data as value to a text-input-field", function () {
@@ -263,7 +263,7 @@ describe("View", function () {
         });
 
         it("should return a reference to itself", function () {
-            expect(formView.unbind()).to.be.equal(formView);
+            expect(formView.unbind()).to.be(formView);
         });
 
         it("should NOT be re-rendered after an unbound Model has emitted 'change'-Event", function () {

@@ -38,7 +38,7 @@ describe("ModelCollection", function () {
                 model.set("name", "Cpt. Spook");
             });
 
-            expect(changeEventCount).to.be.equal(octocatModels.length);
+            expect(changeEventCount).to.be(octocatModels.length);
             done();
         });
 
@@ -56,7 +56,7 @@ describe("ModelCollection", function () {
 
         it("should pass changed Model on 'change' as first argument", function (done) {
             modelCollection.on("change", function onChange(model) {
-                expect(model).to.be.equal(octocatModel);
+                expect(model).to.be(octocatModel);
                 done();
             });
             modelCollection.set(5, octocatModel);
@@ -85,7 +85,7 @@ describe("ModelCollection", function () {
         });
 
         it("return a reference to itself", function () {
-           expect(modelCollection.set(0, octocatModel)).to.be.equal(modelCollection);
+           expect(modelCollection.set(0, octocatModel)).to.be(modelCollection);
         });
 
     });
@@ -127,21 +127,21 @@ describe("ModelCollection", function () {
                 model.set("name", "Cpt. Spook");
             });
 
-            expect(changeEventCount).to.be.equal(octocatModels.length);
+            expect(changeEventCount).to.be(octocatModels.length);
             done();
         });
 
         it("should pass Model on 'change' as first argument", function (done) {
             modelCollection.push(octocatModels);
             modelCollection.on("change", function onChange(model) {
-                expect(model).to.be.equal(octocatModels[1]);
+                expect(model).to.be(octocatModels[1]);
                 done();
             });
             octocatModels[1].set("name", "Master Batti");
         });
 
         it("should return a reference to itself", function () {
-            expect(modelCollection.push(octocatModels)).to.be.equal(modelCollection);
+            expect(modelCollection.push(octocatModels)).to.be(modelCollection);
         });
 
     });
@@ -161,21 +161,21 @@ describe("ModelCollection", function () {
                 model.set("name", "Dr. siR");
             });
 
-            expect(changeEventCount).to.be.equal(octocatModels.length);
+            expect(changeEventCount).to.be(octocatModels.length);
             done();
         });
 
         it("should pass Model on 'change' as first argument", function (done) {
             modelCollection.unshift(octocatModels);
             modelCollection.on("change", function onChange(model) {
-                expect(model).to.be.equal(octocatModels[1]);
+                expect(model).to.be(octocatModels[1]);
                 done();
             });
             octocatModels[1].set("name", "Chief Meaku");
         });
 
         it("should return a reference to itself", function () {
-            expect(modelCollection.unshift(octocatModels)).to.be.equal(modelCollection);
+            expect(modelCollection.unshift(octocatModels)).to.be(modelCollection);
         });
 
     });
@@ -204,7 +204,7 @@ describe("ModelCollection", function () {
 
         it("should return the popped Model", function () {
             modelCollection.unshift(octocatModels);
-            expect(modelCollection.pop()).to.be.equal(octocatModels.pop());
+            expect(modelCollection.pop()).to.be(octocatModels.pop());
         });
 
     });
@@ -232,7 +232,7 @@ describe("ModelCollection", function () {
 
         it("should return the popped Model", function () {
             modelCollection.unshift(octocatModels);
-            expect(modelCollection.pop()).to.be.equal(octocatModels.pop());
+            expect(modelCollection.pop()).to.be(octocatModels.pop());
         });
 
     });
@@ -257,7 +257,7 @@ describe("ModelCollection", function () {
 
         it("should return a reference to itself", function () {
             modelCollection.push(octocatModelsSortedByName);
-           expect(modelCollection.sortBy("name")).to.be.equal(modelCollection);
+           expect(modelCollection.sortBy("name")).to.be(modelCollection);
         });
 
         it("should (natural-)sort collection by 'name'", function () {
@@ -267,7 +267,7 @@ describe("ModelCollection", function () {
             modelCollection.sortBy("name");
 
             modelCollection.each(function eachIterator(model, index) {
-                expect(model).to.be.equal(octocatModelsSortedByName[index]);
+                expect(model).to.be(octocatModelsSortedByName[index]);
             });
 
         });
@@ -279,7 +279,7 @@ describe("ModelCollection", function () {
             modelCollection.sortBy("birthday");
 
             modelCollection.each(function eachIterator(model, index) {
-                expect(model).to.be.equal(octocatModelsSortedByDate[index]);
+                expect(model).to.be(octocatModelsSortedByDate[index]);
             });
 
         });
@@ -293,7 +293,7 @@ describe("ModelCollection", function () {
             modelCollection.sortBy("birthday", true);
 
             modelCollection.each(function eachIterator(model, index) {
-                expect(model).to.be.equal(octocatModelsSortedByDateReverse[index]);
+                expect(model).to.be(octocatModelsSortedByDateReverse[index]);
             });
 
         });
@@ -323,7 +323,7 @@ describe("ModelCollection", function () {
             _(octocatModels).each(function triggerChange(model, index) {
                 model.set("name", "" + index + "");
             });
-            expect(changeCallCount).to.be.equal(0);
+            expect(changeCallCount).to.be(0);
         });
 
         it("should remove all models from collection", function () {

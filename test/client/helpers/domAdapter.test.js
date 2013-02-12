@@ -170,7 +170,7 @@ describe("domAdapter", function () {
 
             it("should have a class '" + className + '"', function () {
                 domAdapter(form.firstChild).addClass(className);
-                expect(jQuery(form.firstChild).attr("class")).to.be.equal(className);
+                expect(jQuery(form.firstChild).attr("class")).to.be(className);
             });
 
         });
@@ -180,7 +180,7 @@ describe("domAdapter", function () {
             it("should not have a class '" + className + "'", function () {
                 jQuery(form.firstChild).addClass(className);
                 domAdapter(form.firstChild).removeClass(className);
-                expect(jQuery(form.firstChild).attr("class")).to.be.equal("");
+                expect(jQuery(form.firstChild).attr("class")).to.be("");
             });
         });
 
@@ -263,7 +263,7 @@ describe("domAdapter", function () {
         describe(".stringifyJSON()", function () {
 
             it("should behave like JSON.stringify", function () {
-                expect(domAdapter.stringifyJSON(json)).to.be.equal(JSON.stringify(json));
+                expect(domAdapter.stringifyJSON(json)).to.be(JSON.stringify(json));
             });
 
         });
@@ -272,7 +272,7 @@ describe("domAdapter", function () {
 
             it("should be a cross client compatible JSON parser", function () {
                 var string = jQuery.parseJSON(json);
-                expect(domAdapter.parseJSON(json)).to.be.equal(string);
+                expect(domAdapter.parseJSON(json)).to.be(string);
             });
 
         });
