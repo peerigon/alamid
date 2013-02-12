@@ -29,7 +29,7 @@ describe("ViewCollection", function () {
     beforeEach(function () {
 
         viewCollection = new ViewCollectionExampleWithTemplate(CarLiElementView);
-        viewCollectioNode = viewCollection.root;
+        viewCollectioNode = viewCollection.getRoot();
         $viewCollectioNode = jQuery(viewCollectioNode);
         audi = new CarModel();
         audi.set({
@@ -79,7 +79,7 @@ describe("ViewCollection", function () {
         it("should be possible to override a declared template", function () {
             viewCollection = new ViewCollectionExampleWithTemplate(CarLiElementView, DOMNodeMocks.getOlString());
 
-            expect(viewCollection.root.toString()).to.be.equal(DOMNodeMocks.getOl().toString());
+            expect(viewCollection.getRoot().toString()).to.be.equal(DOMNodeMocks.getOl().toString());
         });
 
         it("should throw an Error if a template was passed that does not include a node with 'data-node=\"views\"'", function () {
@@ -184,7 +184,7 @@ describe("ViewCollection", function () {
 
                 viewCollection.on("beforeAdd", function (views) {
                     _(views).each(function isView(view, index) {
-                        model = jQuery(view.root).find("[data-node='model']").text();
+                        model = jQuery(view.getRoot()).find("[data-node='model']").text();
                         expect(model).to.be.equal(newCars[index].get("model"));
                     });
                     done();
@@ -200,7 +200,7 @@ describe("ViewCollection", function () {
 
                 viewCollection.on("beforeAdd", function (views) {
                     _(views).each(function isView(view) {
-                        model = jQuery(view.root).find("[data-node='model']").text();
+                        model = jQuery(view.getRoot()).find("[data-node='model']").text();
                         expect(model).to.be.equal(newCars[--newCarsLength].get("model"));
                     });
                     done();
@@ -221,7 +221,7 @@ describe("ViewCollection", function () {
 
                 viewCollection.on("add", function (views) {
                     _(views).each(function isView(view, index) {
-                        model = jQuery(view.root).find("[data-node='model']").text();
+                        model = jQuery(view.getRoot()).find("[data-node='model']").text();
                         expect(model).to.be.equal(newCars[index].get("model"));
                     });
                     done();
@@ -236,7 +236,7 @@ describe("ViewCollection", function () {
 
                 viewCollection.on("add", function (views) {
                     _(views).each(function isView(view) {
-                        model = jQuery(view.root).find("[data-node='model']").text();
+                        model = jQuery(view.getRoot()).find("[data-node='model']").text();
                         expect(model).to.be.equal(newCars[--newCarsLength].get("model"));
                     });
                     done();
@@ -294,7 +294,7 @@ describe("ViewCollection", function () {
                 viewCollection.on("beforeRemove", function beforeRemove(views) {
 
                     _(views).each(function (view)  {
-                        model = jQuery(view.root).find("[data-node='model']").text();
+                        model = jQuery(view.getRoot()).find("[data-node='model']").text();
                         expect(model).to.be.equal(cars[0].get("model"));
                     });
 
@@ -656,7 +656,7 @@ describe("ViewCollection", function () {
 
             viewCollection.dispose();
 
-            expect(jQuery(parentView.root).find("[data-node='views']").length).to.equal(0);
+            expect(jQuery(parentView.getRoot()).find("[data-node='views']").length).to.equal(0);
         });
 
         it("should be callable multiple times", function (done) {

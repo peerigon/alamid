@@ -26,7 +26,7 @@ describe("Page", function () {
         it("should be possible to overwrite the template with second argument", function () {
             pageExample = new PageExample({}, "<div></div>");
 
-            expect(jQuery(pageExample.root).find("[data-node='page']").length).to.equal(0);
+            expect(jQuery(pageExample.getRoot()).find("[data-node='page']")).to.have.length(0);
         });
 
     });
@@ -69,9 +69,7 @@ describe("Page", function () {
         });
 
         it("should append the SubPage", function () {
-            var $node = jQuery(pageExample.root);
-
-            expect($node.find("#" + subPageId).length).to.equal(1);
+            expect(pageExample.find("#" + subPageId)).to.have.length(1);
         });
 
     });

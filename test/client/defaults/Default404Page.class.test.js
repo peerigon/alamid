@@ -15,11 +15,11 @@ describe("Default404Page", function () {
 
     beforeEach(function () {
         default404Page = new Default404Page();
-        pageNode = default404Page.root;
+        pageNode = default404Page.getRoot();
         $pageNode = jQuery(pageNode);
     });
 
-    describe(".init()", function () {
+    describe(".constructor()", function () {
 
         it("should by a Page", function () {
             expect(value(default404Page).instanceOf(Page)).to.be(true);

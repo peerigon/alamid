@@ -44,60 +44,31 @@ describe("Displayable", function () {
         it("should apply the passed template in favor of the Displayable's template", function () {
             var myDisplayable = new MyDisplayable("<ol></ol>");
 
-            expect(myDisplayable.root).to.be.an(HTMLOListElement);
+            expect(myDisplayable.getRoot()).to.be.an(HTMLOListElement);
         });
 
         it("should apply the passed node in favor of the Displayable's template", function () {
             var ol = document.createElement("ol"),
                 myDisplayable = new MyDisplayable(ol);
 
-            expect(myDisplayable.root).to.be.an(HTMLOListElement);
-        });
-
-        it("should apply the Displayable's template if no template was passed", function () {
-            var myDisplayable = new MyDisplayable();
-
-            expect(myDisplayable.root).to.be.an(HTMLParagraphElement);
+            expect(myDisplayable.getRoot()).to.be.an(HTMLOListElement);
         });
 
         it("should apply '<div data-node=\"root\"></div>' as default template if nothing has been passed", function () {
             var myDisplayable = new Displayable();
 
-            expect(myDisplayable.root.outerHTML).to.be('<div data-node="root"></div>');
+            expect(myDisplayable.getRoot().outerHTML).to.be('<div data-node="root"></div>');
         });
     });
 
-    describe(".root", function () {
-
-        it("should return the root node according to the given template", function () {
-            expect(displayable.root).to.be.an(HTMLFormElement);
-        });
-
-    });
-
-    describe(".nodes", function () {
-
-        it("should return an object", function () {
-            expect(displayable.nodes).to.be.an(Object);
-        });
-
-        it("should return a map of nodes including a 'form'-, 'input-a'-, 'input-b'-, 'input-c'- node ", function () {
-            var nodes = displayable.nodes;
-
-            expect(nodes.form).to.be.an(HTMLFormElement);
-            expect(nodes["input-a"]).to.be.an(HTMLInputElement);
-            expect(nodes["input-c"]).to.be.an(HTMLInputElement);
-            expect(nodes["input-c"]).to.be.an(HTMLInputElement);
-        });
-
-        it("should return an object with a reference on 'root' if no template was given", function () {
-            displayable = new Displayable();
-            expect(displayable.nodes.root).to.be(displayable.root);
+    describe(".template", function () {
+        it("should apply the Displayable's template if no template was passed", function () {
+            expect(submitButton.getRoot()).to.be.an(HTMLInputElement);
         });
 
     });
 
-describe(".events", function () {
+    describe(".domEvents", function () {
 
         it("should attach all dom events to the nodes", function () {
             var inputAClick = "untriggered",
@@ -107,7 +78,7 @@ describe(".events", function () {
 
             MyDisplayable = Displayable.extend({
                 template: formTemplate,
-                events: {
+                domEvents: {
                     "input-a": {
                         click: function () {
                             inputAClick = "triggered";
@@ -122,8 +93,8 @@ describe(".events", function () {
             });
             myDisplayable = new MyDisplayable();
 
-            myDisplayable.nodes["input-a"].click();
-            myDisplayable.nodes["input-b"].click();
+            myDisplayable.getNodes()["input-a"].click();
+            myDisplayable.getNodes()["input-b"].click();
 
             expect(inputAClick).to.be("triggered");
             expect(inputBClick).to.be("triggered");
@@ -135,20 +106,64 @@ describe(".events", function () {
 
             MyDisplayable = Displayable.extend({
                 template: formTemplate,
-                events: {
+                domEvents: {
                     "input-a": {
                         click: "_onFocus"
                     }
                 },
                 _onFocus: function (event) {
                     expect(this).to.be(myDisplayable);
-                    expect(event.target).to.be(this.nodes["input-a"]);
+                    expect(event.target).to.be(this.getNodes()["input-a"]);
                     done();
                 }
             });
             myDisplayable = new MyDisplayable();
 
-            myDisplayable.nodes["input-a"].click();
+            myDisplayable.getNodes()["input-a"].click();
+        });
+
+    });
+
+    describe(".getRoot()", function () {
+
+        it("should return the root node according to the given template", function () {
+            expect(displayable.getRoot()).to.be.an(HTMLFormElement);
+        });
+
+    });
+    
+    describe(".getParent()", function () {
+        
+        it("should return null if the displayable is not a child", function () {
+            expect(displayable.getParent()).to.be(null);
+        });
+        
+        it("should return the parent displayable where this displayable has been added to", function () {
+            form.append(displayable).at("form");
+            expect(displayable.getParent()).to.be(form);
+        });
+        
+    });
+    
+
+    describe(".getNodes()", function () {
+
+        it("should return an object", function () {
+            expect(displayable.getNodes()).to.be.an(Object);
+        });
+
+        it("should return a map of nodes including a 'form'-, 'input-a'-, 'input-b'-, 'input-c'- node ", function () {
+            var nodes = displayable.getNodes();
+
+            expect(nodes.form).to.be.an(HTMLFormElement);
+            expect(nodes["input-a"]).to.be.an(HTMLInputElement);
+            expect(nodes["input-c"]).to.be.an(HTMLInputElement);
+            expect(nodes["input-c"]).to.be.an(HTMLInputElement);
+        });
+
+        it("should return an object with a reference on 'root' if no template was given", function () {
+            displayable = new Displayable();
+            expect(displayable.getNodes().root).to.be(displayable.getRoot());
         });
 
     });
@@ -174,11 +189,11 @@ describe(".events", function () {
         it("should append submit-button to form", function () {
             form.append(submitButton).at("form");
 
-            var $lastChild = jQuery(form.root).find(":last-child"),
+            var $lastChild = jQuery(form.getRoot()).find(":last-child"),
                 lastChild = $lastChild[0];
 
-            expect(lastChild.toString()).to.be(submitButton.root.toString());
-            expect($lastChild.val()).to.be(submitButton.root.value);
+            expect(lastChild.toString()).to.be(submitButton.getRoot().toString());
+            expect($lastChild.val()).to.be(submitButton.getRoot().value);
         });
 
         it("should emit a 'child'-event", function (done) {
@@ -234,11 +249,11 @@ describe(".events", function () {
         it("should prepend submit-button to form", function () {
             form.prepend(submitButton).at("form");
 
-            var $firstChild = jQuery(form.root).find(":first-child"),
+            var $firstChild = jQuery(form.getRoot()).find(":first-child"),
                 firstChild = $firstChild[0];
 
-            expect(firstChild.toString()).to.be.equal(submitButton.root.toString());
-            expect($firstChild.val()).to.be.equal(submitButton.root.value);
+            expect(firstChild.toString()).to.be.equal(submitButton.getRoot().toString());
+            expect($firstChild.val()).to.be.equal(submitButton.getRoot().value);
         });
 
         it("should emit a 'child'-event", function (done) {
@@ -309,13 +324,13 @@ describe(".events", function () {
 
         it("should remove the parent reference after detaching", function () {
             form.append(submitButton).at("form");
-            expect(submitButton.parent).to.be(form);
+            expect(submitButton.getParent()).to.be(form);
             submitButton.detach();
-            expect(submitButton.parent).to.be(null);
+            expect(submitButton.getParent()).to.be(null);
         });
 
         it("should still be possible to trigger attached events after .detach()", function (done) {
-            var submitButtonNode = jQuery(submitButton.nodes["submit-button"]);
+            var submitButtonNode = jQuery(submitButton.getNodes()["submit-button"]);
 
             submitButtonNode.on("click", function () {
                 done();
@@ -332,8 +347,26 @@ describe(".events", function () {
             form.append(submitButton).at("form");
 
             expect(
-                jQuery(form.root).find("[type='submit']")[0].toString()
-            ).to.be.equal(submitButton.root.toString());
+                jQuery(form.getRoot()).find("[type='submit']")[0].toString()
+            ).to.be.equal(submitButton.getRoot().toString());
+        });
+
+        it("should not leave any event listeners on a child", function () {
+            var len,
+                expectedListeners = [],
+                actualListeners = [];
+
+            _(submitButton._events).each(function (events) {
+                len = value(events).typeOf(Array)? events.length: 1;
+                expectedListeners.push(len);
+            });
+            form.append(submitButton).at("form");
+            submitButton.detach();
+            _(submitButton._events).each(function (events) {
+                len = value(events).typeOf(Array)? events.length: 1;
+                actualListeners.push(len);
+            });
+            expect(actualListeners).to.eql(expectedListeners);
         });
 
     });
@@ -364,21 +397,21 @@ describe(".events", function () {
 
         it("should detach itself from parent node", function () {
             submitButton.dispose();
-            expect(jQuery(form.root).find("[type='submit']").length).to.be.equal(0);
+            expect(jQuery(form.getRoot()).find("[type='submit']").length).to.be.equal(0);
         });
 
         it("should NOT be possible to get a node", function () {
             submitButton.dispose();
-            expect(submitButton.root).to.not.be.ok();
+            expect(submitButton.getRoot()).to.not.be.ok();
         });
 
         it("should NOT be possible to get a map of nodes", function () {
             submitButton.dispose();
-            expect(submitButton.nodes).to.not.be.ok();
+            expect(submitButton.getNodes()).to.not.be.ok();
         });
 
         it("should remove all dom event listeners", function () {
-            var submitButtonNode = jQuery(submitButton.nodes["submit-button"]);
+            var submitButtonNode = jQuery(submitButton.getNodes()["submit-button"]);
 
             submitButtonNode.on("click", function () {
                 throw new Error("This function should not be called");
@@ -433,7 +466,7 @@ describe(".events", function () {
 
             form.dispose();
 
-            expect(jQuery(tmpDisplayable.root).children()).to.have.length(0);
+            expect(jQuery(tmpDisplayable.getRoot()).children()).to.have.length(0);
         });
 
         it("should remove all node references", function () {
@@ -450,7 +483,7 @@ describe(".events", function () {
 
         it("should apply the css class '" + cssClassHide + "'", function () {
             displayable.hide();
-            expect(jQuery(displayable.root).hasClass(cssClassHide)).to.be(true);
+            expect(jQuery(displayable.getRoot()).hasClass(cssClassHide)).to.be(true);
         });
 
     });
@@ -459,7 +492,7 @@ describe(".events", function () {
 
         it("should remove the css class '" + cssClassHide + "'", function () {
             displayable.show();
-            expect(jQuery(displayable.root).hasClass(cssClassHide)).to.be(false);
+            expect(jQuery(displayable.getRoot()).hasClass(cssClassHide)).to.be(false);
         });
 
     });
@@ -468,23 +501,23 @@ describe(".events", function () {
 
         it("should hide if already shown", function () {
             displayable.show();
-            expect(jQuery(displayable.root).hasClass(cssClassHide)).to.be(false);
+            expect(jQuery(displayable.getRoot()).hasClass(cssClassHide)).to.be(false);
             displayable.toggle();
-            expect(jQuery(displayable.root).hasClass(cssClassHide)).to.be(true);
+            expect(jQuery(displayable.getRoot()).hasClass(cssClassHide)).to.be(true);
         });
 
         it("should show if been hidden", function () {
             displayable.hide();
-            expect(jQuery(displayable.root).hasClass(cssClassHide)).to.be(true);
+            expect(jQuery(displayable.getRoot()).hasClass(cssClassHide)).to.be(true);
             displayable.toggle();
-            expect(jQuery(displayable.root).hasClass(cssClassHide)).to.be(false);
+            expect(jQuery(displayable.getRoot()).hasClass(cssClassHide)).to.be(false);
         });
 
         it("should force show if called with true", function () {
             displayable.show();
-            expect(jQuery(displayable.root).hasClass(cssClassHide)).to.be(false);
+            expect(jQuery(displayable.getRoot()).hasClass(cssClassHide)).to.be(false);
             displayable.toggle(true);
-            expect(jQuery(displayable.root).hasClass(cssClassHide)).to.be(false);
+            expect(jQuery(displayable.getRoot()).hasClass(cssClassHide)).to.be(false);
         });
 
         it("should not emit an event if the state hasn't changed", function() {
@@ -567,16 +600,16 @@ describe(".events", function () {
 
             match = displayable.find("div");
             expect(match).to.have.length(1);
-            expect(match[0]).to.be(displayable.root);
+            expect(match[0]).to.be(displayable.getRoot());
             match = displayable.find("p");
             expect(match).to.have.length(1);
-            expect(match[0]).to.be(displayable.root.childNodes[0]);
+            expect(match[0]).to.be(displayable.getRoot().childNodes[0]);
             match = displayable.find(".hello");
             expect(match).to.have.length(1);
-            expect(match[0]).to.be(displayable.root.childNodes[1]);
+            expect(match[0]).to.be(displayable.getRoot().childNodes[1]);
             match = displayable.find("#article-headline");
             expect(match).to.have.length(1);
-            expect(match[0]).to.be(displayable.root.childNodes[2]);
+            expect(match[0]).to.be(displayable.getRoot().childNodes[2]);
         });
 
     });
@@ -652,16 +685,16 @@ describe(".events", function () {
             function beforeInit(self) {
                 beforeInitCalled = true;
                 expect(self).to.be(this);
-                expect(self.nodes).to.be(null);
+                expect(self.getNodes()).to.be(null);
                 expect(self._children).to.be(null);
             }
 
             function init(self) {
                 initCalled = true;
                 expect(self).to.be(this);
-                expect(self.nodes).to.be.an(Object);
+                expect(self.getNodes()).to.be.an(Object);
                 expect(self._children).to.be.an(Array);
-                expect(self.root).to.be.a(HTMLDivElement);
+                expect(self.getRoot()).to.be.a(HTMLDivElement);
             }
 
             myDisplayable = new MyDisplayable();
