@@ -350,29 +350,23 @@ describe("Client", function () {
         });
 
         it("should be possible to change current page to MainPage with '/' as route", function (done) {
-
             client.on("pageChange", function onPageChange() {
                 //MainPage is always on index 0.
-                expect(client.getCurrentPages().length).to.equal(1);
+                expect(client.getCurrentPages()).to.have.length(1);
                 done();
             });
 
             client.changePage("/", {});
-
-            PageLoaderMock.instance.callback();
         });
 
         it("should be possible to change current page to MainPage with '' as route", function (done) {
-
             client.on("pageChange", function onPageChange() {
                 //MainPage is always on index 0.
-                expect(client.getCurrentPages().length).to.equal(1);
+                expect(client.getCurrentPages()).to.have.length(1);
                 done();
             });
 
             client.changePage("", {});
-
-            PageLoaderMock.instance.callback();
         });
 
         it("should emit 'beforePageChange' first and than 'beforeLeave' on every Sub-Ppage that will be changed from bottom to top", function () {
