@@ -10,9 +10,11 @@ describe("remoteService", function () {
     beforeEach(function () {
         RemoteService = rewire("../../lib/client/RemoteService.class.js");
         //mocking the routes
-        RemoteService.__set__("routes", {
-            services : "services/",
-            validators : "validators/"
+        RemoteService.__set__("config", {
+            routes : {
+                services : "services/",
+                validators : "validators/"
+            }
         });
     });
 
