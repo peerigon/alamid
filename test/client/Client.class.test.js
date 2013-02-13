@@ -145,6 +145,7 @@ describe("Client", function () {
     describe(".addRoute()", function () {
 
         var url,
+            pageURLs,
             historyPushState,
             historyPushStateMonkeyPatch = function () {
                 // do nothing
@@ -196,17 +197,13 @@ describe("Client", function () {
                     called.push("/blog/*");
                     next();
                 })
-                .addRoute(
-                "blog/posts",
-                function (ctx, next) {
+                .addRoute("blog/posts", function (ctx, next) {
                     called.push("/blog/posts");
                     next();
-                },
-                function (ctx, next) {
+                }, function (ctx, next) {
                     called.push("/blog/posts2");
                     next();
-                }
-            )
+                })
                 .addRoute("*", function (ctx) {
                     called.push("*2");
                 });
@@ -217,23 +214,21 @@ describe("Client", function () {
         });
 
         it("should work with a string as handler", function () {
-            var pageLoader,
-                pageURLs,
-                route = "blog/about",
-                handler = "blog/about";
+            client.addRoute("blog/about", "blog/about");
+            client.dispatchRoute("blog/about");
 
-            client.addRoute(route, handler);
+            pageURLs = PageLoaderMock.instance.pageURLs;
+            expect(pageURLs).to.eql(["blog", "blog/about"]);
+        });
 
-            client.dispatchRoute(route);
-
-            pageLoader = PageLoaderMock.instance;
-            pageURLs = pageLoader.pageURLs;
+        it("should also accept only one string and add it as route and pageURL", function () {
+            client.addRoute("blog/about");
+            pageURLs = PageLoaderMock.instance.pageURLs;
             expect(pageURLs).to.eql(["blog", "blog/about"]);
         });
 
         it("should pass the params from route", function () {
-            var context,
-                pageLoader;
+            var context;
 
             client.addRoute("blog/:author/posts/:postId", function (ctx, next) {
                 expect(ctx.params.author).to.be("spook");
@@ -241,13 +236,10 @@ describe("Client", function () {
                 next();
             });
             client.addRoute("blog/:author/posts/:postId", "blog/posts");
-
             client.start();
-
             client.dispatchRoute("blog/spook/posts/123");
 
-            pageLoader = PageLoaderMock.instance;
-            context = pageLoader.context;
+            context = PageLoaderMock.instance.context;
             expect(context.params.author).to.be("spook");
             expect(context.params.postId).to.be("123");
         });
