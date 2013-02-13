@@ -44,7 +44,7 @@ describe("View", function () {
         var $formView;
 
         beforeEach(function () {
-            $formView = jQuery(formView.root);
+            $formView = jQuery(formView.getRoot());
         });
 
         it("should throw an error if no Model was bound or an data object as argument provided", function () {
@@ -57,7 +57,7 @@ describe("View", function () {
         it("should return a reference to itself", function () {
             expect(formView.render({
                 "range": 5
-            })).to.be.equal(formView);
+            })).to.be(formView);
         });
 
         it("should apply data as value to a text-input-field", function () {
@@ -178,7 +178,7 @@ describe("View", function () {
         var $formView;
 
         beforeEach(function () {
-            $formView = jQuery(formView.root);
+            $formView = jQuery(formView.getRoot());
         });
 
         it("should throw an Error if you try to bind an Object not kind of Model", function () {
@@ -263,11 +263,11 @@ describe("View", function () {
         });
 
         it("should return a reference to itself", function () {
-            expect(formView.unbind()).to.be.equal(formView);
+            expect(formView.unbind()).to.be(formView);
         });
 
         it("should NOT be re-rendered after an unbound Model has emitted 'change'-Event", function () {
-            var $formView = jQuery(formView.root),
+            var $formView = jQuery(formView.getRoot()),
                 $text = $formView.find("[data-node='text']");
 
             formView.bind(formModel);
@@ -292,7 +292,7 @@ describe("View", function () {
     describe(".dispose()", function () {
 
         it("should unbind a bound Model", function () {
-            var $formView = jQuery(formView.root),
+            var $formView = jQuery(formView.getRoot()),
                 $text = $formView.find("[data-node='text']");
 
             formView.bind(formModel);

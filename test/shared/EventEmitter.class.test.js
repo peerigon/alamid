@@ -31,7 +31,7 @@ describe("EventEmitter", function () {
                 e.emit(event);
             }
 
-            expect(onSnacktimeCalls).to.be.equal(desiredOnSnacktimeCalls);
+            expect(onSnacktimeCalls).to.be(desiredOnSnacktimeCalls);
         });
 
     });
@@ -53,7 +53,7 @@ describe("EventEmitter", function () {
                 e.emit(event);
             }
 
-            expect(onSnacktimeCalls).to.be.equal(desiredOnSnacktimeCalls);
+            expect(onSnacktimeCalls).to.be(desiredOnSnacktimeCalls);
         });
 
     });
@@ -70,12 +70,12 @@ describe("EventEmitter", function () {
 
             e.on(event, function () {
 
-                expect(arguments[0]).to.be.equal(arg0);
-                expect(arguments[1]).to.be.equal(arg1);
-                expect(arguments[2]).to.be.equal(arg2);
-                expect(arguments[3]).to.be.equal(arg3);
-                expect(arguments[4]).to.be.equal(arg4);
-                expect(arguments[5]).to.be.equal(arg5);
+                expect(arguments[0]).to.be(arg0);
+                expect(arguments[1]).to.be(arg1);
+                expect(arguments[2]).to.be(arg2);
+                expect(arguments[3]).to.be(arg3);
+                expect(arguments[4]).to.be(arg4);
+                expect(arguments[5]).to.be(arg5);
 
                 done();
             });
@@ -104,7 +104,7 @@ describe("EventEmitter", function () {
                 e.emit(event);
             }
 
-            expect(onSnacktimeCalls).to.be.equal(desiredOnSnacktimeCalls);
+            expect(onSnacktimeCalls).to.be(desiredOnSnacktimeCalls);
         });
 
     });
@@ -130,8 +130,8 @@ describe("EventEmitter", function () {
 
             e.emit(event);
 
-            expect(isSnacktimeExecuted).to.be.equal(false);
-            expect(isLunchtimeExecuted).to.be.equal(true);
+            expect(isSnacktimeExecuted).to.be(false);
+            expect(isLunchtimeExecuted).to.be(true);
         });
     });
 
@@ -164,9 +164,9 @@ describe("EventEmitter", function () {
             e.emit(event);
             e.emit(brunchtimeEvent);
 
-            expect(isSnacktimeExecuted).to.be.equal(false);
-            expect(isLunchtimeExecuted).to.be.equal(false);
-            expect(isBrunchtimeExecuted).to.be.equal(true);
+            expect(isSnacktimeExecuted).to.be(false);
+            expect(isLunchtimeExecuted).to.be(false);
+            expect(isBrunchtimeExecuted).to.be(true);
         });
 
         it("should not trigger any event-handler", function () {
@@ -190,8 +190,8 @@ describe("EventEmitter", function () {
             e.emit(event);
             e.emit(brunchtimeEvent);
 
-            expect(isSnacktimeExecuted).to.be.equal(false);
-            expect(isBrunchtimeExecuted).to.be.equal(false);
+            expect(isSnacktimeExecuted).to.be(false);
+            expect(isBrunchtimeExecuted).to.be(false);
         });
 
     });
@@ -290,8 +290,8 @@ describe("EventEmitter", function () {
 
             e.emit(event);
 
-            expect(isSnacktimeExecuted).to.be.equal(false);
-            expect(isLunchtimeExecuted).to.be.equal(true);
+            expect(isSnacktimeExecuted).to.be(false);
+            expect(isLunchtimeExecuted).to.be(true);
         });
     });
 });
