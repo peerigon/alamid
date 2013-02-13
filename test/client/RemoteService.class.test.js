@@ -77,4 +77,3 @@ describe("remoteService", function () {
         });
     });
 });
-
