@@ -12,8 +12,8 @@ describe("remoteService", function () {
         //mocking the routes
         RemoteService.__set__("config", {
             routes : {
-                services : "services/",
-                validators : "validators/"
+                services : "/services",
+                validators : "/validators"
             }
         });
     });

@@ -16,7 +16,7 @@ describe("validator", function () {
         validator = rewire("../../lib/shared/validator.js");
 
         validator.__set__("routes", {
-            validators : "validators/"
+            validators : "/validators"
         });
 
         validate = validator.validate;
