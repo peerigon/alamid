@@ -4,7 +4,7 @@ var expect = require("expect.js"),
     rewire = require("rewire"),
     path = require("path");
 
-var dirname = __dirname.replace(/\\/g, "/"),
+var dirname = __dirname,
     collectSchemas;
 
 describe("collectSchemas", function () {

@@ -4,7 +4,7 @@ var expect = require("expect.js"),
     rewire = require("rewire"),
     path = require("path");
 
-var dirname = __dirname.replace(/\\/g, "/"),
+var dirname = __dirname,
     collectModels;
 
 describe("collectModels", function () {
@@ -22,7 +22,7 @@ describe("collectModels", function () {
         expectedModels.client["blogpost/comment"] = true;
 
         collectModels = rewire("../../../lib/core/collect/collectModels.js", false);
-        var models = collectModels(__dirname + "/collectModels");
+        var models = collectModels(dirname + "/collectModels");
 
         expect(models.server).to.only.have.keys(Object.keys(expectedModels.server));
         expect(models.client).to.only.have.keys(Object.keys(expectedModels.client));
