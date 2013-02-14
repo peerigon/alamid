@@ -285,35 +285,6 @@ describe("Client", function () {
 
     });
 
-    describe(".getParentPage()", function () {
-
-        beforeEach(function () {
-            client.start(); // Initializes the MainPage
-        });
-
-        afterEach(function () {
-            pageJS.stop();
-        });
-
-        it("should return MainPage as Parent-Page", function () {
-
-            pages.main = client.getMainPage();
-            pages.main.setSubPage(pages.home);
-
-            expect(client.getParentPage()).to.equal(pages.main);
-
-        });
-
-        it("should return null for Parent-Page", function () {
-
-            pages.main = client.getMainPage();
-
-            expect(client.getParentPage()).to.equal(null);
-
-        });
-
-    });
-
     describe(".changePage()", function () {
 
         beforeEach(function () {
@@ -500,18 +471,6 @@ describe("Client", function () {
             expect(pages.posts.getSubPage()).to.be(null);
             expect(pageChangeCalled).to.be(true);
         });
-    });
-
-    describe(".getContext()", function () {
-
-        it("should eql page.js's context object", function () {
-
-            var ctx = client.getContext();
-
-            expect(ctx.path).to.equal(location.pathname);
-            expect(ctx.title).to.equal(document.title);
-        });
-
     });
 
     describe("on unload", function() {
