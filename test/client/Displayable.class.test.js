@@ -4,11 +4,14 @@ var expect = require("expect.js"),
     value = require("value"),
     path = require("path"),
     Displayable = require("../../lib/client/Displayable.class.js"),
+    domAdapter = require("../../lib/client/helpers/domAdapter.js"),
     Plugins = require("../../lib/shared/Plugins.mixin.js"),
     DOMNodeMocks = require("./mocks/DOMNodeMocks.js"),
     jQuery = require("../../lib/client/helpers/jQuery.js"),
     collectNodeReferences = require("../testHelpers/collectNodeReferences.js"),
     _ = require("underscore");
+
+var checkTypeError = require("../testHelpers/checkError.js")(TypeError);
 
 describe("Displayable", function () {
 
@@ -17,15 +20,12 @@ describe("Displayable", function () {
         formTemplate = DOMNodeMocks.getFormString(),
         $submitButton,
         submitButton,
-        displayable,
         cssClassHide = Displayable.prototype.cssClassHide;
 
     beforeEach(function () {
         $form = jQuery(DOMNodeMocks.getForm());
-
         $submitButton = jQuery(DOMNodeMocks.getSubmitButton());
 
-        displayable = new Displayable(formTemplate);
         submitButton = new Displayable(DOMNodeMocks.getSubmitButtonString());
         form = new Displayable(formTemplate);
     });
@@ -44,26 +44,26 @@ describe("Displayable", function () {
         it("should apply the passed template in favor of the Displayable's template", function () {
             var myDisplayable = new MyDisplayable("<ol></ol>");
 
-            expect(myDisplayable.getRoot()).to.be.an(HTMLOListElement);
+            expect(myDisplayable.getRoot()[0]).to.be.an(HTMLOListElement);
         });
 
         it("should apply the passed node in favor of the Displayable's template", function () {
             var ol = document.createElement("ol"),
                 myDisplayable = new MyDisplayable(ol);
 
-            expect(myDisplayable.getRoot()).to.be.an(HTMLOListElement);
+            expect(myDisplayable.getRoot()[0]).to.be.an(HTMLOListElement);
         });
 
         it("should apply '<div data-node=\"root\"></div>' as default template if nothing has been passed", function () {
             var myDisplayable = new Displayable();
 
-            expect(myDisplayable.getRoot().outerHTML).to.be('<div data-node="root"></div>');
+            expect(myDisplayable.getRoot()[0].outerHTML).to.be('<div data-node="root"></div>');
         });
     });
 
     describe(".template", function () {
         it("should apply the Displayable's template if no template was passed", function () {
-            expect(submitButton.getRoot()).to.be.an(HTMLInputElement);
+            expect(submitButton.getRoot()[0]).to.be.an(HTMLInputElement);
         });
 
     });
@@ -79,12 +79,12 @@ describe("Displayable", function () {
             MyDisplayable = Displayable.extend({
                 template: formTemplate,
                 domEvents: {
-                    "input-a": {
+                    inputA: {
                         click: function () {
                             inputAClick = "triggered";
                         }
                     },
-                    "input-b": {
+                    inputB: {
                         click: function () {
                             inputBClick = "triggered";
                         }
@@ -93,8 +93,8 @@ describe("Displayable", function () {
             });
             myDisplayable = new MyDisplayable();
 
-            myDisplayable.getNodes()["input-a"].click();
-            myDisplayable.getNodes()["input-b"].click();
+            myDisplayable.getNode("inputA").click();
+            myDisplayable.getNode("inputB").click();
 
             expect(inputAClick).to.be("triggered");
             expect(inputBClick).to.be("triggered");
@@ -107,19 +107,19 @@ describe("Displayable", function () {
             MyDisplayable = Displayable.extend({
                 template: formTemplate,
                 domEvents: {
-                    "input-a": {
+                    inputA: {
                         click: "_onFocus"
                     }
                 },
                 _onFocus: function (event) {
                     expect(this).to.be(myDisplayable);
-                    expect(event.target).to.be(this.getNodes()["input-a"]);
+                    expect(event.target).to.be(this.getNode("inputA")[0]);
                     done();
                 }
             });
             myDisplayable = new MyDisplayable();
 
-            myDisplayable.getNodes()["input-a"].click();
+            myDisplayable.getNode("inputA").click();
         });
 
     });
@@ -127,7 +127,11 @@ describe("Displayable", function () {
     describe(".getRoot()", function () {
 
         it("should return the root node according to the given template", function () {
-            expect(displayable.getRoot()).to.be.an(HTMLFormElement);
+            expect(form.getRoot()[0]).to.be.an(HTMLFormElement);
+        });
+
+        it("should wrap it with domAdapter.$", function () {
+            expect(form.getRoot() instanceof domAdapter.$).to.be(true);
         });
 
     });
@@ -135,35 +139,43 @@ describe("Displayable", function () {
     describe(".getParent()", function () {
         
         it("should return null if the displayable is not a child", function () {
-            expect(displayable.getParent()).to.be(null);
+            expect(form.getParent()).to.be(null);
         });
         
         it("should return the parent displayable where this displayable has been added to", function () {
-            form.append(displayable).at("form");
-            expect(displayable.getParent()).to.be(form);
+            form.append(submitButton).at("form");
+            expect(submitButton.getParent()).to.be(form);
         });
         
     });
     
 
-    describe(".getNodes()", function () {
+    describe(".getNode()", function () {
 
-        it("should return an object", function () {
-            expect(displayable.getNodes()).to.be.an(Object);
+        it("should wrap all nodes with domAdapter.$", function () {
+            expect(form.getNode("form") instanceof domAdapter.$).to.be(true);
         });
 
-        it("should return a map of nodes including a 'form'-, 'input-a'-, 'input-b'-, 'input-c'- node ", function () {
-            var nodes = displayable.getNodes();
-
-            expect(nodes.form).to.be.an(HTMLFormElement);
-            expect(nodes["input-a"]).to.be.an(HTMLInputElement);
-            expect(nodes["input-c"]).to.be.an(HTMLInputElement);
-            expect(nodes["input-c"]).to.be.an(HTMLInputElement);
+        it("should return all nodes declared with data-node", function () {
+            expect(form.getNode("form")[0]).to.be.an(HTMLFormElement);
+            expect(form.getNode("inputA")[0]).to.be.an(HTMLInputElement);
+            expect(form.getNode("inputB")[0]).to.be.an(HTMLInputElement);
+            expect(form.getNode("inputC")[0]).to.be.an(HTMLInputElement);
         });
 
-        it("should return an object with a reference on 'root' if no template was given", function () {
-            displayable = new Displayable();
-            expect(displayable.getNodes().root).to.be(displayable.getRoot());
+        it("should return null if there is no node with the given name", function () {
+            expect(form.getNode("does-not-exist")).to.be(null);
+        });
+
+        it("should be possible to get the 'root' if no template was given", function () {
+            form = new Displayable();
+            expect(form.getNode("root")[0]).to.be(form.getRoot()[0]);
+        });
+
+        it("should throw a TypeError if no string was given", function () {
+            expect(function () {
+                form.getNode();
+            }).to.throwError(checkTypeError);
         });
 
     });
@@ -188,12 +200,7 @@ describe("Displayable", function () {
 
         it("should append submit-button to form", function () {
             form.append(submitButton).at("form");
-
-            var $lastChild = jQuery(form.getRoot()).find(":last-child"),
-                lastChild = $lastChild[0];
-
-            expect(lastChild.toString()).to.be(submitButton.getRoot().toString());
-            expect($lastChild.val()).to.be(submitButton.getRoot().value);
+            expect(form.getRoot()[0].lastChild).to.be(submitButton.getRoot()[0]);
         });
 
         it("should emit a 'child'-event", function (done) {
@@ -248,12 +255,7 @@ describe("Displayable", function () {
 
         it("should prepend submit-button to form", function () {
             form.prepend(submitButton).at("form");
-
-            var $firstChild = jQuery(form.getRoot()).find(":first-child"),
-                firstChild = $firstChild[0];
-
-            expect(firstChild.toString()).to.be(submitButton.getRoot().toString());
-            expect($firstChild.val()).to.be(submitButton.getRoot().value);
+            expect(form.getRoot()[0].firstChild).to.be(submitButton.getRoot()[0]);
         });
 
         it("should emit a 'child'-event", function (done) {
@@ -330,9 +332,10 @@ describe("Displayable", function () {
         });
 
         it("should still be possible to trigger attached events after .detach()", function (done) {
-            var submitButtonNode = jQuery(submitButton.getNodes()["submit-button"]);
+            var submitButtonNode = submitButton.getNode("submitButton");
 
-            submitButtonNode.on("click", function () {
+            submitButtonNode.on("click", function (event) {
+                event.preventDefault();
                 done();
             });
 
@@ -341,14 +344,19 @@ describe("Displayable", function () {
             submitButtonNode.click();
         });
 
-        it("should be possible to re-append a detached Displayable", function () {
+        it("should be possible to re-append a detached Displayable", function (done) {
+            var submitButtonNode = submitButton.getNode("submitButton");
+
+            submitButtonNode.on("click", function (event) {
+                event.preventDefault();
+                done();
+            });
+
             form.append(submitButton).at("form");
             submitButton.detach();
             form.append(submitButton).at("form");
-
-            expect(
-                jQuery(form.getRoot()).find("[type='submit']")[0].toString()
-            ).to.be(submitButton.getRoot().toString());
+            expect(form.getRoot()[0].lastChild).to.be(submitButton.getRoot()[0]);
+            submitButtonNode.click();
         });
 
         it("should not leave any event listeners on a child", function () {
@@ -397,21 +405,21 @@ describe("Displayable", function () {
 
         it("should detach itself from parent node", function () {
             submitButton.dispose();
-            expect(jQuery(form.getRoot()).find("[type='submit']").length).to.be(0);
+            expect(form.getRoot()[0].lastChild).to.not.be(submitButton);
         });
 
-        it("should NOT be possible to get a node", function () {
+        it("should NOT be possible to get the root", function () {
             submitButton.dispose();
-            expect(submitButton.getRoot()).to.not.be.ok();
+            expect(submitButton.getRoot()).to.be(null);
         });
 
-        it("should NOT be possible to get a map of nodes", function () {
+        it("should NOT be possible to get nodes", function () {
             submitButton.dispose();
-            expect(submitButton.getNodes()).to.not.be.ok();
+            expect(submitButton.getNode("submitButton")).to.be(null);
         });
 
         it("should remove all dom event listeners", function () {
-            var submitButtonNode = jQuery(submitButton.getNodes()["submit-button"]);
+            var submitButtonNode = submitButton.getNode("submitButton");
 
             submitButtonNode.on("click", function () {
                 throw new Error("This function should not be called");
@@ -466,7 +474,7 @@ describe("Displayable", function () {
 
             form.dispose();
 
-            expect(jQuery(tmpDisplayable.getRoot()).children()).to.have.length(0);
+            expect(tmpDisplayable.getRoot().children()).to.have.length(0);
         });
 
         it("should remove all node references", function () {
@@ -482,8 +490,8 @@ describe("Displayable", function () {
     describe(".hide()", function () {
 
         it("should apply the css class '" + cssClassHide + "'", function () {
-            displayable.hide();
-            expect(jQuery(displayable.getRoot()).hasClass(cssClassHide)).to.be(true);
+            form.hide();
+            expect(form.getRoot().hasClass(cssClassHide)).to.be(true);
         });
 
     });
@@ -491,8 +499,8 @@ describe("Displayable", function () {
     describe(".show()", function () {
 
         it("should remove the css class '" + cssClassHide + "'", function () {
-            displayable.show();
-            expect(jQuery(displayable.getRoot()).hasClass(cssClassHide)).to.be(false);
+            form.show();
+            expect(form.getRoot().hasClass(cssClassHide)).to.be(false);
         });
 
     });
@@ -500,58 +508,67 @@ describe("Displayable", function () {
     describe(".toggle()", function () {
 
         it("should hide if already shown", function () {
-            displayable.show();
-            expect(jQuery(displayable.getRoot()).hasClass(cssClassHide)).to.be(false);
-            displayable.toggle();
-            expect(jQuery(displayable.getRoot()).hasClass(cssClassHide)).to.be(true);
+            form.show();
+            expect(form.getRoot().hasClass(cssClassHide)).to.be(false);
+            form.toggle();
+            expect(jQuery(form.getRoot()).hasClass(cssClassHide)).to.be(true);
         });
 
         it("should show if been hidden", function () {
-            displayable.hide();
-            expect(jQuery(displayable.getRoot()).hasClass(cssClassHide)).to.be(true);
-            displayable.toggle();
-            expect(jQuery(displayable.getRoot()).hasClass(cssClassHide)).to.be(false);
+            form.hide();
+            expect(form.getRoot().hasClass(cssClassHide)).to.be(true);
+            form.toggle();
+            expect(form.getRoot().hasClass(cssClassHide)).to.be(false);
         });
 
         it("should force show if called with true", function () {
-            displayable.show();
-            expect(jQuery(displayable.getRoot()).hasClass(cssClassHide)).to.be(false);
-            displayable.toggle(true);
-            expect(jQuery(displayable.getRoot()).hasClass(cssClassHide)).to.be(false);
+            form.show();
+            expect(form.getRoot().hasClass(cssClassHide)).to.be(false);
+            form.toggle(true);
+            expect(form.getRoot().hasClass(cssClassHide)).to.be(false);
         });
 
         it("should not emit an event if the state hasn't changed", function() {
             var eventCnt = 0;
 
-            displayable.hide();
+            form.hide();
 
-            displayable.on("show", function() {
+            form.on("show", function() {
                 eventCnt++;
             });
 
-            displayable.show();
-            displayable.show();
-            displayable.show();
+            form.show();
+            form.show();
+            form.show();
 
             expect(eventCnt).to.be(1);
+        });
+
+        it("should be possible to pass non-boolean types", function () {
+            form.toggle("show me the form please");
+            expect(form.getRoot().hasClass(cssClassHide)).to.be(false);
+            form.toggle(0);
+            expect(form.getRoot().hasClass(cssClassHide)).to.be(true);
+            form.toggle(form);
+            expect(form.getRoot().hasClass(cssClassHide)).to.be(false);
         });
     });
 
     describe(".isVisible()", function () {
 
         it("should be true by default value", function () {
-            expect(displayable.isVisible()).to.be(true);
+            expect(form.isVisible()).to.be(true);
         });
 
         it("should be false after .hide()", function () {
-            displayable.hide();
-            expect(displayable.isVisible()).to.be(false);
+            form.hide();
+            expect(form.isVisible()).to.be(false);
         });
 
         it("should be true after .hide() and then .show()", function () {
-            displayable.hide();
-            displayable.show();
-            expect(displayable.isVisible()).to.be(true);
+            form.hide();
+            form.show();
+            expect(form.isVisible()).to.be(true);
         });
 
     });
@@ -560,7 +577,7 @@ describe("Displayable", function () {
         var mainPage;
         
         it("should be false by default", function () {
-            expect(displayable.isInDocument()).to.be(false);
+            expect(form.isInDocument()).to.be(false);
         });
 
         it("should be true if the root is the document", function () {
@@ -571,16 +588,16 @@ describe("Displayable", function () {
         it("should be true if one of the parents is in the document", function () {
             mainPage = new Displayable();
             mainPage.isInDocument = function () { return true; };
-            mainPage.append(displayable).at("root");
-            expect(displayable.isInDocument()).to.be(true);
+            mainPage.append(form).at("root");
+            expect(form.isInDocument()).to.be(true);
         });
 
         it("should be false after the displayable has been detached again", function () {
             mainPage = new Displayable();
             mainPage.isInDocument = function () { return true; };
-            mainPage.append(displayable).at("root");
-            displayable.detach();
-            expect(displayable.isInDocument()).to.be(false);
+            mainPage.append(form).at("root");
+            form.detach();
+            expect(form.isInDocument()).to.be(false);
         });
         
     });
@@ -596,20 +613,27 @@ describe("Displayable", function () {
         );
 
         it("should perform a css query on the root node", function () {
-            var match;
+            var match,
+                root = displayable.getRoot()[0],
+                p = root.childNodes[0],
+                em = root.childNodes[1],
+                h1 = root.childNodes[2];
 
             match = displayable.find("div");
             expect(match).to.have.length(1);
-            expect(match[0]).to.be(displayable.getRoot());
+            expect(match[0]).to.be(root);
+
             match = displayable.find("p");
             expect(match).to.have.length(1);
-            expect(match[0]).to.be(displayable.getRoot().childNodes[0]);
+            expect(match[0]).to.be(p);
+
             match = displayable.find(".hello");
             expect(match).to.have.length(1);
-            expect(match[0]).to.be(displayable.getRoot().childNodes[1]);
+            expect(match[0]).to.be(em);
+
             match = displayable.find("#article-headline");
             expect(match).to.have.length(1);
-            expect(match[0]).to.be(displayable.getRoot().childNodes[2]);
+            expect(match[0]).to.be(h1);
         });
 
     });
@@ -617,7 +641,8 @@ describe("Displayable", function () {
     describe(".emit()", function () {
 
         it("should emit the 'document'-event on all children", function () {
-            var called = "";
+            var called = "",
+                displayable = new Displayable();
 
             submitButton.on("document", function (event) {
                 called += "submitButton ";

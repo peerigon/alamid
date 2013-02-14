@@ -13,9 +13,9 @@ var DOMNodeMocks = {
     getFormString: function () {
         return (
             "<form data-node='form' action='?' method='post'>" +
-                "<input data-node='input-a' type='text' value='a'/>" +
-                "<input data-node='input-b' type='text' value='b'/>" +
-                "<input data-node='input-c' type='button' value='c'/>" +
+                "<input data-node='inputA' type='text' value='a'/>" +
+                "<input data-node='inputB' type='text' value='b'/>" +
+                "<input data-node='inputC' type='button' value='c'/>" +
             "</form>"
         );
     },
@@ -33,7 +33,7 @@ var DOMNodeMocks = {
      * @return {String}
      */
     getSubmitButtonString: function () {
-        return "<input data-node='submit-button' type='submit' value='submit'/>";
+        return "<input data-node='submitButton' type='submit' value='submit'/>";
     },
 
     /**

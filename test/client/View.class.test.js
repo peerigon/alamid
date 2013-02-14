@@ -1,19 +1,13 @@
 "use strict";
 
-var expect = require("expect.js");
-
-var value = require("value"),
-
+var expect = require("expect.js"),
+    value = require("value"),
     Displayable = require("../../lib/client/Displayable.class.js"),
     View = require("../../lib/client/View.class.js"),
-
-    ViewDefineExample = require("./mocks/ViewDefineExample.class.js"),
-
     formSchema = require("./mocks/models/schemas/formSchema.js"),
     FormModel = require("./mocks/models/FormModel.class.js"),
-
-    FormView = require("./mocks/FormView.class.js");
-
+    FormView = require("./mocks/FormView.class.js"),
+    jQuery = require("../../lib/client/helpers/jQuery.js");
 
 describe("View", function () {
 

@@ -249,7 +249,7 @@ describe("Client", function () {
 
             config.env = "development";
             client.dispatchRoute("404");
-            displayedTemplate = client.getMainPage().getSubPage().getRoot().outerHTML;
+            displayedTemplate = client.getMainPage().getSubPage()._root.outerHTML;
 
             expect(displayedTemplate).to.contain("404");
         });

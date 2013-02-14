@@ -5,17 +5,17 @@ var expect = require("expect.js"),
     Displayable = require("../../lib/client/Displayable.class.js"),
     View = require("../../lib/client/View.class.js"),
     ViewCollection = require("../../lib/client/ViewCollection.class.js"),
-    ViewCollectionDefineExample = require("./mocks/ViewCollectionDefineExample.class.js"),
-    ViewCollectionExampleWithTemplate = require("./mocks/ViewCollectionExampleWithTemplate.class.js"),
     CarLiElementView = require("./mocks/CarLiElementView.class.js"),
     ModelCollection = require("../../lib/shared/ModelCollection.class.js"),
     CarModel = require("./mocks/models/CarModel.class.js"),
     DOMNodeMocks = require("./mocks/DOMNodeMocks.js"),
+    jQuery = require("../../lib/client/helpers/jQuery.js"),
     _ = require("underscore");
 
 describe("ViewCollection", function () {
 
-    var viewCollectioNode,
+    var ViewCollectionWithExample,
+        viewCollectioNode,
         $viewCollectioNode,
         viewCollection,
         audi,
@@ -26,9 +26,13 @@ describe("ViewCollection", function () {
         cars,
         carCollection;
 
+    ViewCollectionWithExample = ViewCollection.extend({
+        template: "<ul data-node='views'></ul>"
+    });
+
     beforeEach(function () {
 
-        viewCollection = new ViewCollectionExampleWithTemplate(CarLiElementView);
+        viewCollection = new ViewCollectionWithExample(CarLiElementView);
         viewCollectioNode = viewCollection.getRoot();
         $viewCollectioNode = jQuery(viewCollectioNode);
         audi = new CarModel();
@@ -77,9 +81,12 @@ describe("ViewCollection", function () {
         });
 
         it("should be possible to override a declared template", function () {
-            viewCollection = new ViewCollectionExampleWithTemplate(CarLiElementView, DOMNodeMocks.getOlString());
+            var MyViewCollection = ViewCollection.extend({
+                template: '<div data-node="views"></div>'
+            });
+            viewCollection = new MyViewCollection(CarLiElementView, DOMNodeMocks.getOlString());
 
-            expect(viewCollection.getRoot().toString()).to.be(DOMNodeMocks.getOl().toString());
+            expect(viewCollection.getRoot()[0]).to.be.an(HTMLUListElement);
         });
 
         it("should throw an Error if a template was passed that does not include a node with 'data-node=\"views\"'", function () {
@@ -410,7 +417,7 @@ describe("ViewCollection", function () {
                 carCollection.shift();
             }
 
-            expect(removeEventCount).to.equal(expectedRemoveEventCount)
+            expect(removeEventCount).to.equal(expectedRemoveEventCount);
 
         });
 
@@ -425,7 +432,7 @@ describe("ViewCollection", function () {
                 carCollection.shift();
             }
 
-            expect(removeEventCount).to.equal(expectedRemoveEventCount)
+            expect(removeEventCount).to.equal(expectedRemoveEventCount);
 
         });
 
@@ -442,7 +449,7 @@ describe("ViewCollection", function () {
             viewCollection.bind(carCollection);
             expectedRemoveEventCount = 0;
             removeEventCount = 0;
-            i = null,
+            i = null;
             onRemove = function onRemove() {
                 removeEventCount++;
             };
@@ -495,7 +502,7 @@ describe("ViewCollection", function () {
 
         it("should throw an Error if no ModelCollection was bound", function () {
            expect(function () {
-               viewCollection = new ViewCollection(ViewCollectionExampleWithTemplate);
+               viewCollection = new ViewCollection(View);
                viewCollection.render();
            }).to.throwError();
         });
