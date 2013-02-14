@@ -82,18 +82,6 @@ describe("domAdapter", function () {
 
         });
 
-        describe(".once()", function () {
-
-            it("should execute listener only once", function (done) {
-                domAdapter(button).once("click", function onClick() {
-                    done();
-                });
-                $button.trigger("click");
-                $button.trigger("click");
-            });
-
-        });
-
         describe(".off()", function () {
 
             it("should not execute listener A", function (done) {
@@ -162,64 +150,6 @@ describe("domAdapter", function () {
 
     });
 
-    describe("Attributes", function () {
-
-        var className = "cool-cat-class";
-
-        describe(".addClass()", function () {
-
-            it("should have a class '" + className + '"', function () {
-                domAdapter(form.firstChild).addClass(className);
-                expect(jQuery(form.firstChild).attr("class")).to.be(className);
-            });
-
-        });
-
-        describe(".removeClass()", function () {
-
-            it("should not have a class '" + className + "'", function () {
-                jQuery(form.firstChild).addClass(className);
-                domAdapter(form.firstChild).removeClass(className);
-                expect(jQuery(form.firstChild).attr("class")).to.be("");
-            });
-        });
-
-        describe(".hasClass()", function () {
-
-            it("should have the class '" + className + "'", function () {
-                jQuery(form.firstChild).addClass(className);
-                expect(domAdapter(form.firstChild).hasClass(className)).to.be.ok();
-            });
-
-        });
-
-    });
-
-    describe(".detach()", function () {
-
-        it("should remove the element from DOMElement", function () {
-            var inputA = $form.find("[data-node='input-a']")[0];
-
-            domAdapter(inputA).detach();
-            expect($form.find("[data-node='input-a']")[0] === undefined).to.be.ok();
-        });
-
-        //If you detach an element from a DOMNode and you keep the reference to it, it should be still able to
-        //append it somewhere else with all its events.
-        it("should still listen to events if you trigger them explicitly on the removed element", function (done) {
-            var inputA = $form.find("[data-node='input-a']")[0];
-
-            domAdapter(inputA).on("click", function () {
-                done();
-            });
-
-            domAdapter(inputA).detach();
-
-            jQuery(inputA).trigger("click");
-        });
-
-    });
-
     describe(".dispose()", function () {
 
         it("should remove the element form DOMElemet like # destroy()", function () {
@@ -260,57 +190,6 @@ describe("domAdapter", function () {
             };
         });
 
-        describe(".stringifyJSON()", function () {
-
-            it("should behave like JSON.stringify", function () {
-                expect(domAdapter.stringifyJSON(json)).to.be(JSON.stringify(json));
-            });
-
-        });
-
-        describe(".parseJSON()", function () {
-
-            it("should be a cross client compatible JSON parser", function () {
-                var string = jQuery.parseJSON(json);
-                expect(domAdapter.parseJSON(json)).to.be(string);
-            });
-
-        });
-
-    });
-
-    describe("Queries", function () {
-
-        var queryObject,
-            queryStringOthers,
-            queryStringFirefox;
-
-        beforeEach(function () {
-            queryObject = { "this": "is", "1": "unit", "test": "" };
-            queryStringOthers = "1%3Dunit%26this%3Dis%26test%3D";
-            queryStringFirefox = "this%3Dis%261%3Dunit%26test%3D";
-        });
-
-        describe(".stringifyQuery()", function () {
-
-            it("should return an equal query-string to '1=unit&this=is&test='", function () {
-
-                var result =
-                    domAdapter.stringifyQuery(queryObject) === queryStringOthers ||
-                    domAdapter.stringifyQuery(queryObject) === queryStringFirefox;
-
-                expect(result).to.be.ok();
-            });
-
-        });
-
-        describe(".parseQuery()", function () {
-
-            it("should parse '1=unit&this=is&test=' to an to the reference eql object", function () {
-                expect(domAdapter.parseQuery(queryStringOthers)).to.be.eql(queryObject);
-            });
-
-        });
     });
 
 });
