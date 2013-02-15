@@ -4,6 +4,7 @@ var expect = require("expect.js"),
     rewire = require("rewire"),
     _ = require("underscore"),
     value = require("value"),
+    jQuery = require("../../lib/client/helpers/jQuery.js"),
 
     pageJS = require("page"),
     config = require("../../lib/client/config.client.js"),
@@ -300,7 +301,7 @@ describe("Client", function () {
 
         it("should emit 'pageChange' if it has finished and pass an Object including .toPageURL and .pageParams", function (done) {
 
-            var toPageUrl = "blog",
+            var toPageUrl = "/blog",
                 pageParams = {};
 
             client.on("pageChange", function onPageChange(event) {
@@ -320,10 +321,33 @@ describe("Client", function () {
             PageLoaderMock.instance.callback(null, [pages.blog]);
         });
 
+        it("should accept all combinations of trailing or leading slashes but return a standardized version with a leading slash", function (done) {
+            var called = 0;
+
+            client.on("pageChange", function onPageChange(event) {
+                expect(event.toPageURL).to.equal("/blog");
+                if (++called === 3) {
+                    done();
+                }
+            });
+
+            client.changePage("blog");
+            PageLoaderMock.instance.callback(null, [new PageMock()]);
+
+            client.changePage("blog/");
+            PageLoaderMock.instance.callback(null, [new PageMock()]);
+
+            client.changePage("/blog/");
+            PageLoaderMock.instance.callback(null, [new PageMock()]);
+        });
+
         it("should be possible to change current page to MainPage with '/' as route", function (done) {
+            var currentPages;
+
             client.on("pageChange", function onPageChange() {
+                currentPages = client.getCurrentPages();
                 //MainPage is always on index 0.
-                expect(client.getCurrentPages()).to.have.length(1);
+                expect(currentPages[0]).to.be(client.getMainPage());
                 done();
             });
 
@@ -331,9 +355,12 @@ describe("Client", function () {
         });
 
         it("should be possible to change current page to MainPage with '' as route", function (done) {
+            var currentPages;
+
             client.on("pageChange", function onPageChange() {
+                currentPages = client.getCurrentPages();
                 //MainPage is always on index 0.
-                expect(client.getCurrentPages()).to.have.length(1);
+                expect(currentPages[0]).to.be(client.getMainPage());
                 done();
             });
 
@@ -362,8 +389,7 @@ describe("Client", function () {
         });
 
         it("should pass an Object on 'beforePageChange' including .preventDefault(), .toPageURL and .pageParams", function (done) {
-
-            var toPageURL = "blog/posts",
+            var toPageURL = "/blog/posts",
                 pageParams = { "key": "value" };
 
             client.on("beforePageChange", function beforePageChange(event) {
