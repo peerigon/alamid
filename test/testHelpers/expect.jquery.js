@@ -71,6 +71,12 @@ if (!expect.jQuery) {
                 "Expected " + obj + " to contain " + child,
                 "Expected " + obj + " to not contain " + child
             );
+        } else if (isNode(obj)) {
+            this.assert(
+                $(this.obj).children(child).length > 0,
+                "Expected " + obj + " to contain children matching '" + child + "'",
+                "Expected " + obj + " to not contain children matching '" + child + "'"
+            );
         } else {
             contain.apply(this, arguments);
         }
