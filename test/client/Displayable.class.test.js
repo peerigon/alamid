@@ -1,6 +1,6 @@
 "use strict";
 
-var expect = require("expect.js"),
+var expect = require("../testHelpers/expect.jquery.js"),
     value = require("value"),
     path = require("path"),
     Displayable = require("../../lib/client/Displayable.class.js"),
@@ -44,20 +44,20 @@ describe("Displayable", function () {
         it("should apply the passed template in favor of the Displayable's template", function () {
             var myDisplayable = new MyDisplayable("<ol></ol>");
 
-            expect(myDisplayable.getRoot()[0]).to.be.an(HTMLOListElement);
+            expect(myDisplayable.getRoot()).to.be.an(HTMLOListElement);
         });
 
         it("should apply the passed node in favor of the Displayable's template", function () {
             var ol = document.createElement("ol"),
                 myDisplayable = new MyDisplayable(ol);
 
-            expect(myDisplayable.getRoot()[0]).to.be.an(HTMLOListElement);
+            expect(myDisplayable.getRoot()).to.be.an(HTMLOListElement);
         });
 
         it("should apply Displayable.prototype.template as default template if nothing has been passed", function () {
             var myDisplayable = new Displayable();
 
-            expect(myDisplayable.getRoot()[0].outerHTML).to.be(Displayable.prototype.template);
+            expect(myDisplayable.getRoot()).to.eql(Displayable.prototype.template);
         });
 
     });
@@ -68,7 +68,7 @@ describe("Displayable", function () {
             expect(new Displayable().template).to.be('<div data-node="root"></div>');
         });
         it("should apply the Displayable's template if no template was passed", function () {
-            expect(submitButton.getRoot()[0]).to.be.an(HTMLInputElement);
+            expect(submitButton.getRoot()).to.be.an(HTMLInputElement);
         });
 
     });
@@ -132,7 +132,7 @@ describe("Displayable", function () {
     describe(".getRoot()", function () {
 
         it("should return the root node according to the given template", function () {
-            expect(form.getRoot()[0]).to.be.an(HTMLFormElement);
+            expect(form.getRoot()).to.be.an(HTMLFormElement);
         });
 
         it("should wrap it with domAdapter.$", function () {
@@ -162,10 +162,10 @@ describe("Displayable", function () {
         });
 
         it("should return all nodes declared with data-node", function () {
-            expect(form.getNode("form")[0]).to.be.an(HTMLFormElement);
-            expect(form.getNode("inputA")[0]).to.be.an(HTMLInputElement);
-            expect(form.getNode("inputB")[0]).to.be.an(HTMLInputElement);
-            expect(form.getNode("inputC")[0]).to.be.an(HTMLInputElement);
+            expect(form.getNode("form")).to.be.an(HTMLFormElement);
+            expect(form.getNode("inputA")).to.be.an(HTMLInputElement);
+            expect(form.getNode("inputB")).to.be.an(HTMLInputElement);
+            expect(form.getNode("inputC")).to.be.an(HTMLInputElement);
         });
 
         it("should return null if there is no node with the given name", function () {
@@ -174,7 +174,7 @@ describe("Displayable", function () {
 
         it("should be possible to get the 'root' if no template was given", function () {
             form = new Displayable();
-            expect(form.getNode("root")[0]).to.be(form.getRoot()[0]);
+            expect(form.getNode("root")).to.be(form.getRoot());
         });
 
         it("should throw a TypeError if no string was given", function () {
@@ -205,7 +205,7 @@ describe("Displayable", function () {
 
         it("should append submit-button to form", function () {
             form.append(submitButton).at("form");
-            expect(form.getRoot()[0].lastChild).to.be(submitButton.getRoot()[0]);
+            expect(form.getRoot()[0].lastChild).to.be(submitButton.getRoot());
         });
 
         it("should emit a 'child'-event", function (done) {
@@ -260,7 +260,7 @@ describe("Displayable", function () {
 
         it("should prepend submit-button to form", function () {
             form.prepend(submitButton).at("form");
-            expect(form.getRoot()[0].firstChild).to.be(submitButton.getRoot()[0]);
+            expect(form.getRoot()[0].firstChild).to.be(submitButton.getRoot());
         });
 
         it("should emit a 'child'-event", function (done) {
@@ -360,7 +360,7 @@ describe("Displayable", function () {
             form.append(submitButton).at("form");
             submitButton.detach();
             form.append(submitButton).at("form");
-            expect(form.getRoot()[0].lastChild).to.be(submitButton.getRoot()[0]);
+            expect(form.getRoot()).to.contain(submitButton.getRoot());
             submitButtonNode.click();
         });
 
@@ -496,7 +496,7 @@ describe("Displayable", function () {
 
         it("should apply the css class '" + cssClassHide + "'", function () {
             form.hide();
-            expect(form.getRoot().hasClass(cssClassHide)).to.be(true);
+            expect(form.getRoot()).to.have.cssClass(cssClassHide);
         });
 
     });
@@ -505,7 +505,7 @@ describe("Displayable", function () {
 
         it("should remove the css class '" + cssClassHide + "'", function () {
             form.show();
-            expect(form.getRoot().hasClass(cssClassHide)).to.be(false);
+            expect(form.getRoot()).to.not.have.cssClass(cssClassHide);
         });
 
     });
@@ -514,23 +514,23 @@ describe("Displayable", function () {
 
         it("should hide if already shown", function () {
             form.show();
-            expect(form.getRoot().hasClass(cssClassHide)).to.be(false);
+            expect(form.getRoot()).to.not.have.cssClass(cssClassHide);
             form.toggle();
-            expect(jQuery(form.getRoot()).hasClass(cssClassHide)).to.be(true);
+            expect(form.getRoot()).to.have.cssClass(cssClassHide);
         });
 
         it("should show if been hidden", function () {
             form.hide();
-            expect(form.getRoot().hasClass(cssClassHide)).to.be(true);
+            expect(form.getRoot()).to.have.cssClass(cssClassHide);
             form.toggle();
-            expect(form.getRoot().hasClass(cssClassHide)).to.be(false);
+            expect(form.getRoot()).to.not.have.cssClass(cssClassHide);
         });
 
         it("should force show if called with true", function () {
             form.show();
-            expect(form.getRoot().hasClass(cssClassHide)).to.be(false);
+            expect(form.getRoot()).to.not.have.cssClass(cssClassHide);
             form.toggle(true);
-            expect(form.getRoot().hasClass(cssClassHide)).to.be(false);
+            expect(form.getRoot()).to.not.have.cssClass(cssClassHide);
         });
 
         it("should not emit an event if the state hasn't changed", function() {
@@ -551,11 +551,11 @@ describe("Displayable", function () {
 
         it("should be possible to pass non-boolean types", function () {
             form.toggle("show me the form please");
-            expect(form.getRoot().hasClass(cssClassHide)).to.be(false);
+            expect(form.getRoot()).to.not.have.cssClass(cssClassHide);
             form.toggle(0);
-            expect(form.getRoot().hasClass(cssClassHide)).to.be(true);
+            expect(form.getRoot()).to.have.cssClass(cssClassHide);
             form.toggle(form);
-            expect(form.getRoot().hasClass(cssClassHide)).to.be(false);
+            expect(form.getRoot()).to.not.have.cssClass(cssClassHide);
         });
     });
 
