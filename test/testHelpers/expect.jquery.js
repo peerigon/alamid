@@ -39,8 +39,8 @@ if (!expect.jQuery) {
             html = obj.outerHTML;
             this.assert(
                 html === template,
-                "Expected '" + shorten(html) + "' to match '" + shorten(template) + "'",
-                "Expected '" + shorten(html) + "' to not match '" + shorten(template) + "'"
+                function () { return "Expected '" + shorten(html) + "' to match '" + shorten(template) + "'"; },
+                function () { return "Expected '" + shorten(html) + "' to not match '" + shorten(template) + "'"; }
             );
         } else {
             eql.apply(this, arguments);
@@ -54,8 +54,8 @@ if (!expect.jQuery) {
 
         this.assert(
             $(obj).hasClass(classNames),
-            "Expected " + unwrap(obj) + " to have css class '" + classNames + "'",
-            "Expected " + unwrap(obj) + " to not have css class '" + classNames + "'"
+            function () { return "Expected " + unwrap(obj) + " to have css class '" + classNames + "'"; },
+            function () { return "Expected " + unwrap(obj) + " to not have css class '" + classNames + "'"; }
         );
 
         return this;
@@ -68,14 +68,14 @@ if (!expect.jQuery) {
         if (isNode(obj) && isNode(child)) {
             this.assert(
                 $.contains(obj, child),
-                "Expected " + obj + " to contain " + child,
-                "Expected " + obj + " to not contain " + child
+                function () { return "Expected " + obj + " to contain " + child; },
+                function () { return "Expected " + obj + " to not contain " + child; }
             );
         } else if (isNode(obj)) {
             this.assert(
                 $(this.obj).children(child).length > 0,
-                "Expected " + obj + " to contain children matching '" + child + "'",
-                "Expected " + obj + " to not contain children matching '" + child + "'"
+                function () { return "Expected " + obj + " to contain children matching '" + child + "'"; },
+                function () { return "Expected " + obj + " to not contain children matching '" + child + "'"; }
             );
         } else {
             contain.apply(this, arguments);
@@ -90,14 +90,35 @@ if (!expect.jQuery) {
         if (isNode(obj)) {
             this.assert(
                 $(this.obj).length === 0,
-                "Expected " + obj + " to be empty",
-                "Expected " + obj + " to not be empty"
+                function () { return "Expected " + obj + " to be empty"; },
+                function () { return "Expected " + obj + " to not be empty"; }
             );
         } else {
             empty.apply(this, arguments);
         }
 
         return this;
+    };
+
+    proto.attr = function (name, value) {
+        var obj = this.obj;
+
+        if (arguments.length > 1) {
+            this.assert(
+                $(obj).attr(name) == value, // loose equality
+                function () { return "Expected " + obj + " to have attribute '" + name + "' with value '" + value + "'"; },
+                function () { return "Expected " + obj + " to not have attribute '" + name + "' with value '" + value + "'"; }
+            );
+        } else {
+            this.assert(
+                $(obj).attr(name) !== undefined,
+                function () { return "Expected " + obj + " to have attribute '" + name + "'"; },
+                function () { return "Expected " + obj + " to not have attribute '" + name + "'"; }
+            );
+        }
+
+        return this;
+
     };
 }
 
