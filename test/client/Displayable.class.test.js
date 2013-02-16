@@ -54,14 +54,19 @@ describe("Displayable", function () {
             expect(myDisplayable.getRoot()[0]).to.be.an(HTMLOListElement);
         });
 
-        it("should apply '<div data-node=\"root\"></div>' as default template if nothing has been passed", function () {
+        it("should apply Displayable.prototype.template as default template if nothing has been passed", function () {
             var myDisplayable = new Displayable();
 
-            expect(myDisplayable.getRoot()[0].outerHTML).to.be('<div data-node="root"></div>');
+            expect(myDisplayable.getRoot()[0].outerHTML).to.be(Displayable.prototype.template);
         });
+
     });
 
     describe(".template", function () {
+        
+        it("should be '<div data-node=\"root\"></div>' by default", function () {
+            expect(new Displayable().template).to.be('<div data-node="root"></div>');
+        });
         it("should apply the Displayable's template if no template was passed", function () {
             expect(submitButton.getRoot()[0]).to.be.an(HTMLInputElement);
         });
