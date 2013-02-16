@@ -144,6 +144,36 @@ describe("domAdapter", function () {
 
     });
 
+    describe(".addClass()", function () {
+
+        it("should add the css class 'cool-cat'", function () {
+            domAdapter(form.firstChild).addClass("cool-cat");
+            expect(jQuery(form.firstChild).attr("class")).to.be("cool-cat");
+        });
+
+    });
+
+    describe(".removeClass()", function () {
+
+        it("should remove the css-class 'cool-cat'", function () {
+            jQuery(form.firstChild).addClass("cool-cat");
+            domAdapter(form.firstChild).removeClass("cool-cat");
+            expect(jQuery(form.firstChild).attr("class")).to.be("");
+        });
+    });
+
+    describe(".hasClass()", function () {
+
+        it("should return true if the node has the class 'cool-cat'", function () {
+            jQuery(form.firstChild).addClass("cool-cat");
+            expect(domAdapter(form.firstChild).hasClass("cool-cat")).to.be(true);
+        });
+        it("should return false if the node doesn't have the class 'cool-cat'", function () {
+            expect(domAdapter(form.firstChild).hasClass("cool-cat")).to.be(false);
+        });
+
+    });
+
     describe(".dispose()", function () {
 
         it("should remove the element form DOMElemet like # destroy()", function () {
