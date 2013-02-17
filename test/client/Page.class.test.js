@@ -1,75 +1,84 @@
 "use strict";
 
-var expect = require("expect.js"),
+var expect = require("../testHelpers/expect.jquery.js"),
     value = require("value"),
     Displayable = require("../../lib/client/Displayable.class.js"),
     Page = require("../../lib/client/Page.class.js"),
-    PageExample = require("./mocks/PageExample.class.js"),
-    PageDefineExample = require("./mocks/PageDefineExample.class.js");
-
+    jQuery = require("../../lib/client/helpers/jQuery.js"),
+    collectNodeReferences = require("../testHelpers/collectNodeReferences.js");
 
 describe("Page", function () {
 
-    var pageExample,
-        subPageExample,
-        params = {
-            "author": "topa",
-            "test": "Page"
-        };
+    var page,
+        subPage,
+        ctx = {};
 
     beforeEach(function () {
-        pageExample = new PageExample(params);
+        page = new Page(ctx);
     });
 
     describe(".constructor()", function () {
 
-        it("should be possible to overwrite the template with second argument", function () {
-            pageExample = new PageExample({}, "<div></div>");
+        it("should take '<div data-node=\"page\"></div>' as default template", function () {
+            expect(page.getRoot()).to.eql('<div data-node="page"></div>');
+        });
+        it("should use the page-node given by the template", function () {
+            page = new Page({}, '<div><article id="it-works" data-node="page"></article></div>');
+            expect(page.getNode("page")).to.have.attr("id", "it-works");
+        });
+        it("should use the page-node given by the root-node", function () {
+            var root = document.createElement("div");
 
-            expect(jQuery(pageExample.getRoot()).find("[data-node='page']")).to.have.length(0);
+            root.innerHTML = '<article id="it-works" data-node="page"></article>';
+            page = new Page({}, root);
+            expect(page.getNode("page")).to.have.attr("id", "it-works");
         });
 
     });
 
-    describe("._getParams()", function () {
+    describe(".context", function () {
 
-        it("should provide passed params on .construct()", function () {
-            expect(pageExample.getParams()).to.be(params);
+        it("should return the context that have been passed to the constructor", function () {
+            expect(page.context).to.be(ctx);
         });
 
     });
 
     describe(".setSubPage()", function () {
 
-        var subPageId = "subPage";
-
         beforeEach(function () {
-            subPageExample = new PageExample({}, "<div data-node='page'><p id='" + subPageId +"'></p></div>");
-            pageExample.setSubPage(subPageExample);
+            subPage = new Page({}, '<p id="subPage"></p>');
+        });
+
+        it("should append the sub page at the page-node", function () {
+            page.setSubPage(subPage);
+            expect(page.getNode("page")).to.be(subPage.getRoot().parent());
         });
 
         it("should throw an error if you don't pass an instance of Page", function () {
             expect(function () {
-                pageExample.setSubPage({});
+                page.setSubPage({});
             }).to.throwError();
         });
 
-        it("should be possible to reset the page by passing null", function (done) {
-            pageExample.setSubPage(null);
-            done();
+        it("should be possible to reset the page by passing null", function () {
+            page.setSubPage(subPage);
+            page.setSubPage(null);
+            expect(page.getSubPage()).to.be(null);
         });
 
         it("should dispose a previously set Sub-Page", function (done) {
-            var prevPage = pageExample.getSubPage();
+            var prevPage = new Page();
 
+            page.setSubPage(prevPage);
             prevPage.once("dispose", function () {
                 done();
             });
-            pageExample.setSubPage(new PageExample());
+            page.setSubPage(new Page());
         });
 
-        it("should append the SubPage", function () {
-            expect(pageExample.find("#" + subPageId)).to.have.length(1);
+        it("should be chainable", function () {
+            expect(page.setSubPage(null)).to.be(page);
         });
 
     });
@@ -77,19 +86,42 @@ describe("Page", function () {
     describe(".getSubPage()", function () {
 
         beforeEach(function () {
-            subPageExample = new PageExample();
-            pageExample.setSubPage(subPageExample);
+            subPage = new Page();
+            page.setSubPage(subPage);
         });
 
         it("should return null by default", function () {
-            pageExample = new PageExample();
-            expect(pageExample.getSubPage()).to.equal(null);
+            page = new Page();
+            expect(page.getSubPage()).to.equal(null);
         });
 
         it("should return the previously set Sub-Page", function () {
-           expect(pageExample.getSubPage()).to.equal(subPageExample);
+           expect(page.getSubPage()).to.equal(subPage);
         });
 
     });
+
+    describe(".dispose()", function () {
+
+        beforeEach(function () {
+            subPage = new Page();
+            page.setSubPage(subPage);
+        });
+
+        it("should remove the reference to the subPage", function () {
+            page.dispose();
+            expect(page.getSubPage()).to.be(null);
+        });
+
+        it("should remove all node references", function () {
+            var nodeRefs;
+
+            page.dispose();
+            nodeRefs = collectNodeReferences(page);
+            expect(nodeRefs).to.be.empty();
+        });
+
+    });
+
 
 });
