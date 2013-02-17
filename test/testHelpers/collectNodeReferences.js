@@ -10,7 +10,8 @@ function collectNodeReferences(obj, collection) {
     if (value(obj).typeOf(Node)) {
         collection.push(obj);
     } else if (value(obj).typeOf(Object) || value(obj).typeOf(Array)) {
-        for (key in obj) { // no check for hasOwnProperty() here
+        /*jshint forin:false */ // we want 'em all
+        for (key in obj) {
             collectNodeReferences(obj[key], collection);
         }
     }
