@@ -23,7 +23,7 @@ describe("PageLoader", function () {
                 instance = new PageLoader(undefined);
             }).to.throwException(expectTypeError);
         });
-        it("should throw an exception if the passed argument is an array with no strings only", function () {
+        it("should throw an exception if the passed argument is an array without strings", function () {
             expect(function () {
                 instance = new PageLoader([]);
             }).to.throwException(expectTypeError);

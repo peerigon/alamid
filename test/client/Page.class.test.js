@@ -101,6 +101,21 @@ describe("Page", function () {
 
     });
 
+    describe(".emit()", function () {
+        var eventObj = {};
+
+        it("should emit a beforeLeave-Event on the sub page as well", function (done) {
+            subPage = new Page();
+            page.setSubPage(subPage);
+            subPage.on("beforeLeave", function (event) {
+                expect(event).to.be(eventObj);
+                done();
+            });
+            page.emit("beforeLeave", eventObj);
+        });
+
+    });
+
     describe(".dispose()", function () {
 
         beforeEach(function () {
