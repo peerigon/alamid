@@ -1,14 +1,14 @@
 {
-    "name": "alamid",
-    "description": "Framework for realtime apps that run both on the server and the client.",
-    "version": "0.12.0",
-    "repository": "git://github.com/peerigon/alamid",
-    "author": "peerigon <developers@peerigon.com>",
+    "name" : "alamid",
+    "description" : "Framework for realtime apps that run both on the server and the client.",
+    "version" : "0.12.0",
+    "repository" : "git://github.com/peerigon/alamid",
+    "author" : "peerigon <developers@peerigon.com>",
     "contributors" : [
         "Tobias Koppers @sokra"
     ],
-    "main": "./lib/index.js",
-    "keywords": [
+    "main" : "./lib/index.js",
+    "keywords" : [
         "client",
         "server",
         "framework",
@@ -17,39 +17,39 @@
         "websockets",
         "realtime"
     ],
-    "engines": {
-        "node": "< 0.9"
+    "engines" : {
+        "node" : "< 0.9"
     },
-    "dependencies": {
-        "underscore": "1.4.x",
-        "async": "0.1.x",
-        "connect": "2.x",
+    "dependencies" : {
+        "underscore" : "1.4.x",
+        "async" : "0.1.x",
+        "connect" : "2.x",
         "spdy" : "1.x",
-        "winston": "0.6.x",
-        "fshelpers": "0.2.x",
-        "alamid-class": "0.x",
-        "value": "0.x",
+        "winston" : "0.6.x",
+        "fshelpers" : "0.2.x",
+        "alamid-class" : "0.x",
+        "value" : "0.x",
         "nconf" : "0.6.x",
         "socket.io" : "0.9.x",
         "cookie" : "0.x",
-        "webpack": "0.8.x",
-        "page": "1.3.x",
+        "webpack" : "0.8.x",
+        "page" : "1.3.x",
         "middler" : "0.6.x",
         "wrench" : "1.4.x",
         "commander" : "0.1.x",
         "ejs" : "0.8.x",
         "webpack-dev-middleware" : "0.8.x"
     },
-    "devDependencies": {
+    "devDependencies" : {
         "grunt" : "0.x",
-        "nof5": "0.x",
-        "expect.js": "0.x",
-        "mocha": "1.x",
+        "nof5" : "0.x",
+        "expect.js" : "0.x",
+        "mocha" : "1.x",
         "xunit-file" : "*",
-        "rewire": "1.x",
+        "rewire" : "1.x",
         "zombie" : "1.x",
         "supertest" : "0.x",
-        "grunt-simple-mocha" : "0.2.x"
+        "grunt-simple-mocha" : "0.x"
     },
     "scripts" : {
         "test" : "grunt test-all"

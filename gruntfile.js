@@ -6,93 +6,74 @@ var child_process = require('child_process'),
     path = require("path"),
     os = require("os");
 
-var nof5 = __dirname  + "/node_modules/nof5/bin/nof5",
-    tests = __dirname  + "/test",
+var nof5 = __dirname + "/node_modules/nof5/bin/nof5",
+    tests = __dirname + "/test",
     clientTests = tests + "/client",
     sharedTests = tests + "/shared",
     testAssets = tests + "/assets";
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
     grunt.initConfig({
-        lint: {
-            files: ["grunt.js", "lib/server/**/*.js"]
-        },
-        jshint: {
-            options: {
-                curly: true,
-                eqeqeq: true,
-                immed: true,
-                latedef: true,
-                newcap: true,
-                noarg: true,
-                sub: true,
-                undef: true,
-                eqnull: true,
-                node : true,
-                es5 : true,
-                globalstrict : true
-            }
-        },
-        simplemocha: {
-            all: {
-                src: ["test/server/**/*.test.js", "test/shared/**/*.test.js", "test/core/**/*.test.js"],
-                options: {
-                    globals: ['should'],
-                    timeout: 3000,
-                    ignoreLeaks: false,
-                    ui: 'bdd',
-                    reporter: 'spec'
+        simplemocha : {
+            all : {
+                src : ["test/server/**/*.test.js", "test/shared/**/*.test.js", "test/core/**/*.test.js"],
+                options : {
+                    globals : ['should'],
+                    timeout : 3000,
+                    ignoreLeaks : false,
+                    ui : 'bdd',
+                    reporter : 'spec'
                 }
             },
-            nyan: {
-                src: ["test/server/**/*.test.js", "test/shared/**/*.test.js", "test/core/**/*.test.js"],
-                options: {
-                    globals: ['should'],
-                    timeout: 3000,
-                    ignoreLeaks: false,
-                    ui: 'bdd',
-                    reporter: 'nyan'
+            nyan : {
+                src : ["test/server/**/*.test.js", "test/shared/**/*.test.js", "test/core/**/*.test.js"],
+                options : {
+                    globals : ['should'],
+                    timeout : 3000,
+                    ignoreLeaks : false,
+                    ui : 'bdd',
+                    reporter : 'nyan'
                 }
             },
             shared : {
-                src: 'test/shared/**/*.test.js',
-                options: {
-                    globals: ['should'],
-                    timeout: 3000,
-                    ignoreLeaks: false,
-                    ui: 'bdd',
-                    reporter: 'spec'
+                src : 'test/shared/**/*.test.js',
+                options : {
+                    globals : ['should'],
+                    timeout : 3000,
+                    ignoreLeaks : false,
+                    ui : 'bdd',
+                    reporter : 'spec'
                 }
             },
             server : {
-                src: 'test/server/**/*.test.js',
-                options: {
-                    globals: ['should'],
-                    timeout: 3000,
-                    ignoreLeaks: false,
-                    ui: 'bdd',
-                    reporter: 'spec'
+                src : 'test/server/**/*.test.js',
+                options : {
+                    globals : ['should'],
+                    timeout : 3000,
+                    ignoreLeaks : false,
+                    ui : 'bdd',
+                    reporter : 'spec'
                 }
             },
             core : {
-                src: 'test/core/**/*.test.js',
-                options: {
-                    globals: ['should'],
-                    timeout: 3000,
-                    ignoreLeaks: false,
-                    ui: 'bdd',
-                    reporter: 'spec'
+                src : 'test/core/**/*.test.js',
+                options : {
+                    globals : ['should'],
+                    timeout : 3000,
+                    ignoreLeaks : false,
+                    ui : 'bdd',
+                    reporter : 'spec'
                 }
             },
-            jenkins: {
-                src: ["test/server/**/*.test.js", "test/shared/**/*.test.js", "test/core/**/*.test.js"],
-                options: {
-                    globals: ['should'],
-                    timeout: 3000,
-                    ignoreLeaks: false,
-                    ui: 'bdd',
-                    reporter: 'xunit-file'
+            jenkins : {
+                src : ["test/server/**/*.test.js", "test/shared/**/*.test.js", "test/core/**/*.test.js"],
+                options : {
+                    globals : ['should'],
+                    timeout : 3000,
+                    ignoreLeaks : false,
+                    ui : 'bdd',
+                    reporter : 'xunit-file'
                 }
             }
         }
@@ -100,7 +81,7 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-simple-mocha');
 
-    grunt.registerTask("enable-testing-mode", "sets env to testing to keep the console quiet", function() {
+    grunt.registerTask("enable-testing-mode", "sets env to testing to keep the console quiet", function () {
         var env = process.env;
         env.env = "testing"; //logger be quiet!
     });
@@ -110,8 +91,7 @@ module.exports = function(grunt) {
      * @param {string} assetsPath
      * @param {number} nof5Port
      */
-    grunt.registerHelper("simpleNof5", function simpleNof5(testPath, assetsPath, nof5Port) {
-
+    function simpleNof5(testPath, assetsPath, nof5Port) {
         var nof5Cmd = "cd " + path.resolve(testPath) + " && node " + nof5 + " -p " + nof5Port,
             nof5Process,
 
@@ -169,9 +149,9 @@ module.exports = function(grunt) {
 
         // increment nof5's port so that it wouldn't clash with existing nof5 instances
         ++nof5Port;
-    });
+    }
 
-    grunt.registerTask("freshNpmInstall","deletes the node_modules folder and does npm install afterwards", function() {
+    grunt.registerTask("freshNpmInstall", "deletes the node_modules folder and does npm install afterwards", function () {
 
         var done = this.async();
 
@@ -190,7 +170,7 @@ module.exports = function(grunt) {
                 npmInstall.stderr.pipe(process.stderr);
 
                 npmInstall.on('exit', function (code) {
-                    if(code === 0) {
+                    if (code === 0) {
                         done(null);
                     }
                     else {
@@ -200,19 +180,18 @@ module.exports = function(grunt) {
             });
     });
 
-
     grunt.registerTask("test-client", "Browser tests with nof5", function testClient() {
 
         var done = this.async();
 
-        grunt.helper("simpleNof5", clientTests, testAssets, 11234);
+        simpleNof5(clientTests, testAssets, 11234);
     });
 
     grunt.registerTask("test-shared-browser", "Shared browser-tests with nof5", function testSharedBrowser() {
 
         var done = this.async();
 
-        grunt.helper("simpleNof5", sharedTests, testAssets, 11235);
+        simpleNof5(sharedTests, testAssets, 11235);
 
     });
 
@@ -220,18 +199,18 @@ module.exports = function(grunt) {
 
         var done = this.async();
 
-        grunt.helper("simpleNof5", clientTests, testAssets, 11234);
-        grunt.helper("simpleNof5", sharedTests, testAssets, 11235);
+        simpleNof5(clientTests, testAssets, 11234);
+        simpleNof5(sharedTests, testAssets, 11235);
 
     });
 
     //mocha server tests
-    grunt.registerTask("test-server", "enable-testing-mode simplemocha:server");
-    grunt.registerTask("test-core", "enable-testing-mode simplemocha:core");
-    grunt.registerTask("test-shared", "enable-testing-mode simplemocha:shared");
+    grunt.registerTask("test-server", ["enable-testing-mode", "simplemocha:server"]);
+    grunt.registerTask("test-core", ["enable-testing-mode", "simplemocha:core"]);
+    grunt.registerTask("test-shared", ["enable-testing-mode", "simplemocha:shared"]);
 
-    grunt.registerTask('test-all', "enable-testing-mode simplemocha:all");
+    grunt.registerTask('test-all', ["enable-testing-mode", "simplemocha:all"]);
 
-    grunt.registerTask("test-jenkins", "enable-testing-mode simplemocha:jenkins");
+    grunt.registerTask("test-jenkins", ["enable-testing-mode", "simplemocha:jenkins"]);
 
 };
