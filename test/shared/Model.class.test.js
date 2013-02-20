@@ -5,7 +5,8 @@ var expect = require("expect.js");
 var Animal = require("./Model/Animal.class.js"),
     User1 = require("./Model/User1.class.js"),
     User2 = require("./Model/User2.class.js"),
-    Octocat = require("./Model/Octocat.class.js");
+    Octocat = require("./Model/Octocat.class.js"),
+    Model = require("../../lib/shared/Model.class.js");
 
 describe("Model", function () {
 
@@ -60,7 +61,7 @@ describe("Model", function () {
                 });
             });
 
-            it("should fail if setting an unknown attribute", function () {
+            it("should fail when setting an attribute that is not in the schema", function () {
                 expect(function () {
                     user.set("what", "ever");
                 }).to.throwError();
@@ -73,6 +74,14 @@ describe("Model", function () {
 
                 //this is important because it depends on the order
                 expect(user.get("name")).to.eql("hans");
+            });
+
+            it("should be possible to set and get any key if there is no schema", function () {
+                var model = new Model();
+
+                model.set("what", "ever");
+                expect(model.get("what")).to.be("ever");
+                expect(model.get()).to.eql( { what: "ever" } );
             });
         });
 
@@ -177,7 +186,7 @@ describe("Model", function () {
                 var escapedUser = user.escape();
 
                 expect(escapedUser.name).to.eql("&lt;script&gt;alert(&quot;PWNED&quot;);&lt;&#47;script&gt;");
-                expect(escapedUser.age).to.eql(3)
+                expect(escapedUser.age).to.eql(3);
             });
         });
 
