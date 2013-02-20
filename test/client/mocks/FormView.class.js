@@ -6,45 +6,40 @@ var FormView = View.extend("FormView", {
     template:
         '<div data-node="formView">' +
 
-            '<h1 data-node="heading"></h1>' +
+            '<h1 data-node="headline"></h1>' +
 
-                '<form>' +
+            '<div data-node="message"></div>' +
 
-                    '<fieldset>' +
+            '<form>' +
 
-                        '<input type="text" data-node="text"/>' +
+                '<fieldset>' +
 
-                        '<textarea data-node="textarea"></textarea>' +
+                    '<input type="text" data-node="text"/>' +
 
-                        '<input type="range" data-node="range"/>' +
+                    '<textarea data-node="textarea"></textarea>' +
 
-                        '<input type="checkbox" data-node="checkbox"/>' +
+                    '<input type="range" data-node="range"/>' +
 
-                        '<input type="radio" data-node="radio"/>' +
+                    '<input type="checkbox" data-node="checkbox"/>' +
 
-                        '<input type="button" data-node="button"/>' +
+                    '<input type="radio" data-node="radio"/>' +
 
-                        '<input type="submit" data-node="submit"/>' +
+                    '<input type="button" data-node="button"/>' +
 
-                        '<input type="date" data-node="date"/>' +
+                    '<input type="submit" data-node="submit"/>' +
 
-                        '<input type="time" data-node="time"/>' +
+                    '<input type="date" data-node="date"/>' +
 
-                        '<input type="datetime" data-node="datetime"/>' +
+                    '<input type="time" data-node="time"/>' +
 
-                        '<img data-node="img"/>' +
+                    '<input type="datetime" data-node="datetime"/>' +
 
-                    '</fieldset>' +
+                    '<img data-node="img"/>' +
+
+                '</fieldset>' +
 
             '</form>' +
-    '</div>',
-
-    /**
-     * @return {string}
-     */
-    getTemplate: function () {
-        return this.template;
-    }
+    '</div>'
 
 });
 

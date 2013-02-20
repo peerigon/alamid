@@ -118,7 +118,26 @@ if (!expect.jQuery) {
         }
 
         return this;
+    };
 
+    proto.prop = function (name, value) {
+        var obj = this.obj;
+
+        if (arguments.length > 1) {
+            this.assert(
+                $(obj).prop(name) == value, // loose equality
+                function () { return "Expected " + obj + " to have property '" + name + "' with value '" + value + "'"; },
+                function () { return "Expected " + obj + " to not have property '" + name + "' with value '" + value + "'"; }
+            );
+        } else {
+            this.assert(
+                $(obj).prop(name) !== undefined,
+                function () { return "Expected " + obj + " to have property '" + name + "'"; },
+                function () { return "Expected " + obj + " to not have property '" + name + "'"; }
+            );
+        }
+
+        return this;
     };
 }
 
