@@ -326,6 +326,15 @@ describe("Model", function () {
                 expect(changeTimes).to.be(5);
             });
         });
+
+        describe("Static Events", function () {
+
+            it("should also be possible to emit events on the model class itself", function (done) {
+                Model.on("test", done);
+                Model.emit("test");
+            });
+
+        });
     });
 
     describe("Validation", function(){
