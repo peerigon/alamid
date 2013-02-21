@@ -222,6 +222,14 @@ describe("Client", function () {
             expect(pageURLs).to.eql(["blog", "blog/about"]);
         });
 
+        it("should take the route as pageURL when passing only on argument", function () {
+            client.addRoute("blog/about");
+            client.dispatchRoute("blog/about");
+
+            pageURLs = PageLoaderMock.instance.pageURLs;
+            expect(pageURLs).to.eql(["blog", "blog/about"]);
+        });
+
         it("should also accept only one string and add it as route and pageURL", function () {
             client.addRoute("blog/about");
             pageURLs = PageLoaderMock.instance.pageURLs;

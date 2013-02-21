@@ -423,16 +423,26 @@ describe("Displayable", function () {
             expect(submitButton.getNode("submitButton")).to.be(null);
         });
 
-        it("should remove all dom event listeners", function () {
-            var submitButtonNode = submitButton.getNode("submitButton");
+        it("should remove all dom event listeners from data-nodes and the root", function () {
+            var displayable = new Displayable(
+                    '<div>' +
+                        '<input type="button" data-node="button">' +
+                    '</div>'
+                ),
+                button = displayable.getNode("button"),
+                root = displayable.getRoot();
 
-            submitButtonNode.on("click", function () {
+            function throwError() {
                 throw new Error("This function should not be called");
-            });
+            }
 
-            form.append(submitButton).at("form");
-            submitButton.dispose();
-            submitButtonNode.click();
+            button.on("click", throwError);
+            root.on("click", throwError);
+            root.delegate("input", "click", throwError);
+
+            displayable.dispose();
+            button.click();
+            root.click();
         });
 
         it("should NOT be possible to re-append a disposed Displayable", function () {
