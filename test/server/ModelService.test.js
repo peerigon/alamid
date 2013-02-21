@@ -78,11 +78,13 @@ describe("Model-Services", function () {
                 });
 
                 it("should convert an error-response to an internal error", function (done) {
-                    octocat.setService({
-                        create : function (ids, model, callback) {
-                            callback({ status : "error", message : "my error message" });
-                        }
-                    });
+
+                    testService.create = function mockedCreate(ids, model, callback) {
+                        callback({ status : "error", message : "my error message" });
+                    };
+
+                    octocat.setService(testService);
+
                     octocat.save(function (err) {
                         expect(err.message).to.contain("my error message");
                         done();
@@ -121,11 +123,11 @@ describe("Model-Services", function () {
                 });
 
                 it("should also work with sync services", function (done) {
-                    octocat.setService({
-                        create : function (ids, model) {
-                            return { status : "success", data : { age : 10 } };
-                        }
-                    });
+
+                    testService.create = function (ids, model) {
+                        return { status : "success", data : { age : 10 } };
+                    };
+
                     octocat.set('name', 'Octocat');
                     expect(octocat.getId()).to.be(null);
 
@@ -140,20 +142,18 @@ describe("Model-Services", function () {
 
             describe("#destroy", function () {
 
-                var mockedDeleteService = {
-                    destroy : function (ids, callback) {
-                        if (ids !== null) {
-                            callback({ status : "success" });
-                            return;
-                        }
-                        callback({ status : "error", message : "missing IDs" });
+                function mockedDestroy(ids, callback) {
+                    if (ids !== null) {
+                        callback({ status : "success" });
+                        return;
                     }
-                };
+                    callback({ status : "error", message : "missing IDs" });
+                }
 
                 it("call the delete service if ID is set and return successfully", function (done) {
                     octocat = new Octocat(2);
-                    octocat.setService(mockedDeleteService);
-
+                    testService.destroy = mockedDestroy;
+                    octocat.setService(testService);
                     octocat.destroy(function (err) {
                         expect(err).to.be(null);
                         done();
@@ -161,10 +161,11 @@ describe("Model-Services", function () {
                 });
 
                 it("should fail with a missing ID", function (done) {
-                    octocat.setService(mockedDeleteService);
+                    testService.destroy = mockedDestroy;
+                    octocat.setService(testService);
                     expect(octocat.getId()).to.be(null);
 
-                    octocat.save(function (err) {
+                    octocat.destroy(function (err) {
                         expect(err).to.be.an(Error);
                         done();
                     });
