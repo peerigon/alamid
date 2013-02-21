@@ -61,7 +61,7 @@ describe("Model-Services", function () {
                         callback();
                     };
 
-                    octocat = new Octocat();
+                    octocat.setService(testService);
 
                     octocat.save(function (err) {
                         expect(err).not.to.be(null);

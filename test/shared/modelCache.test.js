@@ -8,14 +8,14 @@ var expect = require("expect.js");
 
 describe("ModelCache", function () {
 
-    describe("Client", function() {
+    describe("Client", function () {
 
-        beforeEach(function() {
+        beforeEach(function () {
             clientModelCache.reset();
         });
 
-        describe("#add ", function() {
-            it("should accept Model Instances", function() {
+        describe("#add ", function () {
+            it("should accept Model Instances", function () {
                 var octo = new Octocat(2);
                 octo.set("name", "hugo");
                 clientModelCache.add(octo);
@@ -24,7 +24,7 @@ describe("ModelCache", function () {
                 expect(octo2.get("name")).to.be("hugo");
             });
 
-            it("should overwrite existing instances", function() {
+            it("should overwrite existing instances", function () {
 
                 var octo1 = new Octocat(1);
                 octo1.set("name", "uno");
@@ -46,8 +46,8 @@ describe("ModelCache", function () {
             });
         });
 
-        describe("#get", function() {
-            it("should return existing instances", function() {
+        describe("#get", function () {
+            it("should return existing instances", function () {
                 var octo = new Octocat(2);
                 octo.set("name", "hugo");
                 clientModelCache.add(octo);
@@ -63,8 +63,8 @@ describe("ModelCache", function () {
             });
         });
 
-        describe("#reset", function() {
-            it("should invalidate the cache", function() {
+        describe("#reset", function () {
+            it("should invalidate the cache", function () {
                 var octo = new Octocat(2);
                 octo.set("name", "hugo");
                 clientModelCache.add(octo);
@@ -77,17 +77,4 @@ describe("ModelCache", function () {
         });
     });
 
-    /*
-     describe("Server", function() {
-     it("should not store instances", function() {
-     var octo = new Octocat(2);
-     octo.set("name", "hugo");
-     serverModelLoader.add(octo);
-
-     var octo2 = serverModelLoader.get(Octocat, 2);
-     expect(octo2.get("name")).to.be(null);
-     });
-
-     });
-     */
 });
