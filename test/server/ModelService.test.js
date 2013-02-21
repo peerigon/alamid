@@ -19,17 +19,13 @@ describe("Model-Services", function () {
 
     describe("Server", function () {
 
-        if (typeof window !== undefined) {
-            return;
-        }
-
         var Octocat,
             testService,
             env;
 
         before(function () {
 
-            Octocat = require("./Model/Octocat.class.js");
+            Octocat = require("./../shared/Model/Octocat.class.js");
             var services = require("../../lib/shared/registries/serviceRegistry.js");
             services.getService = function () {
                 return testService;
@@ -43,7 +39,7 @@ describe("Model-Services", function () {
                     read : function (ids, callback) {
                         callback({ status : "success", data : mockedOctocats[ids.octocat - 1] });
                     },
-                    readCollection : function (remote, ids, params, callback) {
+                    readCollection : function (ids, params, callback) {
                         callback({ status : "success", data : mockedOctocats });
                     }
                 };
@@ -60,6 +56,26 @@ describe("Model-Services", function () {
             it("should fail if no server-service is defined", function (done) {
 
                 testService = null;
+
+                Octocat.findById(1, function (err, model) {
+                    expect(err).to.be.an(Error);
+                    done();
+                });
+            });
+
+            it("should return an error if the response-processing fails (i.e. unknown fields) ", function (done) {
+
+                testService.read = function (ids, callback) {
+
+                    callback({
+                        status : "success",
+                        data : {
+                            id : 2,
+                            name : "Octo 2",
+                            wrongField : 10
+                        }
+                    });
+                };
 
                 Octocat.findById(1, function (err, model) {
                     expect(err).to.be.an(Error);
