@@ -35,9 +35,15 @@ describe("Displayable", function () {
                 template: "<p></p>"
             });
 
-        it("should throw an error if a template with more than one parent node is given", function () {
+        it("should throw an error if a template has more than one nodes", function () {
             expect(function () {
                 var displayable = new Displayable("<p></p><div></div>");
+            }).to.throwError();
+        });
+
+        it("should throw an error if a template has no valid root node", function () {
+            expect(function () {
+                var displayable = new Displayable("<!-- I'm not a valid root node -->");
             }).to.throwError();
         });
 
@@ -69,6 +75,10 @@ describe("Displayable", function () {
         });
         it("should apply the Displayable's template if no template was passed", function () {
             expect(submitButton.getRoot()).to.be.an(HTMLInputElement);
+        });
+        it("should not be a problem to have comments or white spaces at the beginning or end of the template", function () {
+            var displayable = new Displayable("<!-- This is a comment-->   <p></p>     ");
+            expect(displayable.getRoot()).to.be.a(HTMLParagraphElement);
         });
 
     });
@@ -309,12 +319,11 @@ describe("Displayable", function () {
             submitButton.detach();
         });
 
-        it("should emit no 'detach'-event when it's not actually detached", function (done) {
+        it("should emit no 'detach'-event when it's not actually detached", function () {
             submitButton.on("detach", function () {
-                done(); // this should not be called. mocha throws an error if done is called twice.
+                throw new Error("This function should not be called");
             });
             submitButton.detach();
-            done();
         });
 
         it("should be possible to call .detach() on an detached displayable without error", function () {
@@ -619,16 +628,16 @@ describe("Displayable", function () {
     
 
     describe(".find()", function () {
-        var displayable = new Displayable(
-            "<div>" +
-                "<p></p>" +
-                "<em class='hello'></em>" +
-                "<h1 id='article-headline'></h1>" +
-            "</div>"
-        );
 
         it("should perform a css query on the root node", function () {
             var match,
+                displayable = new Displayable(
+                    "<div>" +
+                        "<p></p>" +
+                        "<em class='hello'></em>" +
+                        "<h1 id='article-headline'></h1>" +
+                        "</div>"
+                ),
                 root = displayable.getRoot()[0],
                 p = root.childNodes[0],
                 em = root.childNodes[1],
