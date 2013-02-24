@@ -107,11 +107,11 @@ describe("Page", function () {
         it("should emit a beforeLeave-Event on the sub page as well", function (done) {
             subPage = new Page();
             page.setSubPage(subPage);
-            subPage.on("beforeLeave", function (event) {
+            subPage.on("beforeUnload", function (event) {
                 expect(event).to.be(eventObj);
                 done();
             });
-            page.emit("beforeLeave", eventObj);
+            page.emit("beforeUnload", eventObj);
         });
 
     });
