@@ -2,19 +2,43 @@
 
 var expect = require("../testHelpers/expect.jquery.js"),
     Page = require("../../lib/client/Page.class.js"),
-    MainPage = require("../../lib/client/MainPage.class.js");
+    MainPage = require("../../lib/client/MainPage.class.js"),
+    PageLoader = require("../../lib/client/PageLoader.class.js"),
+    pageRegistry = require("../../lib/client/registries/pageRegistry.js");
 
 describe("MainPage", function () {
     var main,
         blog,
         posts,
-        about;
+        about,
+        contact,
+        Blog = Page.extend("Blog"),
+        Posts = Page.extend("Posts"),
+        About = Page.extend("About"),
+        Contact = Page.extend("Contact");
 
+    function removeAllListeners() {
+        main.removeAllListeners();
+        blog.removeAllListeners();
+        posts.removeAllListeners();
+    }
+
+    before(function () {
+        pageRegistry.setPage("about", function (callback) {
+            callback(About);
+        });
+        pageRegistry.setPage("about/contact", function (callback) {
+            callback(Contact);
+        });
+        pageRegistry.setPage("blog", function (callback) {
+            callback(Blog);
+        });
+    });
     beforeEach(function () {
         main = new MainPage();
-        blog = new Page();
-        posts = new Page();
-        about = new Page();
+        blog = new Blog();
+        posts = new Posts();
+        about = new About();
     });
 
     describe(".constructor()", function () {
@@ -67,7 +91,6 @@ describe("MainPage", function () {
 
     });
 
-    /*
     describe(".setSubPages()", function () {
 
         it("should set all pages according to the given array", function () {
@@ -106,244 +129,151 @@ describe("MainPage", function () {
             expect(main.setSubPages([])).to.be(main);
         });
 
-    });*/
-
-    return;
+    });
 
     describe(".changePage()", function () {
+        var originalLoad = PageLoader.prototype.load,
+            originalCancel = PageLoader.prototype.cancel;
 
-        it("should emit 'beforePageChange' first and than 'beforeLeave' on every Sub-Page that will be changed from bottom to top", function () {
-            var emitted = [];
+        beforeEach(function () {
+            main.setSubPage(blog);
+            blog.setSubPage(posts);
+        });
 
-            blog.on("beforeLeave", function beforeLeaveAbout() {
-                emitted.push("blog");
-            });
-            posts.on("beforeLeave", function beforeLeaveHome() {
-                emitted.push("posts");
-            });
-            main.on("beforeLeave", function beforeLeaveMain() {
-                throw new Error("This event should never be emitted because the main page can't be left");
-            });
-            main.on("beforePageChange", function beforeChangePage() {
+        afterEach(function () {
+            PageLoader.prototype.load = originalLoad;
+            PageLoader.prototype.cancel = originalCancel;
+        });
+
+        it("should emit 'beforePageChange' first and than 'beforeUnload' on every Sub-Page that will be changed from bottom to top", function () {
+            var emitted = [],
+                ctx = {};
+
+            main.on("beforePageChange", function (event) {
+                expect(event.context).to.be(ctx);
+                expect(event.context.pageUrl).to.be("/about");
+                expect(event.target).to.be(main);
+                expect(event.name).to.be("BeforePageChange");
                 emitted.push("main");
             });
-
-            main.changePage("about", {});
-            expect(emitted).to.eql(["client", "posts", "blog"]);
-        });
-
-        return;
-
-        it("should pass an Object on 'beforePageChange' including .preventDefault(), .toPageURL and .pageParams", function (done) {
-            var toPageURL = "/blog/posts",
-                pageParams = { "key": "value" };
-
-            client.on("beforePageChange", function beforePageChange(event) {
-                expect(event.preventDefault).to.be.a(Function);
-                expect(event.toPageURL).to.equal(toPageURL);
-                expect(event.pageParams).to.equal(pageParams);
-                done();
+            blog.on("beforeUnload", function (event) {
+                expect(event.context).to.be(ctx);
+                expect(event.context.pageUrl).to.be("/about");
+                expect(event.target).to.be(main);
+                expect(event.name).to.be("BeforeUnload");
+                emitted.push("blog");
+            });
+            posts.on("beforeUnload", function (event) {
+                expect(event.context).to.be(ctx);
+                expect(event.context.pageUrl).to.be("/about");
+                expect(event.target).to.be(main);
+                expect(event.name).to.be("BeforeUnload");
+                emitted.push("posts");
+            });
+            main.on("beforeUnload", function () {
+                throw new Error("This event should never be emitted because the main page can't be left");
             });
 
-            client.changePage(toPageURL, pageParams);
-
-        });
-
-        it("should pass an Object on 'beforeLeave' including .preventDefault(), .toPageURL and .pageParams for each Page that will be leaved", function () {
-
-            var pageParams = { "key": "value" };
-
-            pages.about.on("beforeLeave", function beforeLeaveAbout(event) {
-                expect(event.preventDefault).to.be.a(Function);
-                expect(event.toPageURL).to.equal("/");
-                expect(event.pageParams).to.equal(pageParams);
-            });
-
-            pages.home.on("beforeLeave", function beforeLeaveAbout(event) {
-                expect(event.preventDefault).to.be.a(Function);
-                expect(event.toPageURL).to.equal("/");
-                expect(event.pageParams).to.equal(pageParams);
-            });
-
-            client.changePage("/", pageParams);
-
+            main.changePage("about", ctx);
+            expect(emitted).to.eql(["main", "posts", "blog"]);
         });
 
         it("should immediately cancel the process when calling event.preventDefault()", function () {
-            var emitted = [],
-                callsPreventDefault;
+            var ctx = {};
 
-            pages.about.on("beforeLeave", function (e) {
-                emitted.push("about");
-                if (callsPreventDefault === "about") {
-                    e.preventDefault();
-                }
+            function throwError() {
+                throw new Error("This function should not be called");
+            }
+
+            PageLoader.prototype.load = throwError;
+
+            main.on("beforePageChange", function (event) {
+                event.preventDefault();
             });
-            pages.home.on("beforeLeave", function (e) {
-                emitted.push("home");
-                if (callsPreventDefault === "home") {
-                    e.preventDefault();
-                }
+            blog.on("beforeUnload", throwError);
+            posts.on("beforeUnload", throwError);
+            main.changePage("about", ctx);
+            removeAllListeners();
+
+            blog.on("beforeUnload", throwError);
+            posts.on("beforeUnload", function (event) {
+                event.preventDefault();
             });
-            client.on("beforePageChange", function (e) {
-                emitted.push("client");
-                if (callsPreventDefault === "client") {
-                    e.preventDefault();
-                }
-            });
-
-            callsPreventDefault = "client";
-            client.changePage("blog", {});
-            expect(emitted).to.eql(["client"]);
-
-            emitted = [];
-
-            callsPreventDefault = "about";
-            client.changePage("blog", {});
-            expect(emitted).to.eql(["client", "about"]);
-
-            emitted = [];
-
-            callsPreventDefault = "home";
-            client.changePage("blog", {});
-            expect(emitted).to.eql(["client", "about", "home"]);
+            main.changePage("about", ctx);
+            removeAllListeners();
         });
 
-        it("should call cancel() on the previous pageLoader that is still running", function () {
-            var pageLoader;
+        it("should cancel() the previous pageLoader that is still running", function (done) {
+            PageLoader.prototype.load = function () {
+                // never call back
+            };
+            PageLoader.prototype.cancel = done;
 
-            client.changePage("blog", {});
-            pageLoader = PageLoaderMock.instance;
-            client.changePage("blog", {});
-            expect(pageLoader.cancelled).to.be(true);
+            main.changePage("about", {});
+            main.changePage("blog", {});
         });
 
-        it("should not call cancel() on the previous pageLoader that finished", function () {
-            var pageLoader;
+        it("should emit 'pageChange' if it has finished", function (done) {
+            var ctx = {};
 
-            client.changePage("blog", {});
-            pageLoader = PageLoaderMock.instance;
-            pageLoader.callback(null, [pages.blog]);
-            client.changePage("blog", {});
-            expect(pageLoader.cancelled).to.be(false);
-        });
-
-        it("should emit 'pageChange' if it has finished and pass an Object including .toPageURL and .pageParams", function (done) {
-
-            var toPageUrl = "/blog",
-                pageParams = {};
-
-            client.on("pageChange", function onPageChange(event) {
-
-                expect(event.toPageURL).to.equal(toPageUrl);
-                expect(event.pageParams).to.equal(pageParams);
-
-                //.changePage has finished when blog-Page is the sub-Page of the main-Page
-                expect(pages.main.getSubPage()).to.equal(pages.blog);
-
+            main.on("pageChange", function (event) {
+                expect(event.target).to.be(main);
+                expect(event.context).to.be(ctx);
+                expect(event.name).to.be("PageChange");
                 done();
-
             });
 
-            client.changePage(toPageUrl, pageParams);
-
-            PageLoaderMock.instance.callback(null, [pages.blog]);
+            main.changePage("about", ctx);
         });
 
-        it("should accept all combinations of trailing or leading slashes but return a standardized version with a leading slash", function (done) {
+        it("should accept all combinations of trailing or leading slashes", function (done) {
             var called = 0;
 
-            client.on("pageChange", function onPageChange(event) {
-                expect(event.toPageURL).to.equal("/blog");
+            main.on("pageChange", function onPageChange() {
                 if (++called === 3) {
                     done();
                 }
             });
 
-            client.changePage("blog");
-            PageLoaderMock.instance.callback(null, [new PageMock()]);
-
-            client.changePage("blog/");
-            PageLoaderMock.instance.callback(null, [new PageMock()]);
-
-            client.changePage("/blog/");
-            PageLoaderMock.instance.callback(null, [new PageMock()]);
+            main.changePage("blog");
+            main.changePage("about/");
+            main.changePage("/blog/");
         });
 
         it("should be possible to change current page to MainPage with '/' as route", function (done) {
-            var currentPages;
+            var subPages;
 
-            client.on("pageChange", function onPageChange() {
-                currentPages = client.getCurrentPages();
-                //MainPage is always on index 0.
-                expect(currentPages[0]).to.be(client.getMainPage());
+            main.on("pageChange", function () {
+                subPages = main.getSubPages();
+                expect(subPages).to.have.length(0);
                 done();
             });
 
-            client.changePage("/", {});
+            main.changePage("/", {});
         });
 
         it("should be possible to change current page to MainPage with '' as route", function (done) {
-            var currentPages;
+            var subPages;
 
-            client.on("pageChange", function onPageChange() {
-                currentPages = client.getCurrentPages();
-                //MainPage is always on index 0.
-                expect(currentPages[0]).to.be(client.getMainPage());
+            main.on("pageChange", function () {
+                subPages = main.getSubPages();
+                expect(subPages).to.have.length(0);
                 done();
             });
 
-            client.changePage("", {});
+            main.changePage("", {});
         });
 
-        it("should append all loaded pages from top to bottom and emit 'pageChange' after that", function () {
-            var pageLoader,
-                pageChangeCalled = false;
+        it("should append all loaded pages from top to bottom", function () {
+            main.changePage("about/contact", {});
 
-            client.on("pageChange", function () {
-                pageChangeCalled = true;
-            });
-            client.changePage("blog/posts", {});
-            pageLoader = PageLoaderMock.instance;
-            pageLoader.callback(null, [pages.blog, pages.posts]);
-            expect(pages.main.getSubPage()).to.be(pages.blog);
-            expect(pages.blog.getSubPage()).to.be(pages.posts);
-            expect(pages.posts.getSubPage()).to.be(null);
-            expect(pageChangeCalled).to.be(true);
+            about = main.getSubPage();
+            expect(about).to.be.an(About);
+
+            contact = about.getSubPage();
+            expect(contact).to.be.a(Contact);
         });
+
     });
 
-    return;
-
-    describe("on unload", function() {
-
-        beforeEach(function () {
-            client.start(); // Initializes the MainPage
-            pages.main = client.getMainPage();
-            pages.main.setSubPage(pages.home);
-            pages.home.setSubPage(pages.about);
-        });
-
-        afterEach(function () {
-            pageJS.stop();
-        });
-
-        it("should emit a page-change event on all currentPages", function(done) {
-
-            var currentPages = client.getCurrentPages(),
-                cbCnt = 0;
-
-            function cbCalled() {
-                if(++cbCnt === currentPages.length) {
-                    done();
-                }
-            }
-
-            _(currentPages).each(function(currentPage) {
-                currentPage.on("beforeLeave", cbCalled);
-            });
-
-            jQuery(window).trigger('unload');
-        });
-    });
 });

@@ -18,6 +18,7 @@ describe("PageLoader", function () {
     var pageLoader;
 
     describe(".constructor()", function () {
+
         it("should throw an exception if the passed argument is not an array", function () {
             expect(function () {
                 pageLoader = new PageLoader(undefined);
@@ -36,11 +37,6 @@ describe("PageLoader", function () {
                 pageLoader = new PageLoader([""]);
             }).to.throwException(expectTypeError);
         });
-        it("should throw an exception if the pageUrl is unknown to the pageRegistry", function () {
-            expect(function () {
-                pageLoader = new PageLoader(["not/existent"]);
-            }).to.throwException();
-        });
         it("should throw no exception when passing an array with strings", function () {
             function blogBundle() {}
             function postsBundle() {}
@@ -50,12 +46,15 @@ describe("PageLoader", function () {
 
             pageLoader = new PageLoader(["blog", "blog/posts"]);
         });
+
     });
+
     describe(".load()", function () {
+
         it("should return the pages in the callback and pass the params to the page", function (done) {
             var blogPage,
                 postsPage,
-                params = { paramA: "A", paramB: "B" };
+                ctx = { paramA: "A", paramB: "B" };
 
             function blogBundle(callback) { callback(PageLoaderExamplePage); }
             function postsBundle(callback) {
@@ -68,19 +67,30 @@ describe("PageLoader", function () {
             pageRegistry.setPage("blog/posts", postsBundle);
 
             pageLoader = new PageLoader(["blog", "blog/posts"]);
-            pageLoader.load(params, function onPagesLoaded(err, pages) {
+            pageLoader.load(ctx, function onPagesLoaded(err, pages) {
                 expect(err).to.be(null);
                 blogPage = pages[0];
                 postsPage = pages[1];
                 expect(blogPage).to.be.a(PageLoaderExamplePage);
                 expect(postsPage).to.be.a(PageLoaderExamplePage);
-                expect(blogPage.params === params).to.equal(true);
-                expect(postsPage.params === params).to.equal(true);
+                expect(blogPage.params === ctx).to.equal(true);
+                expect(postsPage.params === ctx).to.equal(true);
                 done();
             });
         });
+
+        it("should return a 404 page for every page that can't been found", function () {
+            pageLoader = new PageLoader(["does", "not/exist"]);
+            pageLoader.load({}, function (err, pages) {
+                expect(pages[0]._root.innerHTML).to.contain("404");
+                expect(pages[1]._root.innerHTML).to.contain("404");
+            });
+        });
+
     });
+
     describe(".cancel()", function () {
+
         it("should cancel all callbacks, dispose all loaded pages and do no final callback", function () {
             var disposeCalled = false,
                 postsCallback;
@@ -112,5 +122,6 @@ describe("PageLoader", function () {
             // PostsPage should not be instantiated
             postsCallback(PostsPage);
         });
+
     });
 });

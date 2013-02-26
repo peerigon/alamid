@@ -1,107 +1,89 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
-    rewire = require("rewire"),
     _ = require("underscore"),
     value = require("value"),
-    jQuery = require("../../lib/client/helpers/jQuery.js"),
-
+    checkError = require("../testHelpers/checkError.js"),
     pageJS = require("page"),
     config = require("../../lib/client/config.client.js"),
-    Client = rewire("../../lib/client/Client.class.js"),
-
-    PageMock = require("./mocks/PageMock.class.js"),
-    PageLoaderMock = require("./mocks/PageLoaderMock.class.js");
+    Client = require("../../lib/client/Client.class.js"),
+    MainPage = require("../../lib/client/MainPage.class.js"),
+    PageLoader = require("../../lib/client/PageLoader.class.js");
 
 describe("Client", function () {
 
     var client,
-        pages,
-        checkForTypeError;
-
-    return;
-
-    before(function () {
-
-        Client.__set__({
-            PageLoader: PageLoaderMock
-        });
-
-        pages = {};
-
-        checkForTypeError = expectError(TypeError);
-
-        function expectError(Constructor) {
-            return function (err) {
-                expect(err.constructor).to.be(Constructor);
-            };
-        }
-
-    });
+        checkForTypeError = checkError(TypeError),
+        path;
 
     beforeEach(function () {
-
-        pages.blog = new PageMock();
-        pages.blog.name = "Blog";   // for debugging purposes
-
-        pages.posts = new PageMock();
-        pages.posts.name = "Posts";
-
-        pages.home = new PageMock();
-        pages.home.name = "Home";
-
-        pages.about = new PageMock();
-        pages.about.name = "About";
-
-        client = new Client(PageMock);
+        client = new Client();
 
         pageJS.callbacks = [];  // removes previous routes
+        path = window.location.pathname + window.location.search;
     });
 
     afterEach(function () {
-        //Clean appended pages after each test
-        jQuery("[data-node='page']").remove();
+        history.replaceState(null, null, path);
+        if (client.mainPage) {
+            client.mainPage.dispose();
+        }
     });
 
-    describe(".constructor()", function () {
+    describe(".constructor() / .instance", function () {
 
-        it("should fail with an TypeError when calling without a Page class", function () {
-            expect(function () {
-                client = new Client({});
-            }).to.throwException(checkForTypeError);
+        it("should return an instance of Client", function () {
+            client = new Client();
+            expect(client).to.be.an(Client);
         });
 
-        it("should throw no exception when calling with a page", function () {
-            client = new Client(PageMock);
+        it("should add the instance to the Client-function", function () {
+            expect(Client.instance).to.be(client);
         });
+
     });
 
-    describe(".start()", function () {
+    describe(".start() / .mainPage / .MainPage", function () {
+        var MyMainPage;
 
-        it("should append MainPage to document's body", function () {
-            var mainPageDiv;
-
+        it("should create an instance of Client.MainPage", function () {
             client.start();
-
-            mainPageDiv = jQuery("body").find("[data-node='page']");
-
-            expect(mainPageDiv.length).to.equal(1);
-            expect(mainPageDiv[0].toString().search("Div") !== -1).to.be(true);
-
+            expect(client.mainPage).to.be.a(client.MainPage);
         });
+
+        it("should also be possible to provide an own MainPage", function () {
+            MyMainPage = MainPage.extend("MyMainPage");
+
+            client.MainPage = MyMainPage;
+            client.start();
+            expect(client.mainPage).to.be.a(MyMainPage);
+        });
+
+        it("should instantiate my MainPage with the initial content and the document as root", function (done) {
+            MyMainPage = MainPage.extend("MyMainPage", {
+                constructor: function (ctx, node) {
+                    expect(ctx).to.be.a(pageJS.Context);
+                    expect(ctx.path).to.be("/some/path");
+                    expect(node).to.be(document);
+                    done();
+                }
+            });
+
+            client.MainPage = MyMainPage;
+            history.replaceState(null, null, "/some/path");
+            client.start();
+        });
+
+        it("should throw a TypeError if the MainPage-Class is not a child of MainPage", function () {
+            expect(function () {
+                client.MainPage = function () {};
+                client.start();
+            }).to.throwError(checkForTypeError);
+        });
+
     });
 
     describe(".dispatchRoute()", function () {
-
-        var url;
-
-        before(function () {
-            url = window.location.pathname + window.location.search;
-        });
-
-        after(function () {
-            history.replaceState(null, null, url);
-        });
 
         afterEach(function () {
             pageJS.stop();
@@ -114,7 +96,6 @@ describe("Client", function () {
             });
 
             client.dispatchRoute("/blog/posts");
-
             expect(window.location.pathname).to.be("/blog/posts");
         });
 
@@ -147,45 +128,44 @@ describe("Client", function () {
 
     describe(".addRoute()", function () {
 
-        var url,
-            pageURLs,
-            historyPushState,
-            historyPushStateMonkeyPatch = function () {
-                // do nothing
-            },
-            historyReplaceState,
-            historyReplaceStateMock = function () {
-                // do nothing
-            };
+        var pageUrl,
+            context,
+            pushState,
+            replaceState,
+            changePage;
+
+        function noop() {}
 
         before(function () {
-            url = window.location.pathname + window.location.search;
+            pushState = history.pushState;
+            replaceState = history.replaceState;
+            changePage = MainPage.prototype.changePage;
 
-            //backup
-            historyPushState = history.pushState;
-            historyReplaceState = history.replaceState;
-
-            //apply monkey patches to prevent modifications of history's state
-            history.pushState = historyPushStateMonkeyPatch;
-            history.replaceState = historyReplaceStateMock;
+            history.pushState = noop;
+            history.replaceState = noop;
+            MainPage.prototype.changePage = function (pageUrlToLoad, ctx) {
+                pageUrl = pageUrlToLoad;
+                context = ctx;
+            };
         });
 
         after(function () {
             //undo monkey patches
-            history.pushState = historyPushState;
-            history.replaceState = historyReplaceState;
-            history.replaceState(null, null, url);
+            history.pushState = pushState;
+            history.replaceState = replaceState;
+            MainPage.prototype.changePage = changePage;
         });
 
         afterEach(function () {
             pageJS.stop();
         });
 
-        it("should execute the added route handlers in the given order", function () {
+        it("should execute the added route handlers like pageJS", function () {
             var called = [];
 
             client
                 .addRoute("*", function (ctx, next) {
+                    expect(ctx).to.be.a(pageJS.Context);
                     called.push("*1");
                     next();
                 })
@@ -220,27 +200,17 @@ describe("Client", function () {
             client.addRoute("blog/about", "blog/about");
             client.dispatchRoute("blog/about");
 
-            pageURLs = PageLoaderMock.instance.pageURLs;
-            expect(pageURLs).to.eql(["blog", "blog/about"]);
+            expect(pageUrl).to.be("blog/about");
         });
 
-        it("should take the route as pageURL when passing only on argument", function () {
+        it("should take the route as pageUrl when passing only on argument", function () {
             client.addRoute("blog/about");
             client.dispatchRoute("blog/about");
 
-            pageURLs = PageLoaderMock.instance.pageURLs;
-            expect(pageURLs).to.eql(["blog", "blog/about"]);
-        });
-
-        it("should also accept only one string and add it as route and pageURL", function () {
-            client.addRoute("blog/about");
-            pageURLs = PageLoaderMock.instance.pageURLs;
-            expect(pageURLs).to.eql(["blog", "blog/about"]);
+            expect(pageUrl).to.be("blog/about");
         });
 
         it("should pass the params from route", function () {
-            var context;
-
             client.addRoute("blog/:author/posts/:postId", function (ctx, next) {
                 expect(ctx.params.author).to.be("spook");
                 expect(ctx.params.postId).to.be("123");
@@ -250,25 +220,25 @@ describe("Client", function () {
             client.start();
             client.dispatchRoute("blog/spook/posts/123");
 
-            context = PageLoaderMock.instance.context;
             expect(context.params.author).to.be("spook");
             expect(context.params.postId).to.be("123");
         });
 
-        it("should display a 404 page if App is in 'development' mode and no handler for given route was added", function () {
-            var displayedTemplate;
-
-            config.env = "development";
-            client.dispatchRoute("404");
-            displayedTemplate = client.getMainPage().getSubPage()._root.outerHTML;
-
-            expect(displayedTemplate).to.contain("404");
+        it("should be chainable", function () {
+            expect(client.addRoute("/blog")).to.be(client);
         });
 
-        it("should be chainable", function () {
-            client
-                .addRoute("blog/posts/:id", "blog/posts")
-                .addRoute("blog/posts/author=:authorId", "blog/posts");
+    });
+
+    describe(".changePage()", function () {
+
+        it("should just proxy to client.mainPage.changePage()", function (done) {
+            client.start();
+            client.mainPage.changePage = function () {
+                expect(arguments).to.eql([1,2,3]);
+                done();
+            };
+            client.changePage(1, 2, 3);
         });
 
     });
