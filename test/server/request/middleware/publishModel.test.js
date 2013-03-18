@@ -11,9 +11,9 @@ var Request = require("../../../../lib/server/request/Request.class.js"),
 function getSocketMock(callback) {
     return {
         broadcast : {
-            to : function(roomName) {
+            to : function (roomName) {
                 return {
-                    emit : function(eventName, path, ids, data) {
+                    emit : function (eventName, path, ids, data) {
                         callback(eventName, path, ids, data, roomName);
                     }
                 };
@@ -22,23 +22,27 @@ function getSocketMock(callback) {
     };
 }
 
-describe("publishModel", function(){
+describe("publishModel", function () {
 
     var req, res;
 
-    beforeEach(function() {
+    beforeEach(function () {
         req = new Request("update", "/services/blogpost/1", { da : "ta" });
-        req.setModel({
-           getUrl : function(){ return "blogpost"; },
-           getIds : function() { return { "blogpost" : 1 }; },
-           toObject : function() { return { da : "ta" }; }
-        });
+        req.model = {
+            getUrl : function () {
+                return "blogpost";
+            },
+            ids : { "blogpost" : 1 },
+            toObject : function () {
+                return { da : "ta" };
+            }
+        };
         res = new Response();
         res.setData({ da : "ta" });
     });
 
-    describe("Transport Support", function() {
-        it("should do nothing for transports other than websockets", function(done) {
+    describe("Transport Support", function () {
+        it("should do nothing for transports other than websockets", function (done) {
 
             function onBroadcast() {
                 done(new Error("Should not be called for HTTP"));
@@ -46,14 +50,14 @@ describe("publishModel", function(){
 
             req.setTransport("http", getSocketMock(onBroadcast));
 
-            publishModel(req, res, function() {
+            publishModel(req, res, function () {
                 done();
             });
         });
     });
 
-    describe("Room-Handling", function() {
-        it("should emit to the global room '' on default", function(done) {
+    describe("Room-Handling", function () {
+        it("should emit to the global room '' on default", function (done) {
 
             function onBroadcast(eventName, path, ids, data, room) {
                 expect(eventName).to.be("remoteUpdate");
@@ -67,12 +71,12 @@ describe("publishModel", function(){
 
             req.setTransport("websocket", getSocketMock(onBroadcast));
 
-            publishModel(req, res, function() {
+            publishModel(req, res, function () {
                 done();
             });
         });
 
-        it("should use the activeRoomID as room if ist was set via session before", function(done) {
+        it("should use the activeRoomID as room if ist was set via session before", function (done) {
 
             function onBroadcast(eventName, path, ids, data, room) {
                 expect(eventName).to.be("remoteUpdate");
@@ -84,19 +88,18 @@ describe("publishModel", function(){
                 expect(room).to.be("awesomeRoom");
             }
 
-            req.setSession({ activeRoomID : "awesomeRoom" });
+            req.session = { activeRoomID : "awesomeRoom" };
             req.setTransport("websocket", getSocketMock(onBroadcast));
 
-            publishModel(req, res, function() {
+            publishModel(req, res, function () {
                 done();
             });
         });
 
-
     });
 
-    describe("CRUD-methods", function() {
-        it("should emit a broadcast for update", function(done) {
+    describe("CRUD-methods", function () {
+        it("should emit a broadcast for update", function (done) {
 
             function onBroadcast(eventName, path, ids, data) {
                 expect(eventName).to.be("remoteUpdate");
@@ -107,12 +110,12 @@ describe("publishModel", function(){
 
             req.setTransport("websocket", getSocketMock(onBroadcast));
 
-            publishModel(req, res, function() {
+            publishModel(req, res, function () {
                 done();
             });
         });
 
-        it("should emit a broadcast for create", function(done) {
+        it("should emit a broadcast for create", function (done) {
             function onBroadcast(eventName, path, ids, data) {
                 expect(eventName).to.be("remoteCreate");
                 expect(path).to.be("blogpost");
@@ -123,12 +126,12 @@ describe("publishModel", function(){
             req.setMethod("create");
             req.setTransport("websocket", getSocketMock(onBroadcast));
 
-            publishModel(req, res, function() {
+            publishModel(req, res, function () {
                 done();
             });
         });
 
-        it("should emit a broadcast for destroy", function(done) {
+        it("should emit a broadcast for destroy", function (done) {
             function onBroadcast(eventName, path, ids, data) {
                 expect(eventName).to.be("remoteDestroy");
                 expect(path).to.be("blogpost");
@@ -140,7 +143,7 @@ describe("publishModel", function(){
             req.setTransport("websocket", getSocketMock(onBroadcast));
             res.setData({ da : "ta" });
 
-            publishModel(req, res, function() {
+            publishModel(req, res, function () {
                 done();
             });
         });

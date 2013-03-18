@@ -8,25 +8,25 @@ var expect = require("expect.js"),
     config = require("../../../lib/shared/config"),
     router = require("../../../lib/server/router.js");
 
-describe("handleRequest", function() {
+describe("handleRequest", function () {
 
     var handleRequest,
         routeHandler;
 
-    beforeEach(function() {
+    beforeEach(function () {
 
         router.set(middler());
 
         routeHandler = router.get();
 
-        routeHandler.on("error", function(err, req, res) {
+        routeHandler.on("error", function (err, req, res) {
             res.end({ status : "error", message : err.message, data : {} });
         });
 
         handleRequest = require("../../../lib/server/request/handleRequest.js");
     });
 
-    describe("#Services Request", function() {
+    describe("#Services Request", function () {
 
         function runServiceMock(req, res, next) {
             next();
@@ -40,19 +40,19 @@ describe("handleRequest", function() {
             function a(req, res, next) {
                 next();
             },
-            function b(req, res,  next) {
+            function b(req, res, next) {
                 next();
             }
         ];
 
-        it("should append the params as passed via url", function(done) {
+        it("should append the params as passed via url", function (done) {
 
             routeHandler.add("post", "/services/:country/*", middlewareMock);
 
             var req = new Request("create", "/services/de/blogPost", { da : "ta" });
 
-            handleRequest(req, function(err, resReq, resRes) {
-                expect(resReq.getParams().country).to.be("de");
+            handleRequest(req, function (err, resReq, resRes) {
+                expect(resReq.params.country).to.be("de");
                 expect(err).to.be(null);
                 expect(resReq).to.eql(req);
                 expect(resRes).not.to.be("undefined");
@@ -60,13 +60,13 @@ describe("handleRequest", function() {
             });
         });
 
-        it("should handle the request and return without an error if all middleware worked fine", function(done) {
+        it("should handle the request and return without an error if all middleware worked fine", function (done) {
             routeHandler.add("post", "/services/*", middlewareMock);
             routeHandler.add(["post", "put", "delete", "get"], "/services/*", runServiceMock);
 
             var req = new Request("create", "/services/blogPost", { da : "ta" });
 
-            handleRequest(req, function(err, resReq, resRes) {
+            handleRequest(req, function (err, resReq, resRes) {
                 expect(err).to.be(null);
                 expect(resReq).to.eql(req);
                 expect(resRes).not.to.be("undefined");
@@ -74,13 +74,13 @@ describe("handleRequest", function() {
             });
         });
 
-        it("should end the request and return an error if a middleware failed by nexting an err", function(done) {
+        it("should end the request and return an error if a middleware failed by nexting an err", function (done) {
 
             var middlewareMock = [
                 function a(req, res, next) {
                     next(new Error("middleware a failed"));
                 },
-                function b(req, res,  next) {
+                function b(req, res, next) {
                     next(null);
                 }
             ];
@@ -90,7 +90,7 @@ describe("handleRequest", function() {
 
             var req = new Request("create", "/services/blogPost", {});
 
-            handleRequest(req, function(err, resReq, res) {
+            handleRequest(req, function (err, resReq, res) {
                 expect(res.getStatus()).to.be("error");
                 expect(res.getErrorMessage()).to.contain("middleware a failed");
                 expect(resReq).to.eql(req);

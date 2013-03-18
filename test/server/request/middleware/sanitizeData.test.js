@@ -13,8 +13,8 @@ var dummySchema = {
 };
 
 var schemasMock = {
-    getSchema : function(path, type) {
-        if(path === "blog") {
+    getSchema : function (path, type) {
+        if (path === "blog") {
             return dummySchema;
         }
         return null;
@@ -26,7 +26,7 @@ describe("sanitizeData", function () {
     var sanitizeData,
         req, res;
 
-    beforeEach(function() {
+    beforeEach(function () {
         sanitizeData = rewire("../../../../lib/server/request/middleware/sanitizeData.js");
         sanitizeData.__set__("schemas", schemasMock);
 
@@ -44,7 +44,7 @@ describe("sanitizeData", function () {
 
     it("should remove all fields that are not part of the shared-schema", function (done) {
 
-        sanitizeData(req, res, function(err) {
+        sanitizeData(req, res, function (err) {
 
             var expectedKeys = [
                 "title",
@@ -52,7 +52,7 @@ describe("sanitizeData", function () {
                 "count"
             ];
 
-            var data = req.getData();
+            var data = req.data;
             expect(err).to.be(undefined);
             expect(data).to.only.have.keys(expectedKeys);
             done();
@@ -63,7 +63,7 @@ describe("sanitizeData", function () {
 
         req.setPath("/services/nonExistent");
 
-        sanitizeData(req, res, function(err) {
+        sanitizeData(req, res, function (err) {
             expect(err).not.to.be(null);
             done();
         });
@@ -73,7 +73,7 @@ describe("sanitizeData", function () {
 
         req.setMethod("read");
 
-        sanitizeData(req, res, function(err) {
+        sanitizeData(req, res, function (err) {
             var expectedKeys = [
                 "title",
                 "createDate",
@@ -82,7 +82,7 @@ describe("sanitizeData", function () {
                 "randomField"
             ];
 
-            var data = req.getData();
+            var data = req.data;
             expect(err).to.be(undefined);
             expect(data).to.only.have.keys(expectedKeys);
             done();
@@ -93,7 +93,7 @@ describe("sanitizeData", function () {
 
         req.setMethod("destroy");
 
-        sanitizeData(req, res, function(err) {
+        sanitizeData(req, res, function (err) {
             var expectedKeys = [
                 "title",
                 "createDate",
@@ -102,7 +102,7 @@ describe("sanitizeData", function () {
                 "randomField"
             ];
 
-            var data = req.getData();
+            var data = req.data;
             expect(err).to.be(undefined);
             expect(data).to.only.have.keys(expectedKeys);
             done();

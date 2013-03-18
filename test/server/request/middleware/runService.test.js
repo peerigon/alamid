@@ -98,7 +98,7 @@ describe("runService", function () {
             var request = new Request(method, path, {}),
                 response = new Response();
 
-            request.setModel(dog);
+            request.model = dog;
 
             runService(request, response, function (err) {
                 expect(err).to.be(null);
@@ -116,7 +116,7 @@ describe("runService", function () {
             var request = new Request(method, path, data),
                 response = new Response();
             //we have no middleware for setting the model in this test!
-            request.setModel(data);
+            request.model = data;
 
             runService(request, response, function (err) {
                 expect(err).to.be(null);
@@ -136,7 +136,7 @@ describe("runService", function () {
                 response = new Response();
 
             //we have no middleware for setting the model in this test!
-            request.setModel(data);
+            request.model = data;
 
             runService(request, response, function (err) {
                 expect(err).to.be(null);
@@ -190,7 +190,7 @@ describe("runService", function () {
             var request = new Request(method, path, data),
                 response = new Response();
             //we have no middleware for setting the model in this test!
-            request.setModel(data);
+            request.model = data
 
             runService(request, response, function (err) {
                 expect(err).not.to.be(null);
@@ -207,7 +207,7 @@ describe("runService", function () {
             var request = new Request(method, path, data),
                 response = new Response();
             //we have no middleware for setting the model in this test!
-            request.setModel(data);
+            request.model = data;
 
             runService(request, response, function (err) {
                 expect(err).to.be(null);
@@ -225,7 +225,7 @@ describe("runService", function () {
                 response = new Response();
 
             //we have no middleware for setting the model in this test!
-            request.setModel(data);
+            request.model = data
 
             runService(request, response, function (err) {
                 expect(err).to.be(null);
@@ -264,7 +264,7 @@ describe("runService", function () {
             var request = new Request(method, path, data),
                 response = new Response();
             //we have no middleware for setting the model in this test!
-            request.setModel(data);
+            request.model = data
 
             runService(request, response, function (err) {
                 expect(err).to.be(null);
@@ -303,10 +303,10 @@ describe("runService", function () {
             var request = new Request(method, path, data),
                 response = new Response();
             //we have no middleware for setting the model in this test!
-            request.setModel(data);
+            request.model = data
 
             runService(request, response, function (err) {
-                expect(request.getIds()).to.eql({ "blogpost" : '123', "blogpost/comments" : '1245' });
+                expect(request.ids).to.eql({ "blogpost" : '123', "blogpost/comments" : '1245' });
                 expect(err).to.be(null);
                 expect(response.getStatusCode()).to.be(200);
                 done();
@@ -349,7 +349,7 @@ describe("runService", function () {
                 response = new Response();
 
             runService(request, response, function (err) {
-                expect(request.getIds()).to.eql({});
+                expect(request.ids).to.eql({});
                 expect(err).to.be(null);
                 expect(response.getStatusCode()).to.be(200);
                 expect(response.getStatus()).to.be("success");
@@ -369,7 +369,7 @@ describe("runService", function () {
                 response = new Response();
 
             //we have no middleware for setting the model in this test!
-            request.setModel(data);
+            request.model = data;
 
             runService(request, response, function (err) {
                 expect(err).not.to.be(null);
