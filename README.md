@@ -3,7 +3,7 @@
 
 __node.js framework for JavaScript real-time applications.__
 
-[![Build Status](https://travis-ci.org/peerigon/alamid.png?branch=master)](https://travis-ci.org/peerigon/alamid) ![Dep Status](http://david-dm.org/peerigon/alamid.png)
+[![Build Status](https://travis-ci.org/peerigon/alamid.png?branch=master)](https://travis-ci.org/peerigon/alamid) ![Dep Status](https://david-dm.org/peerigon/alamid.png)
 
 alamid is an exciting new framework for JavaScript real-time applications that run both on the client and on the server. It manages all the bundling and communication so you can focus on your stuff: your application.
 
