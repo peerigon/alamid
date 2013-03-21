@@ -76,6 +76,16 @@ describe("Model", function () {
                 expect(user.get("name")).to.eql("hans");
             });
 
+            it("should only return defined attributes", function() {
+
+                user.unset("age");
+
+                expect(user.get()).to.eql({
+                    name : 'John Wayne',
+                    age : 45
+                })
+            });
+
             it("should be possible to set and get any key if there is no schema", function () {
                 var model = new Model();
 
@@ -209,8 +219,7 @@ describe("Model", function () {
                 user.unset('name', 'age');
                 expect(user.get()).to.eql({
                     name : 'John Wayne',
-                    age : 45,
-                    kills : undefined
+                    age : 45
                 });
             });
         });
@@ -240,8 +249,7 @@ describe("Model", function () {
 
                 expect(user.get()).to.eql({
                     name : 'Johnny Rotten',
-                    age : 50,
-                    kills : undefined
+                    age : 50
                 });
             });
         });
@@ -261,6 +269,60 @@ describe("Model", function () {
                 user.unset('name', 'age');
                 expect(user.isDefault()).to.be(true);
             });
+        });
+
+        describe("getChanged", function() {
+
+            it("should return only changed attributes", function () {
+
+                expect(user.getChanged()).to.eql({});
+
+                user.set("name", "hugo");
+                user.set("age", null);
+
+                expect(user.getChanged()).to.eql({ name : "hugo", age : null });
+
+                user.accept();
+
+                expect(user.getChanged()).to.eql({});
+            });
+        });
+
+        describe("hasChanged", function() {
+
+            it("should return false for unchanged attributes", function() {
+
+                expect(user.getChanged()).to.eql({});
+
+                expect(user.hasChanged("name")).to.be(false);
+                expect(user.hasChanged("age")).to.be(false);
+                expect(user.hasChanged("name", "age")).to.be(false);
+
+            });
+
+            it("should return true for changed attributes", function() {
+
+                user.accept();
+
+                user.set("name", "hugo");
+                user.set("age", null);
+
+                expect(user.hasChanged("name")).to.be(true);
+                expect(user.hasChanged("age")).to.be(true);
+                expect(user.hasChanged("name", "age")).to.be(true);
+            });
+
+            it("should work with multiple fields", function() {
+
+                user.accept();
+
+                user.set("name", "hugo");
+
+                expect(user.hasChanged("name")).to.be(true);
+                expect(user.hasChanged("age")).to.be(false);
+                expect(user.hasChanged("name", "age")).to.be(true);
+            });
+
         });
 
         describe("toObject", function () {
@@ -284,6 +346,18 @@ describe("Model", function () {
                     name : 'Octocat',
                     age : 5,
                     kills : 1
+                });
+            });
+
+            it("should only return defined attributes", function() {
+
+                user.unset("age");
+
+                expect(user.toObject()).to.eql({
+                    name : 'John Wayne',
+                    age : 45,
+                    id : null,
+                    ids : {}
                 });
             });
 
