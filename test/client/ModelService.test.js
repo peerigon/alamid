@@ -20,9 +20,7 @@ var mockedOctocats = [
 
 describe("Model-Services", function () {
 
-
     sharedModelServiceTest("client");
-
 
     describe("Client", function () {
 
