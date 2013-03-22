@@ -1,7 +1,8 @@
 "use strict";
 
 var expect = require("expect.js"),
-    rewire = require("rewire");
+    rewire = require("rewire"),
+    Car = require("./mocks/models/CarModel.class.js");
 
 describe("remoteService", function () {
 
@@ -73,6 +74,31 @@ describe("remoteService", function () {
         var serviceAdapter = new RemoteService("blogpost/comment");
 
         serviceAdapter.update(true, {blogpost : 12 }, model, function (response) {
+            done();
+        });
+    });
+
+    it("should pass only changedData to the updateService", function(done) {
+
+        var requestMock = function (method, url, model, callback) {
+            expect(method.toLowerCase()).to.be("update");
+            expect(url).to.contain("services/car/12");
+            expect(model).to.eql({ manufactor : "Peugeot"});
+            callback();
+        };
+
+        var car = new Car();
+
+        car.set("model", "A3");
+        car.set("manufactor", "Audi");
+        car.accept();
+        car.set("manufactor", "Peugeot");
+
+        RemoteService.__set__("request", requestMock);
+
+        var serviceAdapter = new RemoteService("car");
+
+        serviceAdapter.update(true, {car : 12 }, car, function (response) {
             done();
         });
     });
