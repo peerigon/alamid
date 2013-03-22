@@ -31,6 +31,9 @@ describe("remoteService", function () {
         },
         get : function () {
             return { da : "ta" };
+        },
+        getChanged : function() {
+            return { da : "ta" };
         }
     };
 
