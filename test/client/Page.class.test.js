@@ -17,7 +17,7 @@ describe("Page", function () {
         page = new Page(ctx);
     });
 
-    describe(".constructor()", function () {
+    describe("#constructor()", function () {
 
         it("should take '<div data-node=\"page\"></div>' as default template", function () {
             expect(page.getRoot()).to.eql('<div data-node="page"></div>');
@@ -36,7 +36,7 @@ describe("Page", function () {
 
     });
 
-    describe(".context", function () {
+    describe("#context", function () {
 
         it("should return the context that have been passed to the constructor", function () {
             expect(page.context).to.be(ctx);
@@ -44,7 +44,7 @@ describe("Page", function () {
 
     });
 
-    describe(".setSubPage()", function () {
+    describe("#setSubPage()", function () {
 
         beforeEach(function () {
             subPage = new Page({}, '<p id="subPage"></p>');
@@ -83,7 +83,7 @@ describe("Page", function () {
 
     });
 
-    describe(".getSubPage()", function () {
+    describe("#getSubPage()", function () {
 
         beforeEach(function () {
             subPage = new Page();
@@ -101,7 +101,7 @@ describe("Page", function () {
 
     });
 
-    describe(".dispose()", function () {
+    describe("#dispose()", function () {
 
         beforeEach(function () {
             subPage = new Page();

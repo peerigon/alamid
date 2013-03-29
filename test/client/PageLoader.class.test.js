@@ -17,7 +17,7 @@ function expectError(Constructor) {
 describe("PageLoader", function () {
     var pageLoader;
 
-    describe(".constructor()", function () {
+    describe("#constructor()", function () {
 
         it("should throw an exception if the passed argument is not an array", function () {
             expect(function () {
@@ -49,7 +49,7 @@ describe("PageLoader", function () {
 
     });
 
-    describe(".load()", function () {
+    describe("#load()", function () {
 
         it("should return the pages in the callback and pass the params to the page", function (done) {
             var blogPage,
@@ -91,7 +91,7 @@ describe("PageLoader", function () {
 
     });
 
-    describe(".cancel()", function () {
+    describe("#cancel()", function () {
 
         it("should cancel all callbacks, dispose all loaded pages and do no final callback", function () {
             var disposeCalled = false,

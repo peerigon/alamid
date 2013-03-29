@@ -24,7 +24,7 @@ describe("View", function () {
 
     });
 
-    describe(".constructor()", function () {
+    describe("#constructor()", function () {
 
         it("should be kind of Displayable", function () {
             expect(value(formView).typeOf(View));
@@ -32,7 +32,7 @@ describe("View", function () {
 
     });
 
-    describe(".render()", function () {
+    describe("#render()", function () {
 
         var $formView;
 
@@ -146,7 +146,7 @@ describe("View", function () {
 
     });
 
-    describe(".bind()", function () {
+    describe("#bind()", function () {
         var $formView;
 
         beforeEach(function () {
@@ -237,7 +237,7 @@ describe("View", function () {
 
     });
 
-    describe(".unbind()", function () {
+    describe("#unbind()", function () {
         it("should throw an Error if a Model was unbound and no data was given to .render() as argument", function () {
             formView.bind(formModel);
             formView.unbind();
@@ -264,7 +264,7 @@ describe("View", function () {
 
     });
 
-    describe(".getModel()", function () {
+    describe("#getModel()", function () {
 
         it("should return the bound Model", function () {
             formView.bind(formModel);
@@ -273,7 +273,7 @@ describe("View", function () {
 
     });
 
-    describe(".dispose()", function () {
+    describe("#dispose()", function () {
 
         it("should unbind a bound Model", function () {
             var $formView = jQuery(formView.getRoot()),

@@ -41,7 +41,7 @@ describe("MainPage", function () {
         about = new About();
     });
 
-    describe(".constructor()", function () {
+    describe("#constructor()", function () {
 
         it("should pass all params to the super class", function () {
             var ctx = {},
@@ -58,7 +58,7 @@ describe("MainPage", function () {
         });
     });
 
-    describe(".getSubPages()", function () {
+    describe("#getSubPages()", function () {
         var subPages;
 
         it("should return an empty array if there are no sub-pages", function () {
@@ -76,7 +76,7 @@ describe("MainPage", function () {
 
     });
 
-    describe(".setSubPages()", function () {
+    describe("#setSubPages()", function () {
 
         it("should set all pages according to the given array", function () {
             main.setSubPages([blog, posts]);
@@ -116,7 +116,7 @@ describe("MainPage", function () {
 
     });
 
-    describe(".changePage()", function () {
+    describe("#changePage()", function () {
         var originalLoad = PageLoader.prototype.load,
             originalCancel = PageLoader.prototype.cancel;
 

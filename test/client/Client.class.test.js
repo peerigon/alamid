@@ -30,7 +30,7 @@ describe("Client", function () {
         }
     });
 
-    describe(".constructor() / .instance", function () {
+    describe("#constructor() / .instance", function () {
 
         it("should return an instance of Client", function () {
             client = new Client();
@@ -43,7 +43,7 @@ describe("Client", function () {
 
     });
 
-    describe(".start() / .mainPage / .MainPage", function () {
+    describe("#start() / .mainPage / .MainPage", function () {
         var MyMainPage;
 
         it("should create an instance of Client.MainPage", function () {
@@ -83,7 +83,7 @@ describe("Client", function () {
 
     });
 
-    describe(".dispatchRoute()", function () {
+    describe("#dispatchRoute()", function () {
 
         afterEach(function () {
             pageJS.stop();
@@ -126,7 +126,7 @@ describe("Client", function () {
         });
     });
 
-    describe(".addRoute()", function () {
+    describe("#addRoute()", function () {
 
         var pageUrl,
             context,
@@ -230,7 +230,7 @@ describe("Client", function () {
 
     });
 
-    describe(".changePage()", function () {
+    describe("#changePage()", function () {
 
         it("should just proxy to client.mainPage.changePage()", function (done) {
             client.start();

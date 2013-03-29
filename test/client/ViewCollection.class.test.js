@@ -69,7 +69,7 @@ describe("ViewCollection", function () {
         carCollection = new ModelCollection(CarModel, cars);
     });
 
-    describe(".constructor()", function () {
+    describe("#constructor()", function () {
 
         it("should be an Displayable", function () {
            expect(value(viewCollection).instanceOf(Displayable)).to.be.ok();
@@ -97,7 +97,7 @@ describe("ViewCollection", function () {
 
     });
 
-    describe(".bind()", function () {
+    describe("#bind()", function () {
 
         beforeEach(function () {
             viewCollection.bind(carCollection);
@@ -127,7 +127,7 @@ describe("ViewCollection", function () {
             });
         });
 
-        describe("._onAdd()", function () {
+        describe("#_onAdd()", function () {
 
             it("should create new Views for each Model which was added to ModelCollection with .push()", function () {
                 carCollection.push(porsche);
@@ -253,7 +253,7 @@ describe("ViewCollection", function () {
 
         });
 
-        describe("._onRemove()", function () {
+        describe("#_onRemove()", function () {
 
             it("should remove last View if .pop() was called on ModelCollection", function () {
                 var $liElements,
@@ -320,7 +320,7 @@ describe("ViewCollection", function () {
 
         });
 
-        describe("._onSort", function () {
+        describe("#_onSort", function () {
 
             it("should render all Views according to the sorting of the ModelCollection", function () {
                 var liNodes;
@@ -367,7 +367,7 @@ describe("ViewCollection", function () {
 
     });
 
-    describe(".each()", function () {
+    describe("#each()", function () {
 
         beforeEach(function () {
             viewCollection.bind(carCollection);
@@ -392,7 +392,7 @@ describe("ViewCollection", function () {
 
     });
 
-    describe(".delegate()", function () {
+    describe("#delegate()", function () {
 
         var expectedRemoveEventCount,
             removeEventCount,
@@ -438,7 +438,7 @@ describe("ViewCollection", function () {
 
     });
 
-    describe(".undelegate()", function () {
+    describe("#undelegate()", function () {
 
         var expectedRemoveEventCount,
             removeEventCount,
@@ -498,7 +498,7 @@ describe("ViewCollection", function () {
 
     });
 
-    describe(".render()", function () {
+    describe("#render()", function () {
 
         it("should throw an Error if no ModelCollection was bound", function () {
            expect(function () {
@@ -529,7 +529,7 @@ describe("ViewCollection", function () {
 
     });
 
-    describe(".setFilter()", function () {
+    describe("#setFilter()", function () {
 
         it("should throw an Error if neither null nor a function was passed", function () {
             expect(function () {
@@ -652,7 +652,7 @@ describe("ViewCollection", function () {
 
     });
 
-    describe(".dispose()", function () {
+    describe("#dispose()", function () {
 
         it("should remove ViewCollection from the node where it was appended", function () {
             var parentView = new View("<div data-node='child'></div>");

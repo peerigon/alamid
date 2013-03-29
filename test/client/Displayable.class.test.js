@@ -30,7 +30,7 @@ describe("Displayable", function () {
         form = new Displayable(formTemplate);
     });
 
-    describe(".constructor()", function () {
+    describe("#constructor()", function () {
         var MyDisplayable = Displayable.extend({
                 template: "<p></p>"
             });
@@ -68,7 +68,7 @@ describe("Displayable", function () {
 
     });
 
-    describe(".template", function () {
+    describe("#template", function () {
         
         it("should be '<div data-node=\"root\"></div>' by default", function () {
             expect(new Displayable().template).to.be('<div data-node="root"></div>');
@@ -83,7 +83,7 @@ describe("Displayable", function () {
 
     });
 
-    describe(".domEvents", function () {
+    describe("#domEvents", function () {
 
         it("should attach all dom events to the nodes", function () {
             var inputAClick = "untriggered",
@@ -139,7 +139,7 @@ describe("Displayable", function () {
 
     });
 
-    describe(".getRoot()", function () {
+    describe("#getRoot()", function () {
 
         it("should return the root node according to the given template", function () {
             expect(form.getRoot()).to.be.an(HTMLFormElement);
@@ -151,7 +151,7 @@ describe("Displayable", function () {
 
     });
     
-    describe(".getParent()", function () {
+    describe("#getParent()", function () {
         
         it("should return null if the displayable is not a child", function () {
             expect(form.getParent()).to.be(null);
@@ -165,7 +165,7 @@ describe("Displayable", function () {
     });
     
 
-    describe(".getNode()", function () {
+    describe("#getNode()", function () {
 
         it("should wrap all nodes with domAdapter.$", function () {
             expect(form.getNode("form") instanceof domAdapter.$).to.be(true);
@@ -195,7 +195,7 @@ describe("Displayable", function () {
 
     });
 
-    describe(".append().at()", function () {
+    describe("#append().at()", function () {
 
         it("should throw an Error if an object not kind of Displayable is given", function () {
             expect(function () {
@@ -250,7 +250,7 @@ describe("Displayable", function () {
 
     });
 
-    describe(".prepend().at()", function () {
+    describe("#prepend().at()", function () {
 
         it("should throw an Error if a not existent node name was passed to # at()", function () {
             expect(function () {
@@ -305,7 +305,7 @@ describe("Displayable", function () {
 
     });
 
-    describe(".detach()", function () {
+    describe("#detach()", function () {
 
         it("should return a reference to itself", function () {
             expect(submitButton.detach()).to.be(submitButton);
@@ -393,7 +393,7 @@ describe("Displayable", function () {
 
     });
 
-    describe(".dispose()", function () {
+    describe("#dispose()", function () {
 
         beforeEach(function () {
             form.append(submitButton).at("form");
@@ -511,7 +511,7 @@ describe("Displayable", function () {
 
     });
 
-    describe(".hide()", function () {
+    describe("#hide()", function () {
 
         it("should apply the css class '" + cssClassHide + "'", function () {
             form.hide();
@@ -520,7 +520,7 @@ describe("Displayable", function () {
 
     });
 
-    describe(".show()", function () {
+    describe("#show()", function () {
 
         it("should remove the css class '" + cssClassHide + "'", function () {
             form.show();
@@ -529,7 +529,7 @@ describe("Displayable", function () {
 
     });
 
-    describe(".toggle()", function () {
+    describe("#toggle()", function () {
 
         it("should hide if already shown", function () {
             form.show();
@@ -578,7 +578,7 @@ describe("Displayable", function () {
         });
     });
 
-    describe(".isVisible()", function () {
+    describe("#isVisible()", function () {
 
         it("should be true by default value", function () {
             expect(form.isVisible()).to.be(true);
@@ -597,7 +597,7 @@ describe("Displayable", function () {
 
     });
     
-    describe(".isInDocument()", function () {
+    describe("#isInDocument()", function () {
         var mainPage;
         
         it("should be false by default", function () {
@@ -629,7 +629,7 @@ describe("Displayable", function () {
     });
     
 
-    describe(".find()", function () {
+    describe("#find()", function () {
 
         it("should perform a css query on the root node", function () {
             var match,
@@ -664,7 +664,7 @@ describe("Displayable", function () {
 
     });
 
-    describe(".emit()", function () {
+    describe("#emit()", function () {
 
         it("should emit the 'document'-event on all children", function () {
             var called = "",
@@ -693,7 +693,7 @@ describe("Displayable", function () {
 
 
     /*
-    describe(".Plugins", function () {
+    describe("#Plugins", function () {
         it("should implement the Plugins-mixin", function () {
             expect(Displayable.prototype.hook).to.be(Plugins.prototype.hook);
             expect(Displayable.prototype.runHook).to.be(Plugins.prototype.runHook);
@@ -716,7 +716,7 @@ describe("Displayable", function () {
         });
     });
 
-    describe(".Hooks", function () {
+    describe("#Hooks", function () {
         var myDisplayable;
 
         it("should run a hook on 'beforeInit' and on 'init'", function (done) {
