@@ -3,7 +3,7 @@
 var expect = require("expect.js"),
     pageRegistry = require("../../lib/client/registries/pageRegistry.js"),
     PageLoader = require("../../lib/client/PageLoader.class.js"),
-    PageLoaderExamplePage = require("./mocks/PageMock.class.js"),
+    Page = require("../../lib/client/Page.class.js"),
     value = require("value"),
     _ = require("underscore"),
     expectTypeError = expectError(TypeError);
@@ -54,12 +54,13 @@ describe("PageLoader", function () {
         it("should return the pages in the callback and pass the params to the page", function (done) {
             var blogPage,
                 postsPage,
-                ctx = { paramA: "A", paramB: "B" };
+                ctx = { paramA: "A", paramB: "B" },
+                template = "<h1>Just a template</h1>";
 
-            function blogBundle(callback) { callback(PageLoaderExamplePage); }
+            function blogBundle(callback) { callback(Page); }
             function postsBundle(callback) {
                 setTimeout(function asyncBundleCallback() {
-                    callback(PageLoaderExamplePage);
+                    callback(template);
                 }, 0); // simulate asynchronous data loading
             }
 
@@ -71,10 +72,11 @@ describe("PageLoader", function () {
                 expect(err).to.be(null);
                 blogPage = pages[0];
                 postsPage = pages[1];
-                expect(blogPage).to.be.a(PageLoaderExamplePage);
-                expect(postsPage).to.be.a(PageLoaderExamplePage);
-                expect(blogPage.params === ctx).to.equal(true);
-                expect(postsPage.params === ctx).to.equal(true);
+                expect(blogPage).to.be.a(Page);
+                expect(postsPage).to.be.a(Page);
+                expect(blogPage.context).to.be(ctx);
+                expect(postsPage.context).to.be(ctx);
+                expect(postsPage.template).to.be(template);
                 done();
             });
         });
