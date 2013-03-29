@@ -22,19 +22,19 @@ describe("Event", function () {
 
     });
 
-    describe(".isCancelled() / .preventDefault()", function () {
+    describe(".isDefaultPrevented() / .preventDefault()", function () {
 
         beforeEach(function () {
             event = new Event({});
         });
         it("isCancelled() should return false by default", function () {
-            expect(event.isCancelled()).to.be(false);
+            expect(event.isDefaultPrevented()).to.be(false);
         });
         it("isCancelled() should return true if preventDefault() has been called at least once", function () {
             event.preventDefault();
-            expect(event.isCancelled()).to.be(true);
+            expect(event.isDefaultPrevented()).to.be(true);
             event.preventDefault(); // calling it twice doesn't change a thing
-            expect(event.isCancelled()).to.be(true);
+            expect(event.isDefaultPrevented()).to.be(true);
         });
         it(".preventDefault() should be chainable", function () {
             expect(event.preventDefault()).to.be(event);
