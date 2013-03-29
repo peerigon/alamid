@@ -604,8 +604,10 @@ describe("Displayable", function () {
             expect(form.isInDocument()).to.be(false);
         });
 
-        it("should be true if the root is the document", function () {
+        it("should be true if the displayable has been added to the dom manually", function () {
             mainPage = new Displayable(document);
+            expect(mainPage.isInDocument()).to.be(true);
+            mainPage = new Displayable(document.body.firstChild);
             expect(mainPage.isInDocument()).to.be(true);
         });
 

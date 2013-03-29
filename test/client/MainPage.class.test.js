@@ -58,21 +58,6 @@ describe("MainPage", function () {
         });
     });
 
-    describe(".isInDocument()", function () {
-
-        it("should return false if it's not part of the document", function () {
-            expect(main.isInDocument()).to.be(false);
-        });
-
-        it("should return true if it is part of the document", function () {
-            main = new MainPage({}, document);
-            expect(main.isInDocument()).to.be(true);
-            main = new MainPage({}, document.body);
-            expect(main.isInDocument()).to.be(true);
-        });
-
-    });
-
     describe(".getSubPages()", function () {
         var subPages;
 
