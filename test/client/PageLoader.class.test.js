@@ -32,11 +32,6 @@ describe("PageLoader", function () {
                 pageLoader = new PageLoader([2]);
             }).to.throwException(expectTypeError);
         });
-        it("should throw an exception if the passed argument is an array with empty strings", function () {
-            expect(function () {
-                pageLoader = new PageLoader([""]);
-            }).to.throwException(expectTypeError);
-        });
         it("should throw no exception when passing an array with strings", function () {
             function blogBundle() {}
             function postsBundle() {}
