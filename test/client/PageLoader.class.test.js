@@ -1,7 +1,6 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
-    pageRegistry = require("../../lib/client/registries/pageRegistry.js"),
     PageLoader = require("../../lib/client/PageLoader.class.js"),
     Page = require("../../lib/client/Page.class.js"),
     value = require("value"),
@@ -16,6 +15,18 @@ function expectError(Constructor) {
 
 describe("PageLoader", function () {
     var pageLoader;
+
+    describe(".bundles", function () {
+        it("should be an object", function () {
+            expect(PageLoader.bundles).to.be.an(Object);
+        });
+    });
+
+    describe(".loadedPages", function () {
+        it("should be an object", function () {
+            expect(PageLoader.loadedPages).to.be.an(Object);
+        });
+    });
 
     describe("#constructor()", function () {
 
@@ -36,8 +47,8 @@ describe("PageLoader", function () {
             function blogBundle() {}
             function postsBundle() {}
 
-            pageRegistry.setPage("blog", blogBundle);
-            pageRegistry.setPage("blog/posts", postsBundle);
+            PageLoader.bundles["/blog"] = blogBundle;
+            PageLoader.bundles["/blog/posts"] = postsBundle;
 
             pageLoader = new PageLoader(["blog", "blog/posts"]);
         });
@@ -45,24 +56,26 @@ describe("PageLoader", function () {
     });
 
     describe("#load()", function () {
+        var ctx = { paramA: "A", paramB: "B" },
+            template = "<h1>Just a template</h1>";
+
+        function blogBundle(callback) { callback(Page); }
+        function postsBundle(callback) {
+            setTimeout(function asyncBundleCallback() {
+                callback(template);
+            }, 0); // simulate asynchronous data loading
+        }
+
+        before(function () {
+            PageLoader.bundles["/blog"] = blogBundle;
+            PageLoader.bundles["/blog/posts"] = postsBundle;
+        });
 
         it("should return the pages in the callback and pass the params to the page", function (done) {
             var blogPage,
-                postsPage,
-                ctx = { paramA: "A", paramB: "B" },
-                template = "<h1>Just a template</h1>";
+                postsPage;
 
-            function blogBundle(callback) { callback(Page); }
-            function postsBundle(callback) {
-                setTimeout(function asyncBundleCallback() {
-                    callback(template);
-                }, 0); // simulate asynchronous data loading
-            }
-
-            pageRegistry.setPage("blog", blogBundle);
-            pageRegistry.setPage("blog/posts", postsBundle);
-
-            pageLoader = new PageLoader(["blog", "blog/posts"]);
+            pageLoader = new PageLoader(["/blog", "/blog/posts"]);
             pageLoader.load(ctx, function onPagesLoaded(err, pages) {
                 expect(err).to.be(null);
                 blogPage = pages[0];
@@ -76,11 +89,18 @@ describe("PageLoader", function () {
             });
         });
 
+        it("should add the loaded pages to .loadedPages", function () {
+            expect(PageLoader.loadedPages["/blog"]).to.be.a(Function);
+            expect(PageLoader.loadedPages["/blog/posts"]).to.be.a(Function);
+        });
+
         it("should return a 404 page for every page that can't been found", function () {
-            pageLoader = new PageLoader(["does", "not/exist"]);
+            pageLoader = new PageLoader(["/does", "/not/exist"]);
             pageLoader.load({}, function (err, pages) {
                 expect(pages[0]._root.innerHTML).to.contain("404");
+                expect(pages[0]._root.innerHTML).to.contain("/does");
                 expect(pages[1]._root.innerHTML).to.contain("404");
+                expect(pages[1]._root.innerHTML).to.contain("/not/exist");
             });
         });
 
@@ -102,12 +122,12 @@ describe("PageLoader", function () {
                 throw new Error("The page should not be created after the loading has been cancelled");
             }
 
-            pageRegistry.setPage("/blog", function blogBundle(callback) {
+            PageLoader.bundles["/blog"] = function blogBundle(callback) {
                 callback(BlogPage);
-            });
-            pageRegistry.setPage("/blog/posts", function postsBundle(callback) {
+            };
+            PageLoader.bundles["/blog/posts"] = function postsBundle(callback) {
                 postsCallback = callback;
-            });
+            };
 
             pageLoader = new PageLoader(["/blog", "/blog/posts"]);
             pageLoader.load({}, function onPagesLoaded(err, pages) {
