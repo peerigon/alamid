@@ -1,19 +1,14 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
-    _ = require("underscore"),
     value = require("value"),
-    checkError = require("../testHelpers/checkError.js"),
     pageJS = require("page"),
-    config = require("../../lib/client/config.client.js"),
     Client = require("../../lib/client/Client.class.js"),
-    MainPage = require("../../lib/client/MainPage.class.js"),
-    PageLoader = require("../../lib/client/PageLoader.class.js");
+    MainPage = require("../../lib/client/MainPage.class.js");
 
 describe("Client", function () {
 
     var client,
-        checkForTypeError = checkError(TypeError),
         path;
 
     beforeEach(function () {
@@ -43,42 +38,20 @@ describe("Client", function () {
 
     });
 
-    describe("#start() / .mainPage / .MainPage", function () {
+    describe("#start() / .mainPage", function () {
         var MyMainPage;
 
-        it("should create an instance of Client.MainPage", function () {
+        it("should create an instance of MainPage by default", function () {
             client.start();
-            expect(client.mainPage).to.be.a(client.MainPage);
+            expect(client.mainPage).to.be.a(MainPage);
         });
 
         it("should also be possible to provide an own MainPage", function () {
             MyMainPage = MainPage.extend("MyMainPage");
 
-            client.MainPage = MyMainPage;
+            client.mainPage = new MyMainPage({}, document);
             client.start();
             expect(client.mainPage).to.be.a(MyMainPage);
-        });
-
-        it("should instantiate my MainPage with the initial content and the document as root", function (done) {
-            MyMainPage = MainPage.extend("MyMainPage", {
-                constructor: function (ctx, node) {
-                    expect(ctx).to.be.a(pageJS.Context);
-                    expect(ctx.path).to.be("/some/path");
-                    expect(node).to.be(document);
-                    done();
-                }
-            });
-
-            client.MainPage = MyMainPage;
-            history.replaceState(null, null, "/some/path");
-            client.start();
-        });
-
-        it("should throw a TypeError if the MainPage-Class is not a child of MainPage", function () {
-            expect(function () {
-                client.MainPage = function () {};
-                client.start();
-            }).to.throwError(checkForTypeError);
         });
 
     });
@@ -90,7 +63,7 @@ describe("Client", function () {
         });
 
         it("should modify the history state", function () {
-            // This route handler is needed so pageJS doesn't change the window.location
+            // This route handler is needed so pageJS doesn't trigger a page reload
             client.addRoute("*", function () {
                 //do nothing
             });
@@ -100,15 +73,11 @@ describe("Client", function () {
         });
 
         it("should call automatically .start() with {dispatch: false} if it was not called manually", function () {
-
-            var isStartCalled = false,
-                startParams,
-            //pageJS muss be saved, cause it behaves like a singleton
+            var startParams,
                 pageJSStart = pageJS.start;
 
             //Apply monkey patch to .start()
             pageJS.start = function (params) {
-                isStartCalled = true;
                 startParams = params;
             };
 
@@ -118,7 +87,6 @@ describe("Client", function () {
 
             client.dispatchRoute("blog");
 
-            expect(isStartCalled).to.be(true);
             expect(startParams.dispatch).to.be(false);
 
             //Revert monkey patch .start()
@@ -230,15 +198,13 @@ describe("Client", function () {
 
     });
 
-    describe("#changePage()", function () {
+    describe("#use()", function () {
 
-        it("should just proxy to client.mainPage.changePage()", function (done) {
-            client.start();
-            client.mainPage.changePage = function () {
-                expect(arguments).to.eql([1,2,3]);
-                done();
-            };
-            client.changePage(1, 2, 3);
+        it("should be possible to set an own instance of socket.io", function () {
+            var socket = {};
+
+            client.use("websockets", socket);
+            expect(client.socket).to.be(socket);
         });
 
     });
