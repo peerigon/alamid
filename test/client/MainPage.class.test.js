@@ -24,15 +24,15 @@ describe("MainPage", function () {
     }
 
     before(function () {
-        pageRegistry.setPage("about", function (callback) {
+        PageLoader.bundles["/about"] =  function (callback) {
             callback(About);
-        });
-        pageRegistry.setPage("about/contact", function (callback) {
+        };
+        PageLoader.bundles["/about/contact"] = function (callback) {
             callback(Contact);
-        });
-        pageRegistry.setPage("blog", function (callback) {
+        };
+        PageLoader.bundles["/blog"] = function (callback) {
             callback(Blog);
-        });
+        };
     });
     beforeEach(function () {
         main = new MainPage();
@@ -136,21 +136,18 @@ describe("MainPage", function () {
 
             main.on("beforePageChange", function (event) {
                 expect(event.context).to.be(ctx);
-                expect(event.context.pageUrl).to.be("/about");
                 expect(event.target).to.be(main);
                 expect(event.name).to.be("BeforePageChange");
                 emitted.push("main");
             });
             blog.on("beforeUnload", function (event) {
                 expect(event.context).to.be(ctx);
-                expect(event.context.pageUrl).to.be("/about");
                 expect(event.target).to.be(main);
                 expect(event.name).to.be("BeforeUnload");
                 emitted.push("blog");
             });
             posts.on("beforeUnload", function (event) {
                 expect(event.context).to.be(ctx);
-                expect(event.context.pageUrl).to.be("/about");
                 expect(event.target).to.be(main);
                 expect(event.name).to.be("BeforeUnload");
                 emitted.push("posts");
