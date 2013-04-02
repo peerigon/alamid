@@ -7,68 +7,68 @@ var expect = require("expect.js"),
 describe("request", function () {
     describe("request", function() {
 
-        var remoteRequest;
+        var request;
 
         beforeEach(function(){
-            remoteRequest = rewire("../../../lib/client/helpers/request.js");
+            request = rewire("../../../lib/client/helpers/request.js");
         });
 
         describe("HTTP-Transport", function() {
             it("should pass all data to the http-transport", function(done) {
 
                 var httpRequestMock = function(method, url, modelData, callback) {
-                    expect(method).to.be("post");
-                    expect(url).to.be("services/blog");
-                    expect(modelData).to.eql({ da : "ta" });
-                    expect(callback).to.be.a("function");
-                    callback();
-                };
+                        expect(method).to.be("post");
+                        expect(url).to.be("services/blog");
+                        expect(modelData).to.eql({ da : "ta" });
+                        expect(callback).to.be.a("function");
+                        callback();
+                    },
+                    clientMock = {
+                        instance : {}
+                    };
 
-                remoteRequest.__set__("httpRequest", httpRequestMock);
-                remoteRequest("create", "services/blog", { da : "ta" }, function(response){
+                request.__set__("httpRequest", httpRequestMock);
+                request.__set__("Client", clientMock);
+                request("create", "services/blog", { da : "ta" }, function (response) {
                     done();
                 });
             });
         });
 
-        describe("Websocket-Transport", function() {
+        describe("Websocket-Transport", function () {
             it("should pass all data to the websocket-transport", function(done) {
 
                 var configMock = {
-                    use : {
-                        websockets : true
-                    }
-                };
-
-                var clientMock = {
-                    getSocket : function() {
-                        return socketMock;
-                    }
-                };
-
-                var socketMock ={
-                    emit : function(method, url, model, callback) {
-                        expect(method).to.be("create");
-                        expect(url).to.contain("services/blog");
-                        expect(model).to.eql({ da : "ta" });
-                        expect(callback).to.be.a("function");
-                        callback();
+                        use : {
+                            websockets : true
+                        }
                     },
-                    socket : {
-                        connected : true
-                    }
-                };
+                    socketMock ={
+                        emit : function(method, url, model, callback) {
+                            expect(method).to.be("create");
+                            expect(url).to.contain("services/blog");
+                            expect(model).to.eql({ da : "ta" });
+                            expect(callback).to.be.a("function");
+                            callback();
+                        },
+                        socket : {
+                            connected : true
+                        }
+                    },
+                    clientMock = {
+                        instance: {
+                            socket: socketMock
+                        }
+                    },
+                    httpRequestMock = function(method, url, modelData, callback) {
+                        done(new Error("HTTP should not be called"));
+                    };
 
-                var httpRequestMock = function(method, url, modelData, callback) {
-                    done(new Error("HTTP should not be called"));
-                };
+                request.__set__("httpRequest", httpRequestMock);
+                request.__set__("config", configMock);
+                request.__set__("Client", clientMock);
 
-                remoteRequest.__set__("httpRequest", httpRequestMock);
-                remoteRequest.__set__("config", configMock);
-                //overwrite predefined mock!
-                remoteRequest.__set__("client", clientMock);
-
-                remoteRequest("create", "services/blog", { da : "ta" }, function(response){
+                request("create", "services/blog", { da : "ta" }, function (response) {
                     done();
                 });
             });
