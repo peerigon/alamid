@@ -14,9 +14,6 @@ var Dog = Model.extend("Dog", {
         this._super(id);
         this.setSchema(DogSchema, "shared");
         this.setSchema(DogSchema);
-    },
-    accept: function() {
-        this.acceptCurrentState();
     }
 });
 

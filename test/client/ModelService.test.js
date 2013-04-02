@@ -3,6 +3,8 @@
 var expect = require("expect.js"),
     Octocat = require("../shared/Model/Octocat.class.js");
 
+var sharedModelServiceTest = require("../shared/ModelService.test.js");
+
 var mockedOctocats = [
     {
         id : 1,
@@ -18,6 +20,8 @@ var mockedOctocats = [
 
 describe("Model-Services", function () {
 
+    sharedModelServiceTest("client");
+
     describe("Client", function () {
 
         describe("CRUD", function () {
@@ -29,38 +33,29 @@ describe("Model-Services", function () {
             beforeEach(function () {
 
                 octocat = new Octocat();
-                octocat.setService(testService);
 
                 testService = {
                     create : function (remote, ids, model, callback) {
-                        callback({ status : "success", data : { name : model.get("name"), age : 10 }});
+                        callback({ status : "success", data : { id : 1, name : model.get("name"), age : 10 }});
+                    },
+                    read : function (remote, ids, callback) {
+                        callback({ status : "success", data : { id : 2, name : "hans", age : 12 }});
                     },
                     update : function (remote, ids, model, callback) {
-                        callback({ status : "success", data : { name : model.get("name"), age : 12 }});
+                        callback({ status : "success", data : { name : "updated" + model.get("name"), age : 12 }});
                     },
                     destroy : function (remote, ids, callback) {
                         callback({ status : "success" });
                     }
                 };
+
+                octocat.setService(testService);
             });
 
             describe("Error handling and format parsing (__processResponse)", function () {
-                it("should fail if response is no valid object", function (done) {
-
-                    testService.create = function (remote, ids, model, callback) {
-                        callback();
-                    };
-
-                    octocat.setService(testService);
-                    octocat.save(function (err) {
-                        expect(err).not.to.be(null);
-                        done();
-                    });
-                });
 
                 it("should contact the remote service if no local service is defined", function (done) {
 
-                    var oldCreate = RemoteService.prototype.create;
                     RemoteService.prototype.create = function (remote, ids, model, callback) {
                         callback({
                             status : "success",
@@ -78,101 +73,8 @@ describe("Model-Services", function () {
                         done();
                     });
                 });
-
-                it("should convert an error-response to an internal error", function (done) {
-
-                    testService.create = function mockedCreate(remote, ids, model, callback) {
-                        callback({ status : "error", message : "my error message" });
-                    };
-
-                    octocat.setService(testService);
-
-                    octocat.save(function (err) {
-                        expect(err.message).to.contain("my error message");
-                        done();
-                    });
-                });
             });
 
-            describe("#save", function () {
-
-                it("call the update service if ID is set and return successfully", function (done) {
-                    octocat = new Octocat(2);
-                    octocat.setService(testService);
-                    octocat.set('name', 'Octocat');
-                    octocat.set('age', 8);
-                    expect(octocat.getId()).to.be(2);
-
-                    octocat.save(function (err) {
-                        expect(err).to.be(null);
-                        expect(octocat.getId()).to.be(2);
-                        expect(octocat.get("age")).to.be(12);
-                        expect(octocat.get("name")).to.be("Octocat");
-                        done();
-                    });
-                });
-
-                it("call the create service if ID is not set and return successfully", function (done) {
-                    octocat.set('name', 'Octocat');
-                    expect(octocat.getId()).to.be(null);
-
-                    octocat.save(function (err) {
-                        expect(err).to.be(null);
-                        expect(octocat.get("age")).to.be(10);
-                        expect(octocat.get("name")).to.be("Octocat");
-                        done();
-                    });
-                });
-
-                it("should also work with sync services", function (done) {
-
-                    testService.create = function (remote, ids, model) {
-                        return { status : "success", data : { age : 10 } };
-                    };
-
-                    octocat.set('name', 'Octocat');
-                    expect(octocat.getId()).to.be(null);
-
-                    octocat.save(function (err) {
-                        expect(err).to.be(null);
-                        expect(octocat.get("age")).to.be(10);
-                        expect(octocat.get("name")).to.be("Octocat");
-                        done();
-                    });
-                });
-            });
-
-            describe("#destroy", function () {
-
-                function mockedDestroy(remote, ids, callback) {
-                    if (ids !== null) {
-                        callback({ status : "success" });
-                        return;
-                    }
-                    callback({ status : "error", message : "missing IDs" });
-                }
-
-                it("call the delete service if ID is set and return successfully", function (done) {
-                    octocat = new Octocat(2);
-                    testService.destroy = mockedDestroy;
-                    octocat.setService(testService);
-                    octocat.destroy(function (err) {
-                        expect(err).to.be(null);
-                        done();
-                    });
-                });
-
-                it("should fail with a missing ID", function (done) {
-                    testService.destroy = mockedDestroy;
-                    octocat.setService(testService);
-                    expect(octocat.getId()).to.be(null);
-
-                    octocat.destroy(function (err) {
-                        expect(err).to.be.an(Error);
-                        done();
-                    });
-                });
-            });
         });
 
         describe("Statics", function () {
@@ -181,7 +83,6 @@ describe("Model-Services", function () {
                 modelCache,
                 testService,
                 RemoteService,
-                env,
                 services;
 
             before(function () {
