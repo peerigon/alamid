@@ -76,12 +76,22 @@ describe("Model", function () {
                 expect(user.get("name")).to.eql("hans");
             });
 
+            it("should only return defined attributes", function() {
+
+                user.unset("age");
+
+                expect(user.get()).to.eql({
+                    name : 'John Wayne',
+                    age : 45
+                })
+            });
+
             it("should be possible to set and get any key if there is no schema", function () {
                 var model = new Model();
 
                 model.set("what", "ever");
                 expect(model.get("what")).to.be("ever");
-                expect(model.get()).to.eql( { what: "ever" } );
+                expect(model.get()).to.eql({ what : "ever" });
             });
         });
 
@@ -200,17 +210,46 @@ describe("Model", function () {
                 expect(user.get('name')).to.eql('John Wayne');
 
                 user.set({
-                    name: 'Johnny Rotten',
-                    age: 50
+                    name : 'Johnny Rotten',
+                    age : 50
                 });
 
                 expect(user.get('age')).to.eql(50);
                 //unset multiple
                 user.unset('name', 'age');
                 expect(user.get()).to.eql({
-                    name: 'John Wayne',
-                    age: 45,
-                    kills : null
+                    name : 'John Wayne',
+                    age : 45
+                });
+            });
+        });
+
+        describe("accept", function () {
+
+            it("should set values and accept current state", function () {
+
+                user.set('name', 'Octocat');
+                expect(user.get('name')).to.eql('Octocat');
+                user.unset('name');
+                expect(user.get('name')).to.eql('John Wayne');
+                user.set('name', 'Octocat');
+
+                user.accept();
+
+                user.unset('name');
+                expect(user.get('name')).to.eql('Octocat');
+
+                user.set({
+                    name : 'Johnny Rotten',
+                    age : 50
+                });
+
+                user.accept();
+                user.unset('name', 'age');
+
+                expect(user.get()).to.eql({
+                    name : 'Johnny Rotten',
+                    age : 50
                 });
             });
         });
@@ -224,7 +263,7 @@ describe("Model", function () {
                 user.unset('name');
                 expect(user.isDefault("name")).to.be(true);
                 user.set('age', 5);
-                expect(user.isDefault("name","age")).to.be(false);
+                expect(user.isDefault("name", "age")).to.be(false);
                 user.set('age', 45);    // 45 equals the default value
                 expect(user.isDefault("age")).to.be(true);
                 user.unset('name', 'age');
@@ -232,43 +271,109 @@ describe("Model", function () {
             });
         });
 
+        describe("getChanged", function() {
+
+            it("should return only changed attributes", function () {
+
+                expect(user.getChanged()).to.eql({});
+
+                user.set("name", "hugo");
+                user.set("age", null);
+
+                expect(user.getChanged()).to.eql({ name : "hugo", age : null });
+
+                user.accept();
+
+                expect(user.getChanged()).to.eql({});
+            });
+        });
+
+        describe("hasChanged", function() {
+
+            it("should return false for unchanged attributes", function() {
+
+                expect(user.getChanged()).to.eql({});
+
+                expect(user.hasChanged("name")).to.be(false);
+                expect(user.hasChanged("age")).to.be(false);
+                expect(user.hasChanged("name", "age")).to.be(false);
+
+            });
+
+            it("should return true for changed attributes", function() {
+
+                user.accept();
+
+                user.set("name", "hugo");
+                user.set("age", null);
+
+                expect(user.hasChanged("name")).to.be(true);
+                expect(user.hasChanged("age")).to.be(true);
+                expect(user.hasChanged("name", "age")).to.be(true);
+            });
+
+            it("should work with multiple fields", function() {
+
+                user.accept();
+
+                user.set("name", "hugo");
+
+                expect(user.hasChanged("name")).to.be(true);
+                expect(user.hasChanged("age")).to.be(false);
+                expect(user.hasChanged("name", "age")).to.be(true);
+            });
+
+        });
+
         describe("toObject", function () {
 
             it("should return an object containing id & ids on default", function () {
                 user.set('name', 'Octocat');
                 user.set({
-                    age: 5,
-                    kills: 1
+                    age : 5,
+                    kills : 1
                 });
 
                 expect(user.getDefaults()).to.eql({
-                    name: 'John Wayne',
-                    age: 45,
-                    kills: null
+                    name : 'John Wayne',
+                    age : 45,
+                    kills : undefined
                 });
 
                 expect(user.toObject()).to.eql({
                     id : null,
                     ids : {},
-                    name: 'Octocat',
-                    age: 5,
-                    kills: 1
+                    name : 'Octocat',
+                    age : 5,
+                    kills : 1
+                });
+            });
+
+            it("should only return defined attributes", function() {
+
+                user.unset("age");
+
+                expect(user.toObject()).to.eql({
+                    name : 'John Wayne',
+                    age : 45,
+                    id : null,
+                    ids : {}
                 });
             });
 
             it("should return name the ID as defined in options.idAttribute", function () {
                 user.set('name', 'Octocat');
                 user.set({
-                    age: 5,
-                    kills: 1
+                    age : 5,
+                    kills : 1
                 });
 
                 expect(user.toObject({ idAttribute : "_id" })).to.eql({
                     _id : null,
                     ids : {},
-                    name: 'Octocat',
-                    age: 5,
-                    kills: 1
+                    name : 'Octocat',
+                    age : 5,
+                    kills : 1
                 });
             });
 
@@ -277,7 +382,7 @@ describe("Model", function () {
 
                 expect(user.toObject({ exclude : ["id", "age", "kills"] })).to.eql({
                     ids : {},
-                    name: 'Octocat'
+                    name : 'Octocat'
                 });
             });
         });
@@ -286,16 +391,16 @@ describe("Model", function () {
             it("should return an object to be used with JSON-Stringify", function () {
                 user.set('name', 'Octocat');
                 user.set({
-                    age: 5,
-                    kills: 1
+                    age : 5,
+                    kills : 1
                 });
 
                 expect(JSON.parse(JSON.stringify(user))).to.eql({
                     id : null,
                     ids : {},
-                    name: 'Octocat',
-                    age: 5,
-                    kills: 1
+                    name : 'Octocat',
+                    age : 5,
+                    kills : 1
                 });
             });
         });
@@ -337,7 +442,7 @@ describe("Model", function () {
         });
     });
 
-    describe("Validation", function(){
+    describe("Validation", function () {
         var octocat;
 
         var environment = require("../../lib/shared/env.js");
@@ -356,7 +461,7 @@ describe("Model", function () {
             octocat = new Octocat();
         });
 
-        it("should call shared and local validator on default", function(done) {
+        it("should call shared and local validator on default", function (done) {
             octocat.set('name', 'Octocat');
             octocat.set('age', 8);
 
@@ -368,7 +473,7 @@ describe("Model", function () {
             });
         });
 
-        it("should only call shared & local validator if remoteValidation is disabled", function(done) {
+        it("should only call shared & local validator if remoteValidation is disabled", function (done) {
             octocat.set('name', 'Octocat');
             octocat.set('age', 8);
 
@@ -380,7 +485,7 @@ describe("Model", function () {
             });
         });
 
-        it("should only call shared validator and therefor work if only shared passes", function(done) {
+        it("should only call shared validator and therefor work if only shared passes", function (done) {
             octocat.set('name', 'Octocat');
             octocat.set('age', 99);
 

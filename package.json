@@ -46,6 +46,7 @@
         "expect.js" : "0.x",
         "mocha" : "1.x",
         "xunit-file" : "*",
+        "socket.io-client" : "*",
         "rewire" : "1.x",
         "zombie" : "1.x",
         "supertest" : "0.x",

@@ -10,9 +10,6 @@ var Octocat = Model.extend("Octocat", {
         this._super(id);
         this.setSchema(schema, "shared");
         this.setSchema(serverSchema);
-    },
-    accept: function() {
-        this.acceptCurrentState();
     }
 });
 
