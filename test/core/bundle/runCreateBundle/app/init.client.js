@@ -10,6 +10,7 @@ client
 
 jQuery(document).ready(function onDOMReady() {
     window.alamidClientConfig = alamid.config;
+    window.jQuery = jQuery;
     //we don't have socket.io included in this test
     alamid.config.use.websockets = false;
     client.start();

@@ -22,10 +22,8 @@ var expect = require("expect.js"),
 
 describe("runCreateBundle()", function () {
 
-    var runCreateBundle = require("../../../lib/core/bundle/runCreateBundle.js");
-
-    var paths = getAppPaths(__dirname + "/runCreateBundle"),
-    //this is only the server config in this case
+    var runCreateBundle = require("../../../lib/core/bundle/runCreateBundle.js"),
+        paths = getAppPaths(__dirname + "/runCreateBundle"),
         devConfig = sanitizeConfig({
             appDir: __dirname + "/runCreateBundle/",
             port : 9000,
@@ -34,18 +32,22 @@ describe("runCreateBundle()", function () {
             },
             config : "config.json"
         }),
-        browser;
+        browser,
+        app;
 
     before(function (done) {
+        var app;
 
         fshelpers.makeDirSync(__dirname + "/runCreateBundle/node_modules");
+
         try {
             fs.symlinkSync(pathUtil.resolve(__dirname, "../../../"), __dirname + "/runCreateBundle/node_modules/alamid");
         } catch (err) { /* ignore err */ }
 
 
         browser = new Browser();
-        var app = connect()
+
+        app = connect()
             .use(connect.static(paths.bundle))
             .listen(3000, done);
     });
@@ -76,6 +78,7 @@ describe("runCreateBundle()", function () {
         expect(fs.existsSync(paths.bundle + "/tmp")).to.be(false);
     });
     it("should output a browser-executable bundle", function (done) {
+        this.timeout(10000);    // we need to expand mocha's default timeout
         browser
             .visit("http://localhost:3000/index.html", { /* debug: true */ }, function onBrowserReady(err) {
                 if (err) {
@@ -85,18 +88,20 @@ describe("runCreateBundle()", function () {
                 done();
             });
     });
-    it("should add the MainPage.html to the DOM", function () {
-        expect(browser.text("#headline1")).to.be("I'm the MainPage, baby!");
-    });
     it("should add the HomePage.html to the DOM", function () {
-        expect(browser.text("#headline2")).to.be("I'm the HomePage, baby!");
+        expect(getH2Content()).to.be("I'm the HomePage, baby!");
     });
     it("should load the BlogPage.html on link click", function (done) {
         browser.window.client.once("pageChange", function () {
-            expect(browser.text("#headline2")).to.be("I'm the BlogPage, baby!");
-            done();
+            // clearing callstack because the thrown error would be caught by zombie.js instead of mocha
+            setTimeout(check, 0);
         });
-        browser.window.client.changePage("blog");
+        browser.window.client.show("blog/posts");
+
+        function check() {
+            expect(getH2Content()).to.be("I'm the PostsPage, baby!");
+            done();
+        }
     });
 
     it("should be able to access the client config via alamid.config", function() {
@@ -109,4 +114,11 @@ describe("runCreateBundle()", function () {
 
         expect(browser.window.alamidClientConfig.use.websockets).to.eql(expectedClientConf.use.websockets);
     });
+
+    function getH2Content() {
+        // We need this odd selector because jQuery's sizzle adds some strange caching elements to the DOM
+        // when running on zombie.js which make it impossible to select via an id.
+        // Couldn't figure out whats going on.
+        return browser.window.jQuery("body > [data-node='page'] > div h2").text();
+    }
 });

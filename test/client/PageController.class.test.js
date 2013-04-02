@@ -2,12 +2,18 @@
 
 var expect = require("../testHelpers/expect.jquery.js"),
     Page = require("../../lib/client/Page.class.js"),
-    MainPage = require("../../lib/client/MainPage.class.js"),
-    PageLoader = require("../../lib/client/PageLoader.class.js"),
-    pageRegistry = require("../../lib/client/registries/pageRegistry.js");
+    PageController = require("../../lib/client/PageController.class.js"),
+    PageLoader = require("../../lib/client/PageLoader.class.js");
 
-describe("MainPage", function () {
-    var main,
+function checkFor(Error) {
+    return function (err) {
+        expect(err).to.be.a(Error);
+    };
+}
+
+describe("PageController", function () {
+    var pageController,
+        main,
         blog,
         posts,
         about,
@@ -35,47 +41,46 @@ describe("MainPage", function () {
         };
     });
     beforeEach(function () {
-        main = new MainPage();
+        main = new Page();
         blog = new Blog();
         posts = new Posts();
         about = new About();
+        pageController = new PageController(main);
     });
 
     describe("#constructor()", function () {
 
-        it("should pass all params to the super class", function () {
-            var ctx = {},
-                template = "<div></div>";
-
-            main = new MainPage(ctx, template);
-            expect(main.getRoot()).to.eql(template);
-            expect(main.context).to.be(ctx);
+        it("should set the given main page", function () {
+            pageController = new PageController(main);
+            expect(pageController.mainPage).to.be(main);
+        });
+        it("should throw an error if no main page was given", function () {
+            expect(function () {
+                pageController = new PageController();
+            }).to.throwError(checkFor(TypeError));
         });
 
-        it("should use document.body as page-node when the root is the document and there is no page-node within the document", function () {
-            main = new MainPage({}, document);
-            expect(main.getNode("page")).to.be(document.body);
-        });
     });
 
-    describe("#getSubPages()", function () {
-        var subPages;
+    describe("#getCurrentPages()", function () {
+        var pages;
 
         it("should return an empty array if there are no sub-pages", function () {
-            subPages = main.getSubPages();
-            expect(subPages).to.be.an(Array);
-            expect(subPages).to.have.length(0);
+            pages = pageController.getCurrentPages();
+            expect(pages).to.be.an(Array);
+            expect(pages).to.have.length(0);
         });
         it("should return an array with the current page hierarchy", function () {
             main.setSubPage(blog);
             blog.setSubPage(posts);
-            expect(main.getSubPages()).to.eql([blog, posts]);
+            expect(pageController.getCurrentPages()).to.eql([blog, posts]);
             blog.setSubPage(about);
-            expect(main.getSubPages()).to.eql([blog, about]);
+            expect(pageController.getCurrentPages()).to.eql([blog, about]);
         });
 
     });
 
+    /*
     describe("#setSubPages()", function () {
 
         it("should set all pages according to the given array", function () {
@@ -114,9 +119,9 @@ describe("MainPage", function () {
             expect(main.setSubPages([])).to.be(main);
         });
 
-    });
+    });*/
 
-    describe("#changePage()", function () {
+    describe("#show()", function () {
         var originalLoad = PageLoader.prototype.load,
             originalCancel = PageLoader.prototype.cancel;
 
@@ -134,21 +139,21 @@ describe("MainPage", function () {
             var emitted = [],
                 ctx = {};
 
-            main.on("beforePageChange", function (event) {
+            pageController.on("beforePageChange", function (event) {
                 expect(event.context).to.be(ctx);
-                expect(event.target).to.be(main);
+                expect(event.target).to.be(pageController);
                 expect(event.name).to.be("BeforePageChange");
-                emitted.push("main");
+                emitted.push("pageController");
             });
             blog.on("beforeUnload", function (event) {
                 expect(event.context).to.be(ctx);
-                expect(event.target).to.be(main);
+                expect(event.target).to.be(pageController);
                 expect(event.name).to.be("BeforeUnload");
                 emitted.push("blog");
             });
             posts.on("beforeUnload", function (event) {
                 expect(event.context).to.be(ctx);
-                expect(event.target).to.be(main);
+                expect(event.target).to.be(pageController);
                 expect(event.name).to.be("BeforeUnload");
                 emitted.push("posts");
             });
@@ -156,8 +161,8 @@ describe("MainPage", function () {
                 throw new Error("This event should never be emitted because the main page can't be left");
             });
 
-            main.changePage("about", ctx);
-            expect(emitted).to.eql(["main", "posts", "blog"]);
+            pageController.show("about", ctx);
+            expect(emitted).to.eql(["pageController", "posts", "blog"]);
         });
 
         it("should immediately cancel the process when calling event.preventDefault()", function () {
@@ -169,19 +174,19 @@ describe("MainPage", function () {
 
             PageLoader.prototype.load = throwError;
 
-            main.on("beforePageChange", function (event) {
+            pageController.on("beforePageChange", function (event) {
                 event.preventDefault();
             });
             blog.on("beforeUnload", throwError);
             posts.on("beforeUnload", throwError);
-            main.changePage("about", ctx);
+            pageController.show("about", ctx);
             removeAllListeners();
 
             blog.on("beforeUnload", throwError);
             posts.on("beforeUnload", function (event) {
                 event.preventDefault();
             });
-            main.changePage("about", ctx);
+            pageController.show("about", ctx);
             removeAllListeners();
         });
 
@@ -191,69 +196,78 @@ describe("MainPage", function () {
             };
             PageLoader.prototype.cancel = done;
 
-            main.changePage("about", {});
-            main.changePage("blog", {});
+            pageController.show("about", {});
+            pageController.show("blog", {});
         });
 
         it("should emit 'pageChange' if it has finished", function (done) {
             var ctx = {};
 
-            main.on("pageChange", function (event) {
-                expect(event.target).to.be(main);
+            pageController.on("pageChange", function (event) {
+                expect(event.target).to.be(pageController);
                 expect(event.context).to.be(ctx);
                 expect(event.name).to.be("PageChange");
                 done();
             });
 
-            main.changePage("about", ctx);
+            pageController.show("about", ctx);
         });
 
         it("should accept all combinations of trailing or leading slashes", function (done) {
             var called = 0;
 
-            main.on("pageChange", function onPageChange() {
+            pageController.on("pageChange", function onPageChange() {
                 if (++called === 3) {
                     done();
                 }
             });
 
-            main.changePage("blog");
-            main.changePage("about/");
-            main.changePage("/blog/");
+            pageController.show("blog");
+            pageController.show("about/");
+            pageController.show("/blog/");
         });
 
         it("should be possible to change current page to MainPage with '/' as route", function (done) {
-            var subPages;
+            var pages;
 
-            main.on("pageChange", function () {
-                subPages = main.getSubPages();
-                expect(subPages).to.have.length(0);
+            pageController.on("pageChange", function () {
+                pages = pageController.getCurrentPages();
+                expect(pages).to.have.length(0);
                 done();
             });
 
-            main.changePage("/", {});
+            pageController.show("/", {});
         });
 
         it("should be possible to change current page to MainPage with '' as route", function (done) {
-            var subPages;
+            var pages;
 
-            main.on("pageChange", function () {
-                subPages = main.getSubPages();
-                expect(subPages).to.have.length(0);
+            pageController.on("pageChange", function () {
+                pages = pageController.getCurrentPages();
+                expect(pages).to.have.length(0);
                 done();
             });
 
-            main.changePage("", {});
+            pageController.show("", {});
         });
 
         it("should append all loaded pages from top to bottom", function () {
-            main.changePage("about/contact", {});
+            pageController.show("about/contact", {});
+            about = main.getSubPage();
+            contact = about.getSubPage();
+            expect(about).to.be.an(About);
+            expect(contact).to.be.a(Contact);
 
+            pageController.show("/blog", {});
+            blog = main.getSubPage();
+            expect(blog).to.be.a(Blog);
+
+            pageController.show("/", {});
+            expect(main.getSubPage()).to.be(null);
+
+            pageController.show("about", {});
             about = main.getSubPage();
             expect(about).to.be.an(About);
-
-            contact = about.getSubPage();
-            expect(contact).to.be.a(Contact);
         });
 
     });

@@ -4,7 +4,8 @@ var expect = require("expect.js"),
     value = require("value"),
     pageJS = require("page"),
     Client = require("../../lib/client/Client.class.js"),
-    MainPage = require("../../lib/client/MainPage.class.js");
+    Page = require("../../lib/client/Page.class.js"),
+    PageController = require("../../lib/client/PageController.class.js");
 
 describe("Client", function () {
 
@@ -38,20 +39,35 @@ describe("Client", function () {
 
     });
 
-    describe("#start() / .mainPage", function () {
+    describe("#start() / #mainPage", function () {
         var MyMainPage;
 
         it("should create an instance of MainPage by default", function () {
             client.start();
-            expect(client.mainPage).to.be.a(MainPage);
+            expect(client.mainPage).to.be.a(Page);
         });
 
         it("should also be possible to provide an own MainPage", function () {
-            MyMainPage = MainPage.extend("MyMainPage");
+            MyMainPage = Page.extend("MyMainPage");
 
             client.mainPage = new MyMainPage({}, document);
             client.start();
             expect(client.mainPage).to.be.a(MyMainPage);
+        });
+
+        it("should proxy the 'beforePageChange'- and 'pageChange'-event of the pageController", function (done) {
+            var expectedEvent = {};
+
+            client.start();
+            client.on("beforePageChange", function (event) {
+                expect(event).to.be(expectedEvent);
+                client._pageController.emit("pageChange", expectedEvent);
+            });
+            client.on("pageChange", function (event) {
+                expect(event).to.be(expectedEvent);
+                done();
+            });
+            client._pageController.emit("beforePageChange", expectedEvent);
         });
 
     });
@@ -100,18 +116,18 @@ describe("Client", function () {
             context,
             pushState,
             replaceState,
-            changePage;
+            show;
 
         function noop() {}
 
         before(function () {
             pushState = history.pushState;
             replaceState = history.replaceState;
-            changePage = MainPage.prototype.changePage;
+            show = PageController.prototype.show;
 
             history.pushState = noop;
             history.replaceState = noop;
-            MainPage.prototype.changePage = function (pageUrlToLoad, ctx) {
+            PageController.prototype.show = function (pageUrlToLoad, ctx) {
                 pageUrl = pageUrlToLoad;
                 context = ctx;
             };
@@ -121,7 +137,7 @@ describe("Client", function () {
             //undo monkey patches
             history.pushState = pushState;
             history.replaceState = replaceState;
-            MainPage.prototype.changePage = changePage;
+            PageController.prototype.show = show;
         });
 
         afterEach(function () {
@@ -205,6 +221,19 @@ describe("Client", function () {
 
             client.use("websockets", socket);
             expect(client.socket).to.be(socket);
+        });
+
+    });
+
+    describe("#show()", function () {
+
+        it("should just proxy to client.pageController.show()", function (done) {
+            client.start();
+            client._pageController.show = function () {
+                expect(arguments).to.eql([1,2,3]);
+                done();
+            };
+            client.show(1, 2, 3);
         });
 
     });
