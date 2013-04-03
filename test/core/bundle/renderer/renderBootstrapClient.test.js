@@ -10,8 +10,6 @@ var expect = require("expect.js"),
     extractConfig = require("../../../../lib/core/config/extractConfig.js"),
     _ = require("underscore");
 
-var util = require("util");
-
 var appPath = __dirname + "/renderBootstrapClient",
     bootstrapPath = appPath + "/bundle/";
 
@@ -46,12 +44,9 @@ describe("renderBootstrapClient", function () {
 
                 return require(path);
             }
-        },
-        MainPage = require(appPath + "/app/pages/MainPage.class.js");
+        };
 
-    function Client (MainPage) {
-        this.MainPage = MainPage;
-    }
+    function Client () {}
 
     before(function () {
         index = _(index).extend(alamidClientIndex);
@@ -81,6 +76,5 @@ describe("renderBootstrapClient", function () {
 
     it("should initialize the app", function () {
         expect(index.client).to.be.a(Client);
-        expect(index.client.MainPage.name).to.be(MainPage.name);
     });
 });

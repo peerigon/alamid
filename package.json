@@ -50,7 +50,7 @@
         "rewire" : "1.x",
         "zombie" : "1.x",
         "supertest" : "0.x",
-        "grunt-simple-mocha" : "0.x"
+        "grunt-simple-mocha" : "git://github.com/yaymukund/grunt-simple-mocha.git"
     },
     "scripts" : {
         "test" : "grunt test-all"
