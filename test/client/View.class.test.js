@@ -222,12 +222,11 @@ describe("View", function () {
 
             otherModel.set("message",
                 "<script>" +
-                    "document.body.innerHTML = 'PWNED! If you can read this message the View is a potential security risk.';" +
+                    "alert('PWNED! If you can read this message the View is a potential security risk.');" +
+                    "console.log('PWNED! If you can read this message the View is a potential security risk.');" +
                 "</script>" +
                 "<div id='inject-test'></div>"
             );
-            console.log(otherModel.get("message"));
-            console.log(otherModel.escape("message"));
             formView.bind(otherModel);
 
             // checking for the presence of escape char
