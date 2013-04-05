@@ -227,13 +227,32 @@ describe("Client", function () {
 
     describe("#show()", function () {
 
-        it("should just proxy to client.pageController.show()", function (done) {
+        it("should just proxy to client._pageController.show() and return this", function () {
+            var args;
+
             client.start();
             client._pageController.show = function () {
-                expect(arguments).to.eql([1,2,3]);
-                done();
+                args = arguments;
             };
-            client.show(1, 2, 3);
+            expect(client.show(1, 2, 3)).to.be(client);
+            expect(args).to.eql([1,2,3]);
+        });
+
+    });
+
+    describe("#getCurrentPages()", function () {
+
+        it("should just proxy to client._pageController.getCurrentPages()", function () {
+            var args,
+                obj = {};
+
+            client.start();
+            client._pageController.getCurrentPages = function () {
+                args = arguments;
+                return obj;
+            };
+            expect(client.getCurrentPages(1, 2, 3)).to.be(obj);
+            expect(args).to.eql([1,2,3]);
         });
 
     });
