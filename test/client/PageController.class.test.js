@@ -80,47 +80,6 @@ describe("PageController", function () {
 
     });
 
-    /*
-    describe("#setSubPages()", function () {
-
-        it("should set all pages according to the given array", function () {
-            main.setSubPages([blog, posts]);
-            expect(main.getSubPage()).to.be(blog);
-            expect(blog.getSubPage()).to.be(posts);
-        });
-
-        it("should remove pages that are not in the given array", function () {
-            main.setSubPage(blog);
-            blog.setSubPage(posts);
-            main.setSubPages([]);
-            expect(main.getSubPage()).to.be(null);
-            expect(blog.getSubPage()).to.be(null);
-        });
-
-        it("should be possible to remove all sub-pages by passing null", function () {
-            main.setSubPage(blog);
-            blog.setSubPage(posts);
-            main.setSubPages(null);
-            expect(main.getSubPage()).to.be(null);
-            expect(blog.getSubPage()).to.be(null);
-        });
-
-        it("should not re-set pages that are in both arrays", function () {
-            main.setSubPage(blog);
-            blog.setSubPage(posts);
-            blog.setSubPage = function () {
-                throw new Error("This function should not be called");
-            };
-            main.setSubPages([blog, posts, about]);
-            expect(posts.getSubPage()).to.be(about);
-        });
-
-        it("should be chainable", function () {
-            expect(main.setSubPages([])).to.be(main);
-        });
-
-    });*/
-
     describe("#show()", function () {
         var originalLoad = PageLoader.prototype.load,
             originalCancel = PageLoader.prototype.cancel;
@@ -162,7 +121,7 @@ describe("PageController", function () {
             });
 
             pageController.show("about", ctx);
-            expect(emitted).to.eql(["pageController", "posts", "blog"]);
+            expect(emitted).to.eql(["posts", "blog", "pageController"]);
         });
 
         it("should immediately cancel the process when calling event.preventDefault()", function () {
@@ -174,16 +133,14 @@ describe("PageController", function () {
 
             PageLoader.prototype.load = throwError;
 
-            pageController.on("beforePageChange", function (event) {
+            blog.on("beforeUnload", throwError);
+            posts.on("beforeUnload", function (event) {
                 event.preventDefault();
             });
-            blog.on("beforeUnload", throwError);
-            posts.on("beforeUnload", throwError);
             pageController.show("about", ctx);
             removeAllListeners();
 
-            blog.on("beforeUnload", throwError);
-            posts.on("beforeUnload", function (event) {
+            pageController.on("beforePageChange", function (event) {
                 event.preventDefault();
             });
             pageController.show("about", ctx);
