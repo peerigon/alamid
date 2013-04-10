@@ -666,26 +666,32 @@ describe("Displayable", function () {
 
     describe("#emit()", function () {
 
-        it("should emit the 'document'-event on all children", function () {
+        it("should emit the 'document'-event first and then on all children", function () {
             var called = "",
+                docEvent = {},
                 displayable = new Displayable();
 
             submitButton.on("document", function (event) {
-                called += "submitButton ";
+                called += " submitButton ";
                 expect(event.name).to.be("DocumentEvent");
                 expect(event.target).to.be(submitButton);
             });
 
             displayable.on("document", function (event) {
-                called += "displayable ";
+                called += "displayable";
                 expect(event.name).to.be("DocumentEvent");
                 expect(event.target).to.be(displayable);
             });
 
+            form.on("document", function (event) {
+                called += "form";
+                expect(event).to.be(docEvent);
+            });
+
             form.append(submitButton).at("form");
             form.append(displayable).at("form");
-            form.emit("document");
-            expect(called).to.be("submitButton displayable ");
+            form.emit("document", docEvent);
+            expect(called).to.be("form submitButton displayable");
         });
 
     });
