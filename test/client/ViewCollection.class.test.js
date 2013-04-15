@@ -8,13 +8,13 @@ var expect = require("expect.js"),
     CarLiElementView = require("./mocks/CarLiElementView.class.js"),
     ModelCollection = require("../../lib/shared/ModelCollection.class.js"),
     CarModel = require("./mocks/models/CarModel.class.js"),
-    DOMNodeMocks = require("./mocks/DOMNodeMocks.js"),
     jQuery = require("../../lib/client/helpers/jQuery.js"),
     _ = require("underscore");
 
 describe("ViewCollection", function () {
 
-    var ViewCollectionWithExample,
+    var template = "<ul data-node='views'></ul>",
+        ViewCollectionWithExample,
         viewCollectioNode,
         $viewCollectioNode,
         viewCollection,
@@ -27,7 +27,7 @@ describe("ViewCollection", function () {
         carCollection;
 
     ViewCollectionWithExample = ViewCollection.extend({
-        template: "<ul data-node='views'></ul>"
+        template: template
     });
 
     beforeEach(function () {
@@ -76,7 +76,7 @@ describe("ViewCollection", function () {
         });
 
         it("should be possible to set a template", function (done) {
-            viewCollection = new ViewCollection(CarLiElementView, DOMNodeMocks.getOlString());
+            viewCollection = new ViewCollection(CarLiElementView, template);
             done();
         });
 
@@ -84,7 +84,7 @@ describe("ViewCollection", function () {
             var MyViewCollection = ViewCollection.extend({
                 template: '<div data-node="views"></div>'
             });
-            viewCollection = new MyViewCollection(CarLiElementView, DOMNodeMocks.getOlString());
+            viewCollection = new MyViewCollection(CarLiElementView, template);
 
             expect(viewCollection.getRoot()[0]).to.be.an(HTMLUListElement);
         });

@@ -5,7 +5,6 @@ var expect = require("../testHelpers/expect.jquery.js"),
     path = require("path"),
     Displayable = require("../../lib/client/Displayable.class.js"),
     domAdapter = require("../../lib/client/helpers/domAdapter.js"),
-    DOMNodeMocks = require("./mocks/DOMNodeMocks.js"),
     jQuery = require("../../lib/client/helpers/jQuery.js"),
     collectNodeReferences = require("../testHelpers/collectNodeReferences.js"),
     _ = require("underscore");
@@ -21,15 +20,16 @@ describe("Displayable", function () {
                 "<input data-node='inputB' type='text' value='b'/>" +
                 "<input data-node='inputC' type='button' value='c'/>" +
             "</form>",
-        $submitButton,
         submitButton,
         cssClassHide = Displayable.prototype.cssClassHide;
 
     beforeEach(function () {
-        $submitButton = jQuery(DOMNodeMocks.getSubmitButton());
 
-        submitButton = new Displayable(DOMNodeMocks.getSubmitButtonString());
+        submitButton = new Displayable(
+            "<input data-node='submitButton' type='submit' value='submit'/>"
+        );
         form = new Displayable(formTemplate);
+
     });
 
     describe("#constructor()", function () {
