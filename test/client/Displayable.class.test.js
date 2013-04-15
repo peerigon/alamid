@@ -6,8 +6,7 @@ var expect = require("../testHelpers/expect.jquery.js"),
     Displayable = require("../../lib/client/Displayable.class.js"),
     domAdapter = require("../../lib/client/helpers/domAdapter.js"),
     jQuery = require("../../lib/client/helpers/jQuery.js"),
-    collectNodeReferences = require("../testHelpers/collectNodeReferences.js"),
-    _ = require("underscore");
+    collectNodeReferences = require("../testHelpers/collectNodeReferences.js");
 
 var checkTypeError = require("../testHelpers/checkError.js")(TypeError);
 
@@ -377,28 +376,45 @@ describe("Displayable", function () {
 
         it("should not leave any event listeners on a child", function () {
             var len,
+                eventName,
+                listeners,
                 expectedListeners = [],
                 actualListeners = [];
 
-            _(submitButton._events).each(function (events) {
-                len = value(events).typeOf(Array)? events.length: 1;
-                expectedListeners.push(len);
-            });
+            for (eventName in submitButton._events) {
+                if (submitButton._events.hasOwnProperty(eventName)) {
+                    listeners = submitButton._events[eventName];
+                    len = value(listeners).typeOf(Array)? listeners.length: 1;
+                    expectedListeners.push(len);
+                }
+            }
             form.append(submitButton).at("form");
             submitButton.detach();
-            _(submitButton._events).each(function (events) {
-                len = value(events).typeOf(Array)? events.length: 1;
-                actualListeners.push(len);
-            });
+            for (eventName in submitButton._events) {
+                if (submitButton._events.hasOwnProperty(eventName)) {
+                    listeners = submitButton._events[eventName];
+                    len = value(listeners).typeOf(Array)? listeners.length: 1;
+                    actualListeners.push(len);
+                }
+            }
             expect(actualListeners).to.eql(expectedListeners);
         });
 
     });
 
     describe("#dispose()", function () {
+        var disp1,
+            disp2,
+            disp3;
 
         beforeEach(function () {
+            disp1 = new Displayable();
+            disp2 = new Displayable();
+            disp3 = new Displayable();
             form.append(submitButton).at("form");
+            form.append(disp1).at("form");
+            form.append(disp2).at("form");
+            form.append(disp3).at("form");
         });
 
         it("should NOT return a reference to itself", function () {
@@ -493,14 +509,33 @@ describe("Displayable", function () {
             submitButton.dispose();
         });
 
-        it("should dispose form and child Displayables", function () {
-            var tmpDisplayable = new Displayable("<div data-node='child'></div>");
+        it("should call dispose() on all children", function () {
+            var called = {},
+                submitButtonDispose = submitButton.dispose,
+                disp1Dispose = disp1.dispose,
+                disp2Dispose = disp2.dispose,
+                disp3Dispose = disp3.dispose;
 
-            tmpDisplayable.append(form);
+            submitButton.dispose = function () {
+                called.submitButton = true;
+                submitButtonDispose.call(this);
+            };
+            disp1.dispose = function () {
+                called.disp1 = true;
+                disp1Dispose.call(this);
+            };
+            disp2.dispose = function () {
+                called.disp2 = true;
+                disp2Dispose.call(this);
+            };
+            disp3.dispose = function () {
+                called.disp3 = true;
+                disp3Dispose.call(this);
+            };
 
             form.dispose();
 
-            expect(tmpDisplayable.getRoot().children()).to.have.length(0);
+            expect(called).to.only.have.keys(["submitButton", "disp1", "disp2", "disp3"]);
         });
 
         it("should remove all node references", function () {
