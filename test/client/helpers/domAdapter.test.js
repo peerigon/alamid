@@ -1,18 +1,21 @@
 var expect = require("expect.js"),
     domAdapter = require("../../../lib/client/helpers/domAdapter.js"),
-    DOMNodeMocks = require("./../mocks/DOMNodeMocks.js"),
     jQuery = require("../../../lib/client/helpers/jQuery.js");
 
 describe("domAdapter", function () {
 
-    var button,
+    var formTemplate =
+            "<form data-node='form' action='?' method='post'>" +
+                "<input data-node='inputA' type='text' value='a'/>" +
+                "<input data-node='inputB' type='text' value='b'/>" +
+                "<input data-node='inputC' type='button' value='c'/>" +
+            "</form>",
+        button,
         $button,
-        form,
         $form;
 
     beforeEach(function () {
-        form = DOMNodeMocks.getForm();
-        $form = jQuery(form);
+        $form = jQuery(formTemplate);
         button = $form.find("input[type='button']")[0];
         $button = jQuery(button);
     });
@@ -49,19 +52,14 @@ describe("domAdapter", function () {
     describe(".find()", function () {
 
         it("should find all nodes with an data-node-attribute", function () {
-            var nodeReference,
-                foundNodes;
+            var expectedNodes,
+                actualNodes;
 
-            nodeReference = $form.find("[data-node]");
-            nodeReference = nodeReference.add(form);
+            expectedNodes = $form.find("[data-node]").toArray();
+            expectedNodes.unshift($form[0]);
+            actualNodes = domAdapter($form).find("[data-node]").toArray();
 
-            foundNodes = domAdapter(form).find("[data-node]");
-
-            //expect.js seems to be not able to equal references of DOMElements.
-            //This Error will be thrown: TypeError: Accessing selectionDirection on an input element that cannot have a selection.
-            expect(foundNodes[0].toString() === nodeReference[0].toString()).to.be.ok();
-            expect(jQuery(foundNodes[0]).attr("method") === jQuery(nodeReference[0]).attr("method")).to.be.ok();
-            expect(nodeReference.length).to.equal(foundNodes.length);
+            expect(actualNodes).to.eql(expectedNodes);
         });
 
     });
@@ -147,8 +145,8 @@ describe("domAdapter", function () {
     describe(".addClass()", function () {
 
         it("should add the css class 'cool-cat'", function () {
-            domAdapter(form.firstChild).addClass("cool-cat");
-            expect(jQuery(form.firstChild).attr("class")).to.be("cool-cat");
+            domAdapter($form[0]).addClass("cool-cat");
+            expect($form).to.have.cssClass("cool-cat");
         });
 
     });
@@ -156,20 +154,21 @@ describe("domAdapter", function () {
     describe(".removeClass()", function () {
 
         it("should remove the css-class 'cool-cat'", function () {
-            jQuery(form.firstChild).addClass("cool-cat");
-            domAdapter(form.firstChild).removeClass("cool-cat");
-            expect(jQuery(form.firstChild).attr("class")).to.be("");
+            $form.addClass("cool-cat"); // ensuring that the class is added
+            domAdapter($form[0]).removeClass("cool-cat");
+            expect($form).not.to.have.cssClass("cool-cat");
         });
     });
 
     describe(".hasClass()", function () {
 
         it("should return true if the node has the class 'cool-cat'", function () {
-            jQuery(form.firstChild).addClass("cool-cat");
-            expect(domAdapter(form.firstChild).hasClass("cool-cat")).to.be(true);
+            $form.addClass("cool-cat"); // ensuring that the class is added
+            expect(domAdapter($form).hasClass("cool-cat")).to.be(true);
         });
         it("should return false if the node doesn't have the class 'cool-cat'", function () {
-            expect(domAdapter(form.firstChild).hasClass("cool-cat")).to.be(false);
+            $form.removeClass("cool-cat"); // ensuring that the class is added
+            expect(domAdapter($form).hasClass("cool-cat")).to.be(false);
         });
 
     });

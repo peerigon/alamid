@@ -10,28 +10,6 @@ var DOMNodeMocks = {
     /**
      * @return {String}
      */
-    getFormString: function () {
-        return (
-            "<form data-node='form' action='?' method='post'>" +
-                "<input data-node='inputA' type='text' value='a'/>" +
-                "<input data-node='inputB' type='text' value='b'/>" +
-                "<input data-node='inputC' type='button' value='c'/>" +
-            "</form>"
-        );
-    },
-
-    /**
-     * @return {Node}
-     */
-    getForm: function () {
-        this.__incubator.innerHTML = this.getFormString();
-
-        return this.__incubator.firstChild;
-    },
-
-    /**
-     * @return {String}
-     */
     getSubmitButtonString: function () {
         return "<input data-node='submitButton' type='submit' value='submit'/>";
     },
