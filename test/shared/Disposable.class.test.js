@@ -61,4 +61,45 @@ describe("Disposable", function () {
             expect(calledOn).to.eql([disp1, disp2, disp3]);
         });
     });
+    describe("#watch() / #runOnDispose()", function () {
+        var expectedReturn = {},
+            eventEmitter = {
+                on: function (eventName, listener) {
+                    actualEventName = eventName;
+                    actualListener = listener;
+
+                    return expectedReturn;
+                },
+                removeListener: function (eventName, listener) {
+                    actualEventName = eventName;
+                    actualListener = listener;
+                }
+            },
+            actualEventName,
+            actualListener,
+            actualReturn;
+
+        function listener() {}
+
+        beforeEach(function () {
+            actualEventName = null;
+            actualListener = null;
+            actualReturn = null;
+        });
+
+        it("should proxy the .on()-call", function () {
+            actualReturn = disposable.watch(eventEmitter).on("snacktime", listener);
+
+            expect(actualEventName).to.be("snacktime");
+            expect(actualListener).to.be(listener);
+            expect(actualReturn).to.be(expectedReturn);
+        });
+        it("should call .removeListener() with the given event name and listener on dispose()", function () {
+            disposable.watch(eventEmitter).on("lunchtime", listener);
+            disposable.dispose();
+
+            expect(actualEventName).to.be("lunchtime");
+            expect(actualListener).to.be(listener);
+        });
+    });
 });
