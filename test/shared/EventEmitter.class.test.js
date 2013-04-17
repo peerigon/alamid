@@ -1,297 +1,167 @@
 "use strict";
 
-var expect = require("expect.js"),
-    rewire = require("rewire");
+var expect = require("expect.js");
 
-var EventEmitter = require("../../lib/shared/EventEmitter.class.js");
+var EventEmitter = require("../../lib/shared/EventEmitter.class.js"),
+    Disposable = require("../../lib/shared/Disposable.class.js"),
+    NodeEventEmitter = require("events").EventEmitter;
 
+// These tests only check the basic functionality.
+// Detailed checks should be done by the node-lib or their replacements for the web
 describe("EventEmitter", function () {
 
     var e,
-        event = "snacktime";
+        aCalled,
+        bCalled,
+        cCalled;
+
+    function a() {
+        aCalled++;
+    }
+
+    function b() {
+        bCalled++;
+    }
+
+    function c() {
+        cCalled++;
+    }
 
     beforeEach(function () {
         e = new EventEmitter();
+        aCalled = 0;
+        bCalled = 0;
+        cCalled = 0;
     });
 
-    describe("emit(), on()", function () {
-
-        it("should execute each time " + event + " was triggered 'snacktime'-handler", function () {
-            var onSnacktimeCalls = 0,
-                desiredOnSnacktimeCalls = 2,
-                emitCount = desiredOnSnacktimeCalls;
-
-            function onSnacktime() {
-                ++onSnacktimeCalls;
-            }
-
-            e.on(event, onSnacktime);
-
-            for(var i = 0; i < emitCount; ++i) {
-                e.emit(event);
-            }
-
-            expect(onSnacktimeCalls).to.be(desiredOnSnacktimeCalls);
+    describe("#constructor()", function () {
+        it("should return an instance of Disposable", function () {
+            expect(e).to.be.an(Disposable);
         });
-
     });
 
-    describe("emit(), addListener()", function () {
-
-        it("should execute each time " + event + " was triggered 'snacktime'-handler", function () {
-            var onSnacktimeCalls = 0,
-                desiredOnSnacktimeCalls = 2,
-                emitCount = desiredOnSnacktimeCalls;
-
-            function onSnacktime() {
-                ++onSnacktimeCalls;
-            }
-
-            e.addListener(event, onSnacktime);
-
-            for(var i = 0; i < emitCount; ++i) {
-                e.emit(event);
-            }
-
-            expect(onSnacktimeCalls).to.be(desiredOnSnacktimeCalls);
+    describe("#on()", function () {
+        it("should be an alias for .addListener()", function () {
+            expect(e.on).to.be(e.addListener);
         });
-
     });
 
-    describe("emit() passed params", function () {
+    describe("#emit() / #addListener()", function () {
+        it("should execute the listener each time the event was triggered", function () {
+            e.addListener("snacktime", a);
+            e.emit("snacktime");
+            e.emit("snacktime");
+            e.emit("snacktime");
 
-        it("should pass all params to '" + event + "'-handler", function (done) {
-            var arg0 = "a",
-                arg1 = 1,
-                arg2 = [],
-                arg3 = {},
-                arg4 = new Error(),
-                arg5 = function f() { };
+            expect(aCalled).to.be(3);
+        });
+    });
 
-            e.on(event, function () {
+    describe("#emit()", function () {
+        it("should pass all params to the listener", function (done) {
 
-                expect(arguments[0]).to.be(arg0);
-                expect(arguments[1]).to.be(arg1);
-                expect(arguments[2]).to.be(arg2);
-                expect(arguments[3]).to.be(arg3);
-                expect(arguments[4]).to.be(arg4);
-                expect(arguments[5]).to.be(arg5);
+            e.on("snacktime", function onSnacktime(a, b, c) {
+
+                expect(a).to.be(1);
+                expect(b).to.be(2);
+                expect(c).to.be(3);
 
                 done();
             });
 
-            e.emit(event, arg0, arg1, arg2, arg3, arg4, arg5);
-        });
-
-    });
-
-
-
-    describe("once()", function () {
-
-        it("should trigger '" + event + "'-handler only once", function () {
-            var onSnacktimeCalls = 0,
-                desiredOnSnacktimeCalls = 1,
-                emitCount = 2;
-
-            function onSnacktime() {
-                ++onSnacktimeCalls;
-            }
-
-            e.once(event, onSnacktime);
-
-            for(var i = 0; i < emitCount; ++i) {
-                e.emit(event);
-            }
-
-            expect(onSnacktimeCalls).to.be(desiredOnSnacktimeCalls);
-        });
-
-    });
-
-    describe("removeListener()", function () {
-
-        it("should not trigger onSnacktime-handler after it was removed, but 'lunchtime'-handler shall be executed", function () {
-            var isSnacktimeExecuted = false,
-                isLunchtimeExecuted = false;
-
-            function onSnacktime() {
-                isSnacktimeExecuted = true;
-            }
-
-            function onLunchtime() {
-                isLunchtimeExecuted = true;
-            }
-
-            e.on(event, onSnacktime);
-            e.on(event, onLunchtime);
-
-            e.removeListener(event, onSnacktime);
-
-            e.emit(event);
-
-            expect(isSnacktimeExecuted).to.be(false);
-            expect(isLunchtimeExecuted).to.be(true);
+            e.emit("snacktime", 1, 2, 3);
         });
     });
 
-    describe("removeAllListeners()", function () {
 
-        it("should not trigger any 'snacktime'-handler", function () {
-            var isSnacktimeExecuted = false,
-                isLunchtimeExecuted = false,
-                isBrunchtimeExecuted = false,
-                brunchtimeEvent = "brunchtime";
 
-            function onSnacktime() {
-                isSnacktimeExecuted = true;
-            }
+    describe("#once()", function () {
+        it("should trigger the listener only once", function () {
+            e.once("snacktime", a);
+            e.emit("snacktime");
+            e.emit("snacktime");
+            e.emit("snacktime");
 
-            function onLunchtime() {
-                isLunchtimeExecuted = true;
-            }
+            expect(aCalled).to.be(1);
+        });
+    });
 
-            function onBrunchtime() {
-                isBrunchtimeExecuted = true;
-            }
+    describe("#removeListener()", function () {
+        it("should not trigger the removed listener", function () {
+            e.on("snacktime", a);
+            e.on("snacktime", b);
+            e.removeListener("snacktime", a);
+            e.emit("snacktime");
 
-            e.on(event, onSnacktime);
-            e.on(event, onLunchtime);
-            e.on(brunchtimeEvent, onBrunchtime);
+            expect(aCalled).to.be(0);
+            expect(bCalled).to.be(1);
+        });
+    });
 
-            e.removeAllListeners(event, onSnacktime);
+    describe("#removeAllListeners()", function () {
+        it("should not trigger any event listener to the given event", function () {
+            e.on("snacktime", a);
+            e.on("snacktime", b);
+            e.on("lunchtime", c);
 
-            e.emit(event);
-            e.emit(brunchtimeEvent);
+            e.removeAllListeners("snacktime");
 
-            expect(isSnacktimeExecuted).to.be(false);
-            expect(isLunchtimeExecuted).to.be(false);
-            expect(isBrunchtimeExecuted).to.be(true);
+            e.emit("snacktime");
+            e.emit("lunchtime");
+
+            expect(aCalled).to.be(0);
+            expect(bCalled).to.be(0);
+            expect(cCalled).to.be(1);
         });
 
-        it("should not trigger any event-handler", function () {
-            var isSnacktimeExecuted = false,
-                isBrunchtimeExecuted = false,
-                brunchtimeEvent = "brunchtime";
-
-            function onSnacktime() {
-                isSnacktimeExecuted = true;
-            }
-
-            function onBrunchtime() {
-                isBrunchtimeExecuted = true;
-            }
-
-            e.on(event, onSnacktime);
-            e.on(brunchtimeEvent, onBrunchtime);
+        it("should not trigger any event-listener", function () {
+            e.on("snacktime", a);
+            e.on("brunchtime", b);
+            e.on("lunchtime", c);
 
             e.removeAllListeners();
 
-            e.emit(event);
-            e.emit(brunchtimeEvent);
+            e.emit("snacktime");
+            e.emit("brunchtime");
+            e.emit("lunchtime");
 
-            expect(isSnacktimeExecuted).to.be(false);
-            expect(isBrunchtimeExecuted).to.be(false);
+            expect(aCalled).to.be(0);
+            expect(bCalled).to.be(0);
+            expect(cCalled).to.be(0);
         });
 
     });
 
-    describe("setMaxListeners()", function () {
-        //NOT WORKING WITH REWIRE ATM
-        /*
-         it("console.error() and console.trace() shuold be executed if max listeners limit was exceeded", function (done) {
-         var RewiredEventEmitter = rewire("../../lib/shared/EventEmitter.class.js", false),
-         isErrorExecuted = false;
-
-         RewiredEventEmitter.__set__({
-         console: {
-         error: function () {
-         isErrorExecuted = true;
-         },
-         trace: function () {
-         if (isErrorExecuted) {
-         done();
-         }
-         }
-         }
-         });
-
-         e = new RewiredEventEmitter();
-
-         e.setMaxListeners(1);
-
-         e.on(event, function () {
-         //do nothing
-         });
-         e.on(event, function () {
-         //do nothing
-         });
-         });
-         */
-    });
-
-    describe("listeners", function () {
+    describe("#listeners()", function () {
 
         it("should return all attached listeners", function () {
-            function onLunchtime() { }
+            e.on("snacktime", a);
+            e.on("snacktime", b);
 
-            function onSnacktime() { }
-
-            e.on(event, onLunchtime);
-            e.on(event, onSnacktime);
-
-            expect(e.listeners(event)).to.be.eql([onLunchtime, onSnacktime]);
+            expect(e.listeners("snacktime")).to.eql([a, b]);
         });
 
     });
 
-    describe("scoping", function () {
+    describe("#dispose()", function () {
 
-        it("should bind the event-handler to the given scope", function(done) {
+        it("should call NodeEventEmitter.prototype.removeAllListeners()", function () {
+            var removeAllListeners = NodeEventEmitter.prototype.removeAllListeners;
 
-            var lunchOptions = {
-                sandwiches : [
-                    "ham",
-                    "tonno"
-                ]
-            };
+            NodeEventEmitter.prototype.removeAllListeners = a;
+            e.dispose();
+            expect(aCalled).to.be(1);
 
-            function showLunchOptions() {
-                expect(this.sandwiches).to.contain("ham", "tonno");
-                done();
-            }
-
-            e.on("snacktime", showLunchOptions, lunchOptions);
-
-            e.emit("snacktime");
+            NodeEventEmitter.prototype.removeAllListeners = removeAllListeners;
         });
 
-        it("should not trigger onSnacktime-handler after it was removed, but 'lunchtime'-handler shall be executed", function () {
-
-            var isSnacktimeExecuted = false,
-                isLunchtimeExecuted = false;
-
-            var scope = {
-                scoped : true
-            };
-
-            function onSnacktime() {
-                isSnacktimeExecuted = true;
-            }
-
-            function onLunchtime() {
-                isLunchtimeExecuted = true;
-            }
-
-            e.on(event, onSnacktime, scope);
-            e.on(event, onLunchtime, scope);
-
-            e.removeListener(event, onSnacktime);
-
-            e.emit(event);
-
-            expect(isSnacktimeExecuted).to.be(false);
-            expect(isLunchtimeExecuted).to.be(true);
+        it("should call Disposable.prototype.dispose()", function () {
+            e.dispose();
+            // Can't be checked better
+            // @see https://github.com/peerigon/alamid-class/issues/7
+            expect(e._runOnDispose).to.be(null);
         });
+
     });
+
 });
