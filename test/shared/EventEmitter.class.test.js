@@ -34,18 +34,23 @@ describe("EventEmitter", function () {
     });
 
     describe("#constructor()", function () {
+
         it("should return an instance of NodeEventEmitter", function () {
             expect(e).to.be.an(NodeEventEmitter);
         });
+
     });
 
     describe("#on()", function () {
+
         it("should be an alias for .addListener()", function () {
             expect(e.on).to.be(e.addListener);
         });
+
     });
 
     describe("#emit() / #addListener()", function () {
+
         it("should execute the listener each time the event was triggered", function () {
             e.addListener("snacktime", a);
             e.emit("snacktime");
@@ -54,9 +59,11 @@ describe("EventEmitter", function () {
 
             expect(aCalled).to.be(3);
         });
+
     });
 
     describe("#emit()", function () {
+
         it("should pass all params to the listener", function (done) {
 
             e.on("snacktime", function onSnacktime(a, b, c) {
@@ -70,11 +77,13 @@ describe("EventEmitter", function () {
 
             e.emit("snacktime", 1, 2, 3);
         });
+
     });
 
 
 
     describe("#once()", function () {
+
         it("should trigger the listener only once", function () {
             e.once("snacktime", a);
             e.emit("snacktime");
@@ -83,9 +92,11 @@ describe("EventEmitter", function () {
 
             expect(aCalled).to.be(1);
         });
+
     });
 
     describe("#removeListener()", function () {
+
         it("should not trigger the removed listener", function () {
             e.on("snacktime", a);
             e.on("snacktime", b);
@@ -95,9 +106,11 @@ describe("EventEmitter", function () {
             expect(aCalled).to.be(0);
             expect(bCalled).to.be(1);
         });
+
     });
 
     describe("#removeAllListeners()", function () {
+
         it("should not trigger any event listener to the given event", function () {
             e.on("snacktime", a);
             e.on("snacktime", b);
