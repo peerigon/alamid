@@ -14,32 +14,16 @@ describe("Disposable", function () {
     beforeEach(function () {
         disposable = new Disposable();
     });
-    describe("#runOnDispose()", function () {
-        it("should not execute the function before dispose() has been called", function () {
-            disposable.runOnDispose(test);
-            expect(context).to.be(undefined);
-        });
-        it("should be chainable", function () {
-            expect(disposable.runOnDispose(test)).to.be(disposable);
-        });
-    });
     describe("#addDisposable()", function () {
-        it("should be chainable", function () {
+        it("should return the target disposable again", function () {
             var disp = {
                 dispose: test
             };
 
-            expect(disposable.addDisposable(disp)).to.be(disposable);
+            expect(disposable.addDisposable(disp)).to.be(disp);
         });
     });
-    describe("#dispose() / #runOnDispose()", function () {
-        it("should execute the function with the disposable as context", function () {
-            disposable.runOnDispose(test);
-            disposable.dispose();
-            expect(context).to.be(disposable);
-        });
-    });
-    describe("#dispose() / #addDisposable()", function () {
+    describe("#addDisposable() / #dispose()", function () {
         it("should dispose all registered disposables", function () {
             var calledOn = [],
                 disp1 = {},
@@ -61,7 +45,7 @@ describe("Disposable", function () {
             expect(calledOn).to.eql([disp1, disp2, disp3]);
         });
     });
-    describe("#watch() / #runOnDispose()", function () {
+    describe("#watch() / #dispose()", function () {
         var expectedReturn = {},
             eventEmitter = {
                 on: function (eventName, listener) {
