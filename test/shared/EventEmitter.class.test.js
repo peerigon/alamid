@@ -3,7 +3,6 @@
 var expect = require("expect.js");
 
 var EventEmitter = require("../../lib/shared/EventEmitter.class.js"),
-    Disposable = require("../../lib/shared/Disposable.class.js"),
     NodeEventEmitter = require("events").EventEmitter;
 
 // These tests only check the basic functionality.
@@ -35,8 +34,8 @@ describe("EventEmitter", function () {
     });
 
     describe("#constructor()", function () {
-        it("should return an instance of Disposable", function () {
-            expect(e).to.be.an(Disposable);
+        it("should return an instance of NodeEventEmitter", function () {
+            expect(e).to.be.an(NodeEventEmitter);
         });
     });
 
@@ -153,13 +152,6 @@ describe("EventEmitter", function () {
             expect(aCalled).to.be(1);
 
             NodeEventEmitter.prototype.removeAllListeners = removeAllListeners;
-        });
-
-        it("should call Disposable.prototype.dispose()", function () {
-            e.dispose();
-            // Can't be checked better
-            // @see https://github.com/peerigon/alamid-class/issues/7
-            expect(e._runOnDispose).to.be(null);
         });
 
     });
