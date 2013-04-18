@@ -11,7 +11,7 @@ var expect = require("expect.js"),
     Collection = require("../../lib/shared/Collection.class.js"),
     Model = require("../../lib/shared/Model.class.js"),
     ModelCollection = require("../../lib/shared/ModelCollection.class.js"),
-    EventEmitter = require("../../lib/shared/EventEmitter.class.js"),
+    Base = require("../../lib/shared/Base.class.js"),
     Event = require("../../lib/shared/Event.class.js"),
     Service = require("../../lib/shared/Service.class.js");
 
@@ -43,8 +43,8 @@ describe("index.js", function () {
     it("should export ModelCollection", function () {
         expect(alamid.ModelCollection).to.be(ModelCollection);
     });
-    it("should export EventEmitter", function () {
-        expect(alamid.EventEmitter).to.be(EventEmitter);
+    it("should export Base", function () {
+        expect(alamid.Base).to.be(Base);
     });
     it("should export Event", function () {
         expect(alamid.Event).to.be(Event);

@@ -4,7 +4,7 @@ var expect = require("expect.js"),
     value = require("value"),
     _ = require("underscore"),
     Collection = require("../../lib/shared/Collection.class.js"),
-    EventEmitter  = require("../../lib/shared/EventEmitter.class.js");
+    Base  = require("../../lib/shared/Base.class.js");
 
 describe("Collection", function () {
 
@@ -22,8 +22,8 @@ describe("Collection", function () {
 
     describe(".constructor()", function () {
 
-        it("should be instance of EventEmitter", function () {
-            expect(value(collection).instanceOf(EventEmitter)).to.be.ok();
+        it("should be instance of Base", function () {
+            expect(value(collection).instanceOf(Base)).to.be.ok();
         });
 
         it("should default to 'Object' as Collection-Class when no Class was passed", function () {

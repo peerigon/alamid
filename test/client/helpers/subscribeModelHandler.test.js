@@ -1,6 +1,6 @@
 "use strict";
 
-var Socket = require("./../mocks/Socket.class.js");
+var EventEmitter = require("events").EventEmitter;
 
 var expect = require("expect.js"),
     rewire = require("rewire");
@@ -11,7 +11,7 @@ describe("subscribeModelHandler", function(){
         attachPushHandlers;
 
     beforeEach(function() {
-        socketMock = new Socket();
+        socketMock = new EventEmitter();
         attachPushHandlers = rewire("../../../lib/client/helpers/subscribeModelHandler.js");
     });
 

@@ -2,12 +2,12 @@
 
 var expect = require("expect.js");
 
-var EventEmitter = require("../../lib/shared/EventEmitter.class.js"),
+var Base = require("../../lib/shared/Base.class.js"),
     NodeEventEmitter = require("events").EventEmitter;
 
 // These tests only check the basic functionality.
 // Detailed checks should be done by the node-lib or their replacements for the web
-describe("EventEmitter", function () {
+describe("Base", function () {
 
     var e,
         aCalled,
@@ -27,7 +27,7 @@ describe("EventEmitter", function () {
     }
 
     beforeEach(function () {
-        e = new EventEmitter();
+        e = new Base();
         aCalled = 0;
         bCalled = 0;
         cCalled = 0;
@@ -165,6 +165,44 @@ describe("EventEmitter", function () {
             expect(aCalled).to.be(1);
 
             NodeEventEmitter.prototype.removeAllListeners = removeAllListeners;
+        });
+
+        it("should emit a dispose event", function (done) {
+            e.on("dispose", function (e) {
+                expect(e.name).to.be("DisposeEvent");
+                done();
+            });
+            e.dispose();
+        });
+
+    });
+
+    describe("#addDisposable() / #watch() / #dispose()", function () {
+
+        it("should provide the Disposable.class interface", function () {
+            var disposeCalled = false,
+                onCalled = false,
+                removeListenerCalled = false,
+                disp = {
+                    dispose: function () {
+                        disposeCalled = true;
+                    }
+                },
+                eventEmitter = {
+                    on: function () {
+                        onCalled = true;
+                    },
+                    removeListener: function () {
+                        removeListenerCalled = true;
+                    }
+                };
+
+            e.addDisposable(disp);
+            e.watch(eventEmitter).on("someevent", function () {});
+            e.dispose();
+            expect(disposeCalled).to.be(true);
+            expect(onCalled).to.be(true);
+            expect(removeListenerCalled).to.be(true);
         });
 
     });
