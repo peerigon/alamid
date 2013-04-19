@@ -177,34 +177,4 @@ describe("Base", function () {
 
     });
 
-    describe("#addDisposable() / #watch() / #dispose()", function () {
-
-        it("should provide the Disposable.class interface", function () {
-            var disposeCalled = false,
-                onCalled = false,
-                removeListenerCalled = false,
-                disp = {
-                    dispose: function () {
-                        disposeCalled = true;
-                    }
-                },
-                eventEmitter = {
-                    on: function () {
-                        onCalled = true;
-                    },
-                    removeListener: function () {
-                        removeListenerCalled = true;
-                    }
-                };
-
-            e.addDisposable(disp);
-            e.watch(eventEmitter).on("someevent", function () {});
-            e.dispose();
-            expect(disposeCalled).to.be(true);
-            expect(onCalled).to.be(true);
-            expect(removeListenerCalled).to.be(true);
-        });
-
-    });
-
 });
