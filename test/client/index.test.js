@@ -6,7 +6,8 @@ var expect = require("expect.js"),
     Displayable = require("../../lib/client/Displayable.class.js"),
     View = require("../../lib/client/View.class.js"),
     ViewCollection = require("../../lib/client/ViewCollection.class.js"),
-    Page = require("../../lib/client/Page.class.js");
+    Page = require("../../lib/client/Page.class.js"),
+    Client = require("../../lib/client/Client.class.js");
 
 describe("index.js (client)", function () {
     it("should export Displayable", function () {
@@ -20,5 +21,8 @@ describe("index.js (client)", function () {
     });
     it("should export Page", function () {
         expect(alamid.Page).to.be(Page);
+    });
+    it("should export Client", function () {
+        expect(alamid.Client).to.be(Client);
     });
 });
