@@ -9,7 +9,7 @@ var Base = require("../../lib/shared/Base.class.js"),
 // Detailed checks should be done by the node-lib or their replacements for the web
 describe("Base", function () {
 
-    var e,
+    var base,
         aCalled,
         bCalled,
         cCalled;
@@ -27,7 +27,7 @@ describe("Base", function () {
     }
 
     beforeEach(function () {
-        e = new Base();
+        base = new Base();
         aCalled = 0;
         bCalled = 0;
         cCalled = 0;
@@ -36,7 +36,7 @@ describe("Base", function () {
     describe("#constructor()", function () {
 
         it("should return an instance of NodeEventEmitter", function () {
-            expect(e).to.be.an(NodeEventEmitter);
+            expect(base).to.be.an(NodeEventEmitter);
         });
 
     });
@@ -44,7 +44,7 @@ describe("Base", function () {
     describe("#on()", function () {
 
         it("should be an alias for .addListener()", function () {
-            expect(e.on).to.be(e.addListener);
+            expect(base.on).to.be(base.addListener);
         });
 
     });
@@ -52,10 +52,10 @@ describe("Base", function () {
     describe("#emit() / #addListener()", function () {
 
         it("should execute the listener each time the event was triggered", function () {
-            e.addListener("snacktime", a);
-            e.emit("snacktime");
-            e.emit("snacktime");
-            e.emit("snacktime");
+            base.addListener("snacktime", a);
+            base.emit("snacktime");
+            base.emit("snacktime");
+            base.emit("snacktime");
 
             expect(aCalled).to.be(3);
         });
@@ -66,7 +66,7 @@ describe("Base", function () {
 
         it("should pass all params to the listener", function (done) {
 
-            e.on("snacktime", function onSnacktime(a, b, c) {
+            base.on("snacktime", function onSnacktime(a, b, c) {
 
                 expect(a).to.be(1);
                 expect(b).to.be(2);
@@ -75,7 +75,7 @@ describe("Base", function () {
                 done();
             });
 
-            e.emit("snacktime", 1, 2, 3);
+            base.emit("snacktime", 1, 2, 3);
         });
 
     });
@@ -85,10 +85,10 @@ describe("Base", function () {
     describe("#once()", function () {
 
         it("should trigger the listener only once", function () {
-            e.once("snacktime", a);
-            e.emit("snacktime");
-            e.emit("snacktime");
-            e.emit("snacktime");
+            base.once("snacktime", a);
+            base.emit("snacktime");
+            base.emit("snacktime");
+            base.emit("snacktime");
 
             expect(aCalled).to.be(1);
         });
@@ -98,10 +98,10 @@ describe("Base", function () {
     describe("#removeListener()", function () {
 
         it("should not trigger the removed listener", function () {
-            e.on("snacktime", a);
-            e.on("snacktime", b);
-            e.removeListener("snacktime", a);
-            e.emit("snacktime");
+            base.on("snacktime", a);
+            base.on("snacktime", b);
+            base.removeListener("snacktime", a);
+            base.emit("snacktime");
 
             expect(aCalled).to.be(0);
             expect(bCalled).to.be(1);
@@ -112,14 +112,14 @@ describe("Base", function () {
     describe("#removeAllListeners()", function () {
 
         it("should not trigger any event listener to the given event", function () {
-            e.on("snacktime", a);
-            e.on("snacktime", b);
-            e.on("lunchtime", c);
+            base.on("snacktime", a);
+            base.on("snacktime", b);
+            base.on("lunchtime", c);
 
-            e.removeAllListeners("snacktime");
+            base.removeAllListeners("snacktime");
 
-            e.emit("snacktime");
-            e.emit("lunchtime");
+            base.emit("snacktime");
+            base.emit("lunchtime");
 
             expect(aCalled).to.be(0);
             expect(bCalled).to.be(0);
@@ -127,15 +127,15 @@ describe("Base", function () {
         });
 
         it("should not trigger any event-listener", function () {
-            e.on("snacktime", a);
-            e.on("brunchtime", b);
-            e.on("lunchtime", c);
+            base.on("snacktime", a);
+            base.on("brunchtime", b);
+            base.on("lunchtime", c);
 
-            e.removeAllListeners();
+            base.removeAllListeners();
 
-            e.emit("snacktime");
-            e.emit("brunchtime");
-            e.emit("lunchtime");
+            base.emit("snacktime");
+            base.emit("brunchtime");
+            base.emit("lunchtime");
 
             expect(aCalled).to.be(0);
             expect(bCalled).to.be(0);
@@ -147,10 +147,10 @@ describe("Base", function () {
     describe("#listeners()", function () {
 
         it("should return all attached listeners", function () {
-            e.on("snacktime", a);
-            e.on("snacktime", b);
+            base.on("snacktime", a);
+            base.on("snacktime", b);
 
-            expect(e.listeners("snacktime")).to.eql([a, b]);
+            expect(base.listeners("snacktime")).to.eql([a, b]);
         });
 
     });
@@ -161,20 +161,34 @@ describe("Base", function () {
             var removeAllListeners = NodeEventEmitter.prototype.removeAllListeners;
 
             NodeEventEmitter.prototype.removeAllListeners = a;
-            e.dispose();
+            base.dispose();
             expect(aCalled).to.be(1);
 
             NodeEventEmitter.prototype.removeAllListeners = removeAllListeners;
         });
 
         it("should emit a dispose event", function (done) {
-            e.on("dispose", function (e) {
+            base.on("dispose", function (e) {
                 expect(e.name).to.be("DisposeEvent");
                 done();
             });
-            e.dispose();
+            base.dispose();
         });
 
     });
+
+    describe("#isDisposed() / #dispose()", function () {
+
+        it("should be false if dispose() hasn't been called", function () {
+            expect(base.isDisposed()).to.be(false);
+        });
+
+        it("should return true if dispose() has been called", function () {
+            base.dispose();
+            expect(base.isDisposed()).to.be(true);
+        });
+
+    });
+
 
 });
