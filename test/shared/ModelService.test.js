@@ -72,8 +72,8 @@ function sharedModelServiceTest(env) {
 
             beforeEach(function () {
 
-                octocat = new Octocat(),
-                    testService = {};
+                octocat = new Octocat();
+                testService = {};
 
                 setServiceMethod(testService, "create", function (remote, ids, model, callback) {
                     callback({ status : "success", data : { id : 1, name : model.get("name"), age : 10 }});
@@ -331,14 +331,14 @@ function sharedModelServiceTest(env) {
                         callback({ status : "success", data : mockedOctocats });
                     }
 
-                    setServiceMethod(testService, "readCollection", mockedReadCollection)
+                    setServiceMethod(testService, "readCollection", mockedReadCollection);
                 });
 
                 it("should call the static method and run the mocked readCollection-service", function (done) {
                     Octocat.find({}, { da : "ta" }, function (err, models) {
                         expect(err).to.be(null);
-                        expect(models.get(0).get("name")).to.eql("Octo 1");
-                        expect(models.get(1).get("name")).to.eql("Octo 2");
+                        expect(models[0].get("name")).to.eql("Octo 1");
+                        expect(models[1].get("name")).to.eql("Octo 2");
                         done();
                     });
                 });
@@ -346,8 +346,8 @@ function sharedModelServiceTest(env) {
                 it("should work if called with ids and params", function (done) {
                     Octocat.find({}, { da : "ta" }, function (err, models) {
                         expect(err).to.be(null);
-                        expect(models.get(0).get("name")).to.eql("Octo 1");
-                        expect(models.get(1).get("name")).to.eql("Octo 2");
+                        expect(models[0].get("name")).to.eql("Octo 1");
+                        expect(models[1].get("name")).to.eql("Octo 2");
                         done();
                     });
                 });

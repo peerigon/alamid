@@ -83,7 +83,7 @@ describe("Model", function () {
                 expect(user.get()).to.eql({
                     name : 'John Wayne',
                     age : 45
-                })
+                });
             });
 
             it("should be possible to set and get any key if there is no schema", function () {
@@ -121,6 +121,24 @@ describe("Model", function () {
                 user.setId("comment", 3);
                 expect(user.getId("user")).to.eql(2);
                 expect(user.getId("comment")).to.eql(3);
+            });
+
+            it("should also be possible to set multiple ids", function () {
+                user.setIds({
+                    user1: 5,
+                    comment: 6
+                });
+                expect(user.getIds()).to.eql({
+                    user1: 5,
+                    comment: 6
+                });
+            });
+
+            it("should create a copy of the passed ids-object", function () {
+                var ids = {};
+
+                user.setIds(ids);
+                expect(user.getIds()).to.not.be(ids);
             });
         });
 

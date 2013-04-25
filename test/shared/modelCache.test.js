@@ -20,7 +20,9 @@ describe("ModelCache", function () {
                 octo.set("name", "hugo");
                 clientModelCache.add(octo);
 
-                var octo2 = clientModelCache.get(Octocat.prototype.url, 2);
+                var octo2 = clientModelCache.get(Octocat.prototype.url, {
+                    octocat: 2
+                });
                 expect(octo2.get("name")).to.be("hugo");
             });
 
@@ -31,7 +33,9 @@ describe("ModelCache", function () {
 
                 clientModelCache.add(octo1);
 
-                var octo1Ref = clientModelCache.get(Octocat.prototype.url, 1);
+                var octo1Ref = clientModelCache.get(Octocat.prototype.url, {
+                    octocat: 1
+                });
 
                 expect(octo1Ref.get("name")).to.be("uno");
 
@@ -39,7 +43,9 @@ describe("ModelCache", function () {
                 octo2.set("name", "uno due");
 
                 clientModelCache.add(octo2);
-                var octo2Ref = clientModelCache.get(Octocat.prototype.url, 1);
+                var octo2Ref = clientModelCache.get(Octocat.prototype.url, {
+                    octocat: 1
+                });
 
                 expect(octo2Ref.get("name")).to.be("uno due");
                 expect(octo1Ref.get("name")).to.be("uno");
@@ -51,12 +57,16 @@ describe("ModelCache", function () {
                 var octo = new Octocat(2);
                 octo.set("name", "hugo");
                 clientModelCache.add(octo);
-                var octo2 = clientModelCache.get(Octocat.prototype.url, 2);
+                var octo2 = clientModelCache.get(Octocat.prototype.url, {
+                    octocat: 2
+                });
                 expect(octo2.get("name")).to.be("hugo");
 
                 octo2.set("name", "frank");
 
-                var octo3 = clientModelCache.get(Octocat.prototype.url, 2);
+                var octo3 = clientModelCache.get(Octocat.prototype.url, {
+                    octocat: 2
+                });
                 expect(octo.get("name")).to.be("frank");
                 expect(octo2.get("name")).to.be("frank");
                 expect(octo3.get("name")).to.be("frank");
@@ -68,10 +78,14 @@ describe("ModelCache", function () {
                 var octo = new Octocat(2);
                 octo.set("name", "hugo");
                 clientModelCache.add(octo);
-                var loadedOcto = clientModelCache.get(Octocat.prototype.url, 2);
+                var loadedOcto = clientModelCache.get(Octocat.prototype.url, {
+                    octocat: 2
+                });
                 expect(loadedOcto).to.eql(octo);
                 clientModelCache.reset();
-                var loadedOctoAfterReset = clientModelCache.get(Octocat.prototype.url, 2);
+                var loadedOctoAfterReset = clientModelCache.get(Octocat.prototype.url, {
+                    octocat: 2
+                });
                 expect(loadedOctoAfterReset).to.be(null);
             });
         });
