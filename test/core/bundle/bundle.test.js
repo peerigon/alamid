@@ -15,17 +15,17 @@ var expect = require("expect.js"),
     getAppPaths = require("../../../lib/core/defaults/defaultPaths.js").getAppPaths,
     sanitizeConfig = require("../../../lib/core/config/sanitizeConfig.js"),
     extractConfig = require("../../../lib/core/config/extractConfig.js"),
-    clientConfig = require(__dirname + "/runCreateBundle/config.json"),
+    clientConfig = require(__dirname + "/bundle/config.json"),
     _ = require("underscore"),
     connect = require("connect"),
     Browser = require("zombie");
 
-describe("runCreateBundle()", function () {
+describe("bundle()", function () {
 
-    var runCreateBundle = require("../../../lib/core/bundle/runCreateBundle.js"),
-        paths = getAppPaths(__dirname + "/runCreateBundle"),
+    var bundle = require("../../../lib/core/bundle/bundle.js").createBundle,
+        paths = getAppPaths(__dirname + "/bundle"),
         devConfig = sanitizeConfig({
-            appDir: __dirname + "/runCreateBundle/",
+            appDir: __dirname + "/bundle/",
             port : 9000,
             use : {
                 websockets : false
@@ -38,10 +38,10 @@ describe("runCreateBundle()", function () {
     before(function (done) {
         var app;
 
-        fshelpers.makeDirSync(__dirname + "/runCreateBundle/node_modules");
+        fshelpers.makeDirSync(__dirname + "/bundle/node_modules");
 
         try {
-            fs.symlinkSync(pathUtil.resolve(__dirname, "../../../"), __dirname + "/runCreateBundle/node_modules/alamid");
+            fs.symlinkSync(pathUtil.resolve(__dirname, "../../../"), __dirname + "/bundle/node_modules/alamid");
         } catch (err) { /* ignore err */ }
 
 
@@ -52,12 +52,12 @@ describe("runCreateBundle()", function () {
             .listen(3000, done);
     });
     after(function () {
-        fs.unlinkSync(__dirname + "/runCreateBundle/node_modules/alamid");
-        fs.rmdirSync(__dirname + "/runCreateBundle/node_modules");
+        fs.unlinkSync(__dirname + "/bundle/node_modules/alamid");
+        fs.rmdirSync(__dirname + "/bundle/node_modules");
     });
     it("should return no errors nor warnings", function (done) {
         this.timeout(10000);    // we need to expand mocha's default timeout
-        runCreateBundle(devConfig, function onCreateBundleFinished(err) {
+        bundle(devConfig, function onCreateBundleFinished(err) {
             expect(err).to.be(null);
             done();
         });
@@ -89,6 +89,8 @@ describe("runCreateBundle()", function () {
             });
     });
     it("should add the HomePage.html to the DOM", function () {
+        console.log(browser.document.body.innerHTML);
+
         expect(getH2Content()).to.be("I'm the HomePage, baby!");
     });
     it("should load the BlogPage.html on link click", function (done) {
