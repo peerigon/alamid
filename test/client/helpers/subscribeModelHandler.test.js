@@ -17,13 +17,18 @@ describe("subscribeModelHandler", function(){
 
     it("should receive remoteUpdateEvents", function(done) {
 
-        var modelInstanceMock = {
+        var modelInstanceMock,
+            ModelClassMock,
+            modelCacheMock,
+            modelRegistryMock;
+
+        modelInstanceMock = {
             setIds : function(ids) {
                 expect(ids).to.eql({ blogpost : 1 });
             }
         };
 
-        var ModelClassMock = {
+        ModelClassMock = {
             set : function() {
 
             },
@@ -35,15 +40,17 @@ describe("subscribeModelHandler", function(){
             }
         };
 
-        var modelCacheMock = {
-            get : function(modelUrl, modelId) {
+        modelCacheMock = {
+            get : function(modelUrl, ids) {
                 expect(modelUrl).to.be("blogpost");
-                expect(modelId).to.eql(1);
+                expect(ids).to.eql({
+                    blogpost: 1
+                });
                 return modelInstanceMock;
             }
         };
 
-        var modelRegistryMock = {
+        modelRegistryMock = {
             getModel : function(modelUrl) {
                 expect(modelUrl).to.eql("blogpost");
                 return ModelClassMock;
@@ -60,9 +67,12 @@ describe("subscribeModelHandler", function(){
 
     it("should receive remoteDestroyEvents", function(done) {
 
-        var modelInstanceMock = {};
+        var modelInstanceMock = {},
+            ModelClassMock,
+            modelCacheMock,
+            modelRegistryMock;
 
-        var ModelClassMock = {
+        ModelClassMock = {
             emit : function(eventName, event) {
                 expect(eventName).to.be("remoteDestroy");
                 expect(event.model).to.be(modelInstanceMock);
@@ -70,15 +80,17 @@ describe("subscribeModelHandler", function(){
             }
         };
 
-        var modelCacheMock = {
-            get : function(modelUrl, modelId) {
+        modelCacheMock = {
+            get : function(modelUrl, ids) {
                 expect(modelUrl).to.be("blogpost");
-                expect(modelId).to.eql(2);
+                expect(ids).to.eql({
+                    blogpost: 2
+                });
                 return modelInstanceMock;
             }
         };
 
-        var modelRegistryMock = {
+        modelRegistryMock = {
             getModel : function(modelUrl) {
                 expect(modelUrl).to.eql("blogpost");
                 return ModelClassMock;
