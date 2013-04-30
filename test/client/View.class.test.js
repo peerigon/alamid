@@ -54,58 +54,58 @@ describe("View", function () {
         it("should apply data as value to a text-input-field", function () {
             var $text = $formView.find("[data-node='text']");
 
-            formView.render( { "text": formSchema.text.default } );
-            expect($text).to.have.prop("value", formSchema.text.default);
+            formView.render( { "text": formSchema.text["default"] } );
+            expect($text).to.have.prop("value", formSchema.text["default"]);
         });
 
         it("should apply data as value to a textarea", function () {
             var $textarea = $formView.find("[data-node='textarea']");
 
-            formView.render( { "textarea": formSchema.textarea.default } );
-            expect($textarea).to.have.prop("value", formSchema.textarea.default);
+            formView.render( { "textarea": formSchema.textarea["default"] } );
+            expect($textarea).to.have.prop("value", formSchema.textarea["default"]);
         });
 
         it("should apply data as value to a range-input-field", function () {
             var $range = $formView.find("[data-node='range']");
 
-            formView.render( { "range": formSchema.range.default } );
-            expect($range).to.have.prop("value", formSchema.range.default);
+            formView.render( { "range": formSchema.range["default"] } );
+            expect($range).to.have.prop("value", formSchema.range["default"]);
         });
 
         it("should apply Boolean to checked attribute to a checkbox-input-field", function () {
             var $checkbox = $formView.find("[data-node='checkbox']");
 
-            formView.render( { "checkbox": formSchema.checkbox.default } );
-            expect($checkbox).to.have.prop("checked", formSchema.checkbox.default);
+            formView.render( { "checkbox": formSchema.checkbox["default"] } );
+            expect($checkbox).to.have.prop("checked", formSchema.checkbox["default"]);
         });
 
         it("should apply Boolean to checked attribute to a checkbox-input-field", function () {
             var $radio = $formView.find("[data-node='radio']");
 
-            formView.render( { "radio": formSchema.radio.default } );
-            expect($radio).to.have.prop("checked", formSchema.radio.default);
+            formView.render( { "radio": formSchema.radio["default"] } );
+            expect($radio).to.have.prop("checked", formSchema.radio["default"]);
         });
 
         it("should apply String as value to a button-input-field", function () {
             var $button = $formView.find("[data-node='button']");
 
-            formView.render( { "button": formSchema.button.default } );
-            expect($button).to.have.prop("value", formSchema.button.default);
+            formView.render( { "button": formSchema.button["default"] } );
+            expect($button).to.have.prop("value", formSchema.button["default"]);
         });
 
         it("should apply String as value to a submit-input-field", function () {
             var $submit = $formView.find("[data-node='submit']");
 
-            formView.render( { "submit": formSchema.submit.default } );
-            expect($submit).to.have.prop("value", formSchema.submit.default);
+            formView.render( { "submit": formSchema.submit["default"] } );
+            expect($submit).to.have.prop("value", formSchema.submit["default"]);
         });
 
         it("should apply Data as src-attribute to an image", function () {
             var $img = $formView.find("[data-node='img']"),
-                expectedSrc = formSchema.img.default,
+                expectedSrc = formSchema.img["default"],
                 actualSrc;
 
-            formView.render( { "img": formSchema.img.default } );
+            formView.render( { "img": formSchema.img["default"] } );
             // we have to check here differently because browsers append the current host to the src and try to fetch image
             actualSrc = $img.prop("src").substr(-expectedSrc.length);
             expect(actualSrc).to.be(expectedSrc);
@@ -170,9 +170,9 @@ describe("View", function () {
 
             formView.bind(formModel);
 
-            expect($text.val()).to.equal(formSchema.text.default);
-            expect($textarea.val()).to.equal(formSchema.textarea.default);
-            expect($checkbox[0].checked).to.equal(formSchema.checkbox.default);
+            expect($text.val()).to.equal(formSchema.text["default"]);
+            expect($textarea.val()).to.equal(formSchema.textarea["default"]);
+            expect($checkbox[0].checked).to.equal(formSchema.checkbox["default"]);
         });
 
         it("should be re-rendered after a new model was bound", function () {
@@ -188,8 +188,8 @@ describe("View", function () {
             formView.bind(otherModel);
 
             expect($text.val()).to.equal("newText");
-            expect($textarea.val()).to.equal(formSchema.textarea.default);
-            expect($checkbox[0].checked).to.equal(formSchema.checkbox.default);
+            expect($textarea.val()).to.equal(formSchema.textarea["default"]);
+            expect($checkbox[0].checked).to.equal(formSchema.checkbox["default"]);
         });
 
         it("should be re-rendered after a bound model has emitted 'change'-Event", function () {
@@ -210,11 +210,11 @@ describe("View", function () {
 
             expect($text.val()).to.equal("newText");
             expect($textarea.val()).to.equal("newTextArea");
-            expect(parseInt($range.val())).to.equal(formSchema.range.default);
-            expect($checkbox[0].checked).to.equal(formSchema.checkbox.default);
-            expect($radio[0].checked).to.equal(formSchema.radio.default);
-            expect($button.val()).to.equal(formSchema.button.default);
-            expect($submit.val()).to.equal(formSchema.submit.default);
+            expect(parseInt($range.val())).to.equal(formSchema.range["default"]);
+            expect($checkbox[0].checked).to.equal(formSchema.checkbox["default"]);
+            expect($radio[0].checked).to.equal(formSchema.radio["default"]);
+            expect($button.val()).to.equal(formSchema.button["default"]);
+            expect($submit.val()).to.equal(formSchema.submit["default"]);
         });
 
         it("should not be possible to inject html tags", function () {
@@ -258,7 +258,7 @@ describe("View", function () {
 
             formModel.set("text", "newText");
 
-            expect($text.val()).to.equal(formSchema.text.default);
+            expect($text.val()).to.equal(formSchema.text["default"]);
         });
 
     });
@@ -283,7 +283,7 @@ describe("View", function () {
 
             formModel.set("text", "newText");
 
-            expect($text.val()).to.equal(formSchema.text.default);
+            expect($text.val()).to.equal(formSchema.text["default"]);
         });
 
         it("should call super's dispose()", function (done) {

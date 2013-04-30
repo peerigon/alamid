@@ -30,62 +30,62 @@ describe("Model-Services", function () {
 
     sharedModelServiceTest("client");
 
-    before(function () {
-        services.getService = function () {
-            return testService;
-        };
+    describe("Client", function () {
 
-        readCollection = RemoteService.prototype.readCollection;
-        RemoteService.prototype.readCollection = function RemoteReadCollection(remote, ids, params, callback) {
+        before(function () {
+            services.getService = function () {
+                return testService;
+            };
 
-            callback({
-                status : "success",
-                data : [
-                    {
+            readCollection = RemoteService.prototype.readCollection;
+            RemoteService.prototype.readCollection = function RemoteReadCollection(remote, ids, params, callback) {
+
+                callback({
+                    status : "success",
+                    data : [
+                        {
+                            id : 1,
+                            name : "RemoteOcto",
+                            age : 12
+                        }
+                    ]
+                });
+            };
+
+            readCollection = RemoteService.prototype.read;
+            RemoteService.prototype.read = function RemoteRead(remote, ids, callback) {
+
+                callback({
+                    status : "success",
+                    data : {
                         id : 1,
                         name : "RemoteOcto",
                         age : 12
                     }
-                ]
-            });
-        };
+                });
+            };
 
-        readCollection = RemoteService.prototype.read;
-        RemoteService.prototype.read = function RemoteRead(remote, ids, callback) {
+            create = RemoteService.prototype.create;
+            RemoteService.prototype.create = function (remote, ids, model, callback) {
+                callback({
+                    status : "success",
+                    data : {
+                        id : 2,
+                        name : "remoteOcto"
+                    }
+                });
+            };
+        });
 
-            callback({
-                status : "success",
-                data : {
-                    id : 1,
-                    name : "RemoteOcto",
-                    age : 12
-                }
-            });
-        };
+        beforeEach(function () {
+            modelCache.reset();
+        });
 
-        create = RemoteService.prototype.create;
-        RemoteService.prototype.create = function (remote, ids, model, callback) {
-            callback({
-                status : "success",
-                data : {
-                    id : 2,
-                    name : "remoteOcto"
-                }
-            });
-        };
-    });
-
-    beforeEach(function () {
-        modelCache.reset();
-    });
-
-    after(function () {
-        RemoteService.prototype.readCollection = readCollection;
-        RemoteService.prototype.read = read;
-        RemoteService.prototype.create = create;
-    });
-
-    describe("Client", function () {
+        after(function () {
+            RemoteService.prototype.readCollection = readCollection;
+            RemoteService.prototype.read = read;
+            RemoteService.prototype.create = create;
+        });
 
         describe("CRUD", function () {
 

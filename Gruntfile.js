@@ -93,11 +93,7 @@ module.exports = function (grunt) {
      */
     function simpleNof5(testPath, assetsPath, nof5Port) {
         var nof5Cmd = "cd " + path.resolve(testPath) + " && node " + nof5 + " -p " + nof5Port,
-            nof5Process,
-
-            openBrowserURL = "http://localhost:" + nof5Port,
-            openBrowserCmd,
-            openBrowserProcess;
+            nof5Process;
 
         testPath = testPath || process.cwd();
 
@@ -112,36 +108,6 @@ module.exports = function (grunt) {
             }
 
         });
-
-        switch (os.platform()) {
-
-            case "linux":
-                openBrowserCmd = "sensible-browser " + openBrowserURL;
-                break;
-
-            case "darwin":
-                openBrowserCmd = "open " + openBrowserURL;
-                break;
-
-            case "win32":
-                openBrowserCmd = "start " + openBrowserURL;
-                break;
-        }
-
-        // as we can't determine when nof5 is up an running we're just wait for a second
-        setTimeout(function openBrowser() {
-
-            openBrowserProcess = exec(openBrowserCmd, function execOpenBrowserCmd(error, stdout, stderr) {
-
-                if (error) {
-                    console.error("alamid Error opening default browser: " + error);
-                }
-
-                openBrowserProcess.stdout.pipe(process.stdout);
-                openBrowserProcess.stderr.pipe(process.stderr);
-            });
-
-        }, 2000);
 
         // awesome piping
         nof5Process.stdout.pipe(process.stdout);
