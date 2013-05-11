@@ -9,7 +9,6 @@ exports.use = function () {
     var options = {
         context: path.resolve(__dirname, "../../"),
         includeFilenames: true,
-        debug: true,
         extensions: ["", ".client.js", ".js"],
         resolve: {
             loaders: [
