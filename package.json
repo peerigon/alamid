@@ -38,7 +38,9 @@
         "wrench" : "1.4.x",
         "commander" : "0.1.x",
         "ejs" : "0.8.x",
-        "webpack-dev-middleware" : "0.x"
+        "webpack-dev-middleware" : "0.x",
+        "raw-loader": "0.x",
+        "bundle-loader": "0.x"
     },
     "devDependencies" : {
         "grunt" : "0.x",
