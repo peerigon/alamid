@@ -8,7 +8,8 @@ var child_process = require('child_process'),
 
 var tests = __dirname + "/test",
     clientTests = tests + "/client",
-    sharedTests = tests + "/shared";
+    sharedTests = tests + "/shared",
+    webpackDevServerBin = path.join(__dirname, "node_modules", "webpack-dev-server", "bin", "webpack-dev-server.js");
 
 module.exports = function (grunt) {
 
@@ -140,7 +141,7 @@ module.exports = function (grunt) {
 };
 
 function runWebpackDevServer(cwd) {
-    var webpackProcess = exec("webpack-dev-server", { cwd: cwd }, function (error, stdout, stderr) {
+    var webpackProcess = exec("node " + webpackDevServerBin, { cwd: cwd }, function (error, stdout, stderr) {
 
         if (error) {
             console.error("(alamid) Error running webpack-dev-server: " + error);
