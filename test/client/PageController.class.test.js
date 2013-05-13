@@ -39,6 +39,8 @@ describe("PageController", function () {
         PageLoader.bundles["/blog"] = function (callback) {
             callback(Blog);
         };
+        PageLoader.loadedPages["/blog"] = Blog;
+        PageLoader.loadedPages["/blog/posts"] = Posts;
     });
     beforeEach(function () {
         main = new Page();
@@ -225,6 +227,11 @@ describe("PageController", function () {
             pageController.show("about", {});
             about = main.getSubPage();
             expect(about).to.be.an(About);
+        });
+
+        it("should dispose unloaded pages", function () {
+            pageController.show("blog");
+            expect(posts.isDisposed()).to.be(true);
         });
 
     });
