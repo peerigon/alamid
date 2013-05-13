@@ -1,6 +1,6 @@
 var expect = require("expect.js"),
     domAdapter = require("../../../lib/client/helpers/domAdapter.js"),
-    jQuery = require("../../../lib/client/helpers/jQuery.js");
+    jQuery = require("../../testHelpers/jquery.js");
 
 describe("domAdapter", function () {
 

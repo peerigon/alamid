@@ -2,7 +2,7 @@
 
 var expect = require("expect.js"),
     alamid = require("../../lib/index.js"),
-    jQuery = require("../../lib/client/helpers/jQuery.js"),
+    jQuery = require("../testHelpers/jquery.js"),
     Displayable = require("../../lib/client/Displayable.class.js"),
     View = require("../../lib/client/View.class.js"),
     ViewCollection = require("../../lib/client/ViewCollection.class.js"),

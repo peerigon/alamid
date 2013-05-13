@@ -7,7 +7,7 @@ var expect = require("../testHelpers/expect.jquery.js"),
     Model = require("../../lib/shared/Model.class.js"),
     formSchema = require("./mocks/models/schemas/formSchema.js"),
     FormView = require("./mocks/FormView.class.js"),
-    jQuery = require("../../lib/client/helpers/jQuery.js");
+    jQuery = require("../testHelpers/jquery.js");
 
 describe("View", function () {
 

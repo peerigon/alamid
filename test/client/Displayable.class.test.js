@@ -5,7 +5,7 @@ var expect = require("../testHelpers/expect.jquery.js"),
     path = require("path"),
     Displayable = require("../../lib/client/Displayable.class.js"),
     domAdapter = require("../../lib/client/helpers/domAdapter.js"),
-    jQuery = require("../../lib/client/helpers/jQuery.js"),
+    jQuery = require("../testHelpers/jquery.js"),
     collectNodeReferences = require("../testHelpers/collectNodeReferences.js");
 
 var checkTypeError = require("../testHelpers/checkError.js")(TypeError);

@@ -1,7 +1,7 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("expect.js"),
-    $ = require("../../lib/client/helpers/jQuery");
+    $ = require("../testHelpers/jquery.js");
 
 var proto = expect.Assertion.prototype,
     be = proto.be,

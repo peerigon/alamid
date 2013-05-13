@@ -1,7 +1,8 @@
 "use strict";
 
+require("../../lib/client/helpers/domAdapter.js").$ = require("../testHelpers/jquery.js");
+
 require("./helpers/domAdapter.test.js");
-require("./helpers/jQuery.test.js");
 require("./helpers/request.test.js");
 require("./helpers/subscribeModelHandler.test.js");
 require("./Client.class.test.js");

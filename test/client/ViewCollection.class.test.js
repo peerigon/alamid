@@ -8,7 +8,7 @@ var expect = require("expect.js"),
     CarLiElementView = require("./mocks/CarLiElementView.class.js"),
     ModelCollection = require("../../lib/shared/ModelCollection.class.js"),
     CarModel = require("./mocks/models/CarModel.class.js"),
-    jQuery = require("../../lib/client/helpers/jQuery.js"),
+    jQuery = require("../testHelpers/jquery.js"),
     _ = require("underscore");
 
 describe("ViewCollection", function () {

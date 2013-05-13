@@ -4,7 +4,7 @@ var expect = require("../testHelpers/expect.jquery.js"),
     value = require("value"),
     Displayable = require("../../lib/client/Displayable.class.js"),
     Page = require("../../lib/client/Page.class.js"),
-    jQuery = require("../../lib/client/helpers/jQuery.js"),
+    jQuery = require("../testHelpers/jquery.js"),
     collectNodeReferences = require("../testHelpers/collectNodeReferences.js");
 
 describe("Page", function () {
