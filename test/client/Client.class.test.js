@@ -4,6 +4,7 @@ var expect = require("expect.js"),
     value = require("value"),
     pageJS = require("page"),
     Client = require("../../lib/client/Client.class.js"),
+    config = require("../../lib/core/config.server.js"),
     Page = require("../../lib/client/Page.class.js"),
     PageController = require("../../lib/client/PageController.class.js");
 
@@ -15,6 +16,7 @@ describe("Client", function () {
     beforeEach(function () {
         client = new Client();
 
+        config.use.websockets = false;
         pageJS.callbacks = [];  // removes previous routes
         path = window.location.pathname + window.location.search;
     });
@@ -41,6 +43,13 @@ describe("Client", function () {
 
     describe("#start() / #mainPage", function () {
         var MyMainPage;
+
+        it("should fail if config.use.websockets is true and there is no window.io-instance", function () {
+            config.use.websockets = true;
+            expect(function () {
+                client.start();
+            }).to.throwError();
+        });
 
         it("should create an instance of MainPage by default", function () {
             client.start();

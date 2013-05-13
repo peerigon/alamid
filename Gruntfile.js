@@ -6,11 +6,9 @@ var child_process = require('child_process'),
     path = require("path"),
     os = require("os");
 
-var nof5 = __dirname + "/node_modules/nof5/bin/nof5",
-    tests = __dirname + "/test",
+var tests = __dirname + "/test",
     clientTests = tests + "/client",
-    sharedTests = tests + "/shared",
-    testAssets = tests + "/assets";
+    sharedTests = tests + "/shared";
 
 module.exports = function (grunt) {
 
@@ -86,37 +84,6 @@ module.exports = function (grunt) {
         env.env = "testing"; //logger be quiet!
     });
 
-    /**
-     * @param {string} testPath
-     * @param {string} assetsPath
-     * @param {number} nof5Port
-     */
-    function simpleNof5(testPath, assetsPath, nof5Port) {
-        var nof5Cmd = "cd " + path.resolve(testPath) + " && node " + nof5 + " -p " + nof5Port,
-            nof5Process;
-
-        testPath = testPath || process.cwd();
-
-        if (assetsPath) {
-            nof5Cmd = nof5Cmd + " -a " + path.resolve(assetsPath);
-        }
-
-        nof5Process = exec(nof5Cmd, function execNof5Cmd(error, stdout, stderr) {
-
-            if (error) {
-                console.error("(alamid) Error running nof5: " + error);
-            }
-
-        });
-
-        // awesome piping
-        nof5Process.stdout.pipe(process.stdout);
-        nof5Process.stderr.pipe(process.stderr);
-
-        // increment nof5's port so that it wouldn't clash with existing nof5 instances
-        ++nof5Port;
-    }
-
     grunt.registerTask("freshNpmInstall", "deletes the node_modules folder and does npm install afterwards", function () {
 
         var done = this.async();
@@ -146,28 +113,19 @@ module.exports = function (grunt) {
             });
     });
 
-    grunt.registerTask("test-client", "Browser tests with nof5", function testClient() {
-
-        var done = this.async();
-
-        simpleNof5(clientTests, testAssets, 11234);
+    grunt.registerTask("test-client", "Browser tests", function testClient() {
+        this.async();
+        runWebpackDevServer(clientTests);
     });
 
-    grunt.registerTask("test-shared-browser", "Shared browser-tests with nof5", function testSharedBrowser() {
-
-        var done = this.async();
-
-        simpleNof5(sharedTests, testAssets, 11235);
-
+    grunt.registerTask("test-shared-browser", "Shared browser-tests", function testSharedBrowser() {
+        this.async();
+        runWebpackDevServer(sharedTests);
     });
 
-    grunt.registerTask("test-client-shared", "Browsers tests for client- and shared-lib with nof5", function TestClientShared() {
-
-        var done = this.async();
-
-        simpleNof5(clientTests, testAssets, 11234);
-        simpleNof5(sharedTests, testAssets, 11235);
-
+    grunt.registerTask("test-all-browser", "Browsers tests for client- and shared-lib", function testClientShared() {
+        this.async();
+        runWebpackDevServer(tests);
     });
 
     //mocha server tests
@@ -180,3 +138,17 @@ module.exports = function (grunt) {
     grunt.registerTask("test-jenkins", ["enable-testing-mode", "simplemocha:jenkins"]);
 
 };
+
+function runWebpackDevServer(cwd) {
+    var webpackProcess = exec("webpack-dev-server", { cwd: cwd }, function (error, stdout, stderr) {
+
+        if (error) {
+            console.error("(alamid) Error running webpack-dev-server: " + error);
+        }
+
+    });
+
+    // awesome piping
+    webpackProcess.stdout.pipe(process.stdout);
+    webpackProcess.stderr.pipe(process.stderr);
+}
