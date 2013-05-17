@@ -346,6 +346,12 @@ describe("Displayable", function () {
             expect(submitButton.getParent()).to.be(null);
         });
 
+        it("should remove the reference from the _children-array", function () {
+            form.append(submitButton).at("form");
+            submitButton.detach();
+            expect(form._children).to.not.contain(submitButton);
+        });
+
         it("should still be possible to trigger attached events after .detach()", function (done) {
             var submitButtonNode = submitButton.getNode("submitButton");
 
@@ -542,7 +548,10 @@ describe("Displayable", function () {
             var nodeRefs;
 
             form.dispose();
-            nodeRefs = collectNodeReferences(form);
+            nodeRefs = collectNodeReferences(form)
+                .concat(collectNodeReferences(disp1))
+                .concat(collectNodeReferences(disp2))
+                .concat(collectNodeReferences(disp3));
             expect(nodeRefs).to.be.empty();
         });
 
