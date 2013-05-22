@@ -256,6 +256,43 @@ describe("ModelCollection", function () {
 
     });
 
+    describe(".removeById()", function () {
+
+        beforeEach(function () {
+            modelCollection.push(octocatModels);
+        });
+
+        it("should remove the model with the given id", function () {
+            modelCollection.removeById(2);
+            modelCollection.removeById(3);
+            expect(modelCollection.toArray()).to.eql([octocatModel]);
+        });
+
+        it("should return the removed model", function () {
+            expect(modelCollection.removeById(1)).to.be(octocatModel);
+        });
+
+        it("should return undefined if there is no model with the given id", function () {
+            expect(modelCollection.removeById(125126)).to.be(undefined);
+        });
+
+        it("should call .remove() with the right index", function (done) {
+            modelCollection.remove = function (index) {
+                expect(index).to.be(1);
+                done();
+            };
+            modelCollection.removeById(2);
+        });
+
+        it("should call NOT call .remove() if there is no model with the given id", function () {
+            modelCollection.remove = function () {
+                throw new Error(".remove() should not be called");
+            };
+            modelCollection.removeById(26894);
+        });
+
+    });
+
     describe(".sortBy()", function () {
 
         var octocatModelsSortedByName,
