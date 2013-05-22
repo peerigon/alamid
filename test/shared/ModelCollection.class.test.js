@@ -237,6 +237,25 @@ describe("ModelCollection", function () {
 
     });
 
+    describe(".findById()", function () {
+
+        it("should return undefined if no models have been given", function () {
+            expect(modelCollection.findById(1)).to.be(undefined);
+        });
+
+        it("should return the model with the given id", function () {
+            modelCollection.push(octocatModels);
+            expect(modelCollection.findById(1)).to.be(octocatModels[0]);
+            expect(modelCollection.findById(3)).to.be(octocatModels[2]);
+        });
+
+        it("should return undefined if no id has been found", function () {
+            modelCollection.push(octocatModels);
+            expect(modelCollection.findById(3894567954)).to.be(undefined);
+        });
+
+    });
+
     describe(".sortBy()", function () {
 
         var octocatModelsSortedByName,
