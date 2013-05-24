@@ -2,112 +2,87 @@
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
-    Car = require("./mocks/models/CarModel.class.js");
+    Model = require("../../lib/shared/Model.class.js");
 
 describe("RemoteService", function () {
 
-    var RemoteService,
-        modelMock = {
-            getUrl : function () {
-                return "blogpost";
-            },
-            getIds : function () {
-                return null;
-            },
-            toJSON : function () {
-                return JSON.stringify({ da : "ta "});
-            },
-            get : function () {
-                return { da : "ta" };
-            },
-            getChanged : function() {
-                return { da : "ta" };
-            }
-        };
+    var RemoteService = rewire("../../lib/client/RemoteService.class.js"),
+        Post = Model.extend({
+            url: "blog/post"
+        }),
+        postData = {
+            title: "Hello World"
+        },
+        remoteService,
+        post;
 
     beforeEach(function () {
-        RemoteService = rewire("../../lib/client/RemoteService.class.js");
-        //mocking the routes
-        RemoteService.__set__("config", {
-            routes : {
-                services : "/services",
-                validators : "/validators"
-            }
-        });
-    });
-
-    it("should return a valid RemoteService", function () {
-        var service = new RemoteService("blogpost");
-        expect(service.read).to.be.a("function");
-        expect(service.create).to.be.a("function");
-        expect(service.update).to.be.a("function");
-        expect(service.destroy).to.be.a("function");
+        post = new Post();
     });
 
     it("should pass the right data to the dom-adapter request", function (done) {
-
-        var requestMock = function (method, url, model, callback) {
-                expect(method.toLowerCase()).to.be("create");
-                expect(url).to.contain("services/blogpost");
-                expect(model).to.eql({ da : "ta"});
-                callback();
-            },
-            remoteService;
-
-        RemoteService.__set__("request", requestMock);
-
-        remoteService = new RemoteService("blogpost");
-        remoteService.create(true, modelMock, function (response) {
-            done();
+        post.set(postData);
+        post.setIds({
+            "blog": 1
         });
 
+        RemoteService.__set__("request", function (method, url, model, callback) {
+            expect(method).to.be("create");
+            expect(url).to.contain("services/blog/1/post");
+            expect(model).to.eql(postData);
+            callback();
+        });
+        remoteService = new RemoteService("blog/post");
+
+        remoteService.create(true, post, function (response) {
+            done();
+        });
     });
 
     it("should incorporate all ids into the request url", function (done) {
+        var ids = {
+                "blog": 1,
+                "blog/post": 1
+            };
 
-        var requestMock = function (method, url, model, callback) {
-                expect(method.toLowerCase()).to.be("update");
-                expect(url).to.contain("services/blogpost/12/comment/3");
-                expect(model).to.eql({ da : "ta"});
-                callback();
-            },
-            ids = {
-                "blogpost": 12,
-                "blogpost/comment": 3
-            },
-            remoteService;
+        post.set(postData);
+        post.setIds(ids);
 
-        RemoteService.__set__("request", requestMock);
+        RemoteService.__set__("request", function (method, url, model, callback) {
+            expect(method.toLowerCase()).to.be("update");
+            expect(url).to.contain("services/blog/1/post/1");
+            expect(model).to.eql(postData);
+            callback();
+        });
+        remoteService = new RemoteService("blog/post");
 
-        remoteService = new RemoteService("blogpost/comment");
-        remoteService.update(true, ids, modelMock, function (response) {
+        remoteService.update(true, ids, post, function (response) {
             done();
         });
-
     });
 
-    it("should pass only changedData to the updateService", function(done) {
-
-        var requestMock = function (method, url, model, callback) {
-                expect(method.toLowerCase()).to.be("update");
-                expect(url).to.contain("services/car/12");
-                expect(model).to.eql({ manufactor : "Peugeot"});
-                callback();
+    it("should pass only changedData to the request-adapter", function (done) {
+        var ids = {
+                "blog": 1,
+                "blog/post": 1
             },
-            car = new Car(),
-            remoteService;
+            newData = {
+                author: "sbat"
+            };
 
-        car.set("model", "A3");
-        car.set("manufactor", "Audi");
-        car.accept();
-        car.set("manufactor", "Peugeot");
+        post.set(postData);
+        post.setIds(ids);
+        post.accept();
+        post.set("author", "sbat");
 
-        RemoteService.__set__("request", requestMock);
+        RemoteService.__set__("request", function (method, url, model, callback) {
+            expect(model).to.eql(newData);
+            callback();
+        });
+        remoteService = new RemoteService("blog/post");
 
-        remoteService = new RemoteService("car");
-        remoteService.update(true, {car : 12 }, car, function (response) {
+        remoteService.update(true, ids, post, function (response) {
             done();
         });
-
     });
 });

@@ -1,7 +1,8 @@
 "use strict";
 
 var expect = require("expect.js"),
-    Octocat = require("../shared/Model/Octocat.class.js");
+    Octocat = require("../shared/Model/Octocat.class.js"),
+    ModelCache = require("../testHelpers/ModelCache.class.js");
 
 function sharedModelServiceTest(env) {
 
@@ -302,24 +303,18 @@ function sharedModelServiceTest(env) {
 
             var Octocat,
                 testService,
-                services,
-                modelCache;
+                services;
 
             before(function () {
-
+                Octocat = require("../shared/Model/Octocat.class.js");
                 services = require("../../lib/shared/registries/serviceRegistry.js");
                 services.getService = function () {
                     return testService;
                 };
-
-                Octocat = require("../shared/Model/Octocat.class.js");
-                modelCache = require("../../lib/shared/modelCache.js");
             });
 
             beforeEach(function () {
-                //we have to reset the cache, because we want fresh instances
-                //this is needed to make things work on client&server
-                modelCache.reset();
+                Octocat.cache = new ModelCache();
                 testService = {};
             });
 

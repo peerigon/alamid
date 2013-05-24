@@ -11,8 +11,8 @@ describe("resolveFilename", function () {
     describe("alamid requires", function () {
 
         it("should handle a require from the alamid server folder", function () {
-            expect(resolveFilename(path.join(testFolder, "alamid", "lib", "server", "modelCache.server.js"))).to
-                .be(path.join(testFolder, "alamid", "lib", "client", "modelCache.client.js"));
+            expect(resolveFilename(path.join(testFolder, "alamid", "lib", "server", "env.server.js"))).to
+                .be(path.join(testFolder, "alamid", "lib", "client", "env.client.js"));
         });
 
         it("should handle a require from the alamid core folder", function () {

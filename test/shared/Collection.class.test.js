@@ -48,7 +48,6 @@ describe("Collection", function () {
         it("should not emit events when it's muted", function () {
             //collection.muted = true;
             collection.on("change", function () {
-                console.log("test");
                 throw new Error("Event has been emitted");
             });
             collection.push(octocatModel);

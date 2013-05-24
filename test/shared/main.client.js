@@ -6,7 +6,6 @@ require("./Event.class.test.js");
 require("./index.test.js");
 require("./logger.test.js");
 require("./Model.class.test.js");
-require("./modelCache.test.js");
 require("./ModelCollection.class.test.js");
 require("./ModelService.test.js");
 require("./Service.class.test.js");

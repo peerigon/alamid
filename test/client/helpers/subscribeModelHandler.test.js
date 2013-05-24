@@ -3,152 +3,144 @@
 var EventEmitter = require("events").EventEmitter;
 
 var expect = require("expect.js"),
-    rewire = require("rewire");
+    rewire = require("rewire"),
+    Model = require("../../../lib/shared/Model.class.js"),
+    ModelCache = require("../../testHelpers/ModelCache.class.js");
 
-describe("subscribeModelHandler", function(){
+describe("subscribeModelHandler", function (){
 
-    var socketMock,
-        attachPushHandlers;
-
-    beforeEach(function() {
-        socketMock = new EventEmitter();
-        attachPushHandlers = rewire("../../../lib/client/helpers/subscribeModelHandler.js");
-    });
-
-    it("should receive remoteUpdateEvents", function(done) {
-
-        var modelInstanceMock,
-            ModelClassMock,
-            modelCacheMock,
-            modelRegistryMock;
-
-        modelInstanceMock = {
-            setIds : function(ids) {
-                expect(ids).to.eql({ blogpost : 1 });
-            }
-        };
-
-        ModelClassMock = {
-            set : function() {
-
-            },
-            emit : function(eventName, event) {
-                expect(eventName).to.be("remoteUpdate");
-                expect(event.parentIds).to.eql({ blogpost : 1 });
-                expect(event.data).to.eql({ da : "ta" });
-                done();
-            }
-        };
-
-        modelCacheMock = {
-            get : function(modelUrl, ids) {
-                expect(modelUrl).to.be("blogpost");
-                expect(ids).to.eql({
-                    blogpost: 1
-                });
-                return modelInstanceMock;
-            }
-        };
-
+    var socketMock = new EventEmitter(),
+        subscribeModelHandler = rewire("../../../lib/client/helpers/subscribeModelHandler.js"),
+        Post = Model.extend("Post", {
+            url: "blog/post"
+        }),
         modelRegistryMock = {
-            getModel : function(modelUrl) {
-                expect(modelUrl).to.eql("blogpost");
-                return ModelClassMock;
+            getModel: function (modelUrl) {
+                expect(modelUrl).to.be("blog/post");
+                return Post;
             }
-        };
+        },
+        ids = {
+            "blog": 1,
+            "blog/post": 1
+        },
+        post,
+        emittedEvent;
 
-        attachPushHandlers.__set__("modelCache", modelCacheMock);
-        attachPushHandlers.__set__("modelRegistry", modelRegistryMock);
-        attachPushHandlers(socketMock);
+    subscribeModelHandler.__set__("modelRegistry", modelRegistryMock);
 
-        socketMock.emit("remoteUpdate", "blogpost", { blogpost : 1 }, { da : "ta" });
+    function getEmittedEvent(event) {
+        emittedEvent = event;
+    }
+
+    before(function () {
+        subscribeModelHandler(socketMock);
     });
 
-
-    it("should receive remoteDestroyEvents", function(done) {
-
-        var modelInstanceMock = {},
-            ModelClassMock,
-            modelCacheMock,
-            modelRegistryMock;
-
-        ModelClassMock = {
-            emit : function(eventName, event) {
-                expect(eventName).to.be("remoteDestroy");
-                expect(event.model).to.be(modelInstanceMock);
-                done();
-            }
-        };
-
-        modelCacheMock = {
-            get : function(modelUrl, ids) {
-                expect(modelUrl).to.be("blogpost");
-                expect(ids).to.eql({
-                    blogpost: 2
-                });
-                return modelInstanceMock;
-            }
-        };
-
-        modelRegistryMock = {
-            getModel : function(modelUrl) {
-                expect(modelUrl).to.eql("blogpost");
-                return ModelClassMock;
-            }
-        };
-
-        attachPushHandlers.__set__("modelCache", modelCacheMock);
-        attachPushHandlers.__set__("modelRegistry", modelRegistryMock);
-
-        attachPushHandlers.__set__("modelCache", modelCacheMock);
-        attachPushHandlers(socketMock);
-
-        socketMock.emit("remoteDestroy", "blogpost", { blogpost : 2 });
+    beforeEach(function () {
+        Post.removeAllListeners();
+        post = null;
+        emittedEvent = null;
     });
 
+    it("should receive remoteCreateEvents", function () {
+        var data = {
+            title: "Hello World"
+        };
 
-    it("should receive remoteCreateEvents", function(done) {
+        Post.on("remoteCreate", getEmittedEvent);
 
-        var ModelClassMock = function(id) {
-            this.id = "";
-            var self = this;
+        socketMock.emit("remoteCreate", "blog/post", ids, data);
 
-            this.set = function(data) {
-                expect(data).to.eql({ da : "ta" });
+        expect(emittedEvent.target).to.be(Post);
+        expect(emittedEvent.name).to.be("RemoteCreateEvent");
+        expect(emittedEvent.model).to.be.a(Post);
+        expect(emittedEvent.model.get("title")).to.be("Hello World");
+    });
+
+    it("should receive remoteUpdateEvents", function () {
+        var data = {
+            title: "What up???"
+        };
+
+        Post.on("remoteUpdate", getEmittedEvent);
+
+        socketMock.emit("remoteUpdate", "blog/post", ids, data);
+
+        expect(emittedEvent.target).to.be(Post);
+        expect(emittedEvent.name).to.be("RemoteUpdateEvent");
+        expect(emittedEvent.model).to.be.a(Post);
+        expect(emittedEvent.model.get("title")).to.be("What up???");
+    });
+
+    it("should receive remoteDestroyEvents", function () {
+        Post.on("remoteDestroy", getEmittedEvent);
+
+        socketMock.emit("remoteDestroy", "blog/post", ids);
+
+        expect(emittedEvent.target).to.be(Post);
+        expect(emittedEvent.name).to.be("RemoteDestroyEvent");
+        expect(emittedEvent.model).to.be(null); // we don't have a cache, so there is no instance to pass
+    });
+
+    describe("with modelCache", function () {
+
+        beforeEach(function () {
+            Post.cache = new ModelCache();
+        });
+
+        it("should store the created model in the modelCache", function () {
+            var data = {
+                title: "Hello World"
             };
 
-            this.setIds = function(parentIds) {
-                expect(parentIds).to.eql({ blogpost : 3 });
+            socketMock.emit("remoteCreate", "blog/post", ids, data);
+
+            post = Post.cache.get("blog/1/post/1");
+            expect(post).to.be.a(Post);
+            expect(post.get("title")).to.be("Hello World");
+        });
+
+        it("should update the cached instance", function () {
+            var data = {
+                title: "Don't know, dude"
             };
 
-            (function init(id) {
-                self.id = id;
-            })(id);
-        };
+            post = new Post();
+            Post.cache.set("blog/1/post/1", post);
+            Post.on("remoteUpdate", getEmittedEvent);
 
-        ModelClassMock.emit = function(eventName, event) {
-            expect(eventName).to.be("remoteCreate");
-            expect(event.model.id).to.be(3);
-            done();
-        };
+            socketMock.emit("remoteUpdate", "blog/post", ids, data);
 
-        var modelRegistryMock = {
-            getModel : function(modelUrl) {
-                expect(modelUrl).to.be("blogpost");
-                return ModelClassMock;
-            }
-        };
+            post = Post.cache.get("blog/1/post/1");
+            expect(post.get("title")).to.be("Don't know, dude");
+            expect(emittedEvent.model).to.be(post);
+        });
 
-        var modelCacheMock = {
-            add : function(addModel) {
-                expect(addModel.id).to.be(3);
-            }
-        };
+        it("should create a new instance if there is no cached instance and then add it to the cache", function () {
+            var data = {
+                title: "Don't know, dude"
+            };
 
-        attachPushHandlers.__set__("modelCache", modelCacheMock);
-        attachPushHandlers.__set__("modelRegistry", modelRegistryMock);
-        attachPushHandlers(socketMock);
+            Post.on("remoteUpdate", getEmittedEvent);
 
-        socketMock.emit("remoteCreate", "blogpost", { blogpost : 3 }, { da : "ta" });
+            socketMock.emit("remoteUpdate", "blog/post", ids, data);
+
+            post = Post.cache.get("blog/1/post/1");
+            expect(post.get("title")).to.be("Don't know, dude");
+            expect(emittedEvent.model).to.be(post);
+        });
+
+        it("should pass the destroyed instance to all listeners and remove it from cache", function () {
+            post = new Post();
+            Post.cache.set("blog/1/post/1", post);
+            Post.on("remoteDestroy", getEmittedEvent);
+
+            socketMock.emit("remoteDestroy", "blog/post", ids);
+
+            expect(emittedEvent.model).to.be(post);
+            expect(Post.cache.get("blog/1/post/1")).to.be(undefined);
+        });
+
     });
 });

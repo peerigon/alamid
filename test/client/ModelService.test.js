@@ -1,11 +1,11 @@
 "use strict";
 
 var expect = require("expect.js"),
+    ModelCache = require("../testHelpers/ModelCache.class.js"),
     Octocat = require("../shared/Model/Octocat.class.js"),
     RemoteService = require("../../lib/client/RemoteService.class.js"),
     services = require("../../lib/shared/registries/serviceRegistry.js"),
     sharedModelServiceTest = require("../shared/ModelService.test.js"),
-    modelCache = require("../../lib/shared/modelCache.js"),
     Octoduck = require("../shared/Model/OctoDuck.class.js");
 
 var mockedOctocats = [
@@ -36,6 +36,9 @@ describe("Model-Services", function () {
             services.getService = function () {
                 return testService;
             };
+
+            Octocat.cache = new ModelCache();
+            Octoduck.cache = new ModelCache();
 
             readCollection = RemoteService.prototype.readCollection;
             RemoteService.prototype.readCollection = function RemoteReadCollection(remote, ids, params, callback) {
@@ -75,10 +78,6 @@ describe("Model-Services", function () {
                     }
                 });
             };
-        });
-
-        beforeEach(function () {
-            modelCache.reset();
         });
 
         after(function () {
@@ -240,6 +239,9 @@ describe("Model-Services", function () {
 
             describe("#findById", function () {
 
+                before(function () {
+                    Octocat.cache = null;
+                });
                 beforeEach(function () {
                     testService = {
                         read : function mockedRead(remote, ids, callback) {
