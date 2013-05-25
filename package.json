@@ -1,7 +1,7 @@
 {
     "name" : "alamid",
     "description" : "Framework for realtime apps that run both on the server and the client.",
-    "version" : "0.14.1",
+    "version" : "0.15.0",
     "repository" : "git://github.com/peerigon/alamid",
     "author" : "peerigon <developers@peerigon.com>",
     "contributors" : [
