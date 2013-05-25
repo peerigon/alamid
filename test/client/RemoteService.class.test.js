@@ -21,10 +21,12 @@ describe("RemoteService", function () {
     });
 
     it("should pass the right data to the dom-adapter request", function (done) {
+        var ids = {
+                "blog": 1
+            };
+
         post.set(postData);
-        post.setIds({
-            "blog": 1
-        });
+        post.setIds(ids);
 
         RemoteService.__set__("request", function (method, url, model, callback) {
             expect(method).to.be("create");
@@ -34,7 +36,7 @@ describe("RemoteService", function () {
         });
         remoteService = new RemoteService("blog/post");
 
-        remoteService.create(true, post, function (response) {
+        remoteService.create(true, ids, post, function (response) {
             done();
         });
     });
