@@ -25,64 +25,9 @@ describe("ModelCollection", function () {
             expect(modelCollection).to.be.an(Collection);
         });
 
-        it("should proxy 'change'-Event for each Model given on construction", function (done) {
-            var changeEventCount = 0;
-
-            modelCollection = new ModelCollection(OctocatModel, octocatModels);
-
-            modelCollection.on("change", function onChange() {
-                changeEventCount++;
-            });
-
-            _(octocatModels).each(function setName(model) {
-                model.set("name", "Cpt. Spook");
-            });
-
-            expect(changeEventCount).to.be(octocatModels.length);
-            done();
-        });
-
     });
 
     describe(".set()", function () {
-
-        it("should proxy 'change'-Event of set Model", function (done) {
-            modelCollection.on("change", function onChange() {
-                done();
-            });
-            modelCollection.set(5, octocatModel);
-            octocatModel.set("name", "sbat");
-        });
-
-        it("should pass changed Model on 'change' as first argument", function (done) {
-            modelCollection.on("change", function onChange(model) {
-                expect(model).to.be(octocatModel);
-                done();
-            });
-            modelCollection.set(5, octocatModel);
-            octocatModel.set("name", "topa");
-        });
-
-        it("should remove 'change'-listener from overwritten Model", function (done) {
-            modelCollection.on("change", function onChange() {
-                done(); //Should not be called
-            });
-            modelCollection.set(3, octocatModel);
-            modelCollection.set(3, octocatModels[2]);
-
-            octocatModel.set("name", "topa");
-            done();
-        });
-
-        it("should proxy 'change'-Event of overwriting Model", function (done) {
-            modelCollection.on("change", function onChange() {
-                done();
-            });
-            modelCollection.set(3, octocatModel);
-            modelCollection.set(3, octocatModels[0]);
-
-            octocatModels[0].set("name", "topa");
-        });
 
         it("return a reference to itself", function () {
            expect(modelCollection.set(0, octocatModel)).to.be(modelCollection);
@@ -114,32 +59,6 @@ describe("ModelCollection", function () {
 
     describe(".push()", function() {
 
-        it("should proxy 'change'-Event for each pushed Model", function (done) {
-            var changeEventCount = 0;
-
-            modelCollection.on("change", function onChange() {
-                changeEventCount++;
-            });
-
-            modelCollection.push(octocatModels);
-
-            _(octocatModels).each(function setName(model) {
-                model.set("name", "Cpt. Spook");
-            });
-
-            expect(changeEventCount).to.be(octocatModels.length);
-            done();
-        });
-
-        it("should pass Model on 'change' as first argument", function (done) {
-            modelCollection.push(octocatModels);
-            modelCollection.on("change", function onChange(model) {
-                expect(model).to.be(octocatModels[1]);
-                done();
-            });
-            octocatModels[1].set("name", "Master Batti");
-        });
-
         it("should return a reference to itself", function () {
             expect(modelCollection.push(octocatModels)).to.be(modelCollection);
         });
@@ -147,32 +66,6 @@ describe("ModelCollection", function () {
     });
 
     describe(".unshift()", function () {
-
-        it("should proxy 'change'-Event' for each pushed Model", function (done) {
-            var changeEventCount = 0;
-
-            modelCollection.on("change", function onChange() {
-                changeEventCount++;
-            });
-
-            modelCollection.unshift(octocatModels);
-
-            _(octocatModels).each(function setName(model) {
-                model.set("name", "Dr. siR");
-            });
-
-            expect(changeEventCount).to.be(octocatModels.length);
-            done();
-        });
-
-        it("should pass Model on 'change' as first argument", function (done) {
-            modelCollection.unshift(octocatModels);
-            modelCollection.on("change", function onChange(model) {
-                expect(model).to.be(octocatModels[1]);
-                done();
-            });
-            octocatModels[1].set("name", "Chief Meaku");
-        });
 
         it("should return a reference to itself", function () {
             expect(modelCollection.unshift(octocatModels)).to.be(modelCollection);
@@ -182,26 +75,6 @@ describe("ModelCollection", function () {
 
     describe(".pop()", function () {
 
-        it("should remove 'change' listener from popped Model", function (done) {
-            modelCollection.push(octocatModels);
-            modelCollection.on("change", function (model) {
-                done(); //Should not be called
-            });
-            modelCollection.pop();
-            octocatModels.pop().set("name", "Dr. Hirsel");
-            done();
-        });
-
-        it("should NOT remove 'change'-listeners which were set outside", function (done) {
-            octocatModels[2].on("change", function onChange() {
-                done();
-            });
-            modelCollection.push(octocatModels);
-            modelCollection.pop();
-            octocatModels[2].set("name", "Namcos");
-
-        });
-
         it("should return the popped Model", function () {
             modelCollection.unshift(octocatModels);
             expect(modelCollection.pop()).to.be(octocatModels.pop());
@@ -210,25 +83,6 @@ describe("ModelCollection", function () {
     });
 
     describe(".shift()", function () {
-
-        it("should remove 'change' listener from popped Model", function (done) {
-            modelCollection.push(octocatModels);
-            modelCollection.on("change", function (model) {
-                done(); //Should not be called
-            });
-            modelCollection.shift();
-            octocatModels.shift().set("name", "Dr. Hirsel");
-            done();
-        });
-
-        it("should NOT remove 'change'-listeners which were set outside", function (done) {
-            octocatModels[2].on("change", function onChange() {
-                done();
-            });
-            modelCollection.push(octocatModels[2]);
-            modelCollection.shift();
-            octocatModels[2].set("name", "Namcos");
-        });
 
         it("should return the popped Model", function () {
             modelCollection.unshift(octocatModels);
@@ -340,7 +194,7 @@ describe("ModelCollection", function () {
 
         });
 
-        it("should (natual-)sort collection 'birthday desceding if true is given as second argument", function () {
+        it("should (natual-)sort collection 'birthday descending if true is given as second argument", function () {
 
             var octocatModelsSortedByDateReverse = octocatModelsSortedByDate.reverse();
 
@@ -369,19 +223,6 @@ describe("ModelCollection", function () {
 
     describe(".dispose()", function () {
 
-        it("should stop to proxy Model events", function () {
-            var changeCallCount = 0;
-            modelCollection.on("change", function onChange() {
-                changeCallCount++;
-            });
-            modelCollection.push(octocatModels);
-            modelCollection.dispose();
-            _(octocatModels).each(function triggerChange(model, index) {
-                model.set("name", "" + index + "");
-            });
-            expect(changeCallCount).to.be(0);
-        });
-
         it("should remove all models from collection", function () {
             modelCollection.push(octocatModels);
             modelCollection.dispose();
@@ -392,13 +233,9 @@ describe("ModelCollection", function () {
         it("should remove all event listeners from models", function (done) {
             modelCollection.push(octocatModels);
             modelCollection.dispose();
-            modelCollection.on("change", function onRemove() {
-                throw new Error("change-listener shall be removed, but it wasn't!");
-            });
             modelCollection.on("remove", function onRemove() {
                 throw new Error("remove-listener shall be removed, but it wasn't!");
             });
-            octocatModels[0].emit("change");
             octocatModels[1].emit("destroy");
             done();
         });
@@ -406,6 +243,13 @@ describe("ModelCollection", function () {
     });
 
     describe("on Model.destroy()", function () {
+
+        function emitDestroy(model) {
+            // faking delete, we just emit the event.
+            model.emit("destroy", {
+                target: model
+            });
+        }
 
         beforeEach(function () {
              modelCollection.push(octocatModels);
@@ -417,24 +261,24 @@ describe("ModelCollection", function () {
                 expect(octocatModel).to.equal(models[0]);
             });
 
-            octocatModel.emit("destroy");    // faking delete, we just emit the event.
+            emitDestroy(octocatModel);
 
             modelCollection.once("remove", function checkPassedParam(models) {
                 expect(octocatModels[1]).to.equal(models[0]);
                 done();
             });
 
-            octocatModels[1].emit("destroy");    // faking delete, we just emit the event.
+            emitDestroy(octocatModels[1]);
 
         });
 
         it("it should remove the Model from Collection if it was destroy", function () {
 
-            octocatModels[0].emit("destroy");    // faking delete, we just emit the event.
+            emitDestroy(octocatModels[0]);
             expect(modelCollection.toArray()).to.eql([octocatModels[1], octocatModels[2]]);
-            octocatModels[1].emit("destroy");
+            emitDestroy(octocatModels[1]);
             expect(modelCollection.toArray()).to.eql([octocatModels[2]]);
-            octocatModels[2].emit("destroy");
+            emitDestroy(octocatModels[2]);
             expect(modelCollection.toArray()).to.eql([]);
 
         });
