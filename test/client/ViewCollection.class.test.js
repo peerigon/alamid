@@ -13,8 +13,7 @@ var expect = require("expect.js"),
 
 describe("ViewCollection", function () {
 
-    var template = "<ul data-node='views'></ul>",
-        ViewCollectionWithExample,
+    var template = '<ul class="mySpecialTemplate" data-node="views"></ul>',
         viewCollectioNode,
         $viewCollectioNode,
         viewCollection,
@@ -26,13 +25,9 @@ describe("ViewCollection", function () {
         cars,
         carCollection;
 
-    ViewCollectionWithExample = ViewCollection.extend({
-        template: template
-    });
-
     beforeEach(function () {
 
-        viewCollection = new ViewCollectionWithExample(CarLiElementView);
+        viewCollection = new ViewCollection(CarLiElementView);
         viewCollectioNode = viewCollection.getRoot();
         $viewCollectioNode = jQuery(viewCollectioNode);
         audi = new CarModel();
@@ -72,27 +67,26 @@ describe("ViewCollection", function () {
     describe("#constructor()", function () {
 
         it("should be an Displayable", function () {
-           expect(value(viewCollection).instanceOf(Displayable)).to.be.ok();
+            expect(viewCollection).to.be.an(Displayable);
         });
 
-        it("should be possible to set a template", function (done) {
+        it("should have '<ul></ul>' as default template", function () {
+            expect(viewCollection.getRoot()).to.eql("<ul></ul>");
+        });
+
+        it("should be possible to set a template", function () {
             viewCollection = new ViewCollection(CarLiElementView, template);
-            done();
+            expect(viewCollection.getRoot()).to.eql(template);
         });
 
         it("should be possible to override a declared template", function () {
             var MyViewCollection = ViewCollection.extend({
-                template: '<div data-node="views"></div>'
-            });
+                    template: '<div data-node="views"></div>'
+                });
+
             viewCollection = new MyViewCollection(CarLiElementView, template);
 
-            expect(viewCollection.getRoot()[0]).to.be.an(HTMLUListElement);
-        });
-
-        it("should throw an Error if a template was passed that does not include a node with 'data-node=\"views\"'", function () {
-            expect(function () {
-                viewCollection = new ViewCollection(CarLiElementView, "<ul></ul>");
-            }).to.throwError();
+            expect(viewCollection.getRoot()).to.eql(template);
         });
 
     });
