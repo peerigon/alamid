@@ -93,6 +93,10 @@ describe("Model", function () {
                 expect(model.get("what")).to.be("ever");
                 expect(model.get()).to.eql({ what : "ever" });
             });
+
+            it("should be chainable", function () {
+                expect(user.set("name", "Clint Eastwood")).to.be(user);
+            });
         });
 
         describe("url", function () {
