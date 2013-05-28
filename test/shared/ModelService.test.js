@@ -156,11 +156,34 @@ function sharedModelServiceTest(env) {
                 });
 
                 it("should throw return an error if no id is set", function (done) {
-
                     octocat.fetch(function (err) {
                         expect(err).to.be.an(Error);
                         done();
                     });
+                });
+
+                describe("(with cache)", function () {
+
+                    beforeEach(function () {
+                        Octocat.cache = new ModelCache();
+                    });
+
+                    after(function () {
+                        delete Octocat.cache;
+                    });
+
+
+                    it("should add a new instance to the cache after fetch", function () {
+
+                        octocat.setId(2);
+                        expect(Octocat.cache.get("octocat/2")).to.be(undefined);
+                        octocat.fetch(function (err) {
+                            expect(err).to.be(null);
+                            expect(Octocat.cache.get("octocat/2")).to.be(octocat);
+                        });
+
+                    });
+
                 });
             });
 
