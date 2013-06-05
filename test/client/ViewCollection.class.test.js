@@ -338,16 +338,8 @@ describe("ViewCollection", function () {
                 expect("Daimler").to.equal(cars[2].get("manufactor"));
             });
 
-
-            it("should emit an 'beforeSort'-Event", function (done) {
-                viewCollection.on("beforeSort", function onBeforeSort() {
-                    done();
-                });
-                carCollection.sortBy("model", true);
-            });
-
-            it("should emit an 'sort'-Event", function (done) {
-                viewCollection.on("sort", function onSort() {
+            it("should emit an 'add'-Event", function (done) {
+                viewCollection.on("add", function onSort() {
                     done();
                 });
                 carCollection.sortBy("manufactor");
@@ -433,61 +425,44 @@ describe("ViewCollection", function () {
     });
 
     describe("#undelegate()", function () {
+        var onDisposeCalled = 0;
 
-        var expectedRemoveEventCount,
-            removeEventCount,
-            i,
-            onRemove;
+        function onDispose() {
+            onDisposeCalled++;
+        }
 
         beforeEach(function () {
+            onDisposeCalled = 0;
             viewCollection.bind(carCollection);
-            expectedRemoveEventCount = 0;
-            removeEventCount = 0;
-            i = null;
-            onRemove = function onRemove() {
-                removeEventCount++;
-            };
-
-            viewCollection.delegate("dispose", onRemove);
+            viewCollection.delegate("dispose", onDispose);
         });
 
         it("should remove all listeners from Views in collection", function () {
+            viewCollection.undelegate("dispose", onDispose);
 
-            viewCollection.undelegate("dispose", onRemove);
+            carCollection.pop();
+            carCollection.pop();
 
-            for(i = 0; i < expectedRemoveEventCount; i++) {
-                carCollection.shift();
-            }
-
-            expect(removeEventCount).to.equal(expectedRemoveEventCount);
-
+            expect(onDisposeCalled).to.be(0);
         });
 
         it("should stop to attach event to new Views", function () {
-
-            viewCollection.undelegate("dispose", onRemove);
+            viewCollection.undelegate("dispose", onDispose);
 
             carCollection.push(fiat);
+            carCollection.pop();
 
-            for(i = 0; i < expectedRemoveEventCount; i++) {
-                carCollection.shift();
-            }
-
-            expect(removeEventCount).to.equal(expectedRemoveEventCount);
+            expect(onDisposeCalled).to.be(0);
 
         });
 
         it("should remove only given listener from given event", function (done) {
-
-            viewCollection.delegate("detach", function ondetach() {
+            viewCollection.delegate("someOtherEvent", function () {
                 done();
             });
 
-            viewCollection.undelegate("dispose", onRemove);
-
-            //pop only one item otherwise done() will be called multiple times
-            carCollection.pop();
-
+            viewCollection.undelegate("dispose", onDispose);
+            viewCollection._views[0].emit("someOtherEvent");
         });
 
     });
