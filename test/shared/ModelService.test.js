@@ -16,7 +16,7 @@ function sharedModelServiceTest(env) {
      */
     function setServiceMethod(service, method, serviceFunction) {
 
-        if(env === "client") {
+        if (env === "client") {
             service[method] = serviceFunction;
             return;
         }
@@ -162,7 +162,7 @@ function sharedModelServiceTest(env) {
                     });
                 });
 
-                describe("(with cache)", function () {
+                describe("with cache", function () {
 
                     beforeEach(function () {
                         Octocat.cache = new ModelCache();
@@ -174,17 +174,54 @@ function sharedModelServiceTest(env) {
 
 
                     it("should add a new instance to the cache after fetch", function () {
-
                         octocat.setId(2);
                         expect(Octocat.cache.get("octocat/2")).to.be(undefined);
                         octocat.fetch(function (err) {
                             expect(err).to.be(null);
                             expect(Octocat.cache.get("octocat/2")).to.be(octocat);
                         });
-
                     });
 
                 });
+
+                describe("on fail", function () {
+
+                    function respondWithFail(remote, ids, callback) {
+                        callback({
+                            status: "fail"
+                        });
+                    }
+
+                    it("should pass an error object to the callback", function (done) {
+                        setServiceMethod(testService, "read", respondWithFail);
+                        octocat.setId(2);
+                        octocat.fetch(function (err) {
+                            expect(err).to.be.an(Error);
+                            done();
+                        });
+                    });
+
+                });
+
+                describe("on error", function () {
+
+                    function respondWithError(remote, ids, callback) {
+                        callback({
+                            status: "error"
+                        });
+                    }
+
+                    it("should pass an error object to the callback", function (done) {
+                        setServiceMethod(testService, "read", respondWithError);
+                        octocat.setId(2);
+                        octocat.fetch(function (err) {
+                            expect(err).to.be.an(Error);
+                            done();
+                        });
+                    });
+
+                });
+
             });
 
             describe("#save", function () {
@@ -270,6 +307,43 @@ function sharedModelServiceTest(env) {
                     });
 
                 });
+
+                describe("on fail", function () {
+
+                    function respondWithFail(remote, ids, model, callback) {
+                        callback({
+                            status: "fail"
+                        });
+                    }
+
+                    it("should pass an error object to the callback", function (done) {
+                        setServiceMethod(testService, "create", respondWithFail);
+                        octocat.save(function (err) {
+                            expect(err).to.be.an(Error);
+                            done();
+                        });
+                    });
+
+                });
+
+                describe("on error", function () {
+
+                    function respondWithError(remote, ids, model, callback) {
+                        callback({
+                            status: "error"
+                        });
+                    }
+
+                    it("should pass an error object to the callback", function (done) {
+                        setServiceMethod(testService, "create", respondWithError);
+                        octocat.save(function (err) {
+                            expect(err).to.be.an(Error);
+                            done();
+                        });
+                    });
+
+                });
+
             });
 
             describe("#destroy", function () {
@@ -318,6 +392,42 @@ function sharedModelServiceTest(env) {
                         expect(err).to.be.an(Error);
                         done();
                     });
+                });
+
+                describe("on fail", function () {
+
+                    function respondWithFail(remote, ids, callback) {
+                        callback({
+                            status: "fail"
+                        });
+                    }
+
+                    it("should pass an error object to the callback", function (done) {
+                        setServiceMethod(testService, "destroy", respondWithFail);
+                        octocat.destroy(function (err) {
+                            expect(err).to.be.an(Error);
+                            done();
+                        });
+                    });
+
+                });
+
+                describe("on error", function () {
+
+                    function respondWithError(remote, ids, callback) {
+                        callback({
+                            status: "error"
+                        });
+                    }
+
+                    it("should pass an error object to the callback", function (done) {
+                        setServiceMethod(testService, "destroy", respondWithError);
+                        octocat.destroy(function (err) {
+                            expect(err).to.be.an(Error);
+                            done();
+                        });
+                    });
+
                 });
             });
         });
