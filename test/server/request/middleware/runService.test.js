@@ -2,66 +2,51 @@
 
 var expect = require("expect.js"),
     rewire = require("rewire"),
-    path = require("path");
+    path = require("path"),
+    Request = require("../../../../lib/server/request/Request.class.js"),
+    Response = require("../../../../lib/server/request/Response.class.js"),
+    Dog = require("./runService/Dog.class.js");
 
 describe("runService", function () {
-
-    var Request = require("../../../../lib/server/request/Request.class.js"),
-        Response = require("../../../../lib/server/request/Response.class.js");
-
-    var runService,
-        Dog = require("./runService/Dog.class.js");
+    var runService;
 
     describe("#serviceMiddleware", function () {
+        var serviceMock,
+            currentServiceMock,
+            servicesMock;
 
-        var mockedServiceFunctions = {
-            create : function (ids, model, callback) {
-                callback({ "status" : "success" });
+        serviceMock = {
+            create: function (ids, model, callback) {
+                callback({ "status": "success" });
             },
-            read : function (ids, callback) {
-                callback({ "status" : "success", data : { da : "ta" }});
+            read: function (ids, callback) {
+                callback({ "status": "success", data: { da: "ta" } });
             },
-            readCollection : function (ids, params, callback) {
+            readCollection: function (ids, params, callback) {
                 callback({
-                    "status" : "success",
-                    "data" : [
-                        { "readCollection1" : true },
-                        { "readCollection2" : true }
+                    "status": "success",
+                    "data": [
+                        { "readCollection1": true },
+                        { "readCollection2": true }
                     ]
                 });
             },
-            update : function (ids, model, callback) {
+            update: function (ids, model, callback) {
                 callback();
+            },
+            destroy: function (ids, callback) {
+                callback({ "status": "success" });
             }
-            //destroy is not here because we need a missing method for the test
         };
 
-        var servicesMock = {
-            getService : function (path) {
-
-                if (path === "test") {
-                    return mockedServiceFunctions;
-                }
-
-                if (path === "test2") {
-                    return {};
-                }
-
-                if (path === "syncasynctest") {
-                    return {
-                        create : function (ids, model) {
-                            return { status : "success"};
-                        },
-                        destroy : function (ids, callback) {
-                            callback({ status : "success" });
-                        }
-                    };
-                }
-                return null;
+        servicesMock = {
+            getService: function () {
+                return currentServiceMock;
             }
         };
 
         beforeEach(function () {
+            currentServiceMock = serviceMock;
             runService = rewire("../../../../lib/server/request/middleware/runService.js");
             runService.__set__("services", servicesMock);
         });
@@ -85,12 +70,15 @@ describe("runService", function () {
         it("should call the CREATE service on the Model if Model was loaded", function (done) {
 
             var method = "create",
-                path = "/services/test/";
+                path = "/services/test/",
+                createCalled = false,
+                dog;
 
-            var dog = new Dog();
+            dog = new Dog();
             dog.set("name", "snoop lion");
             dog.setService({
                 create : function (ids, model, callback) {
+                    createCalled = true;
                     callback({ "status" : "success"});
                 }
             });
@@ -99,10 +87,12 @@ describe("runService", function () {
                 response = new Response();
 
             request.model = dog;
+            delete request.data;
 
             runService(request, response, function (err) {
                 expect(err).to.be(null);
                 expect(response.getStatusCode()).to.be(200);
+                expect(createCalled).to.be(true);
                 done();
             });
         });
@@ -115,8 +105,6 @@ describe("runService", function () {
 
             var request = new Request(method, path, data),
                 response = new Response();
-            //we have no middleware for setting the model in this test!
-            request.model = data;
 
             runService(request, response, function (err) {
                 expect(err).to.be(null);
@@ -124,6 +112,7 @@ describe("runService", function () {
                 expect(response.getData()).to.eql(data);
                 done();
             });
+
         });
 
         it("should call the READ-Collection method without ID set", function (done) {
@@ -134,9 +123,6 @@ describe("runService", function () {
 
             var request = new Request(method, path, data),
                 response = new Response();
-
-            //we have no middleware for setting the model in this test!
-            request.model = data;
 
             runService(request, response, function (err) {
                 expect(err).to.be(null);
@@ -149,48 +135,75 @@ describe("runService", function () {
             });
         });
 
-        it("should next with an error code if the service for the given method is not allowed", function (done) {
+        it("should next with error code 405 if the method is not defined", function (done) {
 
             var method = "destroy",
                 path = "/services/test",
-                data = { "da" : "ta" };
+                destroy = serviceMock.destroy;
 
-            var request = new Request(method, path, data),
+            var request = new Request(method, path),
                 response = new Response();
+
+            delete serviceMock.destroy;
 
             runService(request, response, function (err) {
                 expect(err).not.to.be(null);
                 expect(response.getStatusCode()).to.be(405);
+                serviceMock.destroy = destroy;
                 done();
             });
+
+        });
+
+        it("should next with error code 405 if the collection-method is not defined", function (done) {
+
+            var method = "read",
+                path = "/services/test",
+                readCollection = serviceMock.readCollection;
+
+            var request = new Request(method, path),
+                response = new Response();
+
+            delete serviceMock.readCollection;
+
+            runService(request, response, function (err) {
+                expect(err).not.to.be(null);
+                expect(response.getStatusCode()).to.be(405);
+                serviceMock.readCollection = readCollection;
+                done();
+            });
+
         });
 
         it("should next with error code 403 if no service is registered for a given path", function (done) {
 
             var method = "destroy",
-                path = "/services/test2",
-                data = { "da" : "ta" };
+                path = "/services/test",
+                data = { "da": "ta" };
 
             var request = new Request(method, path, data),
                 response = new Response();
+
+            currentServiceMock = {};
 
             runService(request, response, function (err) {
                 expect(err).not.to.be(null);
                 expect(response.getStatusCode()).to.be(403);
                 done();
             });
+
         });
 
-        it("should next with an err if path is not defined", function (done) {
+        it("should next with error code 404 if the path is not defined", function (done) {
 
             var method = "destroy",
                 path = "/services/nonExistingPath",
-                data = { "da" : "ta" };
+                data = { "da": "ta" };
 
             var request = new Request(method, path, data),
                 response = new Response();
-            //we have no middleware for setting the model in this test!
-            request.model = data
+
+            currentServiceMock = null;
 
             runService(request, response, function (err) {
                 expect(err).not.to.be(null);
@@ -202,11 +215,11 @@ describe("runService", function () {
         it("should accept synchronous functions as services", function (done) {
             var method = "create",
                 path = "/services/syncasynctest",
-                data = { "da" : "ta" };
+                data = { "da": "ta" };
 
             var request = new Request(method, path, data),
                 response = new Response();
-            //we have no middleware for setting the model in this test!
+
             request.model = data;
 
             runService(request, response, function (err) {
@@ -219,13 +232,12 @@ describe("runService", function () {
         it("should accept asynchronous functions as services", function (done) {
             var method = "destroy",
                 path = "/services/syncasynctest",
-                data = { "da" : "ta" };
+                data = { "da": "ta" };
 
             var request = new Request(method, path, data),
                 response = new Response();
 
-            //we have no middleware for setting the model in this test!
-            request.model = data
+            request.model = data;
 
             runService(request, response, function (err) {
                 expect(err).to.be(null);
@@ -241,7 +253,7 @@ describe("runService", function () {
         var runService;
 
         var servicesMock = {
-            getService : function (path) {
+            getService: function (path) {
                 if (path === "servicea") {
                     var ServiceA = require("./runService/AService.server.class.js");
                     return new ServiceA();
@@ -259,12 +271,12 @@ describe("runService", function () {
 
             var method = "update",
                 path = "/services/servicea",
-                data = { "da" : "ta" };
+                data = { "da": "ta" };
 
             var request = new Request(method, path, data),
                 response = new Response();
             //we have no middleware for setting the model in this test!
-            request.model = data
+            request.model = data;
 
             runService(request, response, function (err) {
                 expect(err).to.be(null);
@@ -280,7 +292,7 @@ describe("runService", function () {
         var runService;
 
         var servicesMock = {
-            getService : function (path) {
+            getService: function (path) {
                 if (path === "blogpost/comments") {
                     var ServiceA = require("./runService/AService.server.class.js");
                     return new ServiceA();
@@ -303,10 +315,10 @@ describe("runService", function () {
             var request = new Request(method, path, data),
                 response = new Response();
             //we have no middleware for setting the model in this test!
-            request.model = data
+            request.model = data;
 
             runService(request, response, function (err) {
-                expect(request.ids).to.eql({ "blogpost" : '123', "blogpost/comments" : '1245' });
+                expect(request.ids).to.eql({ "blogpost": '123', "blogpost/comments": '1245' });
                 expect(err).to.be(null);
                 expect(response.getStatusCode()).to.be(200);
                 done();
@@ -319,13 +331,13 @@ describe("runService", function () {
         var runService;
 
         var servicesMock = {
-            getService : function (path) {
+            getService: function (path) {
                 if (path === "blogpost") {
                     return {
-                        "create" : function (ids, model, callback) {
-                            callback({"status" : "success", "message" : "my dummy error", "data" : { "da" : "ta" }});
+                        "create": function (ids, model, callback) {
+                            callback({"status": "success", "message": "my dummy error", "data": { "da": "ta" }});
                         },
-                        "update" : function (ids, model, callback) {
+                        "update": function (ids, model, callback) {
                             callback();
                         }
                     };
@@ -354,7 +366,7 @@ describe("runService", function () {
                 expect(response.getStatusCode()).to.be(200);
                 expect(response.getStatus()).to.be("success");
                 expect(response.getErrorMessage()).to.be("my dummy error");
-                expect(response.getData()).to.eql({ "da" : "ta" });
+                expect(response.getData()).to.eql({ "da": "ta" });
                 done();
             });
         });
@@ -363,7 +375,7 @@ describe("runService", function () {
 
             var method = "update",
                 path = "/services/blogpost/",
-                data = { "da" : "ta" };
+                data = { "da": "ta" };
 
             var request = new Request(method, path, data),
                 response = new Response();
@@ -376,5 +388,6 @@ describe("runService", function () {
                 done();
             });
         });
+
     });
 });
