@@ -94,12 +94,10 @@ describe("request", function () {
                 request.__set__("config", configMock);
 
                 request("read", "services/blog", { da : "ta" }, function (response) {
-                    console.log("first responded");
                     firstCallbackResponse = response;
                 });
 
                 request("read", "services/blog", { da : "ta" }, function (response) {
-                    console.log("second responded");
                     expect(emitCallCount).to.eql(1);
                     expect(response).to.eql(firstCallbackResponse);
                     done();
