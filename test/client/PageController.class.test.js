@@ -1,6 +1,7 @@
 "use strict"; // run code in ES5 strict mode
 
 var expect = require("../testHelpers/expect.jquery.js"),
+    Displayable = require("../../lib/client/Displayable.class.js"),
     Page = require("../../lib/client/Page.class.js"),
     PageController = require("../../lib/client/PageController.class.js"),
     PageLoader = require("../../lib/client/PageLoader.class.js");
@@ -50,7 +51,7 @@ describe("PageController", function () {
         pageController = new PageController(main);
     });
 
-    describe("#constructor()", function () {
+    describe(".constructor()", function () {
 
         it("should set the given main page", function () {
             pageController = new PageController(main);
@@ -64,7 +65,7 @@ describe("PageController", function () {
 
     });
 
-    describe("#getCurrentPages()", function () {
+    describe(".getCurrentPages()", function () {
         var pages;
 
         it("should return an empty array if there are no sub-pages", function () {
@@ -79,10 +80,16 @@ describe("PageController", function () {
             blog.setSubPage(about);
             expect(pageController.getCurrentPages()).to.eql([blog, about]);
         });
+        it("should also be possible to have a non-page at the end of the page hierarchy", function () {
+            var diplayable = new Displayable();
+
+            main.setSubPage(diplayable);
+            expect(pageController.getCurrentPages()).to.eql([diplayable]);
+        });
 
     });
 
-    describe("#show()", function () {
+    describe(".show()", function () {
         var originalLoad = PageLoader.prototype.load,
             originalCancel = PageLoader.prototype.cancel;
 
