@@ -81,7 +81,7 @@ describe("Model", function () {
                 user.unset("age");
 
                 expect(user.get()).to.eql({
-                    name : 'John Wayne',
+                    name : "John Wayne",
                     age : 45
                 });
             });
@@ -156,26 +156,26 @@ describe("Model", function () {
 
             describe("String Fields", function () {
                 it("should accept Numbers", function () {
-                    user2.set('name', "1234");
+                    user2.set("name", "1234");
                     expect(user2.get("name")).to.eql("1234");
                 });
 
                 it("should accept Dates", function () {
                     var date = new Date();
-                    user2.set('name', date);
+                    user2.set("name", date);
                     expect(user2.get("name")).to.eql(date.toString());
                 });
             });
 
             describe("Number Fields", function () {
                 it("should accept String", function () {
-                    user2.set('age', "1234");
+                    user2.set("age", "1234");
                     expect(user2.get("age")).to.eql(1234);
                 });
 
                 it("should accept Dates", function () {
                     var date = new Date();
-                    user2.set('age', date);
+                    user2.set("age", date);
                     expect(user2.get("age")).to.eql(date.getTime());
                 });
             });
@@ -183,12 +183,12 @@ describe("Model", function () {
             describe("Date Fields", function () {
                 it("should accept Strings", function () {
                     var nowDate = new Date();
-                    user2.set('birthday', nowDate.toString());
+                    user2.set("birthday", nowDate.toString());
                     expect(user2.get("birthday")).to.be.a(Date);
                     expect(user2.get("birthday").toString()).to.be(nowDate.toString());
 
                     //Invalid input
-                    user2.set('birthday', "bla bla");
+                    user2.set("birthday", "bla bla");
                     expect(user2.get("birthday")).to.be(null);
                 });
 
@@ -208,13 +208,13 @@ describe("Model", function () {
         describe("Escaping", function () {
 
             it("should return an escaped attribute", function () {
-                user.set('name', '<script>alert("PWNED");</script>');
+                user.set("name", '<script>alert("PWNED");</script>');
                 expect(user.escape("name")).to.eql("&lt;script&gt;alert(&quot;PWNED&quot;);&lt;&#47;script&gt;");
             });
 
             it("should return an all escaped attribute if called without arguments", function () {
-                user.set('name', '<script>alert("PWNED");</script>');
-                user.set('age', 3);
+                user.set("name", '<script>alert("PWNED");</script>');
+                user.set("age", 3);
                 var escapedUser = user.escape();
 
                 expect(escapedUser.name).to.eql("&lt;script&gt;alert(&quot;PWNED&quot;);&lt;&#47;script&gt;");
@@ -226,21 +226,34 @@ describe("Model", function () {
 
             it("should unset values to the defaults", function () {
 
-                user.set('name', 'Octocat');
-                expect(user.get('name')).to.eql('Octocat');
-                user.unset('name');
-                expect(user.get('name')).to.eql('John Wayne');
+                user.set("name", "Octocat");
+                expect(user.get("name")).to.eql("Octocat");
+                user.unset("name");
+                expect(user.get("name")).to.eql("John Wayne");
 
                 user.set({
-                    name : 'Johnny Rotten',
+                    name : "Johnny Rotten",
                     age : 50
                 });
 
-                expect(user.get('age')).to.eql(50);
+                expect(user.get("age")).to.eql(50);
                 //unset multiple
-                user.unset('name', 'age');
+                user.unset("name", "age");
                 expect(user.get()).to.eql({
-                    name : 'John Wayne',
+                    name : "John Wayne",
+                    age : 45
+                });
+            });
+            
+            it("should unset all keys when no keys are passed", function () {
+                user.set({
+                    name : "Johnny Rotten",
+                    age : 50
+                });
+                user.unset();
+
+                expect(user.get()).to.eql({
+                    name : "John Wayne",
                     age : 45
                 });
             });
@@ -250,27 +263,27 @@ describe("Model", function () {
 
             it("should set values and accept current state", function () {
 
-                user.set('name', 'Octocat');
-                expect(user.get('name')).to.eql('Octocat');
-                user.unset('name');
-                expect(user.get('name')).to.eql('John Wayne');
-                user.set('name', 'Octocat');
+                user.set("name", "Octocat");
+                expect(user.get("name")).to.eql("Octocat");
+                user.unset("name");
+                expect(user.get("name")).to.eql("John Wayne");
+                user.set("name", "Octocat");
 
                 user.accept();
 
-                user.unset('name');
-                expect(user.get('name')).to.eql('Octocat');
+                user.unset("name");
+                expect(user.get("name")).to.eql("Octocat");
 
                 user.set({
-                    name : 'Johnny Rotten',
+                    name : "Johnny Rotten",
                     age : 50
                 });
 
                 user.accept();
-                user.unset('name', 'age');
+                user.unset("name", "age");
 
                 expect(user.get()).to.eql({
-                    name : 'Johnny Rotten',
+                    name : "Johnny Rotten",
                     age : 50
                 });
             });
@@ -279,16 +292,16 @@ describe("Model", function () {
         describe("isDefault", function () {
             it("should check if applied values are the default values", function () {
                 expect(user.isDefault()).to.be(true);
-                user.set('name', 'Octocat');
+                user.set("name", "Octocat");
                 expect(user.isDefault()).to.be(false);
                 expect(user.isDefault("age")).to.be(true);
-                user.unset('name');
+                user.unset("name");
                 expect(user.isDefault("name")).to.be(true);
-                user.set('age', 5);
+                user.set("age", 5);
                 expect(user.isDefault("name", "age")).to.be(false);
-                user.set('age', 45);    // 45 equals the default value
+                user.set("age", 45);    // 45 equals the default value
                 expect(user.isDefault("age")).to.be(true);
-                user.unset('name', 'age');
+                user.unset("name", "age");
                 expect(user.isDefault()).to.be(true);
             });
         });
@@ -350,14 +363,14 @@ describe("Model", function () {
         describe("toObject", function () {
 
             it("should return an object containing id & ids on default", function () {
-                user.set('name', 'Octocat');
+                user.set("name", "Octocat");
                 user.set({
                     age : 5,
                     kills : 1
                 });
 
                 expect(user.getDefaults()).to.eql({
-                    name : 'John Wayne',
+                    name : "John Wayne",
                     age : 45,
                     kills : undefined
                 });
@@ -365,7 +378,7 @@ describe("Model", function () {
                 expect(user.toObject()).to.eql({
                     id : null,
                     ids : {},
-                    name : 'Octocat',
+                    name : "Octocat",
                     age : 5,
                     kills : 1
                 });
@@ -376,7 +389,7 @@ describe("Model", function () {
                 user.unset("age");
 
                 expect(user.toObject()).to.eql({
-                    name : 'John Wayne',
+                    name : "John Wayne",
                     age : 45,
                     id : null,
                     ids : {}
@@ -384,7 +397,7 @@ describe("Model", function () {
             });
 
             it("should return name the ID as defined in options.idAttribute", function () {
-                user.set('name', 'Octocat');
+                user.set("name", "Octocat");
                 user.set({
                     age : 5,
                     kills : 1
@@ -393,25 +406,25 @@ describe("Model", function () {
                 expect(user.toObject({ idAttribute : "_id" })).to.eql({
                     _id : null,
                     ids : {},
-                    name : 'Octocat',
+                    name : "Octocat",
                     age : 5,
                     kills : 1
                 });
             });
 
             it("should exclude the attributes defined in options.exclude", function () {
-                user.set('name', 'Octocat');
+                user.set("name", "Octocat");
 
                 expect(user.toObject({ exclude : ["id", "age", "kills"] })).to.eql({
                     ids : {},
-                    name : 'Octocat'
+                    name : "Octocat"
                 });
             });
         });
 
         describe("toJSON (alias for toObject)", function () {
             it("should return an object to be used with JSON-Stringify", function () {
-                user.set('name', 'Octocat');
+                user.set("name", "Octocat");
                 user.set({
                     age : 5,
                     kills : 1
@@ -420,7 +433,7 @@ describe("Model", function () {
                 expect(JSON.parse(JSON.stringify(user))).to.eql({
                     id : null,
                     ids : {},
-                    name : 'Octocat',
+                    name : "Octocat",
                     age : 5,
                     kills : 1
                 });
@@ -431,23 +444,23 @@ describe("Model", function () {
             it("should call all events", function () {
                 var changeTimes = 0;
 
-                user.on('change', function () {
+                user.on("change", function () {
                     changeTimes++;
                 });
 
-                user.set('name', 'bla');
+                user.set("name", "bla");
                 try {
-                    user.set('asdasd', 'asd');
+                    user.set("asdasd", "asd");
                 } catch (err) {
                     // this error should not trigger an event
                 }
 
-                user.set('age', 27);
-                user.unset('age');
-                user.set('age', 23);
-                user.get('age');
-                user.set('name', 'blaablaa');
-                user.escape('name');
+                user.set("age", 27);
+                user.unset("age");
+                user.set("age", 23);
+                user.get("age");
+                user.set("name", "blaablaa");
+                user.escape("name");
                 user.getDefaults();
                 user.toJSON();
                 expect(changeTimes).to.be(5);
@@ -484,8 +497,8 @@ describe("Model", function () {
         });
 
         it("should call shared and local validator on default", function (done) {
-            octocat.set('name', 'Octocat');
-            octocat.set('age', 8);
+            octocat.set("name", "Octocat");
+            octocat.set("age", 8);
 
             octocat.validate(function (result) {
                 expect(result.result).to.be(true);
@@ -496,8 +509,8 @@ describe("Model", function () {
         });
 
         it("should only call shared & local validator if remoteValidation is disabled", function (done) {
-            octocat.set('name', 'Octocat');
-            octocat.set('age', 8);
+            octocat.set("name", "Octocat");
+            octocat.set("age", 8);
 
             octocat.validate(false, function (result) {
                 expect(result.result).to.be(true);
@@ -508,8 +521,8 @@ describe("Model", function () {
         });
 
         it("should only call shared validator and therefor work if only shared passes", function (done) {
-            octocat.set('name', 'Octocat');
-            octocat.set('age', 99);
+            octocat.set("name", "Octocat");
+            octocat.set("age", 99);
 
             octocat.validate(function (result) {
                 expect(result.result).to.be(false);
