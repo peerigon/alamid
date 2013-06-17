@@ -28,7 +28,7 @@ describe("Client", function () {
         }
     });
 
-    describe("#constructor() / .instance", function () {
+    describe(".constructor() / :instance", function () {
 
         it("should return an instance of Client", function () {
             client = new Client();
@@ -41,7 +41,7 @@ describe("Client", function () {
 
     });
 
-    describe("#start() / #mainPage", function () {
+    describe(".start() / .mainPage", function () {
         var MyMainPage;
 
         it("should fail if config.use.websockets is true and there is no window.io-instance", function () {
@@ -81,12 +81,14 @@ describe("Client", function () {
 
     });
 
-    describe("#dispatchRoute()", function () {
+    describe(".dispatchRoute()", function () {
 
         afterEach(function () {
             pageJS.stop();
         });
 
+        // This test fails on Android 2 but there's nothing much we can do about it.
+        // @see http://code.google.com/p/android/issues/detail?id=17471
         it("should modify the history state", function () {
             // This route handler is needed so pageJS doesn't trigger a page reload
             client.addRoute("*", function () {
@@ -119,7 +121,7 @@ describe("Client", function () {
         });
     });
 
-    describe("#addRoute()", function () {
+    describe(".addRoute()", function () {
 
         var pageUrl,
             context,
@@ -209,6 +211,7 @@ describe("Client", function () {
                 expect(ctx.params.postId).to.be("123");
                 next();
             });
+
             client.addRoute("blog/:author/posts/:postId", "blog/posts");
             client.start();
             client.dispatchRoute("blog/spook/posts/123");
@@ -223,7 +226,7 @@ describe("Client", function () {
 
     });
 
-    describe("#use()", function () {
+    describe(".use()", function () {
 
         it("should be possible to set an own instance of socket.io", function () {
             var socket = {};
@@ -234,34 +237,31 @@ describe("Client", function () {
 
     });
 
-    describe("#show()", function () {
+    describe(".show()", function () {
 
         it("should just proxy to client._pageController.show() and return this", function () {
             var args;
 
             client.start();
-            client._pageController.show = function () {
-                args = arguments;
+            client._pageController.show = function (page) {
+                args = page;
             };
-            expect(client.show(1, 2, 3)).to.be(client);
-            expect(args).to.eql([1,2,3]);
+            expect(client.show("hello")).to.be(client);
+            expect(args).to.eql("hello");
         });
 
     });
 
-    describe("#getCurrentPages()", function () {
+    describe(".getCurrentPages()", function () {
 
         it("should just proxy to client._pageController.getCurrentPages()", function () {
-            var args,
-                obj = {};
+            var obj = {};
 
             client.start();
             client._pageController.getCurrentPages = function () {
-                args = arguments;
                 return obj;
             };
             expect(client.getCurrentPages(1, 2, 3)).to.be(obj);
-            expect(args).to.eql([1,2,3]);
         });
 
     });
