@@ -11,7 +11,12 @@ function MochaConsoleReporter(runner) {
     runner.on("fail", function(test, err){
         failures++;
         console.log("fail: " + test.fullTitle());
-        console.log(err);
+        if (err.stack) {
+            console.log(err);
+            console.log(err.stack);
+        } else {
+            throw err;
+        }
     });
 
     runner.on("end", function(){
