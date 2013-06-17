@@ -1,5 +1,7 @@
 "use strict";
 
+console.log("start");
+
 window.mocha.reporter(require("./testHelpers/MochaConsoleReporter.class.js"));
 
 require("./client/main.client.js");
