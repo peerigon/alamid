@@ -1,5 +1,7 @@
 "use strict";
 
+require("../testHelpers/polyfills.js");
+
 require("./Base.class.test.js");
 require("./Collection.class.test.js");
 require("./Event.class.test.js");

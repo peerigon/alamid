@@ -1,6 +1,6 @@
 "use strict";
 
-console.log("start");
+console.log("\n===========================================\nstart");
 
 window.mocha.reporter(require("./testHelpers/MochaConsoleReporter.class.js"));
 

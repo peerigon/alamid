@@ -1,5 +1,7 @@
 "use strict";
 
+require("../testHelpers/polyfills.js");
+
 require("../../lib/client/helpers/domAdapter.js").$ = require("../testHelpers/jquery.js");
 
 require("./helpers/domAdapter.test.js");
