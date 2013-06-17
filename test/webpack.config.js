@@ -3,7 +3,10 @@ var RewirePlugin = require("rewire-webpack"),
 
 module.exports = {
     entry: "mocha!./main.client.js",
-    devtool: "eval",
+    output: {
+        filename: "tests.js"
+    },
+    debug: true,
     plugins: [
         new AlamidWebpackPlugin(),
         new RewirePlugin()
