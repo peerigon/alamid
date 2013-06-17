@@ -10,11 +10,12 @@ function MochaConsoleReporter(runner) {
 
     runner.on("fail", function(test, err){
         failures++;
-        console.log("fail: %s -- error: %s", test.fullTitle(), err.message);
+        console.log("fail: " + test.fullTitle());
+        console.log(err);
     });
 
     runner.on("end", function(){
-        console.log("end: %d/%d", passes, passes + failures);
+        console.log("end: " + passes + "/" + (passes + failures));
     });
 }
 

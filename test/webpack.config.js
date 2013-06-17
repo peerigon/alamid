@@ -6,7 +6,7 @@ module.exports = {
     output: {
         filename: "tests.js"
     },
-    debug: true,
+    devTool: "inline-source-map",
     plugins: [
         new AlamidWebpackPlugin(),
         new RewirePlugin()
