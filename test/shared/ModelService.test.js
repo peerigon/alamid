@@ -94,6 +94,10 @@ function sharedModelServiceTest(env) {
 
                 octocat.setService(testService);
             });
+            before(function () {
+                // disable node's default behaviour of printing unlistened error events
+                Octocat.on("error", function () { });
+            });
 
             describe("Error handling and format parsing (__processResponse)", function () {
 
