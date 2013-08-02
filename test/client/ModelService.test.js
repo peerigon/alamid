@@ -145,39 +145,52 @@ describe("Model-Services", function () {
                     });
                 });
 
-                it("should accept remote as first argument", function (done) {
-                    Octocat.find(true, { da : "ta" }, function (err, models) {
-                        expect(err).to.be(null);
-                        expect(models[0].get("name")).to.eql("Octo 1");
-                        expect(models[1].get("name")).to.eql("Octo 2");
-                        done();
-                    });
-                });
+                describe("Signature", function() {
 
-                it("should accept remote as first argument", function (done) {
-                    Octocat.find(true, {}, { da : "ta" }, function (err, models) {
-                        expect(err).to.be(null);
-                        expect(models[0].get("name")).to.eql("Octo 1");
-                        expect(models[1].get("name")).to.eql("Octo 2");
-                        done();
-                    });
-                });
+                    it("should accept ids as first argument if called with three args", function (done) {
 
-                it("should accept remote as first argument when called with three arguments ", function (done) {
-                    Octocat.find(false, { da : "ta" }, function (err, models) {
-                        expect(err).to.be(null);
-                        expect(models[0].get("name")).to.eql("Octo 1");
-                        expect(models[1].get("name")).to.eql("Octo 2");
-                        done();
-                    });
-                });
+                        var testIds = { octocat : 1 },
+                            testParams = { pa : "ram" },
+                            testCb = function() {};
 
-                it("should accept requests without ids and remote as arguments", function (done) {
-                    Octocat.find({ da : "ta" }, function (err, models) {
-                        expect(err).to.be(null);
-                        expect(models[0].get("name")).to.eql("Octo 1");
-                        expect(models[1].get("name")).to.eql("Octo 2");
-                        done();
+                        testService.readCollection = function(remote, ids, params, callback) {
+                            expect(remote).to.be.a("function");
+                            expect(ids).to.eql(testIds);
+                            expect(params).to.eql(testParams);
+                            done();
+                        };
+
+                        Octocat.find(testIds, testParams, testCb);
+                    });
+
+                    it("should accept remote as first argument if called with three args ", function (done) {
+
+                        var testIds = { octocat : 1 },
+                            testCb = function() {};
+
+                        testService.readCollection = function(remote, ids, params, callback) {
+                            expect(remote).to.be(false);
+                            expect(ids).to.eql(testIds);
+                            expect(params).to.eql({});
+                            done();
+                        };
+
+                        Octocat.find(false, testIds, testCb);
+                    });
+
+                    it("should accepts ids and callback if called with two args", function (done) {
+
+                        var testIds = { octocat : 1 },
+                            testCb = function() {};
+
+                        testService.readCollection = function(remote, ids, params, callback) {
+                            expect(remote).to.be.a("function");
+                            expect(ids).to.eql(testIds);
+                            expect(params).to.eql({});
+                            done();
+                        };
+
+                        Octocat.find(testIds, testCb);
                     });
                 });
 
@@ -251,36 +264,68 @@ describe("Model-Services", function () {
                     };
                 });
 
-                it("should work with findById(1, callback) ", function (done) {
-                    Octocat.findById(1, function (err, model) {
-                        expect(err).to.be(null);
-                        expect(model.get("name")).to.eql("Octo 1");
-                        done();
-                    });
-                });
+                describe("Signature", function() {
 
-                it("should work with findById(false, id, callback) ", function (done) {
-                    Octocat.findById(false, 1, function (err, model) {
-                        expect(err).to.be(null);
-                        expect(model.get("name")).to.eql("Octo 1");
-                        done();
-                    });
-                });
+                    it("should work with findById(1, callback) ", function (done) {
 
-                it("should work with findById({}, id, callback) ", function (done) {
-                    Octocat.findById({}, 2, function (err, model) {
-                        expect(err).to.be(null);
-                        expect(model.get("name")).to.eql("Octo 2");
-                        done();
-                    });
-                });
+                        var testId = 1;
 
-                it("should work with findById(true, {}, id, callback) ", function (done) {
-                    Octocat.findById(true, {}, 2, function (err, model) {
-                        expect(err).to.be(null);
-                        expect(model.get("name")).to.eql("Octo 2");
-                        done();
+                        testService.read = function(remote, ids, callback) {
+                            expect(remote).to.be.a("function");
+                            expect(ids).to.eql({ "octocat" : testId });
+                            expect(callback).to.be.a("function");
+                            done();
+                        };
+
+                        Octocat.findById(testId, function(err, res) {});
                     });
+
+                    it("should work with findById(false, id, callback) ", function (done) {
+
+                        var testId = 1;
+
+                        testService.read = function(remote, ids, callback) {
+                            expect(remote).to.be(false);
+                            expect(ids).to.eql({ "octocat" : testId });
+                            expect(callback).to.be.a("function");
+                            done();
+                        };
+
+                        Octocat.findById(false, testId, function(err, res) {});
+                    });
+
+                    it("should work with findById({}, id, callback) ", function (done) {
+
+                        var testId = 1,
+                            testIds = { ocotoduck : 2 };
+
+                        testService.read = function(remote, ids, callback) {
+                            expect(remote).to.be.a("function");
+                            expect(ids.octocat).to.eql(testId);
+                            expect(ids.octoduck).to.eql(testIds.octoduck);
+                            expect(callback).to.be.a("function");
+                            done();
+                        };
+
+                        Octocat.findById(testIds, testId, function(){});
+                    });
+
+                    it("should work with findById(true, {}, id, callback) ", function (done) {
+
+                        var testId = 1,
+                            testIds = { ocotoduck : 2 };
+
+                        testService.read = function(remote, ids, callback) {
+                            expect(remote).to.be.a("function");
+                            expect(ids.octocat).to.eql(testId);
+                            expect(ids.octoduck).to.eql(testIds.octoduck);
+                            expect(callback).to.be.a("function");
+                            done();
+                        };
+
+                        Octocat.findById(true, testIds, testId, function() {});
+                    });
+
                 });
 
                 it("should append the ids to the octocat ", function (done) {
