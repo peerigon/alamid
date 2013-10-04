@@ -46,7 +46,7 @@
         "mocha-loader": "0.x",
         "xunit-file" : "*",
         "socket.io-client" : "*",
-        "rewire" : "1.x",
+        "rewire" : "2.x",
         "rewire-webpack": "0.x",
         "supertest" : "0.x",
         "webpack-dev-server": "0.x",
