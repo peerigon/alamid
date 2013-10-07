@@ -56,8 +56,8 @@ describe("Model", function () {
 
             it("should return multiple attributes at once", function () {
                 expect(user.get("name", "age")).to.eql({
-                    name : "John Wayne",
-                    age : 45
+                    name: "John Wayne",
+                    age: 45
                 });
             });
 
@@ -67,8 +67,8 @@ describe("Model", function () {
                 }).to.throwError();
                 expect(function () {
                     user.set({
-                        name : "hans",
-                        what : "ever"
+                        name: "hans",
+                        what: "ever"
                     });
                 }).to.throwError();
 
@@ -81,8 +81,8 @@ describe("Model", function () {
                 user.unset("age");
 
                 expect(user.get()).to.eql({
-                    name : "John Wayne",
-                    age : 45
+                    name: "John Wayne",
+                    age: 45
                 });
             });
 
@@ -91,7 +91,21 @@ describe("Model", function () {
 
                 model.set("what", "ever");
                 expect(model.get("what")).to.be("ever");
-                expect(model.get()).to.eql({ what : "ever" });
+                expect(model.get()).to.eql({ what: "ever" });
+            });
+
+            it("should call a setter if it is defined on the schema", function () {
+                user = new User2();
+
+                user.set("loginName", "   john   ");
+                expect(user.get("loginName")).to.eql("john");
+            });
+
+            it("should call all setters in order if there are any defined as an array on the schema", function () {
+                user = new User2();
+
+                user.set("email", "   john@WAYNE.de   ");
+                expect(user.get("email")).to.eql("john@wayne.de");
             });
 
             it("should be chainable", function () {
@@ -232,29 +246,29 @@ describe("Model", function () {
                 expect(user.get("name")).to.eql("John Wayne");
 
                 user.set({
-                    name : "Johnny Rotten",
-                    age : 50
+                    name: "Johnny Rotten",
+                    age: 50
                 });
 
                 expect(user.get("age")).to.eql(50);
                 //unset multiple
                 user.unset("name", "age");
                 expect(user.get()).to.eql({
-                    name : "John Wayne",
-                    age : 45
+                    name: "John Wayne",
+                    age: 45
                 });
             });
             
             it("should unset all keys when no keys are passed", function () {
                 user.set({
-                    name : "Johnny Rotten",
-                    age : 50
+                    name: "Johnny Rotten",
+                    age: 50
                 });
                 user.unset();
 
                 expect(user.get()).to.eql({
-                    name : "John Wayne",
-                    age : 45
+                    name: "John Wayne",
+                    age: 45
                 });
             });
         });
@@ -275,16 +289,16 @@ describe("Model", function () {
                 expect(user.get("name")).to.eql("Octocat");
 
                 user.set({
-                    name : "Johnny Rotten",
-                    age : 50
+                    name: "Johnny Rotten",
+                    age: 50
                 });
 
                 user.accept();
                 user.unset("name", "age");
 
                 expect(user.get()).to.eql({
-                    name : "Johnny Rotten",
-                    age : 50
+                    name: "Johnny Rotten",
+                    age: 50
                 });
             });
         });
@@ -315,7 +329,7 @@ describe("Model", function () {
                 user.set("name", "hugo");
                 user.set("age", null);
 
-                expect(user.getChanged()).to.eql({ name : "hugo", age : null });
+                expect(user.getChanged()).to.eql({ name: "hugo", age: null });
 
                 user.accept();
 
@@ -365,22 +379,22 @@ describe("Model", function () {
             it("should return an object containing id & ids on default", function () {
                 user.set("name", "Octocat");
                 user.set({
-                    age : 5,
-                    kills : 1
+                    age: 5,
+                    kills: 1
                 });
 
                 expect(user.getDefaults()).to.eql({
-                    name : "John Wayne",
-                    age : 45,
-                    kills : undefined
+                    name: "John Wayne",
+                    age: 45,
+                    kills: undefined
                 });
 
                 expect(user.toObject()).to.eql({
-                    id : null,
-                    ids : {},
-                    name : "Octocat",
-                    age : 5,
-                    kills : 1
+                    id: null,
+                    ids: {},
+                    name: "Octocat",
+                    age: 5,
+                    kills: 1
                 });
             });
 
@@ -389,35 +403,35 @@ describe("Model", function () {
                 user.unset("age");
 
                 expect(user.toObject()).to.eql({
-                    name : "John Wayne",
-                    age : 45,
-                    id : null,
-                    ids : {}
+                    name: "John Wayne",
+                    age: 45,
+                    id: null,
+                    ids: {}
                 });
             });
 
             it("should return name the ID as defined in options.idAttribute", function () {
                 user.set("name", "Octocat");
                 user.set({
-                    age : 5,
-                    kills : 1
+                    age: 5,
+                    kills: 1
                 });
 
-                expect(user.toObject({ idAttribute : "_id" })).to.eql({
-                    _id : null,
-                    ids : {},
-                    name : "Octocat",
-                    age : 5,
-                    kills : 1
+                expect(user.toObject({ idAttribute: "_id" })).to.eql({
+                    _id: null,
+                    ids: {},
+                    name: "Octocat",
+                    age: 5,
+                    kills: 1
                 });
             });
 
             it("should exclude the attributes defined in options.exclude", function () {
                 user.set("name", "Octocat");
 
-                expect(user.toObject({ exclude : ["id", "age", "kills"] })).to.eql({
-                    ids : {},
-                    name : "Octocat"
+                expect(user.toObject({ exclude: ["id", "age", "kills"] })).to.eql({
+                    ids: {},
+                    name: "Octocat"
                 });
             });
         });
@@ -426,16 +440,16 @@ describe("Model", function () {
             it("should return an object to be used with JSON-Stringify", function () {
                 user.set("name", "Octocat");
                 user.set({
-                    age : 5,
-                    kills : 1
+                    age: 5,
+                    kills: 1
                 });
 
                 expect(JSON.parse(JSON.stringify(user))).to.eql({
-                    id : null,
-                    ids : {},
-                    name : "Octocat",
-                    age : 5,
-                    kills : 1
+                    id: null,
+                    ids: {},
+                    name: "Octocat",
+                    age: 5,
+                    kills: 1
                 });
             });
         });

@@ -7,6 +7,19 @@ var schema = {
         type : String,
         "default": "John Wayne"
     },
+    loginName: {
+        type: String,
+        set: function (loginName) {
+            return loginName.replace(/^\s+|\s+$/g, "");
+        }
+    },
+    email: {
+        type: String,
+        set: [
+            String.prototype.trim,
+            String.prototype.toLowerCase
+        ]
+    },
     age: {
         type : Number,
         "default": 45
