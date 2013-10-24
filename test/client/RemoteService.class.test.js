@@ -87,4 +87,32 @@ describe("RemoteService", function () {
             done();
         });
     });
+
+    it("should pass only attributes defined on the sharedSchema to the request-adapter", function (done) {
+        var ids = {
+                "blog": 1,
+                "blog/post": 1
+            },
+            newData = {
+                author: "sbat",
+                title: "Hi World"
+            };
+
+        post.setSchema({ author: String }, "shared");
+        post.setSchema({ author: String, title: String }, "local");
+        post.setIds(ids);
+        post.set(newData);
+
+        RemoteService.__set__("request", function (method, url, model, callback) {
+            expect(model).to.eql({
+                author: "sbat"
+            });
+            callback();
+        });
+        remoteService = new RemoteService("blog/post");
+
+        remoteService.create(true, ids, post, function (response) {
+            done();
+        });
+    });
 });
