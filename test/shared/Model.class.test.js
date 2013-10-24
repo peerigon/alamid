@@ -434,6 +434,16 @@ describe("Model", function () {
                     name: "Octocat"
                 });
             });
+
+            it("should return only changed attributes if options.changedOnly = true", function () {
+                user.set("name", "Octocat");
+
+                expect(user.toObject({ changedOnly: true })).to.eql({
+                    id: null,
+                    ids: {},
+                    name: "Octocat"
+                });
+            });
         });
 
         describe("toJSON (alias for toObject)", function () {
