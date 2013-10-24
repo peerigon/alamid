@@ -444,6 +444,29 @@ describe("Model", function () {
                     name: "Octocat"
                 });
             });
+
+            it("should return only attributes defined on the given schema", function () {
+                user.setSchema({ name: String, age: Number }, "local");
+                user.setSchema({ name: String }, "shared");
+
+                user.set("name", "Octocat");
+                user.set("age", 5);
+
+                expect(user.toObject({ schemaType: "shared" })).to.eql({
+                    name: "Octocat"
+                });
+            });
+
+            it("should return only changed attributes defined on the given schema", function () {
+                user.setSchema({ name: String, age: Number }, "local");
+                user.setSchema({ name: String }, "shared");
+
+                user.set("name", "Octocat");
+                user.set("age", 5);
+                user.accept();
+
+                expect(user.toObject({ schemaType: "shared", changedOnly: true })).to.eql({});
+            });
         });
 
         describe("toJSON (alias for toObject)", function () {
