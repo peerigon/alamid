@@ -8,22 +8,27 @@ describe("RemoteService", function () {
 
     var RemoteService = rewire("../../lib/client/RemoteService.class.js"),
         Post = Model.extend({
-            url: "blog/post"
+            url : "blog/post"
         }),
         postData = {
-            title: "Hello World"
+            title : "Hello World"
         },
         remoteService,
-        post;
+        post,
+        PostSchema = {
+            title : String,
+            author : String
+        };
 
     beforeEach(function () {
         post = new Post();
+        post.setSchema(PostSchema);
     });
 
     it("should pass the right data to the dom-adapter request", function (done) {
         var ids = {
-                "blog": 1
-            };
+            "blog" : 1
+        };
 
         post.set(postData);
         post.setIds(ids);
@@ -43,9 +48,9 @@ describe("RemoteService", function () {
 
     it("should incorporate all ids into the request url", function (done) {
         var ids = {
-                "blog": 1,
-                "blog/post": 1
-            };
+            "blog" : 1,
+            "blog/post" : 1
+        };
 
         post.set(postData);
         post.setIds(ids);
@@ -65,11 +70,11 @@ describe("RemoteService", function () {
 
     it("should pass only changedData to the request-adapter", function (done) {
         var ids = {
-                "blog": 1,
-                "blog/post": 1
+                "blog" : 1,
+                "blog/post" : 1
             },
             newData = {
-                author: "sbat"
+                author : "sbat"
             };
 
         post.set(postData);
@@ -90,22 +95,22 @@ describe("RemoteService", function () {
 
     it("should pass only attributes defined on the sharedSchema to the request-adapter", function (done) {
         var ids = {
-                "blog": 1,
-                "blog/post": 1
+                "blog" : 1,
+                "blog/post" : 1
             },
             newData = {
-                author: "sbat",
-                title: "Hi World"
+                author : "sbat",
+                title : "Hi World"
             };
 
-        post.setSchema({ author: String }, "shared");
-        post.setSchema({ author: String, title: String }, "local");
+        post.setSchema({ author : String }, "shared");
+        post.setSchema({ author : String, title : String }, "local");
         post.setIds(ids);
         post.set(newData);
 
         RemoteService.__set__("request", function (method, url, model, callback) {
             expect(model).to.eql({
-                author: "sbat"
+                author : "sbat"
             });
             callback();
         });
@@ -114,5 +119,40 @@ describe("RemoteService", function () {
         remoteService.create(true, ids, post, function (response) {
             done();
         });
+    });
+
+    it("should strip non-writeable fields before passing the data to the request-adapter", function (done) {
+        var ids = {
+                "blog" : 1,
+                "blog/post" : 1
+            },
+            newData = {
+                author : "sbat",
+                title : "Hi World"
+            };
+
+        post.setSchema({
+            author : String,
+            title : {
+                type : String,
+                writeable : false
+            }
+        }, "shared");
+
+        post.setIds(ids);
+        post.set(newData);
+
+        RemoteService.__set__("request", function (method, url, model, callback) {
+            expect(model).to.eql({
+                author : "sbat"
+            });
+            callback();
+        });
+        remoteService = new RemoteService("blog/post");
+
+        remoteService.create(true, ids, post, function (response) {
+            done();
+        });
+
     });
 });
