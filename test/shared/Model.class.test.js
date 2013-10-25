@@ -158,6 +158,10 @@ describe("Model", function () {
                 user.setIds(ids);
                 expect(user.getIds()).to.not.be(ids);
             });
+
+            it("should be chainable", function () {
+                expect(user.setIds({})).to.equal(user);
+            });
         });
 
         describe("Casting", function () {
@@ -271,6 +275,10 @@ describe("Model", function () {
                     age: 45
                 });
             });
+
+            it("should be chainable", function () {
+                expect(user.unset("name")).to.equal(user);
+            });
         });
 
         describe("accept", function () {
@@ -300,6 +308,10 @@ describe("Model", function () {
                     name: "Johnny Rotten",
                     age: 50
                 });
+            });
+
+            it("should be chainable", function () {
+                expect(user.accept()).to.equal(user);
             });
         });
 
@@ -466,6 +478,10 @@ describe("Model", function () {
                 user.accept();
 
                 expect(user.toObject({ schemaType: "shared", changedOnly: true })).to.eql({});
+            });
+
+            it("should be chainable", function () {
+                expect(user.setSchema({})).to.equal(user);
             });
         });
 
