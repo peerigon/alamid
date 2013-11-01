@@ -54,13 +54,6 @@ describe("Model", function () {
                 expect(user.get("age")).to.eql(45);
             });
 
-            it("should return multiple attributes at once", function () {
-                expect(user.get("name", "age")).to.eql({
-                    name: "John Wayne",
-                    age: 45
-                });
-            });
-
             it("should fail when setting an attribute that is not in the schema", function () {
                 expect(function () {
                     user.set("what", "ever");
@@ -76,10 +69,7 @@ describe("Model", function () {
                 expect(user.get("name")).to.eql("hans");
             });
 
-            it("should only return defined attributes", function() {
-
-                user.unset("age");
-
+            it("should return all attributes", function() {
                 expect(user.get()).to.eql({
                     name: "John Wayne",
                     age: 45
