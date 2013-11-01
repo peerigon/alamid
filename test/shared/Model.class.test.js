@@ -503,6 +503,33 @@ describe("Model", function () {
             });
         });
 
+        describe("dispose", function () {
+            it("should emit a DisposeEvent", function () {
+                var hasBeenCalled = false;
+
+                user.on("dispose", function onDispose(event) {
+                    expect(event.name).to.equal("DisposeEvent");
+                    expect(event.target).to.equal(user);
+                    hasBeenCalled = true;
+                });
+                user.dispose();
+                expect(hasBeenCalled).to.equal(true);
+            });
+            it("should remove all event listeners", function () {
+                var hasBeenCalled = false;
+
+                user.removeAllListeners = function () {
+                   hasBeenCalled = true;
+                };
+                user.dispose();
+                expect(hasBeenCalled).to.equal(true);
+            });
+            it("should set the isDisposed-flag on true", function () {
+                user.dispose();
+                expect(user.isDisposed).to.equal(true);
+            });
+        });
+
         describe("Events", function () {
             it("should call all events", function () {
                 var changeTimes = 0;
