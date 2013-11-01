@@ -223,23 +223,6 @@ describe("Model", function () {
             });
         });
 
-        describe("Escaping", function () {
-
-            it("should return an escaped attribute", function () {
-                user.set("name", '<script>alert("PWNED");</script>');
-                expect(user.escape("name")).to.eql("&lt;script&gt;alert(&quot;PWNED&quot;);&lt;&#47;script&gt;");
-            });
-
-            it("should return an all escaped attribute if called without arguments", function () {
-                user.set("name", '<script>alert("PWNED");</script>');
-                user.set("age", 3);
-                var escapedUser = user.escape();
-
-                expect(escapedUser.name).to.eql("&lt;script&gt;alert(&quot;PWNED&quot;);&lt;&#47;script&gt;");
-                expect(escapedUser.age).to.eql(3);
-            });
-        });
-
         describe("Unset", function () {
 
             it("should unset values to the defaults", function () {
@@ -548,11 +531,7 @@ describe("Model", function () {
                 user.set("age", 27);
                 user.unset("age");
                 user.set("age", 23);
-                user.get("age");
                 user.set("name", "blaablaa");
-                user.escape("name");
-                user.getDefaults();
-                user.toJSON();
                 expect(changeTimes).to.be(5);
             });
         });
