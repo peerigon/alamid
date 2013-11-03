@@ -1,12 +1,16 @@
 "use strict";
 
-var expect = require("expect.js");
+var expect = require("expect.js"),
+    Junction = require("alamid-junction"),
+    Signal = require("alamid-signal");
 
 var Animal = require("./Model/Animal.class.js"),
     User1 = require("./Model/User1.class.js"),
     User2 = require("./Model/User2.class.js"),
     Octocat = require("./Model/Octocat.class.js"),
     Model = require("../../lib/shared/Model.class.js");
+
+var slice = Array.prototype.slice;
 
 describe("Model", function () {
 
@@ -47,7 +51,7 @@ describe("Model", function () {
             user = new User1();
         });
 
-        describe("Setter & Getter", function () {
+        describe("setter & getter", function () {
 
             it("should return single attributes", function () {
                 expect(user.get("name")).to.eql("John Wayne");
@@ -99,9 +103,91 @@ describe("Model", function () {
                 expect(user.get("email")).to.eql("john@wayne.de");
             });
 
+            it("should call the override-able setter()- and getter()-function for every key", function () {
+                var setterArgs = [],
+                    getterArgs = [];
+
+                user.setter = function () {
+                    setterArgs = setterArgs.concat(slice.call(arguments));
+                };
+                user.getter = function () {
+                    getterArgs = getterArgs.concat(slice.call(arguments));
+                };
+
+                user.set({
+                    name: "Johnny Rotten",
+                    age: 52
+                });
+                user.get();
+                user.set("name", "Octojohnny");
+                user.get("age");
+
+                expect(setterArgs).to.eql([
+                    "name", "Johnny Rotten", "age", 52, "name", "Octojohnny"
+                ]);
+                expect(getterArgs).to.eql([
+                    "name", "age", "kills", "age"
+                ]);
+            });
+
             it("should be chainable", function () {
                 expect(user.set("name", "Clint Eastwood")).to.be(user);
             });
+        });
+
+        describe("signals", function () {
+            var name,
+                age,
+                email;
+
+            before(function () {
+                Model.prototype.Signal = Signal;
+            });
+
+            beforeEach(function () {
+                user = new User2();
+            });
+
+            it("should return a signal for the given attribute", function () {
+                var signalHasChanged = false;
+
+                name = user.signal("name");
+
+                expect(name()).to.equal("John Wayne");
+                name("Johnny Rotten");
+
+                expect(user.get("name")).to.equal("Johnny Rotten");
+
+                name.notify(function () {
+                    signalHasChanged = true;
+                });
+                user.set("name", "John wayne");
+
+                expect(signalHasChanged).to.equal(true);
+            });
+
+            it("should apply the model's default attribute setter to the signal as well", function () {
+                age = user.signal("age");
+                age("12");
+
+                // check if the cast to Number is also working on the signal
+                expect(age()).to.equal(12);
+                expect(user.get("age")).to.equal(12);
+
+                email = user.signal("email");
+                email("   test@eXaMPle.com ");
+
+                // check if custom setters are still working
+                expect(email()).to.equal("test@example.com");
+                expect(user.get("email")).to.equal("test@example.com");
+            });
+
+            it("should throw an error if the given attribute is not defined on the schema", function () {
+                expect(function () {
+                    user.signal("whatever");
+                }).to.throwError();
+            });
+
         });
 
         describe("url", function () {
@@ -155,7 +241,7 @@ describe("Model", function () {
             });
         });
 
-        describe("Casting", function () {
+        describe("casting", function () {
 
             var user2;
 
@@ -214,7 +300,7 @@ describe("Model", function () {
             });
         });
 
-        describe("Unset", function () {
+        describe("unset", function () {
 
             it("should unset values to the defaults", function () {
 
@@ -252,6 +338,30 @@ describe("Model", function () {
                 });
             });
 
+            it("should inform the signals too", function () {
+                var nameSignalNotified = false,
+                    ageSignalNotified = false,
+                    name = user.signal("name"),
+                    age = user.signal("age");
+
+                user.set({
+                    name: "Johnny Rotten",
+                    age: 50
+                });
+
+                name.notify(function () {
+                    nameSignalNotified = true;
+                });
+                age.notify(function () {
+                    ageSignalNotified = true;
+                });
+
+                user.unset();
+
+                expect(nameSignalNotified).to.equal(true);
+                expect(ageSignalNotified).to.equal(true);
+            });
+
             it("should be chainable", function () {
                 expect(user.unset("name")).to.equal(user);
             });
@@ -283,33 +393,171 @@ describe("Model", function () {
             });
         });
 
-        describe("accept", function () {
+        describe("remove", function () {
 
-            it("should set values and accept current state", function () {
+            describe("when no schema has been defined", function () {
+                var model;
 
-                user.set("name", "Octocat");
-                expect(user.get("name")).to.eql("Octocat");
-                user.unset("name");
-                expect(user.get("name")).to.eql("John Wayne");
-                user.set("name", "Octocat");
-
-                user.accept();
-
-                user.unset("name");
-                expect(user.get("name")).to.eql("Octocat");
-
-                user.set({
-                    name: "Johnny Rotten",
-                    age: 50
+                beforeEach(function () {
+                    model = new Model();
+                    model.set({
+                        name: "Pirate",
+                        greeting: "Arr!",
+                        age: 20
+                    });
                 });
 
-                user.accept();
-                user.unset("name", "age");
+                it("should completely remove the given attributes", function () {
+                    model.remove("greeting", "age");
+
+                    expect(model.get()).to.eql({
+                        name: "Pirate"
+                    });
+                });
+
+                it("should remove all attributes when no attribute-names are given", function () {
+                    model.remove();
+
+                    expect(model.get()).to.eql({});
+                });
+
+                it("should set all signals of removed attributes on undefined", function () {
+                    var name = model.signal("name"),
+                        age = model.signal("age");
+
+                    model.remove("name", "age");
+
+                    expect(name()).to.equal(undefined);
+                    expect(age()).to.equal(undefined);
+                });
+
+            });
+            
+            describe("when a schema has been defined", function () {
+                
+                beforeEach(function () {
+                    user.set({
+                        name: "Pirate",
+                        age: 20,
+                        kills: 20
+                    });
+                });
+
+                it("should reset the given attributes to the schema's default value", function () {
+                    user.remove("name", "age");
+
+                    expect(user.get()).to.eql({
+                        name: "John Wayne",
+                        age: 45,
+                        kills: 20
+                    });
+                });
+
+                it("should reset all attributes to schema defaults if no attribute-names are given", function () {
+                    user.remove();
+
+                    expect(user.get()).to.eql({
+                        name: "John Wayne",
+                        age: 45,
+                        kills: undefined
+                    });
+                });
+
+                it("should set all signals of removed attributes on default values", function () {
+                    var name = user.signal("name"),
+                        age = user.signal("age");
+
+                    user.remove("name", "age");
+
+                    expect(name()).to.equal("John Wayne");
+                    expect(age()).to.equal(45);
+                });
+
+            });            
+
+        });
+
+        describe("reset", function () {
+
+            beforeEach(function () {
+                user.set({
+                    name: "Pirate",
+                    age: 20,
+                    kills: 20
+                });
+            });
+
+            it("should reset all attributes to the initial state", function () {
+                user.reset();
 
                 expect(user.get()).to.eql({
-                    name: "Johnny Rotten",
-                    age: 50
+                    name: "John Wayne",
+                    age: 45,
+                    kills: undefined
                 });
+            });
+
+            it("should not reset ids or urls", function () {
+                user.setIds({
+                    someId: 20,
+                    user1: 40
+                });
+
+                user.reset();
+
+                expect(user.getIds()).to.eql({
+                    someId: 20,
+                    user1: 40
+                });
+                expect(user.getUrl()).to.equal("user1");
+            });
+
+            it("should also reset previous states", function () {
+                user.reset();
+                user.set("name", "Another Pirate");
+                user.unset("name");
+
+                expect(user.get("name")).to.equal("John Wayne");
+            });
+
+            it("should inform all signals about the reset", function () {
+                var name = user.signal("name"),
+                    age = user.signal("age"),
+                    newName,
+                    newAge;
+
+                name.notify(function (name) {
+                    newName = name;
+                });
+                age.notify(function (age) {
+                    newAge = age;
+                });
+                user.reset();
+
+                expect(newName).to.equal("John Wayne");
+                expect(newAge).to.equal(45);
+            });
+
+        });
+
+        describe("accept", function () {
+
+            it("should save the current state, but not modify anything", function () {
+                user.set("name", "Octocat");
+
+                expect(user.getChanged()).to.eql({
+                    name: "Octocat"
+                });
+
+                user.accept();
+
+                expect(user.get("name")).to.equal("Octocat");
+                expect(user.hasChanged()).to.eql(false);
+
+                user.set("name", "Johnny rotten");
+                user.unset("name");
+
+                expect(user.get("name")).to.eql("Octocat");
             });
 
             it("should be chainable", function () {
@@ -491,6 +739,7 @@ describe("Model", function () {
         });
 
         describe("dispose", function () {
+
             it("should emit a DisposeEvent", function () {
                 var hasBeenCalled = false;
 
@@ -502,6 +751,7 @@ describe("Model", function () {
                 user.dispose();
                 expect(hasBeenCalled).to.equal(true);
             });
+
             it("should remove all event listeners", function () {
                 var hasBeenCalled = false;
 
@@ -511,33 +761,69 @@ describe("Model", function () {
                 user.dispose();
                 expect(hasBeenCalled).to.equal(true);
             });
+
             it("should set the isDisposed-flag on true", function () {
                 user.dispose();
                 expect(user.isDisposed).to.equal(true);
             });
+
+            it("should also call Junction.prototype.dispose on the model to dispose all signals", function () {
+                var dispose = Junction.prototype.dispose,
+                    disposeContext;
+
+                Junction.prototype.dispose = function () {
+                    disposeContext = this;
+                };
+                user.dispose();
+
+                expect(disposeContext).to.equal(user);
+
+                Junction.prototype.dispose = dispose;
+            });
+
         });
 
         describe("Events", function () {
-            it("should call all events", function () {
-                var changeTimes = 0;
+
+            it("should emit all change events", function () {
+                var changeTimes = 0,
+                    name;
 
                 user.on("change", function () {
                     changeTimes++;
                 });
 
                 user.set("name", "bla");
+                expect(changeTimes).to.be(1);
+
                 try {
                     user.set("asdasd", "asd");
                 } catch (err) {
-                    // this error should not trigger an event
+                    expect(changeTimes).to.be(1);
                 }
 
                 user.set("age", 27);
                 user.unset("age");
-                user.set("age", 23);
-                user.set("name", "blaablaa");
+
+                expect(changeTimes).to.be(3);
+
+                user.remove("name");
+
+                expect(changeTimes).to.be(4);
+
+                user.set({          // should only emit a signal change event
+                    age: 5,
+                    kills: 1
+                });
+
                 expect(changeTimes).to.be(5);
+
+                name = user.signal("name");
+                name("Johnny Rotten"); // setting signals should also emit a change event
+
+                expect(changeTimes).to.be(6);
             });
+
         });
 
         describe("Static Events", function () {
