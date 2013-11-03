@@ -16,8 +16,12 @@ var schema = {
     email: {
         type: String,
         set: [
-            String.prototype.trim,
-            String.prototype.toLowerCase
+            function (email) {
+                return email.trim();
+            },
+            function (email) {
+                return email.toLowerCase();
+            }
         ]
     },
     age: {

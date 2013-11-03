@@ -69,10 +69,11 @@ describe("Model", function () {
                 expect(user.get("name")).to.eql("hans");
             });
 
-            it("should return all attributes", function() {
+            it("should return all attributes", function () {
                 expect(user.get()).to.eql({
                     name: "John Wayne",
-                    age: 45
+                    age: 45,
+                    kills: undefined
                 });
             });
 
@@ -232,7 +233,8 @@ describe("Model", function () {
                 user.unset("name", "age");
                 expect(user.get()).to.eql({
                     name: "John Wayne",
-                    age: 45
+                    age: 45,
+                    kills: undefined
                 });
             });
             
@@ -245,12 +247,39 @@ describe("Model", function () {
 
                 expect(user.get()).to.eql({
                     name: "John Wayne",
-                    age: 45
+                    age: 45,
+                    kills: undefined
                 });
             });
 
             it("should be chainable", function () {
                 expect(user.unset("name")).to.equal(user);
+            });
+
+            describe("when accept() has been called previously", function () {
+
+                beforeEach(function () {
+                    user.set({
+                        name: "Johnny Rotten",
+                        age: 50
+                    });
+                    user.accept();
+                });
+
+                it("should unset values to the previous state", function () {
+                    user.set({
+                        name: "Lou Reed",
+                        age: 70
+                    });
+                    user.unset();
+
+                    expect(user.get()).to.eql({
+                        name: "Johnny Rotten",
+                        age: 50,
+                        kills: undefined
+                    });
+                });
+
             });
         });
 
@@ -305,7 +334,7 @@ describe("Model", function () {
             });
         });
 
-        describe("getChanged", function() {
+        describe("getChanged", function () {
 
             it("should return only changed attributes", function () {
 
@@ -322,10 +351,9 @@ describe("Model", function () {
             });
         });
 
-        describe("hasChanged", function() {
+        describe("hasChanged", function () {
 
-            it("should return false for unchanged attributes", function() {
-
+            it("should return false for unchanged attributes", function () {
                 expect(user.getChanged()).to.eql({});
 
                 expect(user.hasChanged("name")).to.be(false);
@@ -334,26 +362,12 @@ describe("Model", function () {
 
             });
 
-            it("should return true for changed attributes", function() {
-
-                user.accept();
-
+            it("should return true for changed attributes", function () {
                 user.set("name", "hugo");
                 user.set("age", null);
 
                 expect(user.hasChanged("name")).to.be(true);
                 expect(user.hasChanged("age")).to.be(true);
-                expect(user.hasChanged("name", "age")).to.be(true);
-            });
-
-            it("should work with multiple fields", function() {
-
-                user.accept();
-
-                user.set("name", "hugo");
-
-                expect(user.hasChanged("name")).to.be(true);
-                expect(user.hasChanged("age")).to.be(false);
                 expect(user.hasChanged("name", "age")).to.be(true);
             });
 
@@ -383,7 +397,7 @@ describe("Model", function () {
                 });
             });
 
-            it("should only return defined attributes", function() {
+            it("should only return defined attributes", function () {
 
                 user.unset("age");
 
