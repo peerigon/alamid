@@ -158,7 +158,7 @@ describe("Model", function () {
 
                 expect(user.get("name")).to.equal("Johnny Rotten");
 
-                name.notify(function () {
+                name.subscribe(function () {
                     signalHasChanged = true;
                 });
                 user.set("name", "John wayne");
@@ -349,10 +349,10 @@ describe("Model", function () {
                     age: 50
                 });
 
-                name.notify(function () {
+                name.subscribe(function () {
                     nameSignalNotified = true;
                 });
-                age.notify(function () {
+                age.subscribe(function () {
                     ageSignalNotified = true;
                 });
 
@@ -526,10 +526,10 @@ describe("Model", function () {
                     newName,
                     newAge;
 
-                name.notify(function (name) {
+                name.subscribe(function (name) {
                     newName = name;
                 });
-                age.notify(function (age) {
+                age.subscribe(function (age) {
                     newAge = age;
                 });
                 user.reset();
