@@ -27,7 +27,7 @@
         "spdy" : "1.x",
         "winston" : "0.x",
         "fshelpers" : "0.x",
-        "alamid-class" : "0.4.0",
+        "alamid-class" : "0.4.x",
         "value" : "0.x",
         "nconf" : "0.x",
         "socket.io" : "0.x",
