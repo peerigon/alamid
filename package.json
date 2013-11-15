@@ -51,7 +51,6 @@
         "rewire-webpack": "0.x",
         "supertest" : "0.x",
         "webpack-dev-server": "0.x",
-        "alamid-signal" : "0.x",
         "grunt-simple-mocha" : "git://github.com/yaymukund/grunt-simple-mocha.git"
     },
     "scripts" : {
