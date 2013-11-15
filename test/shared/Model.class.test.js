@@ -73,11 +73,10 @@ describe("Model", function () {
                 expect(user.get("name")).to.eql("hans");
             });
 
-            it("should return all attributes", function () {
+            it("should return all set attributes and defaults", function () {
                 expect(user.get()).to.eql({
                     name: "John Wayne",
-                    age: 45,
-                    kills: undefined
+                    age: 45
                 });
             });
 
@@ -103,30 +102,21 @@ describe("Model", function () {
                 expect(user.get("email")).to.eql("john@wayne.de");
             });
 
-            it("should call the override-able setter()- and getter()-function for every key", function () {
-                var setterArgs = [],
-                    getterArgs = [];
+            it("should call the override-able setter()-function for every key", function () {
+                var setterArgs = [];
 
                 user.setter = function () {
                     setterArgs = setterArgs.concat(slice.call(arguments));
-                };
-                user.getter = function () {
-                    getterArgs = getterArgs.concat(slice.call(arguments));
                 };
 
                 user.set({
                     name: "Johnny Rotten",
                     age: 52
                 });
-                user.get();
                 user.set("name", "Octojohnny");
-                user.get("age");
 
                 expect(setterArgs).to.eql([
                     "name", "Johnny Rotten", "age", 52, "name", "Octojohnny"
-                ]);
-                expect(getterArgs).to.eql([
-                    "name", "age", "kills", "age"
                 ]);
             });
 
@@ -319,8 +309,7 @@ describe("Model", function () {
                 user.unset("name", "age");
                 expect(user.get()).to.eql({
                     name: "John Wayne",
-                    age: 45,
-                    kills: undefined
+                    age: 45
                 });
             });
             
@@ -333,8 +322,7 @@ describe("Model", function () {
 
                 expect(user.get()).to.eql({
                     name: "John Wayne",
-                    age: 45,
-                    kills: undefined
+                    age: 45
                 });
             });
 
@@ -385,8 +373,7 @@ describe("Model", function () {
 
                     expect(user.get()).to.eql({
                         name: "Johnny Rotten",
-                        age: 50,
-                        kills: undefined
+                        age: 50
                     });
                 });
 
@@ -458,8 +445,7 @@ describe("Model", function () {
 
                     expect(user.get()).to.eql({
                         name: "John Wayne",
-                        age: 45,
-                        kills: undefined
+                        age: 45
                     });
                 });
 
@@ -492,8 +478,7 @@ describe("Model", function () {
 
                 expect(user.get()).to.eql({
                     name: "John Wayne",
-                    age: 45,
-                    kills: undefined
+                    age: 45
                 });
             });
 
@@ -632,8 +617,7 @@ describe("Model", function () {
 
                 expect(user.getDefaults()).to.eql({
                     name: "John Wayne",
-                    age: 45,
-                    kills: undefined
+                    age: 45
                 });
 
                 expect(user.toObject()).to.eql({
