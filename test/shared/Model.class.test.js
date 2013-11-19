@@ -73,10 +73,12 @@ describe("Model", function () {
                 expect(user.get("name")).to.eql("hans");
             });
 
-            it("should return all set attributes and defaults", function () {
+            it("should return all attributes and defaults", function () {
                 expect(user.get()).to.eql({
                     name: "John Wayne",
-                    age: 45
+                    age: 45,
+                    id: undefined,
+                    ids: {}
                 });
             });
 
@@ -85,7 +87,11 @@ describe("Model", function () {
 
                 model.set("what", "ever");
                 expect(model.get("what")).to.be("ever");
-                expect(model.get()).to.eql({ what: "ever" });
+                expect(model.get()).to.eql({
+                    what: "ever",
+                    id: undefined,
+                    ids: {}
+                });
             });
 
             it("should call a setter if it is defined on the schema", function () {
@@ -309,7 +315,9 @@ describe("Model", function () {
                 user.unset("name", "age");
                 expect(user.get()).to.eql({
                     name: "John Wayne",
-                    age: 45
+                    age: 45,
+                    id: undefined,
+                    ids: {}
                 });
             });
             
@@ -322,7 +330,9 @@ describe("Model", function () {
 
                 expect(user.get()).to.eql({
                     name: "John Wayne",
-                    age: 45
+                    age: 45,
+                    id: undefined,
+                    ids: {}
                 });
             });
 
@@ -350,6 +360,18 @@ describe("Model", function () {
                 expect(ageSignalNotified).to.equal(true);
             });
 
+            it("should never unset id and ids", function () {
+                user.set("id", 1);
+                user.setId("group", 1);
+                user.unset();
+
+                expect(user.get("id")).to.equal(1);
+                expect(user.get("ids")).to.eql({
+                    user1: 1,
+                    group: 1
+                });
+            });
+
             it("should be chainable", function () {
                 expect(user.unset("name")).to.equal(user);
             });
@@ -373,7 +395,9 @@ describe("Model", function () {
 
                     expect(user.get()).to.eql({
                         name: "Johnny Rotten",
-                        age: 50
+                        age: 50,
+                        id: undefined,
+                        ids: {}
                     });
                 });
 
@@ -398,14 +422,31 @@ describe("Model", function () {
                     model.remove("greeting", "age");
 
                     expect(model.get()).to.eql({
-                        name: "Pirate"
+                        name: "Pirate",
+                        id: undefined,
+                        ids: {}
                     });
                 });
 
-                it("should remove all attributes when no attribute-names are given", function () {
+                it("should remove all attributes except id and ids when no attribute-names are given", function () {
                     model.remove();
 
-                    expect(model.get()).to.eql({});
+                    expect(model.get()).to.eql({
+                        id: undefined,
+                        ids: {}
+                    });
+                });
+
+                it("should never remove id and ids", function () {
+                    user.set("id", 1);
+                    user.setId("group", 1);
+                    user.remove();
+
+                    expect(user.get("id")).to.equal(1);
+                    expect(user.get("ids")).to.eql({
+                        user1: 1,
+                        group: 1
+                    });
                 });
 
                 it("should set all signals of removed attributes on undefined", function () {
@@ -436,7 +477,9 @@ describe("Model", function () {
                     expect(user.get()).to.eql({
                         name: "John Wayne",
                         age: 45,
-                        kills: 20
+                        kills: 20,
+                        id: undefined,
+                        ids: {}
                     });
                 });
 
@@ -445,7 +488,9 @@ describe("Model", function () {
 
                     expect(user.get()).to.eql({
                         name: "John Wayne",
-                        age: 45
+                        age: 45,
+                        id: undefined,
+                        ids: {}
                     });
                 });
 
@@ -478,7 +523,9 @@ describe("Model", function () {
 
                 expect(user.get()).to.eql({
                     name: "John Wayne",
-                    age: 45
+                    age: 45,
+                        id: undefined,
+                        ids: {}
                 });
             });
 
