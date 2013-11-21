@@ -1,8 +1,7 @@
 "use strict";
 
 var expect = require("expect.js"),
-    Junction = require("alamid-junction"),
-    Signal = require("alamid-signal");
+    Junction = require("alamid-junction");
 
 var Animal = require("./Model/Animal.class.js"),
     User1 = require("./Model/User1.class.js"),
@@ -135,10 +134,6 @@ describe("Model", function () {
             var name,
                 age,
                 email;
-
-            before(function () {
-                Model.prototype.Signal = Signal;
-            });
 
             beforeEach(function () {
                 user = new User2();

@@ -28,6 +28,7 @@
         "winston" : "0.x",
         "fshelpers" : "0.x",
         "alamid-class" : "0.x",
+        "alamid-signal": "0.x",
         "alamid-junction" : "0.x",
         "value" : "0.x",
         "nconf" : "0.x",
@@ -51,7 +52,7 @@
         "rewire-webpack": "0.x",
         "supertest" : "0.x",
         "webpack-dev-server": "0.x",
-        "grunt-simple-mocha" : "git://github.com/yaymukund/grunt-simple-mocha.git"
+        "grunt-simple-mocha" : "0.x"
     },
     "scripts" : {
         "test" : "grunt test-all"
