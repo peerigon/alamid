@@ -439,20 +439,15 @@ function sharedModelServiceTest(env) {
         describe("Statics", function () {
 
             var Octocat,
-                testService,
-                services;
+                testService;
 
             before(function () {
                 Octocat = require("../shared/Model/Octocat.class.js");
-                services = require("../../lib/shared/registries/serviceRegistry.js");
-                services.getService = function () {
-                    return testService;
-                };
             });
 
             beforeEach(function () {
                 Octocat.cache = new ModelCache();
-                testService = {};
+                Octocat.prototype._service = testService = {};
             });
 
             describe("#find", function () {

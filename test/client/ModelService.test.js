@@ -129,7 +129,7 @@ describe("Model-Services", function () {
             describe("#find", function () {
 
                 beforeEach(function () {
-                    testService = {
+                    Octocat.prototype._service = testService = {
                         readCollection : function (remote, ids, params, callback) {
                             callback({ status : "success", data : mockedOctocats });
                         }
@@ -196,7 +196,7 @@ describe("Model-Services", function () {
 
                 it("should call the remote-service if no client-service is defined", function (done) {
 
-                    testService = null;
+                    Octocat.prototype._service = null;
 
                     Octocat.find({ da : "ta" }, function (err, models) {
                         expect(err).to.be(null);
@@ -207,7 +207,7 @@ describe("Model-Services", function () {
 
                 it("should fail if no client-service is defined and remote = false", function (done) {
 
-                    testService = null;
+                    Octocat.prototype._service = null;
 
                     Octocat.find(false, { da : "ta" }, function (err, models) {
                         expect(err).not.to.be(null);
@@ -217,11 +217,9 @@ describe("Model-Services", function () {
 
                 it("should pass the remote service as 'remote' attribute if called with remote = true", function (done) {
 
-                    testService = {
-                        readCollection : function (remote, ids, params, callback) {
-                            expect(remote).to.be.a("function");
-                            callback({ status : "success", data : mockedOctocats });
-                        }
+                    testService.readCollection = function (remote, ids, params, callback) {
+                        expect(remote).to.be.a("function");
+                        callback({ status : "success", data : mockedOctocats });
                     };
 
                     Octocat.find(true, { da : "ta" }, function (err, models) {
@@ -234,11 +232,9 @@ describe("Model-Services", function () {
 
                 it("should not pass the remote function if called with remote = false", function (done) {
 
-                    testService = {
-                        readCollection : function (remote, ids, params, callback) {
-                            expect(remote).to.be(false);
-                            callback({ status : "success", data : mockedOctocats });
-                        }
+                    testService.readCollection = function (remote, ids, params, callback) {
+                        expect(remote).to.be(false);
+                        callback({ status : "success", data : mockedOctocats });
                     };
 
                     Octocat.find(false, { da : "ta" }, function (err, models) {
@@ -256,7 +252,7 @@ describe("Model-Services", function () {
                     Octocat.cache = null;
                 });
                 beforeEach(function () {
-                    testService = {
+                    Octocat.prototype._service = testService = {
                         read : function mockedRead(remote, ids, callback) {
                             var octocat = mockedOctocats[ids.octocat - 1];
                             callback({ status : "success", data : octocat });
@@ -339,7 +335,7 @@ describe("Model-Services", function () {
 
                 it("should call the remote service if no client service is defined", function (done) {
 
-                    testService = null;
+                    Octocat.prototype._service = null;
 
                     Octocat.findById(1, function (err, model) {
                         expect(err).to.be(null);
@@ -350,7 +346,7 @@ describe("Model-Services", function () {
 
                 it("should return an error if no service is defined when called with remote = false", function (done) {
 
-                    testService = null;
+                    Octocat.prototype._service = null;
 
                     Octocat.findById(false, 1, function (err, model) {
                         expect(err).to.be.an(Error);
@@ -360,19 +356,15 @@ describe("Model-Services", function () {
 
                 it("should pass the remote service as 'remote' attribute if called with remote = true", function (done) {
 
-                    testService = {
-                        read : function (remote, id, callback) {
-
-                            expect(remote).to.be.a("function");
-
-                            callback({
-                                status : "success",
-                                data : {
-                                    id : 1,
-                                    name : "RemoteOcto"
-                                }
-                            });
-                        }
+                    testService.read = function (remote, id, callback) {
+                        expect(remote).to.be.a("function");
+                        callback({
+                            status : "success",
+                            data : {
+                                id : 1,
+                                name : "RemoteOcto"
+                            }
+                        });
                     };
 
                     Octocat.findById(1, function (err, model) {
