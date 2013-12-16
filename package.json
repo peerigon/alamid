@@ -32,7 +32,7 @@
         "nconf" : "0.x",
         "socket.io" : "0.x",
         "cookie" : "0.x",
-        "webpack" : "0.x",
+        "webpack" : "0.11.13",
         "page" : "git://github.com/jhnns/page.js.git",
         "middler" : "0.x",
         "webpack-dev-middleware" : "0.x",
