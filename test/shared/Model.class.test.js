@@ -76,7 +76,7 @@ describe("Model", function () {
                 expect(user.get()).to.eql({
                     name: "John Wayne",
                     age: 45,
-                    id: undefined,
+                    id: null,
                     ids: {}
                 });
             });
@@ -88,7 +88,7 @@ describe("Model", function () {
                 expect(model.get("what")).to.be("ever");
                 expect(model.get()).to.eql({
                     what: "ever",
-                    id: undefined,
+                    id: null,
                     ids: {}
                 });
             });
@@ -311,7 +311,7 @@ describe("Model", function () {
                 expect(user.get()).to.eql({
                     name: "John Wayne",
                     age: 45,
-                    id: undefined,
+                    id: null,
                     ids: {}
                 });
             });
@@ -326,7 +326,7 @@ describe("Model", function () {
                 expect(user.get()).to.eql({
                     name: "John Wayne",
                     age: 45,
-                    id: undefined,
+                    id: null,
                     ids: {}
                 });
             });
@@ -391,7 +391,7 @@ describe("Model", function () {
                     expect(user.get()).to.eql({
                         name: "Johnny Rotten",
                         age: 50,
-                        id: undefined,
+                        id: null,
                         ids: {}
                     });
                 });
@@ -418,7 +418,7 @@ describe("Model", function () {
 
                     expect(model.get()).to.eql({
                         name: "Pirate",
-                        id: undefined,
+                        id: null,
                         ids: {}
                     });
                 });
@@ -427,7 +427,7 @@ describe("Model", function () {
                     model.remove();
 
                     expect(model.get()).to.eql({
-                        id: undefined,
+                        id: null,
                         ids: {}
                     });
                 });
@@ -473,7 +473,7 @@ describe("Model", function () {
                         name: "John Wayne",
                         age: 45,
                         kills: 20,
-                        id: undefined,
+                        id: null,
                         ids: {}
                     });
                 });
@@ -484,7 +484,7 @@ describe("Model", function () {
                     expect(user.get()).to.eql({
                         name: "John Wayne",
                         age: 45,
-                        id: undefined,
+                        id: null,
                         ids: {}
                     });
                 });
@@ -519,8 +519,8 @@ describe("Model", function () {
                 expect(user.get()).to.eql({
                     name: "John Wayne",
                     age: 45,
-                        id: undefined,
-                        ids: {}
+                    id: null,
+                    ids: {}
                 });
             });
 
