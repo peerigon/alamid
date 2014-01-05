@@ -42,6 +42,31 @@ describe("Model", function () {
         });
     });
 
+    describe("Constructor", function () {
+        var model;
+
+        it("should allow to set the id", function () {
+            model = new Model("test id");
+            expect(model.getId()).to.be("test id");
+        });
+
+        it("should allow to set initial data", function () {
+            model = new Model({
+                name: "Pirate",
+                age: 27,
+                id: 1
+            });
+
+            expect(model.toObject()).to.eql({
+                name: "Pirate",
+                age: 27,
+                id: 1,
+                ids: {}
+            });
+        });
+
+    });
+
     describe("Model-Features", function () {
 
         var user;
