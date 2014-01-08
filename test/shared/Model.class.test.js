@@ -43,25 +43,27 @@ describe("Model", function () {
     });
 
     describe("Constructor", function () {
-        var model;
+        var octocat;
 
         it("should allow to set the id", function () {
-            model = new Model("test id");
-            expect(model.getId()).to.be("test id");
+            octocat = new Octocat("test id");
+            expect(octocat.getId()).to.be("test id");
         });
 
         it("should allow to set initial data", function () {
-            model = new Model({
+            octocat = new Octocat({
                 name: "Pirate",
                 age: 27,
                 id: 1
             });
 
-            expect(model.toObject()).to.eql({
+            expect(octocat.toObject()).to.eql({
                 name: "Pirate",
                 age: 27,
                 id: 1,
-                ids: {}
+                ids: {
+                    octocat: 1
+                }
             });
         });
 
