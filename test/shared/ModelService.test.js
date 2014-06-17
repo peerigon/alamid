@@ -179,10 +179,10 @@ function sharedModelServiceTest(env) {
 
                     it("should add a new instance to the cache after fetch", function () {
                         octocat.setId(2);
-                        expect(Octocat.cache.get(2)).to.be(undefined);
+                        expect(Octocat.cache.get(octocat.getResourceUrl())).to.be(undefined);
                         octocat.fetch(function (err) {
                             expect(err).to.be(null);
-                            expect(Octocat.cache.get(2)).to.be(octocat);
+                            expect(Octocat.cache.get(octocat.getResourceUrl())).to.be(octocat);
                         });
                     });
 

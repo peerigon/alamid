@@ -24,6 +24,7 @@ describe("subscribeModelHandler", function (){
             "blog": 1,
             "blog/post": 1
         },
+        resourceUrl = Post.getResourceUrl(ids),
         post,
         emittedEvent;
 
@@ -96,7 +97,7 @@ describe("subscribeModelHandler", function (){
 
             socketMock.emit("remoteCreate", "blog/post", ids, data);
 
-            post = Post.cache.get(1);
+            post = Post.cache.get(resourceUrl);
             expect(post).to.be.a(Post);
             expect(post.get("title")).to.be("Hello World");
         });
@@ -107,12 +108,12 @@ describe("subscribeModelHandler", function (){
             };
 
             post = new Post();
-            Post.cache.set(1, post);
+            Post.cache.set(resourceUrl, post);
             Post.on("remoteUpdate", getEmittedEvent);
 
             socketMock.emit("remoteUpdate", "blog/post", ids, data);
 
-            post = Post.cache.get(1);
+            post = Post.cache.get(resourceUrl);
             expect(post.get("title")).to.be("Don't know, dude");
             expect(emittedEvent.model).to.be(post);
         });
@@ -126,20 +127,20 @@ describe("subscribeModelHandler", function (){
 
             socketMock.emit("remoteUpdate", "blog/post", ids, data);
 
-            post = Post.cache.get(1);
+            post = Post.cache.get(resourceUrl);
             expect(post.get("title")).to.be("Don't know, dude");
             expect(emittedEvent.model).to.be(post);
         });
 
         it("should pass the destroyed instance to all listeners and remove it from cache", function () {
             post = new Post();
-            Post.cache.set(1, post);
+            Post.cache.set(resourceUrl, post);
             Post.on("remoteDestroy", getEmittedEvent);
 
             socketMock.emit("remoteDestroy", "blog/post", ids);
 
             expect(emittedEvent.model).to.be(post);
-            expect(Post.cache.get(1)).to.be(undefined);
+            expect(Post.cache.get(resourceUrl)).to.be(undefined);
         });
 
     });
