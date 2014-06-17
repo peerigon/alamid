@@ -4,6 +4,8 @@ var expect = require("expect.js"),
     rewire = require("rewire"),
     modelStatics = rewire("../../lib/shared/modelStatics.js");
 
+var slice = Array.prototype.slice;
+
 describe("modelStatics", function () {
     describe(".getResourceUrl()", function () {
         var result = {},
@@ -15,7 +17,7 @@ describe("modelStatics", function () {
             args;
 
         function getResourceUrlMock() {
-            args = arguments;
+            args = slice.call(arguments);
             return result;
         }
 
