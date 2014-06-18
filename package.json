@@ -37,7 +37,7 @@
     "spdy": "1.x",
     "underscore": "1.x",
     "value": "0.x",
-    "webpack": "^1.2.0-beta6",
+    "webpack": "1.2.x",
     "webpack-dev-middleware": "^1.0.8",
     "winston": "0.x"
   },
