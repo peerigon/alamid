@@ -95,29 +95,10 @@ describe("Client", function () {
                 //do nothing
             });
 
+            client.start();
+
             client.dispatchRoute("/blog/posts");
             expect(window.location.pathname).to.be("/blog/posts");
-        });
-
-        it("should call automatically .start() with {dispatch: false} if it was not called manually", function () {
-            var startParams,
-                pageJSStart = pageJS.start;
-
-            //Apply monkey patch to .start()
-            pageJS.start = function (params) {
-                startParams = params;
-            };
-
-            client.addRoute("blog", function () {
-                //do nothing
-            });
-
-            client.dispatchRoute("blog");
-
-            expect(startParams.dispatch).to.be(false);
-
-            //Revert monkey patch .start()
-            pageJS.start = pageJSStart;
         });
     });
 
@@ -184,6 +165,9 @@ describe("Client", function () {
                 })
                 .addRoute("*", function (ctx) {
                     called.push("*2");
+                })
+                .start({
+                    dispatch: false
                 });
 
             client.dispatchRoute("blog/posts");
@@ -192,28 +176,41 @@ describe("Client", function () {
         });
 
         it("should work with a string as handler", function () {
-            client.addRoute("blog/about", "blog/about");
+            client
+                .addRoute("blog/about", "blog/about")
+                .start({
+                    dispatch: false
+                });
+
             client.dispatchRoute("blog/about");
 
             expect(pageUrl).to.be("blog/about");
         });
 
         it("should take the route as pageUrl when passing only on argument", function () {
-            client.addRoute("blog/about");
+            client
+                .addRoute("blog/about")
+                .start({
+                    dispatch: false
+                });
+
             client.dispatchRoute("blog/about");
 
             expect(pageUrl).to.be("blog/about");
         });
 
         it("should pass the params from route", function () {
-            client.addRoute("blog/:author/posts/:postId", function (ctx, next) {
-                expect(ctx.params.author).to.be("spook");
-                expect(ctx.params.postId).to.be("123");
-                next();
-            });
+            client
+                .addRoute("blog/:author/posts/:postId", function (ctx, next) {
+                    expect(ctx.params.author).to.be("spook");
+                    expect(ctx.params.postId).to.be("123");
+                    next();
+                })
+                .addRoute("blog/:author/posts/:postId", "blog/posts")
+                .start({
+                    dispatch: false
+                });
 
-            client.addRoute("blog/:author/posts/:postId", "blog/posts");
-            client.start();
             client.dispatchRoute("blog/spook/posts/123");
 
             expect(context.params.author).to.be("spook");
