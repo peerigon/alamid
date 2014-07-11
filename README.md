@@ -5,6 +5,15 @@ __node.js framework for JavaScript real-time applications.__
 
 [![Build Status](https://travis-ci.org/peerigon/alamid.png?branch=master)](https://travis-ci.org/peerigon/alamid) ![Dep Status](https://david-dm.org/peerigon/alamid.png)
 
+
+## We are currently splitting up alamid in tiny modules. We discourage the use of the all-on-one _alamid_. We will update our website soon. 
+
+### Modules 
+- [alamid-schema](https://github.com/peerigon/alamid-schema)
+- [alamid-api](https://github.com/peerigon/alamid-api)
+- ... 
+- 
+
 alamid is an exciting new framework for JavaScript real-time applications that run both on the client and on the server. It manages all the bundling and communication so you can focus on your stuff: your application.
 
 The framework has been designed to ease offline-ability and component re-use. It leverages modern web technologies like WebSockets and provides a reasonable class-system that enables you to use inheritance and scopes in an intuitive way.
