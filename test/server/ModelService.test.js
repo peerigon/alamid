@@ -12,12 +12,12 @@ describe("Model-Services", function () {
     sharedModelServiceTest();
 
 
-    describe("#Server", function() {
+    describe("#Server", function () {
 
         var testService,
             octocat;
 
-        beforeEach(function() {
+        beforeEach(function () {
             testService = {};
             octocat = new Octocat();
             octocat.setService(testService);
@@ -58,9 +58,9 @@ describe("Model-Services", function () {
             });
         });
 
-        describe("#Statics", function() {
+        describe("#Statics", function () {
 
-            describe("#find", function() {
+            describe("#find", function () {
 
                 var Octocat,
                     testService,
@@ -76,7 +76,7 @@ describe("Model-Services", function () {
                     Octocat = require("../shared/Model/Octocat.class.js");
                 });
 
-                beforeEach(function() {
+                beforeEach(function () {
                     testService = {};
                 });
 
