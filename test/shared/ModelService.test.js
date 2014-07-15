@@ -51,20 +51,24 @@ function sharedModelServiceTest(env) {
         }
     }
 
-    var mockedOctocats = [
-        {
-            id : 1,
-            name : "Octo 1",
-            age : 12
-        },
-        {
-            id : 2,
-            name : "Octo 2",
-            age : 10
-        }
-    ];
-
     describe("Shared", function () {
+
+        var octocats;
+
+        beforeEach(function () {
+            octocats = [
+                {
+                    id : 1,
+                    name : "Octo 1",
+                    age : 12
+                },
+                {
+                    id : 2,
+                    name : "Octo 2",
+                    age : 10
+                }
+            ];
+        });
 
         describe("CRUD", function () {
 
@@ -175,10 +179,10 @@ function sharedModelServiceTest(env) {
 
                     it("should add a new instance to the cache after fetch", function () {
                         octocat.setId(2);
-                        expect(Octocat.cache.get("octocat/2")).to.be(undefined);
+                        expect(Octocat.cache.get(octocat.getResourceUrl())).to.be(undefined);
                         octocat.fetch(function (err) {
                             expect(err).to.be(null);
-                            expect(Octocat.cache.get("octocat/2")).to.be(octocat);
+                            expect(Octocat.cache.get(octocat.getResourceUrl())).to.be(octocat);
                         });
                     });
 
@@ -435,20 +439,15 @@ function sharedModelServiceTest(env) {
         describe("Statics", function () {
 
             var Octocat,
-                testService,
-                services;
+                testService;
 
             before(function () {
                 Octocat = require("../shared/Model/Octocat.class.js");
-                services = require("../../lib/shared/registries/serviceRegistry.js");
-                services.getService = function () {
-                    return testService;
-                };
             });
 
             beforeEach(function () {
                 Octocat.cache = new ModelCache();
-                testService = {};
+                Octocat.prototype._service = testService = {};
             });
 
             describe("#find", function () {
@@ -456,7 +455,7 @@ function sharedModelServiceTest(env) {
                 beforeEach(function () {
 
                     function mockedReadCollection(remote, ids, params, callback) {
-                        callback({ status : "success", data : mockedOctocats });
+                        callback({ status : "success", data : octocats });
                     }
 
                     setServiceMethod(testService, "readCollection", mockedReadCollection);
@@ -486,7 +485,7 @@ function sharedModelServiceTest(env) {
                 beforeEach(function () {
 
                     setServiceMethod(testService, "read", function mockedRead(remote, ids, callback) {
-                        var octocat = mockedOctocats[ids.octocat - 1];
+                        var octocat = octocats[ids.octocat - 1];
                         callback({ status : "success", data : octocat });
                     });
                 });
@@ -519,7 +518,7 @@ function sharedModelServiceTest(env) {
 
                 it("should return an error if the response-processing fails (i.e. unknown fields) ", function (done) {
 
-                    function mockedRead (remote, ids, callback) {
+                    function mockedRead(remote, ids, callback) {
                         callback({
                             status : "success",
                             data : {
