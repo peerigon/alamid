@@ -26,7 +26,7 @@
     "alamid-signal": "0.x",
     "async": "0.x",
     "bundle-loader": "0.x",
-    "connect": "2.x",
+    "connect": "2.21.1",
     "cookie": "0.x",
     "fshelpers": "0.x",
     "middler": "0.x",
