@@ -620,6 +620,7 @@ describe("Model", function () {
         });
 
         describe("isDefault", function () {
+
             it("should check if applied values are the default values", function () {
                 expect(user.isDefault()).to.be(true);
                 user.set("name", "Octocat");
@@ -634,6 +635,7 @@ describe("Model", function () {
                 user.unset("name", "age");
                 expect(user.isDefault()).to.be(true);
             });
+
         });
 
         describe("getChanged", function () {
@@ -671,6 +673,37 @@ describe("Model", function () {
                 expect(user.hasChanged("name")).to.be(true);
                 expect(user.hasChanged("age")).to.be(true);
                 expect(user.hasChanged("name", "age")).to.be(true);
+            });
+
+        });
+
+        describe("update", function () {
+
+            it("should update the model's properties without marking it as changed", function () {
+                user.update("name", "John Wayne");
+                user.update({
+                    age: 45,
+                    kills: 1
+                });
+
+                expect(user.get("name")).to.equal("John Wayne");
+                expect(user.get("age")).to.equal(45);
+                expect(user.get("kills")).to.equal(1);
+
+                expect(user.hasChanged("name")).to.equal(false);
+                expect(user.hasChanged("age")).to.equal(false);
+                expect(user.hasChanged("kills")).to.equal(false);
+            });
+
+            it("should still emit change events", function () {
+                var emitted = false;
+
+                user.on("change", function () {
+                    emitted = true;
+                });
+                user.update("name", "John Wayne");
+
+                expect(emitted).to.equal(true);
             });
 
         });
