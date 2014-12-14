@@ -839,13 +839,10 @@ describe("Model", function () {
             });
 
             it("should remove all event listeners", function () {
-                var hasBeenCalled = false;
-
-                user.removeAllListeners = function () {
-                   hasBeenCalled = true;
-                };
+                user.on("some-event", function () {});
+                expect(Object.keys(user._events)).to.have.length(1);
                 user.dispose();
-                expect(hasBeenCalled).to.equal(true);
+                expect(Object.keys(user._events)).to.have.length(0);
             });
 
             it("should set the isDisposed-flag on true", function () {
