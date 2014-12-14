@@ -295,43 +295,4 @@ describe("View", function () {
 
     });
 
-    describe("on Model.destroy()", function () {
-        var formModelService;
-
-        beforeEach(function () {
-            formModelService = {
-                destroy: function (remote, ids, onDestroy) {
-                    onDestroy({ status: "success" });
-                }
-            };
-            formModel.setService(formModelService);
-            formView.bind(formModel);
-        });
-
-        it ("should dispose View if bound Model was deleted", function (done) {
-            formView.on("dispose", function () {
-                done();
-            });
-            formModel.destroy(function onDestroy(err) {
-                if (err) {
-                    throw err;
-                }
-            });
-        });
-
-        it("should not dispose View if bound Model was unbound and then destroyed", function (done) {
-            formView.on("dispose", function () {
-                throw new Error("This function should not be called");
-            });
-            formView.unbind();
-            formModel.destroy(function onDestroyed(err) {
-                if (err) {
-                    throw err;
-                }
-                done();
-            });
-        });
-
-    });
-
 });

@@ -152,7 +152,7 @@ describe("Client", function () {
                 .addRoute("blog", function (ctx, next) {
                     throw new Error("This handler should not be triggered");
                 })
-                .addRoute("blog/*", function (ctx, next) {
+                .addRoute("blog/(.*)", function (ctx, next) {
                     called.push("/blog/*");
                     next();
                 })
