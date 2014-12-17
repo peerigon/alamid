@@ -29,7 +29,7 @@
     "connect": "2.21.1",
     "cookie": "0.x",
     "fshelpers": "0.x",
-    "middler": "0.x",
+    "middler": "0.7.x",
     "nconf": "0.x",
     "page": "^1.5.0",
     "raw-loader": "^0.5.1",
