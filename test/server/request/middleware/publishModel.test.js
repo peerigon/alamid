@@ -6,7 +6,7 @@ var expect = require("expect.js"),
 
 var Request = require("../../../../lib/server/request/Request.class.js"),
     Response = require("../../../../lib/server/request/Response.class.js"),
-    publishModel = require("../../../../lib/server/request/middleware/publishModel.js");
+    publishModel = require("../../.././publishModel.js");
 
 function getSocketMock(callback) {
     return {
